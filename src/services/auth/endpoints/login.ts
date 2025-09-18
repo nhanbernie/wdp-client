@@ -1,6 +1,6 @@
 import { EndpointBuilder } from "@reduxjs/toolkit/query/react";
 import { LoginRequest, ApiResponse, LoginResponse } from "@/services/api/type";
-import { API_ENDPOINTS } from "@/constants/endpoint.constant";
+import { API_ENDPOINTS } from "@/common/constants/endpoint.constant";
 
 export const loginEndpoint = (builder: EndpointBuilder<any, any, any>) =>
   builder.mutation<ApiResponse<LoginResponse>, LoginRequest>({
