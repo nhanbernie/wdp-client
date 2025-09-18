@@ -1,102 +1,234 @@
 "use client";
 
 import { motion } from "motion/react";
-import { ArrowRight, CheckCircle, Star, Users, Shield, Zap } from "lucide-react";
+import { ArrowRight, Play, Star, Users, Shield, Zap } from "lucide-react";
 import Link from "next/link";
 
 const MarketingPage = () => {
   const features = [
     {
-      icon: <Shield className="w-6 h-6" />,
-      title: "Bảo mật tuyệt đối",
-      description: "Dữ liệu của bạn được bảo vệ với công nghệ mã hóa tiên tiến nhất",
-    },
-    {
       icon: <Zap className="w-6 h-6" />,
-      title: "Hiệu suất cao",
-      description: "Xử lý nhanh chóng với hiệu suất tối ưu cho mọi tác vụ",
+      title: "AI-Powered Predictions",
+      description:
+        "Advanced machine learning algorithms predict content performance before you publish",
     },
     {
       icon: <Users className="w-6 h-6" />,
-      title: "Hỗ trợ 24/7",
-      description: "Đội ngũ hỗ trợ chuyên nghiệp luôn sẵn sàng giúp đỡ bạn",
+      title: "Audience Insights",
+      description:
+        "Deep understanding of your target audience behavior and preferences",
+    },
+    {
+      icon: <Shield className="w-6 h-6" />,
+      title: "Real-time Analytics",
+      description:
+        "Monitor and optimize your content performance with live data insights",
     },
   ];
 
   const testimonials = [
     {
-      name: "Nguyễn Văn A",
-      role: "CEO, Tech Company",
-      content: "WDP đã thay đổi hoàn toàn cách chúng tôi làm việc. Hiệu quả và tiện lợi!",
+      name: "Sarah Chen",
+      role: "Content Creator, 2M followers",
+      content:
+        "This platform helped me predict which posts would go viral. My engagement increased by 300%!",
       rating: 5,
     },
     {
-      name: "Trần Thị B",
-      role: "Marketing Manager",
-      content: "Giao diện thân thiện, dễ sử dụng. Tôi rất hài lòng với sản phẩm này.",
+      name: "Marcus Johnson",
+      role: "Marketing Director",
+      content:
+        "The AI predictions are incredibly accurate. We've saved thousands on failed campaigns.",
       rating: 5,
     },
   ];
 
-  return (
-    <div className="pt-16">
-      {/* Hero Section */}
-      <section className="relative bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 py-20 overflow-hidden">
-        <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-          <div className="text-center">
-            <motion.h1
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
-              className="text-4xl md:text-6xl font-bold text-gray-900 mb-6"
-            >
-              Chào mừng đến với{" "}
-              <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                WDP
-              </span>
-            </motion.h1>
-            
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto"
-            >
-              Giải pháp toàn diện cho doanh nghiệp hiện đại. Tối ưu hóa quy trình làm việc, 
-              tăng hiệu suất và đạt được thành công bền vững.
-            </motion.p>
+  // 3D Floating shapes component
+  const FloatingShapes = () => (
+    <div className="absolute inset-0 overflow-hidden pointer-events-none">
+      {/* Purple Sphere */}
+      <motion.div
+        className="absolute top-20 right-20 w-32 h-32 bg-gradient-to-br from-purple-400 to-purple-600 rounded-full opacity-80"
+        animate={{
+          y: [0, -20, 0],
+          rotate: [0, 180, 360],
+        }}
+        transition={{
+          duration: 8,
+          repeat: Infinity,
+          ease: "easeInOut",
+        }}
+        style={{
+          background: "linear-gradient(135deg, #a855f7 0%, #7c3aed 100%)",
+          boxShadow: "0 20px 40px rgba(168, 85, 247, 0.3)",
+        }}
+      />
 
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.4 }}
-              className="flex flex-col sm:flex-row gap-4 justify-center"
-            >
-              <Link
-                href="/login"
-                className="inline-flex items-center px-8 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors"
+      {/* Teal Cylinder */}
+      <motion.div
+        className="absolute top-40 right-80 w-16 h-48 opacity-90"
+        animate={{
+          y: [0, 15, 0],
+          rotateY: [0, 360],
+        }}
+        transition={{
+          duration: 10,
+          repeat: Infinity,
+          ease: "easeInOut",
+        }}
+        style={{
+          background: "linear-gradient(180deg, #14b8a6 0%, #0d9488 100%)",
+          borderRadius: "8px",
+          boxShadow: "0 25px 50px rgba(20, 184, 166, 0.4)",
+          transform: "perspective(1000px) rotateX(15deg)",
+        }}
+      />
+
+      {/* Orange Cube */}
+      <motion.div
+        className="absolute bottom-40 right-40 w-24 h-24 opacity-85"
+        animate={{
+          y: [0, -25, 0],
+          rotateX: [0, 360],
+          rotateZ: [0, 180],
+        }}
+        transition={{
+          duration: 12,
+          repeat: Infinity,
+          ease: "easeInOut",
+        }}
+        style={{
+          background: "linear-gradient(135deg, #f97316 0%, #ea580c 100%)",
+          borderRadius: "12px",
+          boxShadow: "0 20px 40px rgba(249, 115, 22, 0.4)",
+          transform: "perspective(1000px) rotateY(25deg)",
+        }}
+      />
+
+      {/* Purple Rectangular Prism */}
+      <motion.div
+        className="absolute bottom-20 right-20 w-20 h-40 opacity-80"
+        animate={{
+          y: [0, -30, 0],
+          rotateY: [0, -360],
+        }}
+        transition={{
+          duration: 15,
+          repeat: Infinity,
+          ease: "easeInOut",
+        }}
+        style={{
+          background: "linear-gradient(180deg, #8b5cf6 0%, #7c3aed 100%)",
+          borderRadius: "10px",
+          boxShadow: "0 30px 60px rgba(139, 92, 246, 0.4)",
+          transform: "perspective(1000px) rotateX(-10deg)",
+        }}
+      />
+    </div>
+  );
+
+  return (
+    <div className="min-h-screen">
+      {/* Hero Section */}
+      <section className="relative min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 overflow-hidden flex items-center">
+        {/* Floating 3D Shapes */}
+        <FloatingShapes />
+
+        {/* Grid Pattern Overlay */}
+        <div className="absolute inset-0 opacity-10">
+          <div
+            className="absolute inset-0"
+            style={{
+              backgroundImage: `radial-gradient(circle at 1px 1px, rgba(255,255,255,0.15) 1px, transparent 0)`,
+              backgroundSize: "50px 50px",
+            }}
+          />
+        </div>
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            {/* Left Content */}
+            <div className="text-left">
+              <motion.h1
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8 }}
+                className="text-5xl md:text-7xl font-bold text-white mb-8 leading-tight"
               >
-                Bắt đầu ngay
-                <ArrowRight className="ml-2 w-5 h-5" />
-              </Link>
-              <button className="inline-flex items-center px-8 py-3 border border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 transition-colors">
-                Tìm hiểu thêm
-              </button>
+                Imagine seeing your content go{" "}
+                <span className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+                  viral
+                </span>{" "}
+                before you launch it
+              </motion.h1>
+
+              <motion.p
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.2 }}
+                className="text-xl text-gray-300 mb-10 max-w-2xl leading-relaxed"
+              >
+                Predict content performance with AI-powered analytics. Test,
+                optimize, and launch with confidence.
+              </motion.p>
+
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.4 }}
+                className="flex flex-col sm:flex-row gap-4"
+              >
+                <Link
+                  href="/login"
+                  className="inline-flex items-center px-8 py-4 bg-white text-slate-900 font-semibold rounded-xl hover:bg-gray-100 transition-all duration-300 shadow-lg hover:shadow-xl"
+                >
+                  Get Started
+                  <ArrowRight className="ml-2 w-5 h-5" />
+                </Link>
+                <button className="inline-flex items-center px-8 py-4 border border-white/20 text-white font-semibold rounded-xl hover:bg-white/10 transition-all duration-300 backdrop-blur-sm">
+                  <Play className="mr-2 w-5 h-5" />
+                  Watch Demo
+                </button>
+              </motion.div>
+            </div>
+
+            {/* Right Content - Video Preview */}
+            <motion.div
+              initial={{ opacity: 0, x: 50 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8, delay: 0.6 }}
+              className="relative"
+            >
+              <div className="relative bg-gradient-to-br from-slate-800 to-slate-900 rounded-2xl p-8 shadow-2xl border border-white/10">
+                <div className="aspect-video bg-gradient-to-br from-purple-900/50 to-slate-900/50 rounded-xl flex items-center justify-center border border-white/10">
+                  <motion.button
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.95 }}
+                    className="w-20 h-20 bg-white rounded-full flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300"
+                  >
+                    <Play className="w-8 h-8 text-slate-900 ml-1" />
+                  </motion.button>
+                </div>
+
+                {/* Decorative elements */}
+                <div className="absolute -top-4 -right-4 w-8 h-8 bg-purple-500 rounded-full opacity-60" />
+                <div className="absolute -bottom-4 -left-4 w-6 h-6 bg-pink-500 rounded-full opacity-60" />
+              </div>
             </motion.div>
           </div>
         </div>
       </section>
 
       {/* Features Section */}
-      <section className="py-20 bg-white">
+      <section className="py-20 bg-slate-900">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              Tại sao chọn WDP?
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+              Why Choose Our Platform?
             </h2>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              Chúng tôi cung cấp những tính năng tốt nhất để giúp bạn thành công
+            <p className="text-lg text-gray-300 max-w-2xl mx-auto">
+              Advanced AI-powered features to predict and optimize your content
+              performance
             </p>
           </div>
 
@@ -107,15 +239,15 @@ const MarketingPage = () => {
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: index * 0.2 }}
-                className="text-center p-6 rounded-lg border border-gray-200 hover:shadow-lg transition-shadow"
+                className="text-center p-6 rounded-lg border border-white/10 bg-slate-800/50 hover:bg-slate-800/70 transition-all duration-300"
               >
-                <div className="inline-flex items-center justify-center w-12 h-12 bg-blue-100 text-blue-600 rounded-lg mb-4">
+                <div className="inline-flex items-center justify-center w-12 h-12 bg-purple-500/20 text-purple-400 rounded-lg mb-4">
                   {feature.icon}
                 </div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                <h3 className="text-xl font-semibold text-white mb-2">
                   {feature.title}
                 </h3>
-                <p className="text-gray-600">{feature.description}</p>
+                <p className="text-gray-300">{feature.description}</p>
               </motion.div>
             ))}
           </div>
@@ -123,11 +255,11 @@ const MarketingPage = () => {
       </section>
 
       {/* Testimonials Section */}
-      <section className="py-20 bg-gray-50">
+      <section className="py-20 bg-slate-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              Khách hàng nói gì về chúng tôi
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+              What Our Users Say
             </h2>
           </div>
 
@@ -138,17 +270,22 @@ const MarketingPage = () => {
                 initial={{ opacity: 0, x: index % 2 === 0 ? -20 : 20 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.6 }}
-                className="bg-white p-6 rounded-lg shadow-md"
+                className="bg-slate-700/50 p-6 rounded-lg border border-white/10"
               >
                 <div className="flex items-center mb-4">
                   {[...Array(testimonial.rating)].map((_, i) => (
-                    <Star key={i} className="w-5 h-5 text-yellow-400 fill-current" />
+                    <Star
+                      key={i}
+                      className="w-5 h-5 text-yellow-400 fill-current"
+                    />
                   ))}
                 </div>
-                <p className="text-gray-600 mb-4">"{testimonial.content}"</p>
+                <p className="text-gray-300 mb-4">
+                  &ldquo;{testimonial.content}&rdquo;
+                </p>
                 <div>
-                  <p className="font-semibold text-gray-900">{testimonial.name}</p>
-                  <p className="text-sm text-gray-500">{testimonial.role}</p>
+                  <p className="font-semibold text-white">{testimonial.name}</p>
+                  <p className="text-sm text-gray-400">{testimonial.role}</p>
                 </div>
               </motion.div>
             ))}
@@ -157,7 +294,7 @@ const MarketingPage = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-blue-600">
+      <section className="py-20 bg-gradient-to-r from-purple-600 to-blue-600">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -165,16 +302,16 @@ const MarketingPage = () => {
             transition={{ duration: 0.6 }}
           >
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-              Sẵn sàng bắt đầu?
+              Ready to predict your viral content?
             </h2>
-            <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
-              Tham gia cùng hàng nghìn khách hàng đã tin tưởng WDP
+            <p className="text-xl text-purple-100 mb-8 max-w-2xl mx-auto">
+              Join thousands of creators who trust our AI-powered predictions
             </p>
             <Link
               href="/login"
-              className="inline-flex items-center px-8 py-3 bg-white text-blue-600 font-semibold rounded-lg hover:bg-gray-100 transition-colors"
+              className="inline-flex items-center px-8 py-3 bg-white text-purple-600 font-semibold rounded-lg hover:bg-gray-100 transition-colors"
             >
-              Đăng ký miễn phí
+              Start Free Trial
               <ArrowRight className="ml-2 w-5 h-5" />
             </Link>
           </motion.div>

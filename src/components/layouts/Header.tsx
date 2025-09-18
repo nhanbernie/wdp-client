@@ -21,7 +21,7 @@ const ActionButtons = ({
     <motion.button
       whileHover={{ scale: 1.1 }}
       whileTap={{ scale: 0.95 }}
-      className="p-2 rounded-lg transition-colors text-gray-600 hover:text-gray-900 hover:bg-gray-100"
+      className="p-2 rounded-lg transition-colors text-gray-300 hover:text-white hover:bg-white/10"
     >
       <Search size={20} />
     </motion.button>
@@ -31,7 +31,7 @@ const ActionButtons = ({
     <motion.button
       whileHover={{ scale: 1.1 }}
       whileTap={{ scale: 0.95 }}
-      className="p-2 rounded-lg transition-colors text-gray-600 hover:text-gray-900 hover:bg-gray-100"
+      className="p-2 rounded-lg transition-colors text-gray-300 hover:text-white hover:bg-white/10"
     >
       <MessageSquare size={20} />
     </motion.button>
@@ -40,7 +40,7 @@ const ActionButtons = ({
     <motion.button
       whileHover={{ scale: 1.1 }}
       whileTap={{ scale: 0.95 }}
-      className="p-2 rounded-lg transition-colors text-gray-600 hover:text-gray-900 hover:bg-gray-100"
+      className="p-2 rounded-lg transition-colors text-gray-300 hover:text-white hover:bg-white/10"
     >
       <Globe className="w-5 h-5" />
     </motion.button>
@@ -86,13 +86,16 @@ const Header = () => {
         transition={{ duration: 0.6, ease: "easeOut" }}
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
           isScrolled
-            ? "backdrop-blur-sm bg-white/80 shadow-lg border-b border-gray-200/50"
-            : "bg-transparent"
+            ? "backdrop-blur-sm bg-slate-900/90 shadow-lg border-b border-white/10"
+            : "bg-slate-900/50 backdrop-blur-sm"
         }`}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
-            <Logo />
+            {/* Left side - Logo and Backed by */}
+            <div className="flex items-center gap-8">
+              <Logo showText={false} />
+            </div>
 
             <nav className="hidden md:flex items-center gap-8">
               <Navigation items={navigationItems} />

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { User, Settings, LogOut, ChevronDown, LogIn } from "lucide-react";
+import { User, Settings, LogOut, ChevronDown } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useAuth } from "@/contexts/AuthContext";
@@ -21,15 +21,14 @@ const UserMenu = ({ user: propUser }: UserMenuProps) => {
   // Use auth context user if available, otherwise use prop user
   const currentUser = user || propUser;
 
-  // If not authenticated, show login button
+  // If not authenticated, show sign up button
   if (!isAuthenticated) {
     return (
       <Link
         href="/login"
-        className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors"
+        className="inline-flex items-center gap-2 px-6 py-2 bg-white text-slate-900 font-medium rounded-lg hover:bg-gray-100 transition-colors"
       >
-        <LogIn size={16} />
-        Đăng nhập
+        Sign-Up
       </Link>
     );
   }

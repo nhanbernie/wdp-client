@@ -4,11 +4,11 @@ import { Logo } from "@/components/common";
 
 const AuthLayout = ({ children }: { children: React.ReactNode }) => {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-100 via-teal-50 to-cyan-50 relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 relative overflow-hidden">
       {/* Background decorative elements */}
       <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-emerald-400/20 to-teal-400/20 rounded-full blur-3xl"></div>
-        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-tr from-cyan-400/20 to-emerald-400/20 rounded-full blur-3xl"></div>
+        <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-purple-500/20 to-blue-500/20 rounded-full blur-3xl"></div>
+        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-tr from-blue-500/20 to-purple-500/20 rounded-full blur-3xl"></div>
       </div>
 
       <div className="relative z-10 min-h-screen flex items-center pt-16">
@@ -20,14 +20,15 @@ const AuthLayout = ({ children }: { children: React.ReactNode }) => {
               <Logo />
               {/* Main Headline */}
               <div className="space-y-4">
-                <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 leading-tight">
-                  Chào mừng đến với{" "}
-                  <span className="bg-gradient-to-r from-primary to-teal-600 bg-clip-text text-transparent">
-                    WDP
+                <h2 className="text-4xl lg:text-5xl font-bold text-white leading-tight">
+                  Welcome to{" "}
+                  <span className="bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
+                    Viral Predictor
                   </span>
                 </h2>
-                <p className="text-lg text-gray-600 leading-relaxed max-w-lg">
-                  Abc i dont know
+                <p className="text-lg text-gray-300 leading-relaxed max-w-lg">
+                  Predict your viral potential with AI-powered analytics before
+                  you publish
                 </p>
               </div>
 

@@ -53,19 +53,18 @@ const EBLogo: React.FC<LogoProps> = ({
           style={{ width: imageSize, height: imageSize }}
         >
           <Image
-            src="/wdp.png"
+            src="/wdp-logo.svg"
             alt="WDP"
-            width={imageSize * 12.5}
-            height={imageSize * 12.5}
-            quality={100}
-            className="w-full h-full rounded-full object-cover"
+            width={imageSize}
+            height={imageSize}
+            className="w-full h-full object-contain"
           />
         </div>
 
         {showText && (
           <span
             className={cn(
-              "text-xl font-bold text-foreground",
+              "text-xl font-bold text-white",
               direction === "vertical" && "text-center",
               textClassName
             )}
@@ -96,19 +95,18 @@ const EBLogo: React.FC<LogoProps> = ({
         style={{ width: imageSize, height: imageSize }}
       >
         <Image
-          src="/wdp.png"
+          src="/wdp-logo.svg"
           alt="WDP"
-          width={imageSize * 12.5}
-          height={imageSize * 12.5}
-          quality={100}
-          className="w-full h-full rounded-full object-cover"
+          width={imageSize}
+          height={imageSize}
+          className="w-full h-full object-contain"
         />
       </div>
 
       {showText && (
         <span
           className={cn(
-            "text-xl font-bold text-foreground",
+            "text-xl font-bold text-white",
             direction === "vertical" && "text-center",
             textClassName
           )}

@@ -5,9 +5,13 @@ export interface NavItem {
 }
 
 export const navigationItems: NavItem[] = [
-  { label: "Home", href: "/", active: true },
-  { label: "Find Something", href: "/find-something" },
-  { label: "Dashboard", href: "/dashboard" },
+  {
+    label: "Artificial Societies",
+    href: "/artificial-societies",
+    active: true,
+  },
+  { label: "Features", href: "/features" },
+  { label: "Use Cases", href: "/use-cases" },
 ];
 
 export const navigateMarketItems: NavItem[] = [
