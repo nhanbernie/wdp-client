@@ -5,9 +5,13 @@ import { useController, useFormContext } from "react-hook-form";
 import { Eye, EyeOff } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "motion/react";
+import { useTheme } from "@/contexts/ThemeContext";
 
 interface TextFieldProps
-  extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "value" | "onChange"> {
+  extends Omit<
+    React.InputHTMLAttributes<HTMLInputElement>,
+    "value" | "onChange"
+  > {
   name: string;
   label?: string;
   type?: "text" | "password" | "email" | "number";
@@ -17,6 +21,7 @@ export const TextField = forwardRef<HTMLInputElement, TextFieldProps>(
   ({ name, label, type = "text", className, ...props }, ref) => {
     const [showPassword, setShowPassword] = useState(false);
     const { control } = useFormContext();
+    const { colors } = useTheme();
     const {
       field: { onChange, value, onBlur },
       fieldState: { error },
@@ -27,7 +32,14 @@ export const TextField = forwardRef<HTMLInputElement, TextFieldProps>(
 
     return (
       <div className="w-full mb-5">
-        {label && <label className="block text-sm font-medium text-gray-800 mb-2">{label}</label>}
+        {label && (
+          <label
+            className="block text-sm font-medium mb-2"
+            style={{ color: colors.text }}
+          >
+            {label}
+          </label>
+        )}
 
         <motion.div
           className="relative w-full"
@@ -36,7 +48,9 @@ export const TextField = forwardRef<HTMLInputElement, TextFieldProps>(
         >
           <input
             ref={ref}
-            type={type === "password" ? (showPassword ? "text" : "password") : type}
+            type={
+              type === "password" ? (showPassword ? "text" : "password") : type
+            }
             className={cn(
               "w-full border rounded-xl px-4 py-4 text-gray-900 bg-gray-50 text-base placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent focus:bg-white transition-all duration-300 ease-in-out",
               error
@@ -49,7 +63,11 @@ export const TextField = forwardRef<HTMLInputElement, TextFieldProps>(
             onChange={(e) => onChange(e.target.value)}
             onBlur={onBlur}
             autoComplete={
-              type === "password" ? "current-password" : type === "email" ? "email" : "off"
+              type === "password"
+                ? "current-password"
+                : type === "email"
+                ? "email"
+                : "off"
             }
             {...props}
           />
@@ -59,7 +77,11 @@ export const TextField = forwardRef<HTMLInputElement, TextFieldProps>(
               onClick={() => setShowPassword(!showPassword)}
               className="absolute right-3 top-1/2 transform -translate-y-1/2 p-1 text-gray-400 hover:text-gray-600 focus:outline-none transition-colors"
             >
-              {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+              {showPassword ? (
+                <EyeOff className="w-5 h-5" />
+              ) : (
+                <Eye className="w-5 h-5" />
+              )}
             </button>
           )}
         </motion.div>

@@ -5,6 +5,7 @@ import { User, Settings, LogOut, ChevronDown } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useAuth } from "@/contexts/AuthContext";
+import { useTheme } from "@/contexts/ThemeContext";
 
 export interface UserMenuProps {
   user?: {
@@ -17,6 +18,7 @@ export interface UserMenuProps {
 const UserMenu = ({ user: propUser }: UserMenuProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const { user, logout, isAuthenticated } = useAuth();
+  const { colors } = useTheme();
 
   // Use auth context user if available, otherwise use prop user
   const currentUser = user || propUser;
@@ -26,7 +28,19 @@ const UserMenu = ({ user: propUser }: UserMenuProps) => {
     return (
       <Link
         href="/login"
-        className="inline-flex items-center gap-2 px-6 py-2 bg-white text-slate-900 font-medium rounded-lg hover:bg-gray-100 transition-colors"
+        className="inline-flex items-center gap-2 px-6 py-2 rounded-full font-medium transition-colors"
+        style={{
+          backgroundColor: colors.text,
+          color: colors.background,
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.backgroundColor = colors.hoverBackground;
+          e.currentTarget.style.color = colors.hoverText;
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.backgroundColor = colors.text;
+          e.currentTarget.style.color = colors.background;
+        }}
       >
         Sign-Up
       </Link>

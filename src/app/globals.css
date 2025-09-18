@@ -2,21 +2,42 @@
 
 :root {
   --background: #ffffff;
-  --foreground: #171717;
+  --foreground: #1f2937;
+  --header-blur: #ffffff80;
+  --hover-background: #f3f4f6;
+  --hover-text: #1f2937;
+  --card-background: #ffffff;
+  --border: #e5e7eb;
+  --accent: #3b82f6;
+}
+
+:root.dark {
+  --background: #060606;
+  --foreground: #ffffff;
+  --header-blur: #0606061a;
+  --hover-background: #ddd;
+  --hover-text: #141414;
+  --card-background: #1a1a1a;
+  --border: #333333;
+  --accent: #8b5cf6;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-header-blur: var(--header-blur);
+  --color-hover-background: var(--hover-background);
+  --color-hover-text: var(--hover-text);
+  --color-card-background: var(--card-background);
+  --color-border: var(--border);
+  --color-accent: var(--accent);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* Custom backdrop blur utility */
+.backdrop-blur-27 {
+  backdrop-filter: blur(27px);
 }
 
 body {

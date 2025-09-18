@@ -2,19 +2,19 @@
 
 import React from "react";
 import Header from "./Header";
-// import Footer from "./Footer";
+import Footer from "./Footer";
 
 interface MainLayoutProps {
   children: React.ReactNode;
   footer?: boolean;
 }
 
-const MainLayout: React.FC<MainLayoutProps> = ({ children, footer }) => {
+const MainLayout: React.FC<MainLayoutProps> = ({ children, footer = true }) => {
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen flex flex-col">
       <Header />
       <main className="flex-1">{children}</main>
-      {/* {footer && <Footer />} */}
+      {footer && <Footer />}
     </div>
   );
 };

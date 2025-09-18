@@ -61,15 +61,8 @@ const ActionButtons = ({
 
 // Main Header component
 const Header = () => {
-  const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 10);
-    };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+
   const handleMobileMenuToggle = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
   };
@@ -80,29 +73,29 @@ const Header = () => {
 
   return (
     <>
+      {/* Floating rounded header */}
       <motion.header
         initial={{ y: -100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.6, ease: "easeOut" }}
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-          isScrolled
-            ? "backdrop-blur-sm bg-slate-900/90 shadow-lg border-b border-white/10"
-            : "bg-slate-900/50 backdrop-blur-sm"
-        }`}
+        className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 transition-all duration-300"
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            {/* Left side - Logo and Backed by */}
-            <div className="flex items-center gap-8">
+        <div className="rounded-full px-8 py-4 shadow-lg border border-white/10 backdrop-blur-27 bg-header-blur">
+          <div className="flex items-center justify-between gap-12 min-w-[600px]">
+            {/* Left side - Logo */}
+            <div className="flex items-center">
               <Logo showText={false} />
             </div>
 
-            <nav className="hidden md:flex items-center gap-8">
+            {/* Center - Navigation */}
+            <nav className="hidden md:flex items-center">
               <Navigation items={navigationItems} />
             </nav>
 
-            {/* Right side - Actions */}
-            <ActionButtons onMobileMenuToggle={handleMobileMenuToggle} />
+            {/* Right side - Sign Up Button */}
+            <div className="flex items-center">
+              <UserMenu />
+            </div>
           </div>
         </div>
       </motion.header>

@@ -46,10 +46,7 @@ const EBLogo: React.FC<LogoProps> = ({
         {...motionProps}
       >
         <div
-          className={cn(
-            "rounded-xl flex items-center justify-center",
-            imageClassName
-          )}
+          className={cn("flex items-center justify-center", imageClassName)}
           style={{ width: imageSize, height: imageSize }}
         >
           <Image
@@ -88,10 +85,7 @@ const EBLogo: React.FC<LogoProps> = ({
       onClick={onClick}
     >
       <div
-        className={cn(
-          "rounded-xl flex items-center justify-center",
-          imageClassName
-        )}
+        className={cn("flex items-center justify-center", imageClassName)}
         style={{ width: imageSize, height: imageSize }}
       >
         <Image
