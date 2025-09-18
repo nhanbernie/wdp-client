@@ -48,15 +48,15 @@ const AuthLayout = ({ children }: { children: React.ReactNode }) => {
                       backgroundClip: "text",
                     }}
                   >
-                    Viral Predictor
+                    WDP Materials
                   </span>
                 </h2>
                 <p
                   className="text-lg leading-relaxed max-w-lg"
                   style={{ color: colors.textSecondary }}
                 >
-                  Predict your viral potential with AI-powered analytics before
-                  you publish
+                  Your trusted partner for premium construction materials and
+                  building supplies
                 </p>
               </div>
 

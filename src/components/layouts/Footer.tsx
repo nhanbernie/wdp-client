@@ -60,8 +60,8 @@ const Footer = () => {
               className="mt-4 text-sm leading-6 max-w-xs"
               style={{ color: colors.textSecondary }}
             >
-              Predict your content's viral potential with AI-powered analytics.
-              Make data-driven decisions before you publish.
+              Premium construction materials and building supplies for your
+              projects. Quality you can trust, service you can rely on.
             </p>
 
             {/* Social Links */}
