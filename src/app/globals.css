@@ -2,21 +2,61 @@
 
 :root {
   --background: #ffffff;
-  --foreground: #171717;
+  --foreground: #1f2937;
+  --header-blur: #ffffff80;
+  --hover-background: #f3f4f6;
+  --hover-text: #1f2937;
+  --card-background: #ffffff;
+  --border: #e5e7eb;
+  --accent: #3b82f6;
+}
+
+:root.dark {
+  --background: #060606;
+  --background-gradient: linear-gradient(
+    135deg,
+    #0a0a0a 0%,
+    #1a1a2e 50%,
+    #16213e 100%
+  );
+  --foreground: #ffffff;
+  --text-secondary: #a1a1aa;
+  --header-blur: #0606061a;
+  --hover-background: #ddd;
+  --hover-text: #141414;
+  --card-background: #1a1a1a;
+  --card-background-secondary: #262626;
+  --border: #333333;
+  --accent: #8b5cf6;
+  --accent-secondary: #a855f7;
+  --success: #10b981;
+  --warning: #f59e0b;
+  --error: #ef4444;
 }
 
 @theme inline {
   --color-background: var(--background);
+  --color-background-gradient: var(--background-gradient);
   --color-foreground: var(--foreground);
+  --color-text-secondary: var(--text-secondary);
+  --color-header-blur: var(--header-blur);
+  --color-hover-background: var(--hover-background);
+  --color-hover-text: var(--hover-text);
+  --color-card-background: var(--card-background);
+  --color-card-background-secondary: var(--card-background-secondary);
+  --color-border: var(--border);
+  --color-accent: var(--accent);
+  --color-accent-secondary: var(--accent-secondary);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-error: var(--error);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* Custom backdrop blur utility */
+.backdrop-blur-27 {
+  backdrop-filter: blur(27px);
 }
 
 body {
