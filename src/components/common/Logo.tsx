@@ -15,7 +15,7 @@ interface LogoProps {
   animated?: boolean;
 }
 
-const EBLogo: React.FC<LogoProps> = ({
+const Logo: React.FC<LogoProps> = ({
   direction = "horizontal",
   imageSize = 40,
   imageClassName,
@@ -112,4 +112,4 @@ const EBLogo: React.FC<LogoProps> = ({
   );
 };
 
-export default EBLogo;
+export default Logo;

@@ -3,8 +3,10 @@
 import { motion } from "motion/react";
 import { ArrowRight, Play, Star, Users, Shield, Zap } from "lucide-react";
 import Link from "next/link";
+import { useTheme } from "@/contexts/ThemeContext";
 
 const MarketingPage = () => {
+  const { colors } = useTheme();
   const features = [
     {
       icon: <Zap className="w-6 h-6" />,
@@ -59,8 +61,8 @@ const MarketingPage = () => {
           ease: "easeInOut",
         }}
         style={{
-          background: "linear-gradient(135deg, #a855f7 0%, #7c3aed 100%)",
-          boxShadow: "0 20px 40px rgba(168, 85, 247, 0.3)",
+          background: `linear-gradient(135deg, ${colors.accent}, ${colors.accentSecondary})`,
+          boxShadow: `0 20px 40px ${colors.accent}30`,
         }}
       />
 
@@ -77,9 +79,9 @@ const MarketingPage = () => {
           ease: "easeInOut",
         }}
         style={{
-          background: "linear-gradient(180deg, #14b8a6 0%, #0d9488 100%)",
+          background: `linear-gradient(180deg, ${colors.accentSecondary}, ${colors.accent})`,
           borderRadius: "8px",
-          boxShadow: "0 25px 50px rgba(20, 184, 166, 0.4)",
+          boxShadow: `0 25px 50px ${colors.accentSecondary}40`,
           transform: "perspective(1000px) rotateX(15deg)",
         }}
       />
@@ -98,9 +100,9 @@ const MarketingPage = () => {
           ease: "easeInOut",
         }}
         style={{
-          background: "linear-gradient(135deg, #f97316 0%, #ea580c 100%)",
+          background: `linear-gradient(135deg, ${colors.warning}, ${colors.error})`,
           borderRadius: "12px",
-          boxShadow: "0 20px 40px rgba(249, 115, 22, 0.4)",
+          boxShadow: `0 20px 40px ${colors.warning}40`,
           transform: "perspective(1000px) rotateY(25deg)",
         }}
       />
@@ -118,9 +120,9 @@ const MarketingPage = () => {
           ease: "easeInOut",
         }}
         style={{
-          background: "linear-gradient(180deg, #8b5cf6 0%, #7c3aed 100%)",
+          background: `linear-gradient(180deg, ${colors.accent}, ${colors.accentSecondary})`,
           borderRadius: "10px",
-          boxShadow: "0 30px 60px rgba(139, 92, 246, 0.4)",
+          boxShadow: `0 30px 60px ${colors.accent}40`,
           transform: "perspective(1000px) rotateX(-10deg)",
         }}
       />
@@ -130,7 +132,10 @@ const MarketingPage = () => {
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
-      <section className="relative min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 overflow-hidden flex items-center">
+      <section
+        className="relative min-h-screen overflow-hidden flex items-center"
+        style={{ background: colors.backgroundGradient }}
+      >
         {/* Floating 3D Shapes */}
         <FloatingShapes />
 
@@ -153,10 +158,18 @@ const MarketingPage = () => {
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8 }}
-                className="text-5xl md:text-7xl font-bold text-white mb-8 leading-tight"
+                className="text-5xl md:text-7xl font-bold mb-8 leading-tight"
+                style={{ color: colors.text }}
               >
                 Imagine seeing your content go{" "}
-                <span className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+                <span
+                  className="bg-clip-text text-transparent"
+                  style={{
+                    background: `linear-gradient(135deg, ${colors.accent}, ${colors.accentSecondary})`,
+                    WebkitBackgroundClip: "text",
+                    backgroundClip: "text",
+                  }}
+                >
                   viral
                 </span>{" "}
                 before you launch it
@@ -166,7 +179,8 @@ const MarketingPage = () => {
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.2 }}
-                className="text-xl text-gray-300 mb-10 max-w-2xl leading-relaxed"
+                className="text-xl mb-10 max-w-2xl leading-relaxed"
+                style={{ color: colors.textSecondary }}
               >
                 Predict content performance with AI-powered analytics. Test,
                 optimize, and launch with confidence.
@@ -180,12 +194,35 @@ const MarketingPage = () => {
               >
                 <Link
                   href="/login"
-                  className="inline-flex items-center px-8 py-4 bg-white text-slate-900 font-semibold rounded-xl hover:bg-gray-100 transition-all duration-300 shadow-lg hover:shadow-xl"
+                  className="inline-flex items-center px-8 py-4 font-semibold rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl"
+                  style={{
+                    background: `linear-gradient(135deg, ${colors.accent}, ${colors.accentSecondary})`,
+                    color: colors.background,
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = "translateY(-2px)";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = "translateY(0)";
+                  }}
                 >
                   Get Started
                   <ArrowRight className="ml-2 w-5 h-5" />
                 </Link>
-                <button className="inline-flex items-center px-8 py-4 border border-white/20 text-white font-semibold rounded-xl hover:bg-white/10 transition-all duration-300 backdrop-blur-sm">
+                <button
+                  className="inline-flex items-center px-8 py-4 font-semibold rounded-xl transition-all duration-300 backdrop-blur-sm"
+                  style={{
+                    border: `1px solid ${colors.border}`,
+                    color: colors.text,
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor =
+                      colors.cardBackground + "20";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor = "transparent";
+                  }}
+                >
                   <Play className="mr-2 w-5 h-5" />
                   Watch Demo
                 </button>
@@ -220,13 +257,22 @@ const MarketingPage = () => {
       </section>
 
       {/* Features Section */}
-      <section className="py-20 bg-slate-900">
+      <section
+        className="py-20"
+        style={{ backgroundColor: colors.cardBackground }}
+      >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+            <h2
+              className="text-3xl md:text-4xl font-bold mb-4"
+              style={{ color: colors.text }}
+            >
               Why Choose Our Platform?
             </h2>
-            <p className="text-lg text-gray-300 max-w-2xl mx-auto">
+            <p
+              className="text-lg max-w-2xl mx-auto"
+              style={{ color: colors.textSecondary }}
+            >
               Advanced AI-powered features to predict and optimize your content
               performance
             </p>
@@ -239,15 +285,39 @@ const MarketingPage = () => {
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: index * 0.2 }}
-                className="text-center p-6 rounded-lg border border-white/10 bg-slate-800/50 hover:bg-slate-800/70 transition-all duration-300"
+                className="text-center p-6 rounded-lg transition-all duration-300"
+                style={{
+                  backgroundColor: colors.cardBackgroundSecondary,
+                  borderColor: colors.border,
+                  border: `1px solid ${colors.border}`,
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor =
+                    colors.cardBackground + "80";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor =
+                    colors.cardBackgroundSecondary;
+                }}
               >
-                <div className="inline-flex items-center justify-center w-12 h-12 bg-purple-500/20 text-purple-400 rounded-lg mb-4">
+                <div
+                  className="inline-flex items-center justify-center w-12 h-12 rounded-lg mb-4"
+                  style={{
+                    backgroundColor: colors.accent + "20",
+                    color: colors.accent,
+                  }}
+                >
                   {feature.icon}
                 </div>
-                <h3 className="text-xl font-semibold text-white mb-2">
+                <h3
+                  className="text-xl font-semibold mb-2"
+                  style={{ color: colors.text }}
+                >
                   {feature.title}
                 </h3>
-                <p className="text-gray-300">{feature.description}</p>
+                <p style={{ color: colors.textSecondary }}>
+                  {feature.description}
+                </p>
               </motion.div>
             ))}
           </div>
@@ -255,10 +325,16 @@ const MarketingPage = () => {
       </section>
 
       {/* Testimonials Section */}
-      <section className="py-20 bg-slate-800">
+      <section
+        className="py-20"
+        style={{ backgroundColor: colors.cardBackgroundSecondary }}
+      >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+            <h2
+              className="text-3xl md:text-4xl font-bold mb-4"
+              style={{ color: colors.text }}
+            >
               What Our Users Say
             </h2>
           </div>
@@ -270,22 +346,34 @@ const MarketingPage = () => {
                 initial={{ opacity: 0, x: index % 2 === 0 ? -20 : 20 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.6 }}
-                className="bg-slate-700/50 p-6 rounded-lg border border-white/10"
+                className="p-6 rounded-lg"
+                style={{
+                  backgroundColor: colors.cardBackground + "50",
+                  border: `1px solid ${colors.border}`,
+                }}
               >
                 <div className="flex items-center mb-4">
                   {[...Array(testimonial.rating)].map((_, i) => (
                     <Star
                       key={i}
-                      className="w-5 h-5 text-yellow-400 fill-current"
+                      className="w-5 h-5 fill-current"
+                      style={{ color: colors.warning }}
                     />
                   ))}
                 </div>
-                <p className="text-gray-300 mb-4">
+                <p className="mb-4" style={{ color: colors.textSecondary }}>
                   &ldquo;{testimonial.content}&rdquo;
                 </p>
                 <div>
-                  <p className="font-semibold text-white">{testimonial.name}</p>
-                  <p className="text-sm text-gray-400">{testimonial.role}</p>
+                  <p className="font-semibold" style={{ color: colors.text }}>
+                    {testimonial.name}
+                  </p>
+                  <p
+                    className="text-sm"
+                    style={{ color: colors.textSecondary + "80" }}
+                  >
+                    {testimonial.role}
+                  </p>
                 </div>
               </motion.div>
             ))}
@@ -294,22 +382,45 @@ const MarketingPage = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-gradient-to-r from-purple-600 to-blue-600">
+      <section
+        className="py-20"
+        style={{
+          background: `linear-gradient(135deg, ${colors.accent}, ${colors.accentSecondary})`,
+        }}
+      >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
-            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+            <h2
+              className="text-3xl md:text-4xl font-bold mb-4"
+              style={{ color: colors.background }}
+            >
               Ready to predict your viral content?
             </h2>
-            <p className="text-xl text-purple-100 mb-8 max-w-2xl mx-auto">
+            <p
+              className="text-xl mb-8 max-w-2xl mx-auto"
+              style={{ color: colors.background + "e6" }}
+            >
               Join thousands of creators who trust our AI-powered predictions
             </p>
             <Link
               href="/login"
-              className="inline-flex items-center px-8 py-3 bg-white text-purple-600 font-semibold rounded-lg hover:bg-gray-100 transition-colors"
+              className="inline-flex items-center px-8 py-3 font-semibold rounded-lg transition-all duration-300"
+              style={{
+                backgroundColor: colors.background,
+                color: colors.accent,
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = "translateY(-2px)";
+                e.currentTarget.style.boxShadow = "0 10px 25px rgba(0,0,0,0.2)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = "translateY(0)";
+                e.currentTarget.style.boxShadow = "none";
+              }}
             >
               Start Free Trial
               <ArrowRight className="ml-2 w-5 h-5" />

@@ -1,14 +1,29 @@
 "use client";
 
 import { Logo } from "@/components/common";
+import { useTheme } from "@/contexts/ThemeContext";
 
 const AuthLayout = ({ children }: { children: React.ReactNode }) => {
+  const { colors } = useTheme();
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 relative overflow-hidden">
+    <div
+      className="min-h-screen relative overflow-hidden"
+      style={{ background: colors.backgroundGradient }}
+    >
       {/* Background decorative elements */}
       <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-purple-500/20 to-blue-500/20 rounded-full blur-3xl"></div>
-        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-tr from-blue-500/20 to-purple-500/20 rounded-full blur-3xl"></div>
+        <div
+          className="absolute -top-40 -right-40 w-80 h-80 rounded-full blur-3xl"
+          style={{
+            background: `linear-gradient(135deg, ${colors.accent}20, ${colors.accentSecondary}20)`,
+          }}
+        ></div>
+        <div
+          className="absolute -bottom-40 -left-40 w-80 h-80 rounded-full blur-3xl"
+          style={{
+            background: `linear-gradient(45deg, ${colors.accentSecondary}20, ${colors.accent}20)`,
+          }}
+        ></div>
       </div>
 
       <div className="relative z-10 min-h-screen flex items-center pt-16">
@@ -20,13 +35,26 @@ const AuthLayout = ({ children }: { children: React.ReactNode }) => {
               <Logo />
               {/* Main Headline */}
               <div className="space-y-4">
-                <h2 className="text-4xl lg:text-5xl font-bold text-white leading-tight">
+                <h2
+                  className="text-4xl lg:text-5xl font-bold leading-tight"
+                  style={{ color: colors.text }}
+                >
                   Welcome to{" "}
-                  <span className="bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
+                  <span
+                    className="bg-clip-text text-transparent"
+                    style={{
+                      background: `linear-gradient(135deg, ${colors.accent}, ${colors.accentSecondary})`,
+                      WebkitBackgroundClip: "text",
+                      backgroundClip: "text",
+                    }}
+                  >
                     Viral Predictor
                   </span>
                 </h2>
-                <p className="text-lg text-gray-300 leading-relaxed max-w-lg">
+                <p
+                  className="text-lg leading-relaxed max-w-lg"
+                  style={{ color: colors.textSecondary }}
+                >
                   Predict your viral potential with AI-powered analytics before
                   you publish
                 </p>

@@ -52,13 +52,15 @@ export const TextField = forwardRef<HTMLInputElement, TextFieldProps>(
               type === "password" ? (showPassword ? "text" : "password") : type
             }
             className={cn(
-              "w-full border rounded-xl px-4 py-4 text-gray-900 bg-gray-50 text-base placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent focus:bg-white transition-all duration-300 ease-in-out",
-              error
-                ? "border-red-500 bg-red-50 focus:ring-red-200"
-                : "border-gray-200 hover:border-gray-300 focus:ring-primary/20",
+              "w-full border rounded-xl px-4 py-4 text-base focus:outline-none focus:ring-2 focus:border-transparent transition-all duration-300 ease-in-out",
               type === "password" && "pr-12",
               className
             )}
+            style={{
+              backgroundColor: colors.cardBackground,
+              borderColor: error ? "#ef4444" : colors.border,
+              color: colors.text,
+            }}
             value={value || ""}
             onChange={(e) => onChange(e.target.value)}
             onBlur={onBlur}
@@ -75,7 +77,16 @@ export const TextField = forwardRef<HTMLInputElement, TextFieldProps>(
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-3 top-1/2 transform -translate-y-1/2 p-1 text-gray-400 hover:text-gray-600 focus:outline-none transition-colors"
+              className="absolute right-3 top-1/2 transform -translate-y-1/2 p-1 focus:outline-none transition-colors"
+              style={{
+                color: colors.text + "60",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.color = colors.text + "80";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.color = colors.text + "60";
+              }}
             >
               {showPassword ? (
                 <EyeOff className="w-5 h-5" />

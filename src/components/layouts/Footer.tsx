@@ -2,7 +2,7 @@
 
 import React from "react";
 import { motion } from "motion/react";
-import { Github, Twitter, Linkedin, Mail } from "lucide-react";
+import { Github, X, Linkedin, Mail } from "lucide-react";
 import { Logo } from "@/components/common";
 import { useTheme } from "@/contexts/ThemeContext";
 
@@ -38,7 +38,7 @@ const Footer = () => {
 
   const socialLinks = [
     { icon: Github, href: "https://github.com", label: "GitHub" },
-    { icon: Twitter, href: "https://twitter.com", label: "Twitter" },
+    { icon: X, href: "https://twitter.com", label: "Twitter" },
     { icon: Linkedin, href: "https://linkedin.com", label: "LinkedIn" },
     { icon: Mail, href: "mailto:contact@example.com", label: "Email" },
   ];
@@ -47,7 +47,7 @@ const Footer = () => {
     <footer
       className="border-t"
       style={{
-        backgroundColor: colors.background,
+        backgroundColor: colors.cardBackground,
         borderColor: colors.border,
       }}
     >
@@ -58,7 +58,7 @@ const Footer = () => {
             <Logo showText={true} />
             <p
               className="mt-4 text-sm leading-6 max-w-xs"
-              style={{ color: colors.text }}
+              style={{ color: colors.textSecondary }}
             >
               Predict your content's viral potential with AI-powered analytics.
               Make data-driven decisions before you publish.
