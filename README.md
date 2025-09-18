@@ -5,6 +5,7 @@ WDP Client là một ứng dụng web hiện đại được xây dựng để q
 ## 🚀 Công nghệ Frontend
 
 ### Framework & Runtime
+
 - **[Next.js 15.5.3](https://nextjs.org)** - React framework với App Router
   - Server-side rendering (SSR)
   - Static site generation (SSG)
@@ -16,6 +17,7 @@ WDP Client là một ứng dụng web hiện đại được xây dựng để q
 - **[TypeScript 5](https://www.typescriptlang.org)** - Type-safe JavaScript
 
 ### Styling & UI
+
 - **[Tailwind CSS 4.1.13](https://tailwindcss.com)** - Utility-first CSS framework
   - Custom design system với CSS variables
   - Dark/Light theme support
@@ -26,6 +28,7 @@ WDP Client là một ứng dụng web hiện đại được xây dựng để q
 - **[Lucide React 0.544.0](https://lucide.dev)** - Icon library
 
 ### State Management
+
 - **[Redux Toolkit 2.9.0](https://redux-toolkit.js.org)** - State management
   - RTK Query cho data fetching
   - createSlice cho reducers
@@ -34,13 +37,16 @@ WDP Client là một ứng dụng web hiện đại được xây dựng để q
 - **Context API** - Local state management cho Auth và Theme
 
 ### Form Management & Validation
+
 - **[React Hook Form 7.62.0](https://react-hook-form.com)** - Performant form library
 - **[Yup 1.7.0](https://github.com/jquense/yup)** - Schema validation
 
 ### Animation & Motion
+
 - **[Motion 12.23.13](https://motion.dev)** - Animation library cho React
 
 ### Development Tools
+
 - **[ESLint 9](https://eslint.org)** - Code linting
   - Next.js ESLint config
   - TypeScript ESLint rules
@@ -52,6 +58,7 @@ WDP Client là một ứng dụng web hiện đại được xây dựng để q
 ## 🏗️ Kiến trúc Dự án
 
 ### Folder Structure
+
 ```
 src/
 ├── app/                    # Next.js App Router
@@ -72,6 +79,7 @@ src/
 ```
 
 ### Design Patterns
+
 - **Feature-based Architecture**: Tổ chức code theo tính năng
 - **Compound Components**: Component composition patterns
 - **Custom Hooks**: Logic tái sử dụng
@@ -79,6 +87,7 @@ src/
 - **Repository Pattern**: API service layer
 
 ### TypeScript Configuration
+
 - **Strict Mode**: Type safety tối đa
 - **Path Mapping**: Import aliases (@/, @/components, etc.)
 - **Module Resolution**: Bundler resolution strategy
@@ -87,12 +96,14 @@ src/
 ## 🎨 Design System
 
 ### Theme System
+
 - **CSS Variables**: Custom properties cho theming
 - **Dark/Light Mode**: Automatic theme switching
 - **Color Palette**: Consistent color system
 - **Typography**: Geist font family optimization
 
 ### Component Library
+
 - **Form Components**: TextField, SelectField, TextAreaField
 - **Layout Components**: Header, Footer, Navigation
 - **Common Components**: Logo, modals, buttons
@@ -101,12 +112,14 @@ src/
 ## 🔐 Authentication & Security
 
 ### Authentication Flow
+
 - **JWT Token Management**: Secure token storage
 - **Refresh Token Strategy**: Automatic token renewal
 - **Role-based Access Control**: Admin/User permissions
 - **Route Protection**: Authentication guards
 
 ### Security Features
+
 - **Secure Storage**: Encrypted local storage
 - **CORS Configuration**: API security
 - **Input Validation**: Client-side validation
@@ -115,6 +128,7 @@ src/
 ## 📱 Features
 
 ### Core Functionality
+
 - **User Authentication**: Login, Register, Forgot Password
 - **Materials Management**: Product catalog & inventory
 - **Admin Dashboard**: Administrative interface
@@ -122,6 +136,7 @@ src/
 - **Internationalization**: Multi-language support (i18n ready)
 
 ### User Experience
+
 - **Loading States**: Skeleton screens & spinners
 - **Error Handling**: User-friendly error messages
 - **Form Validation**: Real-time validation feedback
@@ -131,10 +146,12 @@ src/
 ## 🚀 Getting Started
 
 ### Prerequisites
+
 - Node.js 20+
 - npm/yarn/pnpm
 
 ### Installation
+
 ```bash
 # Clone repository
 git clone <repository-url>
@@ -148,6 +165,7 @@ npm run dev
 ```
 
 ### Available Scripts
+
 ```bash
 npm run dev      # Development server with Turbopack
 npm run build    # Production build with Turbopack
@@ -156,6 +174,7 @@ npm run lint     # Run ESLint
 ```
 
 ### Environment Setup
+
 ```env
 # Add environment variables
 NEXT_PUBLIC_API_URL=your_api_url
@@ -165,12 +184,14 @@ NEXT_PUBLIC_APP_ENV=development
 ## 🔧 Development Workflow
 
 ### Code Quality
+
 - **Pre-commit Hooks**: Automated linting & formatting
 - **Conventional Commits**: Standardized commit messages
 - **Type Safety**: Full TypeScript coverage
 - **ESLint Rules**: Consistent code style
 
 ### Testing Strategy
+
 - **Unit Testing**: Component testing
 - **Integration Testing**: API integration
 - **E2E Testing**: User flow testing
@@ -179,6 +200,7 @@ NEXT_PUBLIC_APP_ENV=development
 ## 📖 Documentation
 
 ### Resources
+
 - [Next.js Documentation](https://nextjs.org/docs)
 - [React Documentation](https://react.dev)
 - [TypeScript Handbook](https://www.typescriptlang.org/docs)
@@ -186,6 +208,7 @@ NEXT_PUBLIC_APP_ENV=development
 - [Redux Toolkit Documentation](https://redux-toolkit.js.org)
 
 ### API Documentation
+
 - RESTful API endpoints
 - Authentication flow
 - Error handling
@@ -194,12 +217,14 @@ NEXT_PUBLIC_APP_ENV=development
 ## 🚢 Deployment
 
 ### Vercel (Recommended)
+
 ```bash
 # Deploy to Vercel
 vercel --prod
 ```
 
 ### Docker
+
 ```dockerfile
 # Multi-stage build for production
 FROM node:20-alpine AS builder
@@ -207,6 +232,7 @@ FROM node:20-alpine AS builder
 ```
 
 ### Environment Variables
+
 - Production environment setup
 - API endpoints configuration
 - Feature flags management
@@ -214,6 +240,7 @@ FROM node:20-alpine AS builder
 ## 🤝 Contributing
 
 ### Development Guidelines
+
 1. Follow TypeScript best practices
 2. Write meaningful commit messages
 3. Add proper type definitions
@@ -221,6 +248,7 @@ FROM node:20-alpine AS builder
 5. Update documentation as needed
 
 ### Code Review Process
+
 - Feature branch workflow
 - Pull request templates
 - Automated testing

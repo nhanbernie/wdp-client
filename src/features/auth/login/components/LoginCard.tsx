@@ -35,8 +35,8 @@ export const LoginCard = () => {
         <h2 className="text-2xl font-bold mb-2" style={{ color: colors.text }}>
           Sign In
         </h2>
-        <p style={{ color: colors.text + "80" }}>
-          Welcome back to Viral Predictor!
+        <p style={{ color: colors.textSecondary }}>
+          Welcome back to WDP Materials!
         </p>
       </div>
 
@@ -44,21 +44,20 @@ export const LoginCard = () => {
 
       {/* Demo Credentials */}
       <div
-        className="mt-6 p-4 rounded-lg"
+        className="mt-6 p-4 rounded-lg border"
         style={{
-          backgroundColor: colors.cardBackground + "50",
+          backgroundColor: colors.cardBackgroundSecondary,
           borderColor: colors.border,
-          border: `1px solid ${colors.border}`,
         }}
       >
         <p className="text-xs mb-2 font-medium" style={{ color: colors.text }}>
           Demo credentials:
         </p>
-        <p className="text-xs" style={{ color: colors.text + "80" }}>
-          Email: admin@example.com
+        <p className="text-xs" style={{ color: colors.textSecondary }}>
+          Email: admin@wdpmaterials.com
         </p>
-        <p className="text-xs" style={{ color: colors.text + "80" }}>
-          Password: password
+        <p className="text-xs" style={{ color: colors.textSecondary }}>
+          Password: password123
         </p>
       </div>
     </motion.div>

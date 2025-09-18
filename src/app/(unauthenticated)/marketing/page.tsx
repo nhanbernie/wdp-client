@@ -10,37 +10,37 @@ const MarketingPage = () => {
   const features = [
     {
       icon: <Zap className="w-6 h-6" />,
-      title: "AI-Powered Predictions",
+      title: "Premium Quality Materials",
       description:
-        "Advanced machine learning algorithms predict content performance before you publish",
+        "High-grade construction materials sourced from trusted manufacturers worldwide",
     },
     {
       icon: <Users className="w-6 h-6" />,
-      title: "Audience Insights",
+      title: "Expert Consultation",
       description:
-        "Deep understanding of your target audience behavior and preferences",
+        "Professional guidance from experienced construction material specialists",
     },
     {
       icon: <Shield className="w-6 h-6" />,
-      title: "Real-time Analytics",
+      title: "Quality Assurance",
       description:
-        "Monitor and optimize your content performance with live data insights",
+        "Rigorous testing and certification ensuring all materials meet industry standards",
     },
   ];
 
   const testimonials = [
     {
-      name: "Sarah Chen",
-      role: "Content Creator, 2M followers",
+      name: "David Rodriguez",
+      role: "Construction Manager, BuildCorp",
       content:
-        "This platform helped me predict which posts would go viral. My engagement increased by 300%!",
+        "WDP Materials has been our go-to supplier for 5 years. Their quality and reliability are unmatched.",
       rating: 5,
     },
     {
-      name: "Marcus Johnson",
-      role: "Marketing Director",
+      name: "Sarah Thompson",
+      role: "Architect, Thompson & Associates",
       content:
-        "The AI predictions are incredibly accurate. We've saved thousands on failed campaigns.",
+        "Excellent materials and professional service. They always deliver on time and within budget.",
       rating: 5,
     },
   ];
@@ -161,7 +161,7 @@ const MarketingPage = () => {
                 className="text-5xl md:text-7xl font-bold mb-8 leading-tight"
                 style={{ color: colors.text }}
               >
-                Imagine seeing your content go{" "}
+                Building the future with{" "}
                 <span
                   className="bg-clip-text text-transparent"
                   style={{
@@ -170,9 +170,9 @@ const MarketingPage = () => {
                     backgroundClip: "text",
                   }}
                 >
-                  viral
+                  premium
                 </span>{" "}
-                before you launch it
+                construction materials
               </motion.h1>
 
               <motion.p
@@ -182,8 +182,8 @@ const MarketingPage = () => {
                 className="text-xl mb-10 max-w-2xl leading-relaxed"
                 style={{ color: colors.textSecondary }}
               >
-                Predict content performance with AI-powered analytics. Test,
-                optimize, and launch with confidence.
+                From concrete and steel to specialized building supplies.
+                Quality materials for every construction project.{" "}
               </motion.p>
 
               <motion.div
@@ -206,7 +206,7 @@ const MarketingPage = () => {
                     e.currentTarget.style.transform = "translateY(0)";
                   }}
                 >
-                  Get Started
+                  Browse Catalog
                   <ArrowRight className="ml-2 w-5 h-5" />
                 </Link>
                 <button
@@ -224,7 +224,7 @@ const MarketingPage = () => {
                   }}
                 >
                   <Play className="mr-2 w-5 h-5" />
-                  Watch Demo
+                  Request Quote
                 </button>
               </motion.div>
             </div>
@@ -267,14 +267,14 @@ const MarketingPage = () => {
               className="text-3xl md:text-4xl font-bold mb-4"
               style={{ color: colors.text }}
             >
-              Why Choose Our Platform?
+              Why Choose WDP Materials?
             </h2>
             <p
               className="text-lg max-w-2xl mx-auto"
               style={{ color: colors.textSecondary }}
             >
-              Advanced AI-powered features to predict and optimize your content
-              performance
+              Premium construction materials and exceptional service for your
+              building projects
             </p>
           </div>
 
@@ -335,7 +335,7 @@ const MarketingPage = () => {
               className="text-3xl md:text-4xl font-bold mb-4"
               style={{ color: colors.text }}
             >
-              What Our Users Say
+              What Our Clients Say
             </h2>
           </div>
 
@@ -398,13 +398,13 @@ const MarketingPage = () => {
               className="text-3xl md:text-4xl font-bold mb-4"
               style={{ color: colors.background }}
             >
-              Ready to predict your viral content?
+              Ready to start your construction project?
             </h2>
             <p
               className="text-xl mb-8 max-w-2xl mx-auto"
               style={{ color: colors.background + "e6" }}
             >
-              Join thousands of creators who trust our AI-powered predictions
+              Join thousands of builders who trust our premium materials
             </p>
             <Link
               href="/login"
@@ -422,7 +422,7 @@ const MarketingPage = () => {
                 e.currentTarget.style.boxShadow = "none";
               }}
             >
-              Start Free Trial
+              Get Quote Now
               <ArrowRight className="ml-2 w-5 h-5" />
             </Link>
           </motion.div>

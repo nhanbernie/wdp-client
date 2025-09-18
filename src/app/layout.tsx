@@ -14,8 +14,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "WPD",
-  description: "Design by me",
+  title: "WDP Materials - Premium Construction Materials & Building Supplies",
+  description:
+    "Your trusted partner for premium construction materials and building supplies. Quality materials for every construction project.",
 };
 
 export default function RootLayout({

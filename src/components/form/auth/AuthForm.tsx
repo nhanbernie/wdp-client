@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import { useFormContext } from "react-hook-form";
 import validatorSchema from "@/lib/authValidator";
 import { INPUT_FIELDS, BUTTON_TITLES } from "@/constants/form.constant";
+import { useTheme } from "@/contexts/ThemeContext";
 
 export interface IAuthFormProps {
   type: "login" | "register" | "forgotPassword" | "verifyOTP" | "resetPassword";
@@ -23,6 +24,7 @@ const AuthForm = ({
   token,
 }: IAuthFormProps) => {
   const router = useRouter();
+  const { colors } = useTheme();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
 
@@ -97,22 +99,32 @@ const AuthForm = ({
               >
                 <div
                   className={cn(
-                    "w-5 h-5 border border-gray-300 rounded mr-2 flex items-center justify-center",
-                    rememberMe && "bg-primary border-primary"
+                    "w-5 h-5 border rounded mr-2 flex items-center justify-center transition-colors",
+                    rememberMe ? "border-transparent" : "border-gray-300"
                   )}
+                  style={{
+                    backgroundColor: rememberMe ? colors.accent : "transparent",
+                    borderColor: rememberMe ? colors.accent : colors.border,
+                  }}
                 >
                   {rememberMe && (
                     <div className="w-2 h-2 bg-white rounded-full" />
                   )}
                 </div>
-                <span className="text-gray-700 text-sm">Ghi nhớ đăng nhập</span>
+                <span
+                  className="text-sm"
+                  style={{ color: colors.textSecondary }}
+                >
+                  Ghi nhớ đăng nhập
+                </span>
               </button>
 
               <div className="flex justify-end">
                 <button
                   type="button"
                   onClick={() => router.push("/forgot-password")}
-                  className="text-primary hover:text-primary/80 text-sm"
+                  className="text-sm hover:opacity-80 transition-opacity"
+                  style={{ color: colors.accent }}
                 >
                   Quên mật khẩu?
                 </button>
@@ -124,11 +136,17 @@ const AuthForm = ({
           <button
             type="submit"
             className={cn(
-              "w-full py-4 px-6 rounded-xl font-semibold text-base transition-all duration-200",
+              "w-full py-4 px-6 rounded-xl font-semibold text-base transition-all duration-200 text-white shadow-lg hover:shadow-xl",
               isValid && !isSubmitting
-                ? "bg-primary hover:bg-primary/90 text-white shadow-lg hover:shadow-xl"
-                : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                ? "hover:opacity-90 transform hover:scale-[1.02]"
+                : "opacity-50 cursor-not-allowed"
             )}
+            style={{
+              background:
+                isValid && !isSubmitting
+                  ? `linear-gradient(135deg, ${colors.accent}, ${colors.accentSecondary})`
+                  : colors.border,
+            }}
             disabled={!isValid || isSubmitting}
           >
             {isSubmitting ? "Đang xử lý..." : BUTTON_TITLES[type]}
@@ -138,12 +156,13 @@ const AuthForm = ({
         {/* Footer text for login */}
         {type === "login" && (
           <div className="mt-4 text-center">
-            <span className="text-gray-600 text-sm">
+            <span className="text-sm" style={{ color: colors.textSecondary }}>
               Chưa có tài khoản?
               <button
                 type="button"
                 onClick={() => router.push("/register")}
-                className="text-primary hover:text-primary/80 font-medium ml-1"
+                className="font-medium ml-1 hover:opacity-80 transition-opacity"
+                style={{ color: colors.accent }}
               >
                 Đăng ký
               </button>
@@ -154,12 +173,30 @@ const AuthForm = ({
         {/* Footer text for register */}
         {type === "register" && (
           <div className="mt-4 text-center">
-            <span className="text-gray-600 text-sm">
+            <span className="text-sm" style={{ color: colors.textSecondary }}>
               Đã có tài khoản?
               <button
                 type="button"
                 onClick={() => router.push("/login")}
-                className="text-primary hover:text-primary/80 font-medium ml-1"
+                className="font-medium ml-1 hover:opacity-80 transition-opacity"
+                style={{ color: colors.accent }}
+              >
+                Đăng nhập
+              </button>
+            </span>
+          </div>
+        )}
+
+        {/* Footer text for forgot password */}
+        {type === "forgotPassword" && (
+          <div className="mt-4 text-center">
+            <span className="text-sm" style={{ color: colors.textSecondary }}>
+              Nhớ mật khẩu?
+              <button
+                type="button"
+                onClick={() => router.push("/login")}
+                className="font-medium ml-1 hover:opacity-80 transition-opacity"
+                style={{ color: colors.accent }}
               >
                 Đăng nhập
               </button>

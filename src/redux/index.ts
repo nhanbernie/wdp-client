@@ -14,3 +14,4 @@ export * from "./slices/auth.slice";
 // Services
 export * from "../services/auth";
 export * from "../services/user";
+export * from "../services/materials";
