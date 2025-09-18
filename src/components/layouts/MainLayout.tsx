@@ -1,6 +1,8 @@
+"use client";
+
 import React from "react";
 import Header from "./Header";
-import Footer from "./Footer";
+// import Footer from "./Footer";
 
 interface MainLayoutProps {
   children: React.ReactNode;
@@ -12,7 +14,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, footer }) => {
     <div className="min-h-screen">
       <Header />
       <main className="flex-1">{children}</main>
-      {footer && <Footer />}
+      {/* {footer && <Footer />} */}
     </div>
   );
 };

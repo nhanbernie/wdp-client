@@ -5,7 +5,7 @@ import { Search, MessageSquare, Menu, Globe } from "lucide-react";
 import UserMenu from "./components/UserMenu";
 import MobileMenu from "./components/MobileMenu";
 import Logo from "../common/Logo";
-import { navigationItems } from "@/constants/navigate.constant";
+import { navigationItems } from "@/common/constants/navigate.constant";
 import Navigation from "./components/Navigation";
 import { motion } from "motion/react";
 // import { ThemeToggle } from "@/components/common/";
