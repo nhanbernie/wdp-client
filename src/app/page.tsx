@@ -1,6 +1,13 @@
-import { redirect } from "next/navigation";
+import Categories from "@/components/Categories";
+import Features from "@/components/Features";
+import Hero from "@/components/Hero";
 
 export default function Home() {
-  // Redirect to marketing page
-  redirect("/marketing");
+  return (
+    <div>
+      <Hero />
+      <Categories />
+      <Features />
+    </div>
+  );
 }
