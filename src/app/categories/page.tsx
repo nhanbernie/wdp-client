@@ -200,7 +200,7 @@ export default function CategoriesPage() {
                       color: colors.text,
                     }}
                   >
-                    Tìm kiếm: "{searchQuery}"
+                    Tìm kiếm: {searchQuery}
                   </Badge>
                 )}
               </div>
