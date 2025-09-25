@@ -1,57 +1,83 @@
 @import "tailwindcss";
 
 :root {
+  /* Essential theme variables */
   --background: #ffffff;
   --foreground: #1f2937;
   --header-blur: #ffffff80;
-  --hover-background: #f3f4f6;
-  --hover-text: #1f2937;
   --card-background: #ffffff;
   --border: #e5e7eb;
-  --accent: #3b82f6;
-}
 
-:root.dark {
-  --background: #060606;
-  --background-gradient: linear-gradient(
-    135deg,
-    #0a0a0a 0%,
-    #1a1a2e 50%,
-    #16213e 100%
-  );
-  --foreground: #ffffff;
-  --text-secondary: #a1a1aa;
-  --header-blur: #0606061a;
-  --hover-background: #ddd;
-  --hover-text: #141414;
-  --card-background: #1a1a1a;
-  --card-background-secondary: #262626;
-  --border: #333333;
-  --accent: #8b5cf6;
-  --accent-secondary: #a855f7;
-  --success: #10b981;
+  /* Tailwind CSS variables */
+  --card: oklch(0.98 0 0);
+  --card-foreground: oklch(0.02 0 0);
+  --popover: oklch(0.98 0 0);
+  --popover-foreground: oklch(0.02 0 0);
+  --primary: oklch(0.65 0.15 35);
+  --primary-foreground: oklch(0.98 0 0);
+  --secondary: oklch(0.95 0 0);
+  --secondary-foreground: oklch(0.02 0 0);
+  --muted: oklch(0.96 0 0);
+  --muted-foreground: oklch(0.45 0 0);
+  --accent: #3b82f6;
+  --accent-foreground: oklch(0.98 0 0);
+  --destructive: oklch(0.577 0.245 27.325);
+  --destructive-foreground: oklch(0.98 0 0);
+  --input: oklch(0.98 0 0);
+  --ring: oklch(0.65 0.15 35);
+  --radius: 0.5rem;
+  
+  /* Custom colors for this project */
+  --success: #00C951; /* Green for completed status */
+  --primary-accent: #C55E45; /* Orange-red for progress indicators and ratings */
   --warning: #f59e0b;
   --error: #ef4444;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-background-gradient: var(--background-gradient);
-  --color-foreground: var(--foreground);
-  --color-text-secondary: var(--text-secondary);
-  --color-header-blur: var(--header-blur);
-  --color-hover-background: var(--hover-background);
-  --color-hover-text: var(--hover-text);
-  --color-card-background: var(--card-background);
-  --color-card-background-secondary: var(--card-background-secondary);
-  --color-border: var(--border);
-  --color-accent: var(--accent);
-  --color-accent-secondary: var(--accent-secondary);
-  --color-success: var(--success);
-  --color-warning: var(--warning);
-  --color-error: var(--error);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+:root.dark {
+  /* Dark theme essentials */
+  --background: #060606;
+  --foreground: #ffffff;
+  --header-blur: #0606061a;
+  --card-background: #1a1a1a;
+  --border: #333333;
+
+  /* Tailwind CSS dark theme variables */
+  --card: oklch(0.05 0 0);
+  --card-foreground: oklch(0.98 0 0);
+  --popover: oklch(0.05 0 0);
+  --popover-foreground: oklch(0.98 0 0);
+  --primary: oklch(0.65 0.15 35);
+  --primary-foreground: oklch(0.98 0 0);
+  --secondary: oklch(0.15 0 0);
+  --secondary-foreground: oklch(0.98 0 0);
+  --muted: oklch(0.1 0 0);
+  --muted-foreground: oklch(0.6 0 0);
+  --accent: #8b5cf6;
+  --accent-foreground: oklch(0.98 0 0);
+  --destructive: oklch(0.396 0.141 25.723);
+  --destructive-foreground: oklch(0.98 0 0);
+  --input: oklch(0.1 0 0);
+  --ring: oklch(0.65 0.15 35);
+  
+  /* Custom colors for dark theme */
+  --success: #00C951;
+  --primary-accent: #C55E45;
+  --warning: #f59e0b;
+  --error: #ef4444;
+}
+
+@layer base {
+  * {
+    border-color: var(--border);
+    outline-color: rgb(from var(--ring) r g b / 50%);
+  }
+
+  body {
+    background-color: var(--background);
+    color: var(--foreground);
+    font-family: Arial, Helvetica, sans-serif;
+  }
 }
 
 /* Custom backdrop blur utility */
@@ -59,8 +85,28 @@
   backdrop-filter: blur(27px);
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* Custom colors for different elements */
+.bg-success {
+  background-color: #00C951 !important;
+}
+
+.text-success {
+  color: #00C951 !important;
+}
+
+.bg-primary-accent {
+  background-color: #C55E45 !important;
+}
+
+.text-primary-accent {
+  color: #C55E45 !important;
+}
+
+/* Force delivery progress color */
+[data-radix-progress-indicator] {
+  background-color: #C55E45 !important;
+}
+
+.delivery-progress [data-radix-progress-indicator] {
+  background-color: #C55E45 !important;
 }
