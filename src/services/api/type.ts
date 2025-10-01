@@ -44,24 +44,28 @@ export interface LoginRequest {
 }
 
 export interface LoginResponse {
-  user: UserDto;
   accessToken: string;
   refreshToken: string;
-  expiresIn: number;
+  user: {
+    id: string;
+    email: string;
+    roles: string[];
+  };
 }
 
 export interface RegisterRequest {
-  name: string;
   email: string;
   password: string;
-  confirmPassword: string;
-  phone?: string;
-  role?: "user" | "supplier";
 }
 
 export interface RegisterResponse {
-  user: UserDto;
-  message: string;
+  accessToken: string;
+  refreshToken: string;
+  user: {
+    id: string;
+    email: string;
+    roles: string[];
+  };
 }
 
 export interface RefreshTokenRequest {

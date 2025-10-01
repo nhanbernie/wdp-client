@@ -22,9 +22,6 @@ const validatorSchema = {
       .required(ERROR_MESSAGES.requiredField),
   }),
   register: Yup.object().shape({
-    fullName: Yup.string()
-      .min(3, "Họ và tên phải có ít nhất 3 ký tự")
-      .required(ERROR_MESSAGES.requiredField),
     email: Yup.string().email(ERROR_MESSAGES.invalidEmail).required(ERROR_MESSAGES.requiredField),
     password: Yup.string()
       .matches(AUTH_PASSWORD, ERROR_MESSAGES.passwordComplexity)
