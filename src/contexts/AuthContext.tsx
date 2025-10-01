@@ -2,7 +2,11 @@
 
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useLoginMutation, useRegisterMutation, useProfileQuery } from "@/services/auth/auth.service";
+import {
+  useLoginMutation,
+  useRegisterMutation,
+  useProfileQuery,
+} from "@/services/auth/auth.service";
 import { StorageService } from "@/services/storage/secureStorage.service";
 
 // Types
@@ -18,9 +22,8 @@ export interface AuthContextType {
   user: User | null;
   isLoading: boolean;
   isAuthenticated: boolean;
-  login: (email: string, password: string) => Promise<void>;
   logout: () => void;
-  register: (email: string, password: string) => Promise<void>;
+  refreshUserProfile: () => Promise<void>;
 }
 
 // Create context
@@ -36,10 +39,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   const router = useRouter();
   const [loginMutation] = useLoginMutation();
   const [registerMutation] = useRegisterMutation();
-  const { data: profileData, refetch: refetchProfile } = useProfileQuery(undefined, {
-    skip: !shouldFetchProfile,
-  });
- 
+  const { data: profileData, refetch: refetchProfile } = useProfileQuery(
+    undefined,
+    {
+      skip: !shouldFetchProfile,
+    }
+  );
 
   // Check if user is authenticated on mount
   useEffect(() => {
@@ -50,13 +55,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   useEffect(() => {
     if (profileData?.success && profileData.data) {
       const { userId, email, roles } = profileData.data;
-      
+
       // Update user with profile data
       const updatedUser: User = {
         id: userId,
         email: email,
-        name: email.split('@')[0], // Use email prefix as name
-        role: roles.includes('admin') ? 'admin' : 'user',
+        name: email.split("@")[0], // Use email prefix as name
+        role: roles.includes("admin") ? "admin" : "user",
         avatar: undefined,
       };
 
@@ -91,34 +96,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   };
 
-  const login = async (email: string, password: string) => {
-    try {
-      setIsLoading(true);
-
-      // Call login API
-      const response = await loginMutation({ email, password }).unwrap();
-      
-      if (response.success && response.data) {
-        const { accessToken, refreshToken, user: userData } = response.data;
-        
-        // Store tokens
-        await StorageService.setTokenData({
-          access_token: accessToken,
-          refresh_token: refreshToken,
-          expires_in: 3600, // Default 1 hour
-        });
-
-        // Trigger profile fetch
-        setShouldFetchProfile(true);
-      } else {
-        throw new Error(response.message || "Login failed");
-      }
-    } catch (error: any) {
-      console.error("Login error:", error);
-      throw new Error(error.data?.message || error.message || "Login failed");
-    } finally {
-      setIsLoading(false);
-    }
+  // Method to refresh user profile data
+  const refreshUserProfile = async () => {
+    setShouldFetchProfile(true);
+    await refetchProfile();
   };
 
   const logout = async () => {
@@ -132,43 +113,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     router.push("/marketing");
   };
 
-  const register = async (email: string, password: string) => {
-    try {
-      setIsLoading(true);
-
-      // Call register API
-      const response = await registerMutation({ email, password }).unwrap();
-      
-      if (response.success && response.data) {
-        const { accessToken, refreshToken, user: userData } = response.data;
-        
-        // Store tokens
-        await StorageService.setTokenData({
-          access_token: accessToken,
-          refresh_token: refreshToken,
-          expires_in: 3600, // Default 1 hour
-        });
-
-        // Trigger profile fetch
-        setShouldFetchProfile(true);
-      } else {
-        throw new Error(response.message || "Registration failed");
-      }
-    } catch (error: any) {
-      console.error("Registration error:", error);
-      throw new Error(error.data?.message || error.message || "Registration failed");
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   const value: AuthContextType = {
     user,
     isLoading,
     isAuthenticated: !!user,
-    login,
     logout,
-    register,
+    refreshUserProfile,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
