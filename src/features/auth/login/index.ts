@@ -1,2 +1,2 @@
 export { LoginPage } from "./LoginPage";
-export { LoginCard } from "./components";
+export { useLoginSubmit } from "./hooks/useLoginSubmit";
