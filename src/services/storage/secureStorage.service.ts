@@ -29,16 +29,12 @@ export interface StoredUserData {
 class SecureStorageService {
   private isClient = typeof window !== "undefined";
 
-  // Generic storage methods
-  private setItem(key: string, value: string, persistent = false): void {
+  // Generic storage methods - Always use localStorage
+  private setItem(key: string, value: string, persistent = true): void {
     if (!this.isClient) return;
     
     try {
-      if (persistent) {
-        localStorage.setItem(key, value);
-      } else {
-        sessionStorage.setItem(key, value);
-      }
+      localStorage.setItem(key, value);
     } catch (error) {
       console.error(`Error setting ${key}:`, error);
     }
@@ -48,7 +44,7 @@ class SecureStorageService {
     if (!this.isClient) return null;
     
     try {
-      return localStorage.getItem(key) || sessionStorage.getItem(key);
+      return localStorage.getItem(key);
     } catch (error) {
       console.error(`Error getting ${key}:`, error);
       return null;
@@ -60,17 +56,16 @@ class SecureStorageService {
     
     try {
       localStorage.removeItem(key);
-      sessionStorage.removeItem(key);
     } catch (error) {
       console.error(`Error removing ${key}:`, error);
     }
   }
 
-  // Token management
-  async setTokenData(tokenData: TokenData, rememberMe = false): Promise<void> {
+  // Token management - Always use localStorage
+  async setTokenData(tokenData: TokenData, rememberMe = true): Promise<void> {
     try {
-      this.setItem(STORAGE_KEYS.ACCESS_TOKEN, tokenData.access_token, rememberMe);
-      this.setItem(STORAGE_KEYS.REFRESH_TOKEN, tokenData.refresh_token, rememberMe);
+      this.setItem(STORAGE_KEYS.ACCESS_TOKEN, tokenData.access_token, true);
+      this.setItem(STORAGE_KEYS.REFRESH_TOKEN, tokenData.refresh_token, true);
       this.setItem(STORAGE_KEYS.REMEMBER_ME, rememberMe.toString(), true);
     } catch (error) {
       console.error("Error setting token data:", error);
@@ -90,10 +85,10 @@ class SecureStorageService {
     return rememberMe === "true";
   }
 
-  // User data management
-  async setUserData(userData: StoredUserData, persistent = false): Promise<void> {
+  // User data management - Always use localStorage
+  async setUserData(userData: StoredUserData, persistent = true): Promise<void> {
     try {
-      this.setItem(STORAGE_KEYS.USER_DATA, JSON.stringify(userData), persistent);
+      this.setItem(STORAGE_KEYS.USER_DATA, JSON.stringify(userData), true);
     } catch (error) {
       console.error("Error setting user data:", error);
     }

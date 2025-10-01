@@ -3,20 +3,20 @@
 import React from "react";
 import { motion } from "motion/react";
 import { useTheme } from "@/contexts/ThemeContext";
+import { useAuth } from "@/contexts/AuthContext";
 import AuthForm from "@/components/form/auth/AuthForm";
 
 export default function RegisterPage() {
   const { colors } = useTheme();
+  const { register } = useAuth();
 
   const handleRegister = async (data: {
-    name: string;
     email: string;
     password: string;
     confirmPassword: string;
   }) => {
     try {
-      console.log("Register data:", data);
-      // TODO: Implement register logic with Redux
+      await register(data.email, data.password);
     } catch (error) {
       console.error("Register failed:", error);
       throw error;
