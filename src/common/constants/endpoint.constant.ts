@@ -1,6 +1,6 @@
 // API Configuration
 export const API_CONFIG = {
-  BASE_URL: process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api",
+  BASE_URL: process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000",
   TIMEOUT: 30000,
   RETRY_ATTEMPTS: 3,
 };
@@ -18,6 +18,7 @@ export const API_ENDPOINTS = {
     CHANGE_PASSWORD: "/auth/change-password",
     VERIFY_EMAIL: "/auth/verify-email",
     RESEND_VERIFICATION: "/auth/resend-verification",
+    PROFILE: "/auth/profile",
   },
 
   // User endpoints

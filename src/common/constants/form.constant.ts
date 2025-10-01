@@ -83,12 +83,6 @@ export const INPUT_FIELDS = {
   ],
   register: [
     {
-      name: "fullName",
-      type: "text" as const,
-      placeholder: "Họ và tên",
-      label: "Họ và tên",
-    },
-    {
       name: "email",
       type: "email" as const,
       placeholder: "Email",
