@@ -78,6 +78,20 @@ export interface RefreshTokenResponse {
   expiresIn: number;
 }
 
+export interface ExchangeCodeRequest {
+  authCode: string;
+}
+
+export interface ExchangeCodeResponse {
+  accessToken: string;
+  refreshToken: string;
+  user: {
+    id: string;
+    email: string;
+    roles: string[];
+  };
+}
+
 // OTP Types
 export interface CreateOtpRequest {
   email: string;

@@ -19,6 +19,7 @@ export const API_ENDPOINTS = {
     VERIFY_EMAIL: "/auth/verify-email",
     RESEND_VERIFICATION: "/auth/resend-verification",
     PROFILE: "/auth/profile",
+    EXCHANGE_CODE: "/auth/exchange/code",
   },
 
   // User endpoints
@@ -93,6 +94,7 @@ export const PUBLIC_ENDPOINTS = [
   API_ENDPOINTS.AUTH.RESET_PASSWORD,
   API_ENDPOINTS.AUTH.VERIFY_EMAIL,
   API_ENDPOINTS.AUTH.RESEND_VERIFICATION,
+  API_ENDPOINTS.AUTH.EXCHANGE_CODE,
   API_ENDPOINTS.OTP.CREATE,
   API_ENDPOINTS.OTP.VERIFY,
   API_ENDPOINTS.OTP.RESEND,
