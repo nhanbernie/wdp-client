@@ -19,6 +19,7 @@ export const API_ENDPOINTS = {
     VERIFY_EMAIL: "/auth/verify-email",
     RESEND_VERIFICATION: "/auth/resend-verification",
     PROFILE: "/auth/profile",
+    EXCHANGE_CODE: "/auth/exchange/code",
   },
 
   // User endpoints
