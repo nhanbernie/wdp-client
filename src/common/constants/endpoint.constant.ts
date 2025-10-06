@@ -82,6 +82,11 @@ export const API_ENDPOINTS = {
     SUPPLIERS: "/admin/suppliers",
     ANALYTICS: "/admin/analytics",
   },
+  PRODUCTS: {
+    LIST: "/products",
+    DETAILS: (id: string) => `/products/${id}`,
+    DETAILS_PATTERN: "/products/",
+  },
 };
 
 // Public endpoints that don't require authentication
@@ -103,6 +108,8 @@ export const PUBLIC_ENDPOINTS = [
   API_ENDPOINTS.SUPPLIERS.LIST,
   API_ENDPOINTS.SUPPLIERS.DETAILS,
   API_ENDPOINTS.SUPPLIERS.MATERIALS,
+  API_ENDPOINTS.PRODUCTS.LIST,
+  API_ENDPOINTS.PRODUCTS.DETAILS_PATTERN,
 ];
 
 // HTTP Status Codes

@@ -4,6 +4,7 @@ import { authApi } from "@/services/auth";
 import { userApi } from "@/services/user";
 import { materialsApi } from "@/services/materials";
 import { authReducer } from "./slices/auth.slice";
+import { productsApi } from "@/services/products";
 // import { apiErrorHandler } from "@/services/api/apiErrorHandler";
 
 export const store = configureStore({
@@ -14,6 +15,7 @@ export const store = configureStore({
     [authApi.reducerPath]: authApi.reducer,
     [userApi.reducerPath]: userApi.reducer,
     [materialsApi.reducerPath]: materialsApi.reducer,
+    [productsApi.reducerPath]: productsApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
@@ -24,7 +26,8 @@ export const store = configureStore({
       // Add RTK Query middleware
       authApi.middleware,
       userApi.middleware,
-      materialsApi.middleware
+      materialsApi.middleware,
+      productsApi.middleware
     ),
   devTools: process.env.NODE_ENV !== "production",
 });

@@ -1,5 +1,4 @@
 "use client";
-
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -9,22 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-
-const brands = [
-  { name: "Holcim", count: 234 },
-  { name: "VICEM", count: 189 },
-  { name: "Bosch", count: 156 },
-  { name: "Makita", count: 143 },
-  { name: "DeWalt", count: 98 },
-];
-
-const materials = [
-  { name: "Thép", count: 1234 },
-  { name: "Gỗ", count: 567 },
-  { name: "Nhựa", count: 345 },
-  { name: "Inox", count: 234 },
-  { name: "Nhôm", count: 123 },
-];
+import { brands, materials } from "../data/filters.data";
 
 export function SearchFilters() {
   const [priceRange, setPriceRange] = useState([0, 10000000]);
