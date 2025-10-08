@@ -4,6 +4,7 @@ import {
   loginEndpoint,
   registerEndpoint,
   refreshTokenEndpoint,
+  logoutEndpoint,
   profileEndpoint,
   exchangeCodeEndpoint,
   forgotPasswordEndpoint,
@@ -19,6 +20,7 @@ export const authApi = createApi({
     login: loginEndpoint(builder),
     register: registerEndpoint(builder),
     refreshToken: refreshTokenEndpoint(builder),
+    logout: logoutEndpoint(builder),
     profile: profileEndpoint(builder),
     exchangeCode: exchangeCodeEndpoint(builder),
     forgotPassword: forgotPasswordEndpoint(builder),
@@ -28,7 +30,6 @@ export const authApi = createApi({
     // createOtp: createOtpEndpoint(builder),
     // verifyOtp: verifyOtpEndpoint(builder),
     // changePassword: changePasswordEndpoint(builder),
-    // logout: logoutEndpoint(builder),
   }),
 });
 
@@ -36,6 +37,7 @@ export const {
   useLoginMutation,
   useRegisterMutation,
   useRefreshTokenMutation,
+  useLogoutMutation,
   useProfileQuery,
   useExchangeCodeMutation,
   useForgotPasswordMutation,

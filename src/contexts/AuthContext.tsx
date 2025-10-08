@@ -6,8 +6,10 @@ import {
   useLoginMutation,
   useRegisterMutation,
   useProfileQuery,
+  useLogoutMutation,
 } from "@/services/auth/auth.service";
 import { StorageService } from "@/services/storage/secureStorage.service";
+import { useToast } from "@/hooks/useToast";
 
 // Types
 export interface User {
@@ -39,6 +41,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   const router = useRouter();
   const [loginMutation] = useLoginMutation();
   const [registerMutation] = useRegisterMutation();
+  const [logoutMutation] = useLogoutMutation();
+  const toast = useToast();
   const { data: profileData, refetch: refetchProfile } = useProfileQuery(
     undefined,
     {
@@ -103,14 +107,34 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   };
 
   const logout = async () => {
-    // Clear storage
-    await StorageService.clearAuthData();
-
-    // Clear state
-    setUser(null);
-
-    // Redirect to marketing page
-    router.push("/marketing");
+    try {
+      // Get refresh token before clearing storage
+      const refreshToken = await StorageService.getRefreshToken();
+      
+      // Call logout API if refresh token exists
+      if (refreshToken) {
+        try {
+          await logoutMutation({ refreshToken }).unwrap();
+          toast.success("Đăng xuất thành công!", "Bạn đã đăng xuất khỏi hệ thống");
+        } catch (error) {
+          // Even if logout API fails, we still proceed with local logout
+          console.warn("Logout API call failed:", error);
+          toast.warning("Đăng xuất", "Đã đăng xuất khỏi thiết bị này");
+        }
+      } else {
+        toast.info("Đăng xuất", "Đã đăng xuất khỏi thiết bị này");
+      }
+    } catch (error) {
+      console.error("Error during logout:", error);
+      toast.error("Lỗi đăng xuất", "Đã xảy ra lỗi khi đăng xuất");
+    } finally {
+      // Always clear local storage and state
+      await StorageService.clearAuthData();
+      setUser(null);
+      
+      // Redirect to marketing page
+      router.push("/marketing");
+    }
   };
 
   const value: AuthContextType = {
