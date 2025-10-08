@@ -42,7 +42,7 @@ export const LoginPage = () => {
         <AuthForm type="login" onSubmit={handleLogin} />
 
         {/* Demo Credentials */}
-        <div
+        {/* <div
           className="mt-6 p-4 rounded-lg border"
           style={{
             backgroundColor: colors.cardBackgroundSecondary,
@@ -61,7 +61,7 @@ export const LoginPage = () => {
           <p className="text-xs" style={{ color: colors.textSecondary }}>
             Password: password123
           </p>
-        </div>
+        </div> */}
       </motion.div>
     </div>
   );
