@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { Header } from "@/components/ui/header";
 import { Footer } from "@/components/ui/footer";
@@ -22,9 +22,15 @@ import {
   MessageCircle,
   RotateCcw,
   Star,
+  Loader2,
 } from "lucide-react";
+import {
+  useGetOrderByIdQuery,
+  useCancelOrderMutation,
+} from "@/redux/slices/ordersApiSlice";
+import { OrderStatus } from "@/services/orders/types";
 
-// Mock orders database
+// Mock orders database (kept for fallback)
 const ordersDatabase = [
   {
     id: "AIC123456789",
@@ -268,13 +274,54 @@ const ordersDatabase = [
 
 export default function OrderDetailPage() {
   const params = useParams();
+  const router = useRouter();
   const [showReviewModal, setShowReviewModal] = useState(false);
 
-  // Find order by ID
-  const orderData = ordersDatabase.find((order) => order.id === params.id);
+  // Fetch order by ID from API
+  const {
+    data: orderResponse,
+    isLoading,
+    error,
+  } = useGetOrderByIdQuery(params.id as string);
+  const [cancelOrder, { isLoading: isCancelling }] = useCancelOrderMutation();
 
-  // If order not found, show 404
-  if (!orderData) {
+  // Get order data from response
+  const orderData = orderResponse?.data;
+
+  // Handle cancel order
+  const handleCancelOrder = async () => {
+    if (!orderData) return;
+    if (!confirm("Bạn có chắc chắn muốn hủy đơn hàng này?")) return;
+
+    try {
+      await cancelOrder(orderData.id).unwrap();
+      alert("Hủy đơn hàng thành công");
+      router.push("/orders");
+    } catch (err: any) {
+      alert(err?.data?.message || "Không thể hủy đơn hàng");
+    }
+  };
+
+  // Loading state
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Header />
+        <div className="container mx-auto px-4 py-16 flex items-center justify-center">
+          <div className="text-center">
+            <Loader2 className="h-12 w-12 animate-spin mx-auto mb-4 text-primary" />
+            <p className="text-muted-foreground">
+              Đang tải thông tin đơn hàng...
+            </p>
+          </div>
+        </div>
+        <Footer />
+      </div>
+    );
+  }
+
+  // Error state
+  if (error || !orderData) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
@@ -292,15 +339,14 @@ export default function OrderDetailPage() {
     );
   }
 
-  const getProgressValue = () => {
-    const completedSteps = orderData.timeline.filter(
-      (step) => step.completed
-    ).length;
-    return (completedSteps / orderData.timeline.length) * 100;
-  };
-
   const getStatusConfig = (status: string) => {
     const statusMap = {
+      pending: {
+        label: "Đang chờ xử lý",
+        badgeClass: "bg-gray-500 text-white",
+        message: "Đơn hàng đang chờ xác nhận",
+        icon: Clock,
+      },
       processing: {
         label: "Đang xử lý",
         badgeClass: "bg-yellow-500 text-white",
@@ -333,8 +379,14 @@ export default function OrderDetailPage() {
         message: "Đơn hàng đã được hủy",
         icon: Clock,
       },
+      refunded: {
+        label: "Đã hoàn tiền",
+        badgeClass: "bg-purple-500 text-white",
+        message: "Đơn hàng đã được hoàn tiền",
+        icon: RotateCcw,
+      },
     };
-    return statusMap[status as keyof typeof statusMap] || statusMap.processing;
+    return statusMap[status as keyof typeof statusMap] || statusMap.pending;
   };
 
   const statusConfig = getStatusConfig(orderData.status);
@@ -354,23 +406,41 @@ export default function OrderDetailPage() {
                   Quay lại
                 </Link>
               </Button>
-              <h1 className="text-3xl font-bold">Đơn hàng #{orderData.id}</h1>
+              <h1 className="text-3xl font-bold">
+                Đơn hàng #{orderData.orderNumber}
+              </h1>
             </div>
             <p className="text-muted-foreground">
-              Đặt ngày {new Date(orderData.date).toLocaleDateString("vi-VN")} •
-              Tổng tiền:{" "}
+              Đặt ngày{" "}
+              {new Date(orderData.createdAt).toLocaleDateString("vi-VN")} • Tổng
+              tiền:{" "}
               <span className="font-semibold text-primary">
-                {orderData.total.toLocaleString("vi-VN")} ₫
+                {Number(orderData.totalAmount).toLocaleString("vi-VN")} ₫
               </span>
             </p>
           </div>
 
           <div className="flex items-center space-x-2">
+            {(orderData.status === OrderStatus.PENDING ||
+              orderData.status === OrderStatus.PROCESSING) && (
+              <Button
+                variant="destructive"
+                onClick={handleCancelOrder}
+                disabled={isCancelling}
+              >
+                {isCancelling ? (
+                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                ) : (
+                  <Clock className="h-4 w-4 mr-2" />
+                )}
+                Hủy đơn hàng
+              </Button>
+            )}
             <Button variant="outline">
               <Download className="h-4 w-4 mr-2" />
               Tải hóa đơn
             </Button>
-            {orderData.status === "delivered" && (
+            {orderData.status === OrderStatus.DELIVERED && (
               <Button className="bg-primary-accent hover:bg-primary-accent/90 text-white">
                 <Star className="h-4 w-4 mr-2" />
                 Đánh giá
@@ -401,55 +471,53 @@ export default function OrderDetailPage() {
                   </span>
                 </div>
 
-                <div className="space-y-2">
-                  <div className="flex justify-between text-sm">
-                    <span>Tiến độ giao hàng</span>
-                    <span>{getProgressValue()}%</span>
-                  </div>
-                  <Progress
-                    value={getProgressValue()}
-                    variant="delivery"
-                    className="h-2 delivery-progress"
-                  />
-                </div>
+                <Separator />
 
-                <div className="space-y-4">
-                  {orderData.timeline.map((step, index) => (
-                    <div key={index} className="flex items-start space-x-4">
-                      <div
-                        className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                          step.completed
-                            ? "bg-primary-accent text-white"
-                            : "bg-muted text-muted-foreground"
-                        }`}
-                      >
-                        {step.completed ? (
-                          <CheckCircle className="h-4 w-4" />
-                        ) : (
-                          <Clock className="h-4 w-4" />
-                        )}
-                      </div>
-                      <div className="flex-1">
-                        <h4
-                          className={`font-medium ${
-                            step.completed
-                              ? "text-foreground"
-                              : "text-muted-foreground"
-                          }`}
-                        >
-                          {step.title}
-                        </h4>
-                        <p className="text-sm text-muted-foreground">
-                          {step.description}
-                        </p>
-                        {step.completed && step.date && (
-                          <p className="text-xs text-muted-foreground mt-1">
-                            {new Date(step.date).toLocaleString("vi-VN")}
-                          </p>
-                        )}
-                      </div>
+                <div className="space-y-3 text-sm">
+                  {orderData.trackingNumber && (
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Mã vận đơn:</span>
+                      <span className="font-mono font-medium">
+                        {orderData.trackingNumber}
+                      </span>
                     </div>
-                  ))}
+                  )}
+                  {orderData.estimatedDelivery && (
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">
+                        Dự kiến giao:
+                      </span>
+                      <span>
+                        {new Date(
+                          orderData.estimatedDelivery
+                        ).toLocaleDateString("vi-VN")}
+                      </span>
+                    </div>
+                  )}
+                  {orderData.actualDelivery && (
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Đã giao:</span>
+                      <span>
+                        {new Date(orderData.actualDelivery).toLocaleDateString(
+                          "vi-VN"
+                        )}
+                      </span>
+                    </div>
+                  )}
+                  {orderData.notes && (
+                    <div className="pt-2">
+                      <p className="text-muted-foreground mb-1">Ghi chú:</p>
+                      <p className="text-sm">{orderData.notes}</p>
+                    </div>
+                  )}
+                  {orderData.customerNotes && (
+                    <div className="pt-2">
+                      <p className="text-muted-foreground mb-1">
+                        Ghi chú của bạn:
+                      </p>
+                      <p className="text-sm">{orderData.customerNotes}</p>
+                    </div>
+                  )}
                 </div>
               </CardContent>
             </Card>
@@ -467,26 +535,32 @@ export default function OrderDetailPage() {
                       className="flex items-center space-x-4 p-4 border border-border rounded-lg"
                     >
                       <img
-                        src={item.image || "/placeholder.svg"}
-                        alt={item.name}
+                        src={item.thumbnail || "/placeholder.svg"}
+                        alt={item.productName}
                         className="w-16 h-16 rounded-lg object-cover"
                       />
                       <div className="flex-1">
-                        <h4 className="font-semibold">{item.name}</h4>
-                        <p className="text-sm text-muted-foreground">
-                          {item.brand}
-                        </p>
+                        <h4 className="font-semibold">{item.productName}</h4>
+                        {item.variantName && (
+                          <p className="text-sm text-muted-foreground">
+                            {item.variantName}
+                          </p>
+                        )}
+                        {item.sku && (
+                          <p className="text-xs text-muted-foreground">
+                            SKU: {item.sku}
+                          </p>
+                        )}
                         <p className="text-sm text-muted-foreground">
                           Số lượng: {item.quantity}
                         </p>
                       </div>
                       <div className="text-right">
                         <p className="font-semibold">
-                          {(item.price * item.quantity).toLocaleString("vi-VN")}{" "}
-                          ₫
+                          {Number(item.totalPrice).toLocaleString("vi-VN")} ₫
                         </p>
                         <p className="text-sm text-muted-foreground">
-                          {item.price.toLocaleString("vi-VN")} ₫/cái
+                          {Number(item.unitPrice).toLocaleString("vi-VN")} ₫/cái
                         </p>
                       </div>
                     </div>
@@ -498,17 +572,25 @@ export default function OrderDetailPage() {
                 <div className="space-y-2">
                   <div className="flex justify-between">
                     <span>Tạm tính:</span>
-                    <span>{orderData.subtotal.toLocaleString("vi-VN")} ₫</span>
+                    <span>
+                      {Number(orderData.subtotal).toLocaleString("vi-VN")} ₫
+                    </span>
                   </div>
                   <div className="flex justify-between">
                     <span>Phí vận chuyển:</span>
-                    <span>{orderData.shipping.toLocaleString("vi-VN")} ₫</span>
+                    <span>
+                      {Number(orderData.shippingFee).toLocaleString("vi-VN")} ₫
+                    </span>
                   </div>
-                  {orderData.discount > 0 && (
+                  {Number(orderData.discountAmount) > 0 && (
                     <div className="flex justify-between text-success">
                       <span>Giảm giá:</span>
                       <span>
-                        -{orderData.discount.toLocaleString("vi-VN")} ₫
+                        -
+                        {Number(orderData.discountAmount).toLocaleString(
+                          "vi-VN"
+                        )}{" "}
+                        ₫
                       </span>
                     </div>
                   )}
@@ -516,7 +598,7 @@ export default function OrderDetailPage() {
                   <div className="flex justify-between text-lg font-bold">
                     <span>Tổng cộng:</span>
                     <span className="text-primary">
-                      {orderData.total.toLocaleString("vi-VN")} ₫
+                      {Number(orderData.totalAmount).toLocaleString("vi-VN")} ₫
                     </span>
                   </div>
                 </div>
@@ -537,13 +619,17 @@ export default function OrderDetailPage() {
               <CardContent className="space-y-4">
                 <div>
                   <h4 className="font-medium mb-2">Người nhận</h4>
-                  <p className="text-sm">{orderData.shippingAddress.name}</p>
+                  <p className="text-sm">{orderData.shippingName}</p>
                 </div>
 
                 <div>
                   <h4 className="font-medium mb-2">Địa chỉ</h4>
                   <p className="text-sm text-muted-foreground">
-                    {orderData.shippingAddress.address}
+                    {orderData.shippingAddress}
+                    {orderData.shippingWard && `, ${orderData.shippingWard}`}
+                    {orderData.shippingDistrict &&
+                      `, ${orderData.shippingDistrict}`}
+                    {orderData.shippingCity && `, ${orderData.shippingCity}`}
                   </p>
                 </div>
 
@@ -554,16 +640,13 @@ export default function OrderDetailPage() {
                       Điện thoại
                     </h4>
                     <p className="text-sm text-muted-foreground">
-                      {orderData.shippingAddress.phone}
+                      {orderData.shippingPhone}
                     </p>
                   </div>
                   <div>
-                    <h4 className="font-medium mb-2 flex items-center">
-                      <Mail className="h-4 w-4 mr-1" />
-                      Email
-                    </h4>
-                    <p className="text-sm text-muted-foreground">
-                      {orderData.shippingAddress.email}
+                    <h4 className="font-medium mb-2">Phương thức thanh toán</h4>
+                    <p className="text-sm text-muted-foreground uppercase">
+                      {orderData.paymentMethod}
                     </p>
                   </div>
                 </div>

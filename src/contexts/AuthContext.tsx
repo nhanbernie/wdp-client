@@ -70,11 +70,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       setShouldFetchProfile(false); // Reset flag
 
       // Redirect based on role after profile is loaded
-      if (updatedUser.role === "admin") {
-        router.push("/admin");
-      } else {
-        router.push("/marketing");
-      }
+      // if (updatedUser.role === "admin") {
+      //   router.push("/admin");
+      // }
+      // } else {
+      //   router.push("/marketing");
+      // }
     }
   }, [profileData, router]);
 
