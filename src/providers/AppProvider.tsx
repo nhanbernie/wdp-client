@@ -4,7 +4,7 @@ import { store } from "@/redux";
 import { Provider } from "react-redux";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { ThemeProvider } from "@/contexts/ThemeContext";
-// import { Toaster } from "@/components/ui/toaster";
+import { Toaster } from "sonner";
 
 interface AppProviderProps {
   children: React.ReactNode;
@@ -16,7 +16,13 @@ export default function AppProvider({ children }: AppProviderProps) {
       <ThemeProvider>
         <AuthProvider>
           {children}
-          {/* <Toaster /> */}
+          <Toaster 
+            position="top-right"
+            expand={true}
+            richColors={true}
+            closeButton={true}
+            duration={4000}
+          />
         </AuthProvider>
       </ThemeProvider>
     </Provider>

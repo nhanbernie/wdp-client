@@ -6,6 +6,9 @@ import {
   refreshTokenEndpoint,
   profileEndpoint,
   exchangeCodeEndpoint,
+  forgotPasswordEndpoint,
+  verifyResetTokenEndpoint,
+  resetPasswordEndpoint,
 } from "./endpoints/index";
 
 export const authApi = createApi({
@@ -18,11 +21,12 @@ export const authApi = createApi({
     refreshToken: refreshTokenEndpoint(builder),
     profile: profileEndpoint(builder),
     exchangeCode: exchangeCodeEndpoint(builder),
+    forgotPassword: forgotPasswordEndpoint(builder),
+    verifyResetToken: verifyResetTokenEndpoint(builder),
+    resetPassword: resetPasswordEndpoint(builder),
     // TODO: Implement these endpoints when needed
     // createOtp: createOtpEndpoint(builder),
     // verifyOtp: verifyOtpEndpoint(builder),
-    // forgotPassword: forgotPasswordEndpoint(builder),
-    // resetPassword: resetPasswordEndpoint(builder),
     // changePassword: changePasswordEndpoint(builder),
     // logout: logoutEndpoint(builder),
   }),
@@ -34,4 +38,7 @@ export const {
   useRefreshTokenMutation,
   useProfileQuery,
   useExchangeCodeMutation,
+  useForgotPasswordMutation,
+  useVerifyResetTokenQuery,
+  useResetPasswordMutation,
 } = authApi;
