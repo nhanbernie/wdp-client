@@ -1,54 +1,11 @@
 "use client";
-
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
 import { ChevronDown, ChevronRight } from "lucide-react";
-
-const categories = [
-  {
-    name: "Xi măng & Vữa",
-    count: 2450,
-    subcategories: [
-      "Xi măng Portland",
-      "Vữa khô",
-      "Vữa chống thấm",
-      "Keo dán gạch",
-    ],
-  },
-  {
-    name: "Đinh, Vít & Bu lông",
-    count: 5230,
-    subcategories: ["Đinh thép", "Vít gỗ", "Bu lông inox", "Đinh bắn"],
-  },
-  {
-    name: "Dụng cụ điện",
-    count: 1890,
-    subcategories: ["Máy khoan", "Máy cắt", "Máy mài", "Máy hàn"],
-  },
-  {
-    name: "Máy móc xây dựng",
-    count: 890,
-    subcategories: [
-      "Máy trộn bê tông",
-      "Máy nén khí",
-      "Máy phát điện",
-      "Cần cẩu",
-    ],
-  },
-  {
-    name: "Dụng cụ cầm tay",
-    count: 3120,
-    subcategories: ["Búa", "Tua vít", "Cưa", "Kìm"],
-  },
-  {
-    name: "Sơn & Hoàn thiện",
-    count: 1560,
-    subcategories: ["Sơn nước", "Sơn dầu", "Chất chống thấm", "Keo silicon"],
-  },
-];
+import { categories } from "../data/categories.data";
 
 export function CategoryFilter() {
   const [expandedCategories, setExpandedCategories] = useState<string[]>([]);
@@ -84,13 +41,7 @@ export function CategoryFilter() {
           const selected = selectedCategories.includes(category.name);
 
           return (
-            <motion.div
-              key={category.name}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.25 }}
-              className="py-3"
-            >
+            <motion.div key={category.name} className="py-3">
               {/* Category row */}
               <motion.div
                 whileHover={{ scale: 1.01 }}

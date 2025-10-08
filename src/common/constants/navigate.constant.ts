@@ -12,6 +12,7 @@ export const navigationItems: NavItem[] = [
   },
   { label: "Features", href: "/features" },
   { label: "Use Cases", href: "/use-cases" },
+  { label: "Categories", href: "/categories" },
 ];
 
 export const navigateMarketItems: NavItem[] = [
