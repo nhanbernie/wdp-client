@@ -1,6 +1,7 @@
 export { loginEndpoint } from "./login";
 export { registerEndpoint } from "./register";
 export { refreshTokenEndpoint } from "./refreshToken";
+export { logoutEndpoint } from "./logout";
 export { profileEndpoint } from "./profile";
 export { exchangeCodeEndpoint } from "./exchangeCode";
 export { forgotPasswordEndpoint } from "./forgotPassword";
