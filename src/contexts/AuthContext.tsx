@@ -16,7 +16,7 @@ export interface User {
   email: string;
   name: string;
   avatar?: string;
-  role: "admin" | "user";
+  role: "admin" | "user" | "vendor";
 }
 
 export interface AuthContextType {
@@ -57,21 +57,36 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     if (profileData?.success && profileData.data) {
       const { userId, email, roles } = profileData.data;
 
+      // Determine user role based on roles array
+      let userRole: "admin" | "user" | "vendor" = "user";
+      if (roles.includes("admin")) {
+        userRole = "admin";
+      } else if (roles.includes("vendor")) {
+        userRole = "vendor";
+      }
+
       const updatedUser: User = {
         id: userId,
         email: email,
         name: email.split("@")[0],
-        role: roles.includes("admin") ? "admin" : "user",
+        role: userRole,
         avatar: undefined,
       };
 
       setUser(updatedUser);
       setShouldFetchProfile(false);
 
+      // Redirect based on role
       if (updatedUser.role === "admin") {
         router.push("/admin");
+      } else if (updatedUser.role === "vendor") {
+        router.push("/vendor");
       } else {
-        // router.push("/marketing");
+        // Regular user - redirect to categories or stay on current page
+        const currentPath = window.location.pathname;
+        if (currentPath === "/marketing" || currentPath === "/") {
+          router.push("/categories");
+        }
       }
     }
   }, [profileData, router]);
