@@ -1,4 +1,4 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
 :root {
   /* Essential theme variables */
@@ -6,7 +6,7 @@
   --foreground: #1f2937;
   --header-blur: #ffffff80;
   --card-background: #ffffff;
-  --border: #e5e7eb;
+  --border: #d1d5db;
 
   /* Tailwind CSS variables */
   --card: oklch(0.98 0 0);
@@ -36,16 +36,16 @@
 
 :root.dark {
   /* Dark theme essentials */
-  --background: #060606;
+  --background: #0f0f0f;
   --foreground: #ffffff;
-  --header-blur: #0606061a;
+  --header-blur: #0f0f0f1a;
   --card-background: #1a1a1a;
-  --border: #333333;
+  --border: #404040;
 
   /* Tailwind CSS dark theme variables */
-  --card: oklch(0.05 0 0);
+  --card: oklch(0.12 0 0);
   --card-foreground: oklch(0.98 0 0);
-  --popover: oklch(0.05 0 0);
+  --popover: oklch(0.12 0 0);
   --popover-foreground: oklch(0.98 0 0);
   --primary: oklch(0.65 0.15 35);
   --primary-foreground: oklch(0.98 0 0);

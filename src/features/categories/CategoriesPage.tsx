@@ -2,7 +2,7 @@
 
 import React from 'react'
 import { motion } from 'framer-motion'
-import { Layers, ArrowLeft } from 'lucide-react'
+import { ArrowLeft } from 'lucide-react'
 import Link from 'next/link'
 import { useCategories } from './hooks'
 import { CategoryFilter } from './components/CategoryFilter'
@@ -30,16 +30,11 @@ const CategoriesPage: React.FC = () => {
               <ArrowLeft className="w-6 h-6" />
             </Link>
 
-            <div className="flex items-center gap-4">
-              <div className="w-16 h-16 rounded-2xl flex items-center justify-center bg-gradient-to-br from-indigo-500 via-blue-500 to-sky-500 text-white shadow-xl">
-                <Layers className="w-8 h-8" />
-              </div>
-              <div>
-                <h1 className="text-4xl font-bold text-foreground">Danh mục sản phẩm</h1>
-                <p className="text-xl text-muted-foreground mt-2">
-                  Khám phá các sản phẩm vật liệu xây dựng
-                </p>
-              </div>
+            <div>
+              <h1 className="text-4xl font-bold text-foreground">Danh mục sản phẩm</h1>
+              <p className="text-xl text-muted-foreground mt-2">
+                Khám phá các sản phẩm vật liệu xây dựng
+              </p>
             </div>
           </div>
         </motion.div>

@@ -2,7 +2,7 @@
 
 import React from 'react'
 import { motion } from 'motion/react'
-import { ArrowLeft, ShoppingBag, Sparkles } from 'lucide-react'
+import { ArrowLeft } from 'lucide-react'
 import { SAMPLE_CART_ITEMS, SAMPLE_CART_SUMMARY } from './data/sample-data'
 import { CartItem, CartEmpty, CartSummary } from './components'
 import { useCart } from './hooks'
@@ -14,7 +14,7 @@ const CartPage: React.FC = () => {
 
   return (
     <div className="min-h-screen pt-20 bg-background">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="container mx-auto px-4 py-12">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
@@ -30,16 +30,11 @@ const CartPage: React.FC = () => {
               <ArrowLeft className="w-6 h-6" />
             </Link>
 
-            <div className="flex items-center gap-4">
-              <div className="w-16 h-16 rounded-2xl flex items-center justify-center bg-gradient-to-br from-purple-500 via-blue-500 to-indigo-500 text-white shadow-xl">
-                <ShoppingBag className="w-8 h-8" />
-              </div>
-              <div>
-                <h1 className="text-4xl font-bold text-foreground">Giỏ hàng của bạn</h1>
-                <p className="text-xl text-muted-foreground mt-2">
-                  {summary.itemCount} sản phẩm trong giỏ
-                </p>
-              </div>
+            <div>
+              <h1 className="text-4xl font-bold text-foreground">Giỏ hàng của bạn</h1>
+              <p className="text-xl text-muted-foreground mt-2">
+                {summary.itemCount} sản phẩm trong giỏ
+              </p>
             </div>
           </div>
         </motion.div>
