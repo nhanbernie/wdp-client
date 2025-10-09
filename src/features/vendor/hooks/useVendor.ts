@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 import { useCallback } from 'react'
 import { toast } from 'sonner'
@@ -35,12 +35,14 @@ export const useVendor = (filters?: VendorFilters) => {
     data: vendorsData,
     isLoading: fetchLoading,
     error: fetchError,
-  } = useGetVendorsQuery(filters)
+    refetch: refetchVendors,
+  } = useGetVendorsQuery(filters, { skip: true }) // Skip auto-fetch
   const {
     data: myProfileData,
     isLoading: profileLoading,
     error: profileError,
-  } = useGetMyVendorProfileQuery()
+    refetch: refetchMyProfile,
+  } = useGetMyVendorProfileQuery(undefined, { skip: true }) // Skip auto-fetch
 
   // Method to get vendors by status
   const getVendorsByStatus = useCallback(
@@ -145,6 +147,10 @@ export const useVendor = (filters?: VendorFilters) => {
     suspendVendor,
     getVendorsByStatus,
     handleSubmit,
+
+    // Manual fetch methods
+    fetchVendors: refetchVendors,
+    fetchMyProfile: refetchMyProfile,
   }
 }
 

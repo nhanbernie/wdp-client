@@ -1,3 +1,5 @@
+'use client'
+
 import { Header } from '@/components/layouts/second-layout/Header'
 import { Footer } from '@/components/layouts/second-layout/Footer'
 import { userNavigationItems } from '@/common/constants/navigate.constant'
