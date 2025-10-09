@@ -53,7 +53,7 @@ export const useLoginSubmit = (): UseLoginSubmitReturn => {
           router.push("/admin");
         } else {
             // dang loi
-          router.push("/dashboard");
+          router.push("/categories");
         }
       } else {
         throw new Error(response.message || "Login failed");

@@ -13,8 +13,12 @@ import {
   useApproveVendorMutation,
   useRejectVendorMutation,
   useSuspendVendorMutation,
-} from '../../../services/vendor/vendor.service'
-import { CreateVendorRequest, VendorFilters, Vendor } from '../../../services/vendor/vendor.types'
+} from '../../../../services/vendor/vendor.service'
+import {
+  CreateVendorRequest,
+  VendorFilters,
+  Vendor,
+} from '../../../../services/vendor/vendor.types'
 
 export const useVendor = (filters?: VendorFilters) => {
   // RTK Query hooks

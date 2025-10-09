@@ -1,7 +1,10 @@
+import { LucideIcon } from 'lucide-react'
+
 export interface NavItem {
   label: string
   href: string
   active?: boolean
+  icon?: LucideIcon
 }
 
 export const navigationItems: NavItem[] = [
@@ -35,9 +38,13 @@ export const adminNavigationItems: NavItem[] = [
   { label: 'Đơn hàng', href: '/admin/orders' },
 ]
 
+import { LayoutDashboard, Package, ShoppingBag, BarChart3, User, Settings } from 'lucide-react'
+
 export const vendorNavigationItems: NavItem[] = [
-  { label: 'Dashboard', href: '/vendor' },
-  { label: 'Sản phẩm', href: '/vendor/products' },
-  { label: 'Đơn hàng', href: '/vendor/orders' },
-  { label: 'Thống kê', href: '/vendor/analytics' },
+  { label: 'Dashboard', href: '/vendor', icon: LayoutDashboard },
+  { label: 'Sản phẩm', href: '/vendor/products', icon: Package },
+  { label: 'Đơn hàng', href: '/vendor/orders', icon: ShoppingBag },
+  { label: 'Thống kê', href: '/vendor/analytics', icon: BarChart3 },
+  { label: 'Cập nhật', href: '/vendor/update', icon: User },
+  { label: 'Trạng thái', href: '/vendor/status', icon: Settings },
 ]
