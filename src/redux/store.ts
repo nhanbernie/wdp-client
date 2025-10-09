@@ -1,16 +1,19 @@
-import { configureStore } from "@reduxjs/toolkit";
-import { setupListeners } from "@reduxjs/toolkit/query";
-import { authApi } from "@/services/auth";
-import { userApi } from "@/services/user";
-import { materialsApi } from "@/services/materials";
-import { authReducer } from "./slices/auth.slice";
-import { productsApi } from "@/services/products";
+import { configureStore } from '@reduxjs/toolkit'
+import { setupListeners } from '@reduxjs/toolkit/query'
+import { authApi } from '@/services/auth'
+import { userApi } from '@/services/user'
+import { materialsApi } from '@/services/materials'
+import { authReducer } from './slices/auth.slice'
+import { productsApi } from '@/services/products'
+import vendorReducer from './slices/vendorSlice'
 // import { apiErrorHandler } from "@/services/api/apiErrorHandler";
 
 export const store = configureStore({
   reducer: {
     // Auth slice
     auth: authReducer,
+    // Vendor slice
+    vendor: vendorReducer,
     // RTK Query APIs
     [authApi.reducerPath]: authApi.reducer,
     [userApi.reducerPath]: userApi.reducer,
@@ -20,20 +23,20 @@ export const store = configureStore({
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: {
-        ignoredActions: ["persist/PERSIST", "persist/REHYDRATE"],
+        ignoredActions: ['persist/PERSIST', 'persist/REHYDRATE'],
       },
     }).concat(
       // Add RTK Query middleware
       authApi.middleware,
       userApi.middleware,
       materialsApi.middleware,
-      productsApi.middleware
+      productsApi.middleware,
     ),
-  devTools: process.env.NODE_ENV !== "production",
-});
+  devTools: process.env.NODE_ENV !== 'production',
+})
 
 // Enable refetch on focus/reconnect for RTK Query
-setupListeners(store.dispatch);
+setupListeners(store.dispatch)
 
-export type RootState = ReturnType<typeof store.getState>;
-export type AppDispatch = typeof store.dispatch;
+export type RootState = ReturnType<typeof store.getState>
+export type AppDispatch = typeof store.dispatch
