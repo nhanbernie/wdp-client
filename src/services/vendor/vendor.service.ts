@@ -1,8 +1,9 @@
-import { createApi } from "@reduxjs/toolkit/query/react";
-import { baseQueryWithReauth } from "../api/baseQuery";
+import { createApi } from '@reduxjs/toolkit/query/react'
+import { baseQueryWithReauth } from '../api/baseQuery'
 import {
   createVendorEndpoint,
   getVendorsEndpoint,
+  getVendorsByStatusEndpoint,
   getVendorByIdEndpoint,
   getMyVendorProfileEndpoint,
   updateVendorEndpoint,
@@ -10,15 +11,16 @@ import {
   approveVendorEndpoint,
   rejectVendorEndpoint,
   suspendVendorEndpoint,
-} from "./endpoints/index";
+} from './endpoints/index'
 
 export const vendorApi = createApi({
-  reducerPath: "vendorApi",
+  reducerPath: 'vendorApi',
   baseQuery: baseQueryWithReauth,
-  tagTypes: ["Vendor"],
+  tagTypes: ['Vendor'],
   endpoints: (builder) => ({
     createVendor: createVendorEndpoint(builder),
     getVendors: getVendorsEndpoint(builder),
+    getVendorsByStatus: getVendorsByStatusEndpoint(builder),
     getVendorById: getVendorByIdEndpoint(builder),
     getMyVendorProfile: getMyVendorProfileEndpoint(builder),
     updateVendor: updateVendorEndpoint(builder),
@@ -27,11 +29,12 @@ export const vendorApi = createApi({
     rejectVendor: rejectVendorEndpoint(builder),
     suspendVendor: suspendVendorEndpoint(builder),
   }),
-});
+})
 
 export const {
   useCreateVendorMutation,
   useGetVendorsQuery,
+  useGetVendorsByStatusQuery,
   useGetVendorByIdQuery,
   useGetMyVendorProfileQuery,
   useUpdateVendorMutation,
@@ -39,4 +42,4 @@ export const {
   useApproveVendorMutation,
   useRejectVendorMutation,
   useSuspendVendorMutation,
-} = vendorApi;
+} = vendorApi

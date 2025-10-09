@@ -1,6 +1,7 @@
 // Export all vendor endpoints
 export { createVendorEndpoint } from './createVendor'
 export { getVendorsEndpoint } from './getVendors'
+export { getVendorsByStatusEndpoint } from './getVendorsByStatus'
 export { getVendorByIdEndpoint } from './getVendorById'
 export { getMyVendorProfileEndpoint } from './getMyVendorProfile'
 export { updateVendorEndpoint } from './updateVendor'

@@ -1,8 +1,9 @@
 import { EndpointBuilder } from '@reduxjs/toolkit/query/react'
-import { VendorResponse } from '../../../types/vendor.types'
+import { ApiResponse } from '../../api/type'
+import { Vendor } from '../vendor.types'
 
 export const suspendVendorEndpoint = (builder: EndpointBuilder<any, any, any>) =>
-  builder.mutation<VendorResponse, string>({
+  builder.mutation<ApiResponse<Vendor>, string>({
     query: (id) => ({
       url: `/vendors/${id}/suspend`,
       method: 'PATCH',

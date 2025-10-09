@@ -1,10 +1,11 @@
 import { EndpointBuilder } from '@reduxjs/toolkit/query/react'
-import { CreateVendorRequest, VendorResponse } from '../../../types/vendor.types'
+import { ApiResponse } from '../../api/type'
+import { CreateVendorRequest, Vendor } from '../vendor.types'
 
 export const updateVendorEndpoint = (builder: EndpointBuilder<any, any, any>) =>
-  builder.mutation<VendorResponse, { id: string; data: Partial<CreateVendorRequest> }>({
+  builder.mutation<ApiResponse<Vendor>, { id: string; data: Partial<CreateVendorRequest> }>({
     query: ({ id, data }) => ({
-      url: `/vendors/${id}`,
+      url: `/vendors/${id}/ny-profile`,
       method: 'PATCH',
       body: data,
     }),

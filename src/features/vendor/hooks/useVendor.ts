@@ -1,8 +1,11 @@
+"use client"
+
 import { useCallback } from 'react'
 import { toast } from 'sonner'
 import {
   useCreateVendorMutation,
   useGetVendorsQuery,
+  useGetVendorsByStatusQuery,
   useGetVendorByIdQuery,
   useGetMyVendorProfileQuery,
   useUpdateVendorMutation,
@@ -11,19 +14,41 @@ import {
   useRejectVendorMutation,
   useSuspendVendorMutation,
 } from '../../../services/vendor/vendor.service'
-import { CreateVendorRequest, VendorFilters, Vendor } from '../../../types/vendor.types'
+import { CreateVendorRequest, VendorFilters, Vendor } from '../../../services/vendor/vendor.types'
 
 export const useVendor = (filters?: VendorFilters) => {
   // RTK Query hooks
-  const [createVendorMutation, { isLoading: createLoading, error: createError }] = useCreateVendorMutation()
-  const [updateVendorMutation, { isLoading: updateLoading, error: updateError }] = useUpdateVendorMutation()
-  const [deleteVendorMutation, { isLoading: deleteLoading, error: deleteError }] = useDeleteVendorMutation()
-  const [approveVendorMutation, { isLoading: approveLoading, error: approveError }] = useApproveVendorMutation()
-  const [rejectVendorMutation, { isLoading: rejectLoading, error: rejectError }] = useRejectVendorMutation()
-  const [suspendVendorMutation, { isLoading: suspendLoading, error: suspendError }] = useSuspendVendorMutation()
-  
-  const { data: vendorsData, isLoading: fetchLoading, error: fetchError } = useGetVendorsQuery(filters)
-  const { data: myProfileData, isLoading: profileLoading, error: profileError } = useGetMyVendorProfileQuery()
+  const [createVendorMutation, { isLoading: createLoading, error: createError }] =
+    useCreateVendorMutation()
+  const [updateVendorMutation, { isLoading: updateLoading, error: updateError }] =
+    useUpdateVendorMutation()
+  const [deleteVendorMutation, { isLoading: deleteLoading, error: deleteError }] =
+    useDeleteVendorMutation()
+  const [approveVendorMutation, { isLoading: approveLoading, error: approveError }] =
+    useApproveVendorMutation()
+  const [rejectVendorMutation, { isLoading: rejectLoading, error: rejectError }] =
+    useRejectVendorMutation()
+  const [suspendVendorMutation, { isLoading: suspendLoading, error: suspendError }] =
+    useSuspendVendorMutation()
+
+  const {
+    data: vendorsData,
+    isLoading: fetchLoading,
+    error: fetchError,
+  } = useGetVendorsQuery(filters)
+  const {
+    data: myProfileData,
+    isLoading: profileLoading,
+    error: profileError,
+  } = useGetMyVendorProfileQuery()
+
+  // Method to get vendors by status
+  const getVendorsByStatus = useCallback(
+    (status: 'pending' | 'approved' | 'rejected' | 'suspended') => {
+      return useGetVendorsByStatusQuery(status)
+    },
+    [],
+  )
 
   // Actions
   const createVendor = useCallback(
@@ -72,7 +97,7 @@ export const useVendor = (filters?: VendorFilters) => {
     async (data: CreateVendorRequest, onSuccess?: (vendor: any) => void) => {
       try {
         const result = await createVendorMutation(data)
-        
+
         if ('data' in result) {
           toast.success('Đăng ký vendor thành công!')
           onSuccess?.(result.data.data)
@@ -91,8 +116,24 @@ export const useVendor = (filters?: VendorFilters) => {
     // State
     vendors: vendorsData?.data || [],
     myProfile: myProfileData?.data,
-    loading: createLoading || updateLoading || deleteLoading || approveLoading || rejectLoading || suspendLoading || fetchLoading || profileLoading,
-    error: createError || updateError || deleteError || approveError || rejectError || suspendError || fetchError || profileError,
+    loading:
+      createLoading ||
+      updateLoading ||
+      deleteLoading ||
+      approveLoading ||
+      rejectLoading ||
+      suspendLoading ||
+      fetchLoading ||
+      profileLoading,
+    error:
+      createError ||
+      updateError ||
+      deleteError ||
+      approveError ||
+      rejectError ||
+      suspendError ||
+      fetchError ||
+      profileError,
     pagination: vendorsData?.pagination,
 
     // Actions
@@ -102,6 +143,7 @@ export const useVendor = (filters?: VendorFilters) => {
     approveVendor,
     rejectVendor,
     suspendVendor,
+    getVendorsByStatus,
     handleSubmit,
   }
 }

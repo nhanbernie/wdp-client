@@ -1,8 +1,9 @@
 import { EndpointBuilder } from '@reduxjs/toolkit/query/react'
-import { CreateVendorRequest, VendorResponse } from '../../../types/vendor.types'
+import { ApiResponse } from '../../api/type'
+import { CreateVendorRequest, Vendor } from '../vendor.types'
 
 export const createVendorEndpoint = (builder: EndpointBuilder<any, any, any>) =>
-  builder.mutation<VendorResponse, CreateVendorRequest>({
+  builder.mutation<ApiResponse<Vendor>, CreateVendorRequest>({
     query: (vendorData) => ({
       url: '/vendors',
       method: 'POST',

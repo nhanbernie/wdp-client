@@ -1,8 +1,9 @@
 import { EndpointBuilder } from '@reduxjs/toolkit/query/react'
-import { VendorResponse } from '../../../types/vendor.types'
+import { ApiResponse } from '../../api/type'
+import { Vendor } from '../vendor.types'
 
 export const getVendorByIdEndpoint = (builder: EndpointBuilder<any, any, any>) =>
-  builder.query<VendorResponse, string>({
+  builder.query<ApiResponse<Vendor>, string>({
     query: (id) => ({
       url: `/vendors/${id}`,
       method: 'GET',
