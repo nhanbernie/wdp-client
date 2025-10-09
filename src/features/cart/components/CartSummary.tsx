@@ -59,7 +59,7 @@ const CartSummary: React.FC<CartSummaryProps> = ({ summary, onCheckout, onApplyC
       transition={{ duration: 0.5 }}
       className="sticky top-6"
     >
-      <div className="rounded-3xl p-8 shadow-2xl bg-card border border-border backdrop-blur-sm">
+      <div className="rounded-3xl p-8 shadow-2xl cart-card border backdrop-blur-sm">
         {/* Header */}
         <div className="flex items-center gap-4 mb-8">
           <div className="w-12 h-12 rounded-2xl flex items-center justify-center bg-primary text-primary-foreground shadow-lg">
@@ -71,67 +71,44 @@ const CartSummary: React.FC<CartSummaryProps> = ({ summary, onCheckout, onApplyC
           </div>
         </div>
 
-        {/* Item Count Badge */}
-        <div className="flex items-center justify-between py-4 px-6 rounded-2xl mb-8 bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 border border-green-200 dark:border-green-800">
-          <div className="flex items-center gap-3">
-            <div className="w-3 h-3 rounded-full bg-green-500 animate-pulse" />
-            <span className="text-sm font-semibold text-green-700 dark:text-green-400">
-              Đơn hàng hợp lệ
-            </span>
-          </div>
-          <span className="text-lg font-bold text-slate-900 dark:text-white">
-            {summary.itemCount} sản phẩm
-          </span>
+        {/* Item Count */}
+        <div className="flex items-center justify-between py-3 mb-6">
+          <span className="text-sm font-medium text-foreground">Sản phẩm</span>
+          <span className="text-sm font-bold text-foreground">{summary.itemCount} món</span>
         </div>
 
         {/* Order Summary */}
-        <div className="space-y-6 mb-8">
+        <div className="space-y-4 mb-8">
           {/* Subtotal */}
-          <div className="flex items-center justify-between py-3">
-            <span className="text-lg font-medium text-slate-700 dark:text-slate-300">Tạm tính</span>
-            <span className="text-lg font-bold text-slate-900 dark:text-white">
+          <div className="flex items-center justify-between py-2">
+            <span className="text-sm font-medium text-foreground">Tạm tính</span>
+            <span className="text-sm font-bold text-foreground">
               {formatPrice(summary.subtotal)}
             </span>
           </div>
 
           {/* Shipping */}
-          <div className="flex items-center justify-between py-3">
-            <div className="flex items-center gap-3">
-              <Truck className="w-5 h-5 text-slate-500 dark:text-slate-400" />
-              <span className="text-lg font-medium text-slate-700 dark:text-slate-300">
-                Phí vận chuyển
-              </span>
-            </div>
-            <span className="text-lg font-bold text-slate-900 dark:text-white">
+          <div className="flex items-center justify-between py-2">
+            <span className="text-sm font-medium text-foreground">Phí vận chuyển</span>
+            <span className="text-sm font-bold text-foreground">
               {summary.shipping === 0 ? 'Miễn phí' : formatPrice(summary.shipping)}
             </span>
           </div>
 
           {/* Tax */}
-          <div className="flex items-center justify-between py-3">
-            <span className="text-lg font-medium text-slate-700 dark:text-slate-300">Thuế VAT</span>
-            <span className="text-lg font-bold text-slate-900 dark:text-white">
-              {formatPrice(summary.tax)}
-            </span>
+          <div className="flex items-center justify-between py-2">
+            <span className="text-sm font-medium text-foreground">Thuế VAT</span>
+            <span className="text-sm font-bold text-foreground">{formatPrice(summary.tax)}</span>
           </div>
 
           {/* Discount */}
           {summary.discount > 0 && (
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              className="flex items-center justify-between py-3 px-4 rounded-xl bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 border border-green-200 dark:border-green-800"
-            >
-              <div className="flex items-center gap-3">
-                <Gift className="w-5 h-5 text-green-600 dark:text-green-400" />
-                <span className="text-lg font-medium text-green-700 dark:text-green-400">
-                  Giảm giá
-                </span>
-              </div>
-              <span className="text-lg font-bold text-green-600 dark:text-green-400">
+            <div className="flex items-center justify-between py-2">
+              <span className="text-sm font-medium text-green-600">Giảm giá</span>
+              <span className="text-sm font-bold text-green-600">
                 -{formatPrice(summary.discount)}
               </span>
-            </motion.div>
+            </div>
           )}
         </div>
 
@@ -209,69 +186,23 @@ const CartSummary: React.FC<CartSummaryProps> = ({ summary, onCheckout, onApplyC
         </div>
 
         {/* Total */}
-        <div className="py-6 px-8 rounded-2xl mb-8 bg-gradient-to-r from-purple-50 via-blue-50 to-indigo-50 dark:from-purple-900/20 dark:via-blue-900/20 dark:to-indigo-900/20 border-2 border-purple-200 dark:border-purple-800">
-          <div className="flex flex-col items-center text-center">
-            <span className="text-2xl font-bold text-slate-900 dark:text-white mb-2">
-              Tổng cộng
-            </span>
-            <span className="text-4xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
-              {formatPrice(summary.total)}
-            </span>
+        <div className="py-4 px-6 rounded-lg mb-6 bg-muted border border-border">
+          <div className="flex items-center justify-between">
+            <span className="text-lg font-bold text-foreground">Tổng cộng</span>
+            <span className="text-2xl font-bold text-primary">{formatPrice(summary.total)}</span>
           </div>
         </div>
 
         {/* Checkout Button */}
-        <motion.button
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.98 }}
+        <button
           onClick={onCheckout}
-          className="w-full py-5 rounded-2xl font-bold text-xl transition-all duration-300 shadow-xl hover:shadow-2xl bg-gradient-to-r from-purple-600 via-blue-600 to-indigo-600 text-white hover:from-purple-700 hover:via-blue-700 hover:to-indigo-700 relative overflow-hidden"
+          className="w-full py-4 rounded-lg font-bold text-lg transition-all duration-300 bg-primary text-primary-foreground hover:bg-primary/90"
         >
-          <div className="flex items-center justify-center gap-3 relative z-10">
-            <CreditCard className="w-6 h-6" />
+          <div className="flex items-center justify-center gap-2">
+            <CreditCard className="w-5 h-5" />
             Thanh toán ngay
           </div>
-          <div className="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300" />
-        </motion.button>
-
-        {/* Security Badge */}
-        <div className="flex items-center justify-center gap-3 mt-6 pt-6 border-t border-slate-200 dark:border-slate-700">
-          <Shield className="w-5 h-5 text-green-600 dark:text-green-400" />
-          <span className="text-sm font-medium text-slate-600 dark:text-slate-400">
-            Thanh toán an toàn & bảo mật
-          </span>
-        </div>
-
-        {/* Estimated Delivery */}
-        <div className="mt-6 p-4 rounded-2xl bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 border border-blue-200 dark:border-blue-800">
-          <div className="flex items-center gap-3 mb-2">
-            <Truck className="w-5 h-5 text-blue-600 dark:text-blue-400" />
-            <span className="text-sm font-semibold text-blue-700 dark:text-blue-400">
-              Dự kiến giao hàng
-            </span>
-          </div>
-          <p className="text-sm text-slate-600 dark:text-slate-400">
-            Giao hàng trong 2-3 ngày làm việc • Miễn phí vận chuyển
-          </p>
-        </div>
-
-        {/* Special Offer */}
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5 }}
-          className="mt-6 p-4 rounded-2xl bg-gradient-to-r from-yellow-50 to-orange-50 dark:from-yellow-900/20 dark:to-orange-900/20 border border-yellow-200 dark:border-yellow-800"
-        >
-          <div className="flex items-center gap-3">
-            <Sparkles className="w-5 h-5 text-yellow-600 dark:text-yellow-400" />
-            <span className="text-sm font-semibold text-yellow-700 dark:text-yellow-400">
-              Ưu đãi đặc biệt
-            </span>
-          </div>
-          <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">
-            Mua thêm 500k để được miễn phí vận chuyển
-          </p>
-        </motion.div>
+        </button>
       </div>
     </motion.div>
   )

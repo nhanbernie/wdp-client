@@ -1,65 +1,62 @@
-"use client";
+'use client'
 
-import { motion } from "framer-motion";
-import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Heart, ShoppingCart, Eye } from "lucide-react";
-import Link from "next/link";
-import { useState } from "react";
-import { useProducts } from "../hooks/useProducts";
-import { Product } from "../types/categories.types";
+import { motion } from 'framer-motion'
+import { Card, CardContent } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { Heart, ShoppingCart, Eye } from 'lucide-react'
+import Link from 'next/link'
+import { useState } from 'react'
+import { useProducts } from '../hooks/useProducts'
+import { Product } from '../types/categories.types'
 
 interface ProductGridProps {
-  viewMode: "grid" | "list";
+  viewMode: 'grid' | 'list'
 }
 
 export function ProductGrid({ viewMode }: ProductGridProps) {
   const { products, loading } = useProducts({
     inStock: true,
-    sort: "newest",
+    sort: 'newest',
     page: 1,
     withFacets: true,
-  });
+  })
 
-  const [favorites, setFavorites] = useState<string[]>([]);
+  const [favorites, setFavorites] = useState<string[]>([])
 
   const toggleFavorite = (id: string) => {
-    setFavorites((prev) =>
-      prev.includes(id) ? prev.filter((fid) => fid !== id) : [...prev, id]
-    );
-  };
+    setFavorites((prev) => (prev.includes(id) ? prev.filter((fid) => fid !== id) : [...prev, id]))
+  }
 
   if (loading)
     return (
       <div className="flex justify-center items-center h-60 text-muted-foreground">
         Đang tải sản phẩm...
       </div>
-    );
+    )
 
   return (
     <div
       className={
-        viewMode === "grid"
-          ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
-          : "space-y-4"
+        viewMode === 'grid'
+          ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6'
+          : 'space-y-4'
       }
     >
       {products.map((product: Product) => {
         const discount =
-          product.salePrice &&
-          Math.round((1 - product.salePrice / product.price) * 100);
+          product.salePrice && Math.round((1 - product.salePrice / product.price) * 100)
 
-        const inStock = product.stock?.quantity > 0;
+        const inStock = product.stock?.quantity > 0
 
         return (
           <motion.div
             key={product.id}
             whileHover={{ y: -6 }}
-            transition={{ duration: 0.25, ease: "easeOut" }}
+            transition={{ duration: 0.25, ease: 'easeOut' }}
           >
-            <Card className="group relative overflow-hidden border border-border/60 rounded-2xl bg-background hover:shadow-xl transition-all duration-300 h-full">
-              <CardContent className="p-0 flex flex-col h-full">
+            <div className="group relative overflow-hidden border rounded-2xl cart-card hover:shadow-xl transition-all duration-300 h-full">
+              <div className="p-0 flex flex-col h-full">
                 {/* Image Section */}
                 <div className="relative">
                   <div className="overflow-hidden rounded-t-2xl">
@@ -67,8 +64,9 @@ export function ProductGrid({ viewMode }: ProductGridProps) {
                       src={product.thumbnail}
                       alt={product.name}
                       className={`w-full ${
-                        viewMode === "grid" ? "h-56" : "h-44"
-                      } object-cover transition-transform duration-500 group-hover:scale-110`}
+                        viewMode === 'grid' ? 'h-56' : 'h-44'
+                      } object-cover transition-transform duration-500 group-hover:scale-105`}
+                      style={{ objectPosition: 'center top' }}
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                   </div>
@@ -83,15 +81,15 @@ export function ProductGrid({ viewMode }: ProductGridProps) {
                     <Heart
                       className={`h-5 w-5 ${
                         favorites.includes(product.id)
-                          ? "fill-red-500 text-red-500"
-                          : "text-muted-foreground"
+                          ? 'fill-red-500 text-red-500'
+                          : 'text-muted-foreground'
                       }`}
                     />
                   </Button>
 
                   {/* Discount Badge */}
                   {discount && (
-                    <Badge className="absolute top-3 left-3 bg-red-500 text-white px-2 py-1 text-xs rounded-md">
+                    <Badge className="absolute top-3 left-3 bg-red-500 text-white px-2 py-1 text-xs rounded-md shadow-lg">
                       -{discount}%
                     </Badge>
                   )}
@@ -99,10 +97,7 @@ export function ProductGrid({ viewMode }: ProductGridProps) {
                   {/* Out of Stock Overlay */}
                   {!inStock && (
                     <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
-                      <Badge
-                        variant="destructive"
-                        className="px-3 py-1 text-sm"
-                      >
+                      <Badge variant="destructive" className="px-3 py-1 text-sm">
                         Hết hàng
                       </Badge>
                     </div>
@@ -111,10 +106,7 @@ export function ProductGrid({ viewMode }: ProductGridProps) {
 
                 {/* Product Info */}
                 <div className="flex-1 p-5 flex flex-col">
-                  <Badge
-                    variant="outline"
-                    className="mb-2 text-xs font-medium w-fit"
-                  >
+                  <Badge variant="outline" className="mb-2 text-xs font-medium w-fit">
                     {product.category?.name}
                   </Badge>
 
@@ -122,22 +114,32 @@ export function ProductGrid({ viewMode }: ProductGridProps) {
                     <Link href={`/products/${product.id}`}>{product.name}</Link>
                   </h3>
 
-                  <p className="text-sm text-muted-foreground mb-3">
-                    {product.brand}
-                  </p>
+                  <p className="text-sm text-muted-foreground mb-3">{product.brand}</p>
 
-                  {/* Dynamic badges */}
+                  {/* Dynamic badges with colors */}
                   {product.badges && product.badges.length > 0 && (
                     <div className="flex flex-wrap gap-2 mb-3">
-                      {product.badges.map((badge) => (
-                        <Badge
-                          key={badge}
-                          variant="secondary"
-                          className="text-xs capitalize px-2 py-0.5"
-                        >
-                          {badge}
-                        </Badge>
-                      ))}
+                      {product.badges.map((badge) => {
+                        let badgeClass = 'text-xs capitalize px-2 py-0.5'
+                        if (badge.toLowerCase() === 'bestseller') {
+                          badgeClass +=
+                            ' bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
+                        } else if (badge.toLowerCase() === 'sale') {
+                          badgeClass +=
+                            ' bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'
+                        } else if (badge.toLowerCase() === 'new') {
+                          badgeClass +=
+                            ' bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400'
+                        } else {
+                          badgeClass += ' bg-muted text-muted-foreground'
+                        }
+
+                        return (
+                          <Badge key={badge} variant="secondary" className={badgeClass}>
+                            {badge}
+                          </Badge>
+                        )
+                      })}
                     </div>
                   )}
 
@@ -150,15 +152,12 @@ export function ProductGrid({ viewMode }: ProductGridProps) {
                   {/* Price */}
                   <div className="mb-4">
                     <span className="text-lg font-bold text-primary">
-                      {(product.salePrice || product.price).toLocaleString(
-                        "vi-VN"
-                      )}{" "}
+                      {(product.salePrice || product.price).toLocaleString('vi-VN')}{' '}
                       {product.currency}
                     </span>
                     {product.salePrice && (
                       <span className="ml-2 text-sm line-through text-muted-foreground">
-                        {product.price.toLocaleString("vi-VN")}{" "}
-                        {product.currency}
+                        {product.price.toLocaleString('vi-VN')} {product.currency}
                       </span>
                     )}
                   </div>
@@ -181,15 +180,15 @@ export function ProductGrid({ viewMode }: ProductGridProps) {
                       disabled={!inStock}
                     >
                       <ShoppingCart className="h-4 w-4 mr-1" />
-                      {inStock ? "Thêm giỏ " : "Hết hàng"}
+                      {inStock ? 'Thêm giỏ ' : 'Hết hàng'}
                     </Button>
                   </div>
                 </div>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
           </motion.div>
-        );
+        )
       })}
     </div>
-  );
+  )
 }

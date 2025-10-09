@@ -169,119 +169,118 @@ export default function OrdersPage() {
               {filteredOrders.map((order) => {
                 const StatusIcon = statusConfig[order.status as keyof typeof statusConfig].icon
                 return (
-                  <Card key={order.id} className="hover:shadow-lg transition-shadow">
-                    <CardContent className="p-6">
-                      <div className="flex flex-col lg:flex-row lg:items-center justify-between mb-4">
-                        <div className="flex items-center space-x-4 mb-4 lg:mb-0">
+                  <div
+                    key={order.id}
+                    className="cart-card border rounded-xl p-6 hover:shadow-lg transition-shadow"
+                  >
+                    <div className="flex flex-col lg:flex-row lg:items-center justify-between mb-4">
+                      <div className="flex items-center space-x-4 mb-4 lg:mb-0">
+                        <div>
+                          <h3 className="font-semibold text-lg">Đơn hàng #{order.id}</h3>
+                          <p className="text-sm text-muted-foreground">
+                            Đặt ngày {new Date(order.date).toLocaleDateString('vi-VN')}
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center space-x-4">
+                        <Badge
+                          className={`${
+                            statusConfig[order.status as keyof typeof statusConfig].color
+                          } text-white`}
+                        >
+                          <StatusIcon className="h-3 w-3 mr-1" />
+                          {statusConfig[order.status as keyof typeof statusConfig].label}
+                        </Badge>
+                        <span className="font-bold text-lg">
+                          {order.total.toLocaleString('vi-VN')} ₫
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                      {/* Order Items */}
+                      <div className="lg:col-span-2">
+                        <h4 className="font-medium mb-3">Sản phẩm ({order.items.length})</h4>
+                        <div className="space-y-2">
+                          {order.items.map((item, index) => (
+                            <div
+                              key={index}
+                              className="flex justify-between items-center py-2 border-b border-border last:border-0"
+                            >
+                              <div>
+                                <span className="font-medium">{item.name}</span>
+                                <span className="text-muted-foreground ml-2">x{item.quantity}</span>
+                              </div>
+                              <span className="font-medium">
+                                {(item.price * item.quantity).toLocaleString('vi-VN')} ₫
+                              </span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Order Info */}
+                      <div className="space-y-4">
+                        <div>
+                          <h4 className="font-medium mb-2">Địa chỉ giao hàng</h4>
+                          <p className="text-sm text-muted-foreground">{order.shippingAddress}</p>
+                        </div>
+
+                        {order.estimatedDelivery && (
                           <div>
-                            <h3 className="font-semibold text-lg">Đơn hàng #{order.id}</h3>
+                            <h4 className="font-medium mb-2">Dự kiến giao hàng</h4>
                             <p className="text-sm text-muted-foreground">
-                              Đặt ngày {new Date(order.date).toLocaleDateString('vi-VN')}
+                              {new Date(order.estimatedDelivery).toLocaleDateString('vi-VN')}
                             </p>
                           </div>
-                        </div>
+                        )}
 
-                        <div className="flex items-center space-x-4">
-                          <Badge
-                            className={`${
-                              statusConfig[order.status as keyof typeof statusConfig].color
-                            } text-white`}
-                          >
-                            <StatusIcon className="h-3 w-3 mr-1" />
-                            {statusConfig[order.status as keyof typeof statusConfig].label}
-                          </Badge>
-                          <span className="font-bold text-lg">
-                            {order.total.toLocaleString('vi-VN')} ₫
-                          </span>
-                        </div>
-                      </div>
-
-                      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                        {/* Order Items */}
-                        <div className="lg:col-span-2">
-                          <h4 className="font-medium mb-3">Sản phẩm ({order.items.length})</h4>
-                          <div className="space-y-2">
-                            {order.items.map((item, index) => (
-                              <div
-                                key={index}
-                                className="flex justify-between items-center py-2 border-b border-border last:border-0"
-                              >
-                                <div>
-                                  <span className="font-medium">{item.name}</span>
-                                  <span className="text-muted-foreground ml-2">
-                                    x{item.quantity}
-                                  </span>
-                                </div>
-                                <span className="font-medium">
-                                  {(item.price * item.quantity).toLocaleString('vi-VN')} ₫
-                                </span>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-
-                        {/* Order Info */}
-                        <div className="space-y-4">
+                        {order.trackingNumber && (
                           <div>
-                            <h4 className="font-medium mb-2">Địa chỉ giao hàng</h4>
-                            <p className="text-sm text-muted-foreground">{order.shippingAddress}</p>
+                            <h4 className="font-medium mb-2">Mã vận đơn</h4>
+                            <p className="text-sm text-muted-foreground font-mono">
+                              {order.trackingNumber}
+                            </p>
                           </div>
-
-                          {order.estimatedDelivery && (
-                            <div>
-                              <h4 className="font-medium mb-2">Dự kiến giao hàng</h4>
-                              <p className="text-sm text-muted-foreground">
-                                {new Date(order.estimatedDelivery).toLocaleDateString('vi-VN')}
-                              </p>
-                            </div>
-                          )}
-
-                          {order.trackingNumber && (
-                            <div>
-                              <h4 className="font-medium mb-2">Mã vận đơn</h4>
-                              <p className="text-sm text-muted-foreground font-mono">
-                                {order.trackingNumber}
-                              </p>
-                            </div>
-                          )}
-                        </div>
+                        )}
                       </div>
+                    </div>
 
-                      <div className="flex flex-wrap gap-2 mt-6 pt-4 border-t border-border">
-                        <Button variant="outline" size="sm" asChild>
-                          <Link href={`/orders/${order.id}`}>
-                            <Eye className="h-4 w-4 mr-2" />
-                            Xem chi tiết
-                          </Link>
+                    <div className="flex flex-wrap gap-2 mt-6 pt-4 border-t border-border">
+                      <Button variant="outline" size="sm" asChild>
+                        <Link href={`/orders/${order.id}`}>
+                          <Eye className="h-4 w-4 mr-2" />
+                          Xem chi tiết
+                        </Link>
+                      </Button>
+
+                      {order.status === 'delivered' && (
+                        <Button variant="outline" size="sm">
+                          <RotateCcw className="h-4 w-4 mr-2" />
+                          Mua lại
                         </Button>
+                      )}
 
-                        {order.status === 'delivered' && (
-                          <Button variant="outline" size="sm">
-                            <RotateCcw className="h-4 w-4 mr-2" />
-                            Mua lại
-                          </Button>
-                        )}
+                      {['processing', 'shipping'].includes(order.status) && (
+                        <Button variant="outline" size="sm">
+                          <MessageCircle className="h-4 w-4 mr-2" />
+                          Liên hệ hỗ trợ
+                        </Button>
+                      )}
 
-                        {['processing', 'shipping'].includes(order.status) && (
-                          <Button variant="outline" size="sm">
-                            <MessageCircle className="h-4 w-4 mr-2" />
-                            Liên hệ hỗ trợ
-                          </Button>
-                        )}
-
-                        {order.status === 'processing' && (
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            className="text-destructive hover:text-destructive bg-transparent"
-                          >
-                            <XCircle className="h-4 w-4 mr-2" />
-                            Hủy đơn hàng
-                          </Button>
-                        )}
-                      </div>
-                    </CardContent>
-                  </Card>
+                      {order.status === 'processing' && (
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="text-destructive hover:text-destructive bg-transparent"
+                        >
+                          <XCircle className="h-4 w-4 mr-2" />
+                          Hủy đơn hàng
+                        </Button>
+                      )}
+                    </div>
+                  </div>
                 )
               })}
             </div>

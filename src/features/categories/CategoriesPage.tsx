@@ -25,7 +25,7 @@ const CategoriesPage: React.FC = () => {
           <div className="flex items-center gap-6 mb-8">
             <Link
               href="/"
-              className="p-3 rounded-2xl transition-all duration-200 bg-card border border-border text-foreground hover:bg-muted hover:shadow-lg"
+              className="p-3 rounded-2xl transition-all duration-200 cart-card border text-foreground hover:shadow-lg"
             >
               <ArrowLeft className="w-6 h-6" />
             </Link>
