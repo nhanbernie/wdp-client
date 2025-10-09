@@ -81,9 +81,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       } else if (updatedUser.role === 'vendor') {
         // Check vendor approval status
         if (updatedUser.approvedStatus === 'pending' || !updatedUser.approvedStatus) {
-          router.push('/vendor/status')
-        } else {
+          router.push('/vendor-update/status')
+        } else if (updatedUser.approvedStatus === 'approved') {
           router.push('/vendor')
+        } else {
+          router.push('/vendor-update/status')
         }
       } else {
         // Regular user - redirect to categories or stay on current page
