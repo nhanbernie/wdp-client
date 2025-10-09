@@ -17,6 +17,8 @@ export interface User {
   name: string
   avatar?: string
   role: 'admin' | 'user' | 'vendor'
+  roles: string[]
+  approvedStatus?: string | null
 }
 
 export interface AuthContextType {
@@ -50,7 +52,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   useEffect(() => {
     if (profileData?.success && profileData.data) {
-      const { userId, email, roles } = profileData.data
+      const { userId, email, roles, approvedStatus } = profileData.data
 
       // Determine user role based on roles array
       let userRole: 'admin' | 'user' | 'vendor' = 'user'
@@ -65,6 +67,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         email: email,
         name: email.split('@')[0],
         role: userRole,
+        roles: roles,
+        approvedStatus: approvedStatus,
         avatar: undefined,
       }
 
@@ -75,7 +79,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       if (updatedUser.role === 'admin') {
         router.push('/admin')
       } else if (updatedUser.role === 'vendor') {
-        router.push('/vendor')
+        // Check vendor approval status
+        if (updatedUser.approvedStatus === 'pending' || !updatedUser.approvedStatus) {
+          router.push('/vendor/status')
+        } else {
+          router.push('/vendor')
+        }
       } else {
         // Regular user - redirect to categories or stay on current page
         if (typeof window !== 'undefined') {

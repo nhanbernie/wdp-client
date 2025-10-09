@@ -19,6 +19,7 @@ interface AICManageLayoutProps {
   showSearch?: boolean
   showNotifications?: boolean
   userRole?: 'admin' | 'user' | 'vendor'
+  fullWidth?: boolean
 }
 
 const AICManageLayout: React.FC<AICManageLayoutProps> = ({
@@ -27,6 +28,7 @@ const AICManageLayout: React.FC<AICManageLayoutProps> = ({
   showSearch = true,
   showNotifications = true,
   userRole = 'user',
+  fullWidth = false,
 }) => {
   const [isScrolled, setIsScrolled] = useState(false)
   const [sidebarExpanded, setSidebarExpanded] = useState(true)
@@ -125,6 +127,7 @@ const AICManageLayout: React.FC<AICManageLayoutProps> = ({
             <div className="space-y-2">
               {currentNavigationItems.map((item) => {
                 const isActive = isRouteActive(item.href)
+                const IconComponent = item.icon
                 return (
                   <Button
                     key={item.label}
@@ -133,13 +136,18 @@ const AICManageLayout: React.FC<AICManageLayoutProps> = ({
                       sidebarExpanded ? 'px-4' : 'px-2'
                     } ${
                       isActive
-                        ? 'bg-primary text-primary-foreground'
-                        : 'text-muted-foreground hover:bg-muted'
+                        ? 'bg-primary text-primary-foreground shadow-md'
+                        : 'text-muted-foreground hover:bg-muted hover:text-foreground'
                     }`}
                     asChild
                   >
                     <a href={item.href}>
-                      <span className="text-sm font-medium whitespace-nowrap">{item.label}</span>
+                      {IconComponent && (
+                        <IconComponent className={`h-4 w-4 ${sidebarExpanded ? 'mr-3' : ''}`} />
+                      )}
+                      {sidebarExpanded && (
+                        <span className="text-sm font-medium whitespace-nowrap">{item.label}</span>
+                      )}
                     </a>
                   </Button>
                 )
@@ -214,7 +222,7 @@ const AICManageLayout: React.FC<AICManageLayoutProps> = ({
 
           {/* Main Content - Scrollable */}
           <main className="flex-1 overflow-y-auto overflow-x-hidden">
-            <div className="max-w-8xl mx-auto p-8">{children}</div>
+            <div className={fullWidth ? 'w-full' : 'max-w-8xl mx-auto p-8'}>{children}</div>
           </main>
         </div>
       </div>
