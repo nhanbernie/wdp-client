@@ -18,9 +18,12 @@ export const useVendor = (filters?: VendorFilters) => {
   const [createVendorMutation, { isLoading: createLoading, error: createError }] = useCreateVendorMutation()
   const [updateVendorMutation, { isLoading: updateLoading, error: updateError }] = useUpdateVendorMutation()
   const [deleteVendorMutation, { isLoading: deleteLoading, error: deleteError }] = useDeleteVendorMutation()
-  const [updateVendorStatusMutation, { isLoading: statusLoading, error: statusError }] = useUpdateVendorStatusMutation()
+  const [approveVendorMutation, { isLoading: approveLoading, error: approveError }] = useApproveVendorMutation()
+  const [rejectVendorMutation, { isLoading: rejectLoading, error: rejectError }] = useRejectVendorMutation()
+  const [suspendVendorMutation, { isLoading: suspendLoading, error: suspendError }] = useSuspendVendorMutation()
   
   const { data: vendorsData, isLoading: fetchLoading, error: fetchError } = useGetVendorsQuery(filters)
+  const { data: myProfileData, isLoading: profileLoading, error: profileError } = useGetMyVendorProfileQuery()
 
   // Actions
   const createVendor = useCallback(
@@ -44,11 +47,25 @@ export const useVendor = (filters?: VendorFilters) => {
     [deleteVendorMutation],
   )
 
-  const updateVendorStatus = useCallback(
-    async (id: string, status: 'pending' | 'approved' | 'rejected') => {
-      return updateVendorStatusMutation({ id, status })
+  const approveVendor = useCallback(
+    async (id: string) => {
+      return approveVendorMutation(id)
     },
-    [updateVendorStatusMutation],
+    [approveVendorMutation],
+  )
+
+  const rejectVendor = useCallback(
+    async (id: string) => {
+      return rejectVendorMutation(id)
+    },
+    [rejectVendorMutation],
+  )
+
+  const suspendVendor = useCallback(
+    async (id: string) => {
+      return suspendVendorMutation(id)
+    },
+    [suspendVendorMutation],
   )
 
   const handleSubmit = useCallback(
@@ -73,15 +90,18 @@ export const useVendor = (filters?: VendorFilters) => {
   return {
     // State
     vendors: vendorsData?.data || [],
-    loading: createLoading || updateLoading || deleteLoading || statusLoading || fetchLoading,
-    error: createError || updateError || deleteError || statusError || fetchError,
+    myProfile: myProfileData?.data,
+    loading: createLoading || updateLoading || deleteLoading || approveLoading || rejectLoading || suspendLoading || fetchLoading || profileLoading,
+    error: createError || updateError || deleteError || approveError || rejectError || suspendError || fetchError || profileError,
     pagination: vendorsData?.pagination,
 
     // Actions
     createVendor,
     updateVendor,
     deleteVendor,
-    updateVendorStatus,
+    approveVendor,
+    rejectVendor,
+    suspendVendor,
     handleSubmit,
   }
 }
