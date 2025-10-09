@@ -1,19 +1,19 @@
-"use client";
+'use client'
 
-import React from "react";
-import { motion } from "framer-motion";
-import { Layers, ArrowLeft } from "lucide-react";
-import Link from "next/link";
-import { useCategories } from "./hooks";
-import { CategoryFilter } from "./components/CategoryFilter";
-import { SearchFilters } from "./components/SearchFilters";
-import { ProductGrid } from "./components/ProductGrid";
+import React from 'react'
+import { motion } from 'framer-motion'
+import { Layers, ArrowLeft } from 'lucide-react'
+import Link from 'next/link'
+import { useCategories } from './hooks'
+import { CategoryFilter } from './components/CategoryFilter'
+import { SearchFilters } from './components/SearchFilters'
+import { ProductGrid } from './components/ProductGrid'
 
 const CategoriesPage: React.FC = () => {
-  const { viewMode } = useCategories();
+  const { viewMode } = useCategories()
 
   return (
-    <div className="min-h-screen pt-20 bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 dark:from-slate-900 dark:via-slate-800 dark:to-indigo-900">
+    <div className="min-h-screen pt-20 bg-background">
       <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <motion.div
@@ -25,7 +25,7 @@ const CategoriesPage: React.FC = () => {
           <div className="flex items-center gap-6 mb-8">
             <Link
               href="/"
-              className="p-3 rounded-2xl transition-all duration-200 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 hover:shadow-lg"
+              className="p-3 rounded-2xl transition-all duration-200 bg-card border border-border text-foreground hover:bg-muted hover:shadow-lg"
             >
               <ArrowLeft className="w-6 h-6" />
             </Link>
@@ -35,10 +35,8 @@ const CategoriesPage: React.FC = () => {
                 <Layers className="w-8 h-8" />
               </div>
               <div>
-                <h1 className="text-4xl font-bold bg-gradient-to-r from-slate-900 to-slate-700 dark:from-white dark:to-slate-300 bg-clip-text text-transparent">
-                  Danh mục sản phẩm
-                </h1>
-                <p className="text-xl text-slate-600 dark:text-slate-400 mt-2">
+                <h1 className="text-4xl font-bold text-foreground">Danh mục sản phẩm</h1>
+                <p className="text-xl text-muted-foreground mt-2">
                   Khám phá các sản phẩm vật liệu xây dựng
                 </p>
               </div>
@@ -71,7 +69,7 @@ const CategoriesPage: React.FC = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default CategoriesPage;
+export default CategoriesPage

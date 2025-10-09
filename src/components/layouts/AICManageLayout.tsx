@@ -61,8 +61,8 @@ const AICManageLayout: React.FC<AICManageLayoutProps> = ({
 
   return (
     <div className="h-screen flex relative overflow-hidden">
-      {/* Background with gradient */}
-      <div className="absolute inset-0 bg-gradient-to-br from-gray-50 via-slate-50 to-gray-100 dark:from-gray-900 dark:via-slate-900 dark:to-gray-900">
+       {/* Background with gradient */}
+       <div className="absolute inset-0 bg-gradient-to-br from-background via-background to-background">
         {/* Enhanced blur pattern overlay */}
         <div
           className="absolute inset-0 opacity-20 dark:opacity-10"
@@ -75,7 +75,7 @@ const AICManageLayout: React.FC<AICManageLayoutProps> = ({
       </div>
 
       {/* Main glassmorphism container */}
-      <div className="relative z-10 flex w-full h-screen bg-white/20 dark:bg-gray-900/20 backdrop-blur-xl backdrop-saturate-150 border border-white/20 dark:border-gray-700/20 overflow-hidden shadow-2xl shadow-black/10">
+      <div className="relative z-10 flex w-full h-screen bg-white/30 dark:bg-slate-900/30 backdrop-blur-xl backdrop-saturate-150 border border-white/30 dark:border-slate-700/30 overflow-hidden shadow-2xl shadow-slate-200/20 dark:shadow-black/10">
         {/* Sidebar - Fixed */}
         <aside
           className={`
@@ -218,7 +218,7 @@ const AICManageLayout: React.FC<AICManageLayoutProps> = ({
 
           {/* Main Content - Scrollable */}
           <main className="flex-1 overflow-y-auto overflow-x-hidden">
-            <div className="max-w-8xl mx-auto p-6">{children}</div>
+            <div className="max-w-8xl mx-auto p-8">{children}</div>
           </main>
         </div>
       </div>
