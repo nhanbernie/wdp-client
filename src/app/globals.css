@@ -26,10 +26,10 @@
   --input: oklch(0.98 0 0);
   --ring: oklch(0.65 0.15 35);
   --radius: 0.5rem;
-  
+
   /* Custom colors for this project */
-  --success: #00C951; /* Green for completed status */
-  --primary-accent: #C55E45; /* Orange-red for progress indicators and ratings */
+  --success: #00c951; /* Green for completed status */
+  --primary-accent: #c55e45; /* Orange-red for progress indicators and ratings */
   --warning: #f59e0b;
   --error: #ef4444;
 }
@@ -59,12 +59,15 @@
   --destructive-foreground: oklch(0.98 0 0);
   --input: oklch(0.1 0 0);
   --ring: oklch(0.65 0.15 35);
-  
+
   /* Custom colors for dark theme */
-  --success: #00C951;
-  --primary-accent: #C55E45;
+  --success: #00c951;
+  --primary-accent: #c55e45;
   --warning: #f59e0b;
   --error: #ef4444;
+
+  /* Header height */
+  --header-height: 80px;
 }
 
 @layer base {
@@ -87,26 +90,26 @@
 
 /* Custom colors for different elements */
 .bg-success {
-  background-color: #00C951 !important;
+  background-color: #00c951 !important;
 }
 
 .text-success {
-  color: #00C951 !important;
+  color: #00c951 !important;
 }
 
 .bg-primary-accent {
-  background-color: #C55E45 !important;
+  background-color: #c55e45 !important;
 }
 
 .text-primary-accent {
-  color: #C55E45 !important;
+  color: #c55e45 !important;
 }
 
 /* Force delivery progress color */
 [data-radix-progress-indicator] {
-  background-color: #C55E45 !important;
+  background-color: #c55e45 !important;
 }
 
 .delivery-progress [data-radix-progress-indicator] {
-  background-color: #C55E45 !important;
+  background-color: #c55e45 !important;
 }

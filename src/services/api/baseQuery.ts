@@ -4,7 +4,11 @@ import {
   FetchArgs,
   FetchBaseQueryError,
 } from "@reduxjs/toolkit/query/react";
-import { API_CONFIG, API_ENDPOINTS, PUBLIC_ENDPOINTS } from "@/common/constants/endpoint.constant";
+import {
+  API_CONFIG,
+  API_ENDPOINTS,
+  PUBLIC_ENDPOINTS,
+} from "@/common/constants/endpoint.constant";
 import { StorageService } from "@/services/storage/secureStorage.service";
 
 const getUrlFromArgs = (arg: any) => {
@@ -21,7 +25,7 @@ const redirectToLogin = () => {
 
 // Base query with keychain
 const baseQuery = fetchBaseQuery({
-  baseUrl: API_CONFIG.BASE_URL,
+  baseUrl: `${API_CONFIG.BASE_URL}/api`,
   prepareHeaders: async (headers, { endpoint, ...rest }) => {
     const url = getUrlFromArgs(rest.arg);
     const isPublic = PUBLIC_ENDPOINTS.some((ep) => url.includes(ep));
@@ -35,7 +39,9 @@ const baseQuery = fetchBaseQuery({
 
     // Check if body is FormData, don't set Content-Type for FormData
     const isFormData =
-      rest.arg && typeof rest.arg === "object" && rest.arg.body instanceof FormData;
+      rest.arg &&
+      typeof rest.arg === "object" &&
+      rest.arg.body instanceof FormData;
 
     if (!isFormData) {
       headers.set("Content-Type", "application/json");
@@ -74,8 +80,10 @@ export const baseQueryWithReauth: BaseQueryFn<
 
       if (refreshResult.data) {
         const responseData = refreshResult.data as any;
-        const newAccessToken = responseData.data?.accessToken || responseData.data?.access_token;
-        const newRefreshToken = responseData.data?.refreshToken || responseData.data?.refresh_token;
+        const newAccessToken =
+          responseData.data?.accessToken || responseData.data?.access_token;
+        const newRefreshToken =
+          responseData.data?.refreshToken || responseData.data?.refresh_token;
 
         if (newAccessToken) {
           await StorageService.setTokenData({

@@ -18,7 +18,7 @@ export interface UserMenuProps {
 const UserMenu = ({ user: propUser }: UserMenuProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const { user, logout, isAuthenticated } = useAuth();
-  const { colors } = useTheme();
+  const { colors, theme } = useTheme();
 
   // Use auth context user if available, otherwise use prop user
   const currentUser = user || propUser;
@@ -52,7 +52,7 @@ const UserMenu = ({ user: propUser }: UserMenuProps) => {
       {/* User Avatar Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-2 p-1 rounded-lg hover:bg-slate-700 transition-colors"
+        className="flex items-center gap-2 p-1 rounded-lg hover:bg-slate-800 transition-colors cursor-pointer"
       >
         <div className="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center">
           {currentUser?.avatar ? (
@@ -77,7 +77,11 @@ const UserMenu = ({ user: propUser }: UserMenuProps) => {
 
       {/* Dropdown Menu */}
       {isOpen && (
-        <div className="absolute right-0 top-full mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50">
+        <div
+          className={`absolute right-0 top-full mt-2 w-48 rounded-lg shadow-lg border border-gray-200 py-2 z-50 ${
+            theme === "dark" ? "bg-white" : "bg-gray-200"
+          }`}
+        >
           {currentUser && (
             <div className="px-4 py-2 border-b border-gray-100">
               <p className="text-sm font-medium text-gray-900">
@@ -87,12 +91,12 @@ const UserMenu = ({ user: propUser }: UserMenuProps) => {
             </div>
           )}
 
-          <button className="w-full flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors">
+          <button className="w-full flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-200 transition-colors cursor-pointer">
             <User size={16} />
             Profile
           </button>
 
-          <button className="w-full flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors">
+          <button className="w-full flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-200 transition-colors cursor-pointer">
             <Settings size={16} />
             Settings
           </button>
@@ -100,7 +104,7 @@ const UserMenu = ({ user: propUser }: UserMenuProps) => {
           <hr className="my-1" />
 
           <button
-            className="w-full flex items-center gap-3 px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors"
+            className="w-full flex items-center gap-3 px-4 py-2 text-sm text-red-600 hover:bg-red-200 transition-colors cursor-pointer"
             onClick={logout}
           >
             <LogOut size={16} />
