@@ -75,23 +75,24 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setUser(updatedUser)
       setShouldFetchProfile(false)
 
-      // Redirect based on role
-      if (updatedUser.role === 'admin') {
-        router.push('/admin')
-      } else if (updatedUser.role === 'vendor') {
-        // Check vendor approval status
-        if (updatedUser.approvedStatus === 'pending' || !updatedUser.approvedStatus) {
-          router.push('/vendor-update/status')
-        } else if (updatedUser.approvedStatus === 'approved') {
-          router.push('/vendor')
-        } else {
-          router.push('/vendor-update/status')
-        }
-      } else {
-        // Regular user - redirect to categories or stay on current page
-        if (typeof window !== 'undefined') {
-          const currentPath = window.location.pathname
-          if (currentPath === '/marketing' || currentPath === '/') {
+      // Only redirect on initial login, not on every profile update
+      if (typeof window !== 'undefined') {
+        const currentPath = window.location.pathname
+
+        // Only redirect if user is on marketing page or root
+        if (currentPath === '/marketing' || currentPath === '/') {
+          if (updatedUser.role === 'admin') {
+            router.push('/admin')
+          } else if (updatedUser.role === 'vendor') {
+            // Check vendor approval status
+            if (updatedUser.approvedStatus === 'pending' || !updatedUser.approvedStatus) {
+              router.push('/vendor-update/status')
+            } else if (updatedUser.approvedStatus === 'approved') {
+              router.push('/vendor')
+            } else {
+              router.push('/vendor-update/status')
+            }
+          } else {
             router.push('/categories')
           }
         }

@@ -37,13 +37,28 @@ export const AuthGuard: React.FC<AuthGuardProps> = ({
     }
 
     // Check approved status requirement (for vendor)
-    if (requiredApprovedStatus !== undefined && user.approvedStatus !== requiredApprovedStatus) {
-      if (redirectTo) {
-        router.push(redirectTo)
+    if (requiredApprovedStatus !== undefined) {
+      // Handle null case specifically
+      if (requiredApprovedStatus === null) {
+        if (user.approvedStatus !== null && user.approvedStatus !== undefined) {
+          if (redirectTo) {
+            router.push(redirectTo)
+          } else {
+            router.push('/unauthorized')
+          }
+          return
+        }
       } else {
-        router.push('/unauthorized')
+        // Handle other status cases
+        if (user.approvedStatus !== requiredApprovedStatus) {
+          if (redirectTo) {
+            router.push(redirectTo)
+          } else {
+            router.push('/unauthorized')
+          }
+          return
+        }
       }
-      return
     }
   }, [user, isLoading, isAuthenticated, requiredRole, requiredApprovedStatus, redirectTo, router])
 
@@ -57,11 +72,15 @@ export const AuthGuard: React.FC<AuthGuardProps> = ({
   }
 
   // Show loading while redirecting
-  if (
-    !user ||
-    (requiredRole && user.role !== requiredRole) ||
-    (requiredApprovedStatus !== undefined && user.approvedStatus !== requiredApprovedStatus)
-  ) {
+  const isStatusMismatch =
+    requiredApprovedStatus !== undefined &&
+    user &&
+    ((requiredApprovedStatus === null &&
+      user.approvedStatus !== null &&
+      user.approvedStatus !== undefined) ||
+      (requiredApprovedStatus !== null && user.approvedStatus !== requiredApprovedStatus))
+
+  if (!user || (requiredRole && user.role !== requiredRole) || isStatusMismatch) {
     return (
       <div className="flex items-center justify-center h-64">
         <RefreshCw className="h-8 w-8 animate-spin text-primary" />
