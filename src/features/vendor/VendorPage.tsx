@@ -7,8 +7,11 @@ import { Building2, CheckCircle, Users, TrendingUp } from 'lucide-react'
 import FormProvider from '@/components/form/FormProvider'
 import { vendorFormSchema } from './schemas/vendor.schema'
 import { CreateVendorRequest } from '@/types/vendor.types'
+import { useVendor } from './hooks/useVendor'
 
 export const VendorPage: React.FC = () => {
+  const { handleSubmit, loading, error } = useVendor()
+
   const defaultValues: CreateVendorRequest = {
     businessName: '',
     businessDescription: '',
@@ -19,9 +22,11 @@ export const VendorPage: React.FC = () => {
     taxId: '',
   }
 
-  const handleSubmit = async (data: CreateVendorRequest) => {
-    console.log('Form submitted:', data)
-    // Form submission is handled in VendorForm component
+  const onFormSubmit = (data: CreateVendorRequest) => {
+    handleSubmit(data, (vendor) => {
+      console.log('Vendor created:', vendor)
+      // Có thể thêm logic redirect hoặc reset form ở đây
+    })
   }
 
   return (
@@ -36,9 +41,14 @@ export const VendorPage: React.FC = () => {
         <FormProvider<CreateVendorRequest>
           defaultValues={defaultValues}
           validationSchema={vendorFormSchema}
-          onSubmit={handleSubmit}
+          onSubmit={onFormSubmit}
+          mode="onChange"
         >
-          <VendorForm />
+          <VendorForm
+            onSuccess={(vendor) => console.log('Vendor created:', vendor)}
+            loading={loading}
+            error={error}
+          />
         </FormProvider>
       </motion.div>
 
@@ -51,7 +61,7 @@ export const VendorPage: React.FC = () => {
       >
         <div className="space-y-6">
           {/* Benefits Card */}
-          <div className="cart-card border rounded-xl p-6">
+          <div className="cart-card cart-card-hover border rounded-xl p-6">
             <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
               <Building2 className="h-5 w-5" />
               Lợi ích khi trở thành Vendor
@@ -88,7 +98,7 @@ export const VendorPage: React.FC = () => {
           </div>
 
           {/* Requirements Card */}
-          <div className="cart-card border rounded-xl p-6">
+          <div className="cart-card cart-card-hover border rounded-xl p-6">
             <h3 className="text-lg font-semibold mb-4">Yêu cầu đăng ký</h3>
             <div className="space-y-3">
               <div className="flex items-center gap-2">
@@ -111,7 +121,7 @@ export const VendorPage: React.FC = () => {
           </div>
 
           {/* Process Card */}
-          <div className="cart-card border rounded-xl p-6">
+          <div className="cart-card cart-card-hover border rounded-xl p-6">
             <h3 className="text-lg font-semibold mb-4">Quy trình duyệt</h3>
             <div className="space-y-3">
               <div className="flex items-center gap-3">
