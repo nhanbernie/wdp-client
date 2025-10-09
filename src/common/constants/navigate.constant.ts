@@ -21,3 +21,9 @@ export const navigateMarketItems: NavItem[] = [
   { label: "FAQ", href: "/faq" },
   { label: "Contact Us", href: "/contact" },
 ];
+
+export const userNavigationItems: NavItem[] = [
+  { label: "Danh mục", href: "/categories" },
+  { label: "Đơn hàng", href: "/orders" },
+  { label: "Giỏ hàng", href: "/cart" },
+];

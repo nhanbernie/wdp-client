@@ -8,13 +8,18 @@ import { Badge } from "@/components/ui/badge";
 import {
   Search,
   ShoppingCart,
-  User,
   Menu,
   MessageCircle,
   Bell,
 } from "lucide-react";
+import UserMenu from "../components/UserMenu";
+import { userNavigationItems } from "@/common/constants/navigate.constant";
 
-export function Header() {
+interface HeaderProps {
+  navigationItems?: typeof userNavigationItems;
+}
+
+export function Header({ navigationItems = userNavigationItems }: HeaderProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
@@ -44,24 +49,19 @@ export function Header() {
 
           {/* Navigation - Desktop */}
           <nav className="hidden md:flex items-center space-x-6">
-            <Link
-              href="/categories"
-              className="text-sm font-medium hover:text-primary transition-colors"
-            >
-              Danh mục
-            </Link>
-            <Link
-              href="/quote"
-              className="text-sm font-medium hover:text-primary transition-colors"
-            >
-              Báo giá
-            </Link>
-            <Link
-              href="/orders"
-              className="text-sm font-medium hover:text-primary transition-colors"
-            >
-              Đơn hàng
-            </Link>
+            {navigationItems.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={`text-sm font-medium transition-colors ${
+                  item.active
+                    ? "text-primary"
+                    : "text-muted-foreground hover:text-primary"
+                }`}
+              >
+                {item.label}
+              </Link>
+            ))}
           </nav>
 
           {/* Actions */}
@@ -91,11 +91,7 @@ export function Header() {
             </Button>
 
             {/* User Menu */}
-            <Button variant="ghost" size="icon" asChild>
-              <Link href="/dashboard">
-                <User className="h-4 w-4" />
-              </Link>
-            </Button>
+            <UserMenu />
 
             {/* Mobile Menu */}
             <Button
@@ -124,24 +120,20 @@ export function Header() {
         {isMenuOpen && (
           <div className="md:hidden border-t border-border py-4">
             <nav className="flex flex-col space-y-4">
-              <Link
-                href="/categories"
-                className="text-sm font-medium hover:text-primary transition-colors"
-              >
-                Danh mục
-              </Link>
-              <Link
-                href="/quote"
-                className="text-sm font-medium hover:text-primary transition-colors"
-              >
-                Báo giá
-              </Link>
-              <Link
-                href="/orders"
-                className="text-sm font-medium hover:text-primary transition-colors"
-              >
-                Đơn hàng
-              </Link>
+              {navigationItems.map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={`text-sm font-medium transition-colors ${
+                    item.active
+                      ? "text-primary"
+                      : "text-muted-foreground hover:text-primary"
+                  }`}
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  {item.label}
+                </Link>
+              ))}
               <Button variant="ghost" size="sm" className="justify-start">
                 <MessageCircle className="h-4 w-4 mr-2" />
                 AI Hỗ trợ

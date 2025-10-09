@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
-    "build": "next build --turbopack",
+    "build": "next build ",
     "start": "next start",
     "lint": "eslint",
     "prepare": "husky"
@@ -56,14 +56,12 @@
     "@commitlint/cli": "^19.8.1",
     "@commitlint/config-conventional": "^19.8.1",
     "@eslint/eslintrc": "^3",
-    "@tailwindcss/postcss": "^4.1.13",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "15.5.3",
     "husky": "^9.1.7",
-    "tailwindcss": "^4.1.13",
     "typescript": "^5"
   }
 }

@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Header } from "@/components/ui/header";
-import { Footer } from "@/components/ui/footer";
+import { Header } from "@/components/layouts/second-layout/Header";
+import { Footer } from "@/components/layouts/second-layout/Footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
