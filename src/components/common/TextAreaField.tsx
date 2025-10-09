@@ -1,46 +1,54 @@
-"use client";
+'use client'
 
-import React, { forwardRef } from "react";
-import { useController, useFormContext } from "react-hook-form";
-import { cn } from "@/lib/utils";
-import { motion, AnimatePresence } from "motion/react";
+import React, { forwardRef } from 'react'
+import { useController, useFormContext } from 'react-hook-form'
+import { cn } from '@/lib/utils'
+import { motion, AnimatePresence } from 'motion/react'
+import { useTheme } from '@/contexts/ThemeContext'
 
 interface TextAreaFieldProps
-  extends Omit<React.TextareaHTMLAttributes<HTMLTextAreaElement>, "value" | "onChange"> {
-  name: string;
-  label?: string;
+  extends Omit<React.TextareaHTMLAttributes<HTMLTextAreaElement>, 'value' | 'onChange'> {
+  name: string
+  label?: string
 }
 
 export const TextAreaField = forwardRef<HTMLTextAreaElement, TextAreaFieldProps>(
   ({ name, label, className, ...props }, ref) => {
-    const { control } = useFormContext();
+    const { control } = useFormContext()
+    const { colors } = useTheme()
     const {
       field: { onChange, value, onBlur },
       fieldState: { error },
     } = useController({
       control,
       name,
-    });
+    })
 
     return (
       <div className="w-full mb-5">
-        {label && <label className="block text-sm font-medium text-gray-800 mb-2">{label}</label>}
+        {label && (
+          <label className="block text-sm font-medium mb-2" style={{ color: colors.text }}>
+            {label}
+          </label>
+        )}
 
         <motion.div
           className="relative w-full"
           animate={error ? { x: [0, -4, 4, -2, 2, 0] } : { x: 0 }}
-          transition={{ duration: 0.5, ease: "easeOut" }}
+          transition={{ duration: 0.5, ease: 'easeOut' }}
         >
           <textarea
             ref={ref}
             className={cn(
-              "w-full border rounded-xl px-4 py-4 text-gray-900 bg-gray-50 text-base placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent focus:bg-white transition-all duration-300 ease-in-out resize-none",
-              error
-                ? "border-red-500 bg-red-50 focus:ring-red-200"
-                : "border-gray-200 hover:border-gray-300 focus:ring-primary/20",
-              className
+              'w-full border rounded-xl px-4 py-4 text-base focus:outline-none focus:ring-2 focus:border-transparent transition-all duration-300 ease-in-out resize-none',
+              className,
             )}
-            value={value || ""}
+            style={{
+              backgroundColor: colors.cardBackground,
+              borderColor: error ? '#ef4444' : colors.border,
+              color: colors.text,
+            }}
+            value={value || ''}
             onChange={(e) => onChange(e.target.value)}
             onBlur={onBlur}
             {...props}
@@ -52,11 +60,11 @@ export const TextAreaField = forwardRef<HTMLTextAreaElement, TextAreaFieldProps>
           {error && (
             <motion.div
               initial={{ opacity: 0, height: 0, y: -10 }}
-              animate={{ opacity: 1, height: "auto", y: 0 }}
+              animate={{ opacity: 1, height: 'auto', y: 0 }}
               exit={{ opacity: 0, height: 0, y: -10 }}
               transition={{
                 duration: 0.3,
-                ease: "easeOut",
+                ease: 'easeOut',
                 height: { duration: 0.2 },
               }}
               className="overflow-hidden"
@@ -73,10 +81,10 @@ export const TextAreaField = forwardRef<HTMLTextAreaElement, TextAreaFieldProps>
           )}
         </AnimatePresence>
       </div>
-    );
-  }
-);
+    )
+  },
+)
 
-TextAreaField.displayName = "TextAreaField";
+TextAreaField.displayName = 'TextAreaField'
 
-export default TextAreaField;
+export default TextAreaField

@@ -101,7 +101,7 @@
   border-color: var(--cart-card-border);
 }
 
-.cart-card:hover {
+.cart-card-hover:hover {
   background-color: var(--cart-card-hover);
 }
 
