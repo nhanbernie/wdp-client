@@ -9,6 +9,7 @@ import { useFormContext } from "react-hook-form";
 import validatorSchema from "@/lib/authValidator";
 import { INPUT_FIELDS, BUTTON_TITLES } from "@/constants/form.constant";
 import { useTheme } from "@/contexts/ThemeContext";
+import { GoogleLoginButton } from "@/features/auth/login/components";
 
 export interface IAuthFormProps {
   type: "login" | "register" | "forgotPassword" | "verifyOTP" | "resetPassword";
@@ -202,6 +203,32 @@ const AuthForm = ({
               </button>
             </span>
           </div>
+        )}
+
+        {(type === "login" || type === "register") && (
+          <>
+            <div className="text-sm " style={{ color: colors.textSecondary }}>
+              <div className="flex items-center gap-2 my-4">
+                <div
+                  className="h-[1px] w-full"
+                  style={{
+                    backgroundColor: colors.textSecondary,
+                  }}
+                ></div>
+                <p>Or</p>
+                <div
+                  className="h-[1px] w-full"
+                  style={{
+                    backgroundColor: colors.textSecondary,
+                  }}
+                ></div>
+              </div>
+
+              <div>
+                <GoogleLoginButton />
+              </div>
+            </div>
+          </>
         )}
       </div>
     );

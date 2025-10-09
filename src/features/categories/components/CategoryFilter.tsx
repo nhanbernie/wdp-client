@@ -1,44 +1,40 @@
-"use client";
-import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Badge } from "@/components/ui/badge";
-import { ChevronDown, ChevronRight } from "lucide-react";
-import { categories } from "../data/categories.data";
+'use client'
+import { useState } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Checkbox } from '@/components/ui/checkbox'
+import { Badge } from '@/components/ui/badge'
+import { ChevronDown, ChevronRight } from 'lucide-react'
+import { categories } from '../data/categories.data'
 
 export function CategoryFilter() {
-  const [expandedCategories, setExpandedCategories] = useState<string[]>([]);
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const [expandedCategories, setExpandedCategories] = useState<string[]>([])
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([])
 
   const toggleCategory = (categoryName: string) => {
     setExpandedCategories((prev) =>
       prev.includes(categoryName)
         ? prev.filter((name) => name !== categoryName)
-        : [...prev, categoryName]
-    );
-  };
+        : [...prev, categoryName],
+    )
+  }
 
   const toggleSelection = (categoryName: string) => {
     setSelectedCategories((prev) =>
       prev.includes(categoryName)
         ? prev.filter((name) => name !== categoryName)
-        : [...prev, categoryName]
-    );
-  };
+        : [...prev, categoryName],
+    )
+  }
 
   return (
-    <Card className="border shadow-md rounded-xl">
-      <CardHeader className="pb-2 border-b">
-        <CardTitle className="text-lg font-semibold">
-          Danh mục sản phẩm
-        </CardTitle>
-      </CardHeader>
+    <div className="cart-card border rounded-xl p-6">
+      <h3 className="text-lg font-semibold mb-4">Danh mục sản phẩm</h3>
 
-      <CardContent className="divide-y">
+      <div className="space-y-4">
         {categories.map((category) => {
-          const expanded = expandedCategories.includes(category.name);
-          const selected = selectedCategories.includes(category.name);
+          const expanded = expandedCategories.includes(category.name)
+          const selected = selectedCategories.includes(category.name)
 
           return (
             <motion.div key={category.name} className="py-3">
@@ -60,10 +56,7 @@ export function CategoryFilter() {
                   >
                     {category.name}
                   </label>
-                  <Badge
-                    variant={selected ? "default" : "secondary"}
-                    className="text-xs"
-                  >
+                  <Badge variant={selected ? 'default' : 'secondary'} className="text-xs">
                     {category.count}
                   </Badge>
                 </div>
@@ -84,7 +77,7 @@ export function CategoryFilter() {
                 {expanded && (
                   <motion.div
                     initial={{ opacity: 0, height: 0, y: -5 }}
-                    animate={{ opacity: 1, height: "auto", y: 0 }}
+                    animate={{ opacity: 1, height: 'auto', y: 0 }}
                     exit={{ opacity: 0, height: 0, y: -5 }}
                     transition={{ duration: 0.25 }}
                     className="ml-6 mt-2 space-y-2 border-l pl-4"
@@ -110,9 +103,9 @@ export function CategoryFilter() {
                 )}
               </AnimatePresence>
             </motion.div>
-          );
+          )
         })}
-      </CardContent>
-    </Card>
-  );
+      </div>
+    </div>
+  )
 }

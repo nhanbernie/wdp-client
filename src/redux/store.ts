@@ -1,11 +1,12 @@
-import { configureStore } from "@reduxjs/toolkit";
-import { setupListeners } from "@reduxjs/toolkit/query";
-import { authApi } from "@/services/auth";
-import { userApi } from "@/services/user";
-import { materialsApi } from "@/services/materials";
-import { authReducer } from "./slices/auth.slice";
-import { productsApi } from "@/services/products";
-import { ordersApiSlice } from "./slices/ordersApiSlice";
+import { configureStore } from '@reduxjs/toolkit'
+import { setupListeners } from '@reduxjs/toolkit/query'
+import { authApi } from '@/services/auth'
+import { userApi } from '@/services/user'
+import { materialsApi } from '@/services/materials'
+import { authReducer } from './slices/auth.slice'
+import { productsApi } from '@/services/products'
+import { vendorApi } from '@/services/vendor/vendor.service'
+import { ordersApiSlice } from './slices/ordersApiSlice'
 // import { apiErrorHandler } from "@/services/api/apiErrorHandler";
 
 export const store = configureStore({
@@ -17,12 +18,13 @@ export const store = configureStore({
     [userApi.reducerPath]: userApi.reducer,
     [materialsApi.reducerPath]: materialsApi.reducer,
     [productsApi.reducerPath]: productsApi.reducer,
+    [vendorApi.reducerPath]: vendorApi.reducer,
     [ordersApiSlice.reducerPath]: ordersApiSlice.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: {
-        ignoredActions: ["persist/PERSIST", "persist/REHYDRATE"],
+        ignoredActions: ['persist/PERSIST', 'persist/REHYDRATE'],
       },
     }).concat(
       // Add RTK Query middleware
@@ -30,13 +32,14 @@ export const store = configureStore({
       userApi.middleware,
       materialsApi.middleware,
       productsApi.middleware,
+      vendorApi.middleware,
       ordersApiSlice.middleware
     ),
-  devTools: process.env.NODE_ENV !== "production",
-});
+  devTools: process.env.NODE_ENV !== 'production',
+})
 
 // Enable refetch on focus/reconnect for RTK Query
-setupListeners(store.dispatch);
+setupListeners(store.dispatch)
 
-export type RootState = ReturnType<typeof store.getState>;
-export type AppDispatch = typeof store.dispatch;
+export type RootState = ReturnType<typeof store.getState>
+export type AppDispatch = typeof store.dispatch

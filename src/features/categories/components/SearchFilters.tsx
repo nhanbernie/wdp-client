@@ -1,49 +1,48 @@
-"use client";
-import { useState } from "react";
-import { motion } from "framer-motion";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Slider } from "@/components/ui/slider";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { brands, materials } from "../data/filters.data";
+'use client'
+import { useState } from 'react'
+import { motion } from 'framer-motion'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Checkbox } from '@/components/ui/checkbox'
+import { Slider } from '@/components/ui/slider'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { brands, materials } from '../data/filters.data'
 
 export function SearchFilters() {
-  const [priceRange, setPriceRange] = useState([0, 10000000]);
-  const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
-  const [selectedMaterials, setSelectedMaterials] = useState<string[]>([]);
-  const [inStock, setInStock] = useState(false);
+  const [priceRange, setPriceRange] = useState([0, 10000000])
+  const [selectedBrands, setSelectedBrands] = useState<string[]>([])
+  const [selectedMaterials, setSelectedMaterials] = useState<string[]>([])
+  const [inStock, setInStock] = useState(false)
 
   const toggleBrand = (brand: string) => {
     setSelectedBrands((prev) =>
-      prev.includes(brand) ? prev.filter((b) => b !== brand) : [...prev, brand]
-    );
-  };
+      prev.includes(brand) ? prev.filter((b) => b !== brand) : [...prev, brand],
+    )
+  }
 
   const toggleMaterial = (material: string) => {
     setSelectedMaterials((prev) =>
-      prev.includes(material)
-        ? prev.filter((m) => m !== material)
-        : [...prev, material]
-    );
-  };
+      prev.includes(material) ? prev.filter((m) => m !== material) : [...prev, material],
+    )
+  }
 
   const clearFilters = () => {
-    setPriceRange([0, 10000000]);
-    setSelectedBrands([]);
-    setSelectedMaterials([]);
-    setInStock(false);
-  };
+    setPriceRange([0, 10000000])
+    setSelectedBrands([])
+    setSelectedMaterials([])
+    setInStock(false)
+  }
 
   return (
     <motion.div
-      className="space-y-6"
+      className="cart-card border rounded-xl p-6 space-y-6"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
     >
+      <h3 className="text-lg font-semibold mb-4">Bộ lọc</h3>
       {/* Price Range */}
       <motion.div
         initial={{ opacity: 0, y: 10 }}
@@ -69,9 +68,7 @@ export function SearchFilters() {
                 type="number"
                 placeholder="Từ"
                 value={priceRange[0]}
-                onChange={(e) =>
-                  setPriceRange([Number(e.target.value), priceRange[1]])
-                }
+                onChange={(e) => setPriceRange([Number(e.target.value), priceRange[1]])}
                 className="flex-1"
               />
               <span className="text-muted-foreground">-</span>
@@ -79,15 +76,12 @@ export function SearchFilters() {
                 type="number"
                 placeholder="Đến"
                 value={priceRange[1]}
-                onChange={(e) =>
-                  setPriceRange([priceRange[0], Number(e.target.value)])
-                }
+                onChange={(e) => setPriceRange([priceRange[0], Number(e.target.value)])}
                 className="flex-1"
               />
             </div>
             <div className="text-sm text-muted-foreground text-center">
-              {priceRange[0].toLocaleString("vi-VN")} -{" "}
-              {priceRange[1].toLocaleString("vi-VN")} VNĐ
+              {priceRange[0].toLocaleString('vi-VN')} - {priceRange[1].toLocaleString('vi-VN')} VNĐ
             </div>
           </CardContent>
         </Card>
@@ -118,10 +112,7 @@ export function SearchFilters() {
                     checked={selectedBrands.includes(brand.name)}
                     onCheckedChange={() => toggleBrand(brand.name)}
                   />
-                  <label
-                    htmlFor={brand.name}
-                    className="text-sm cursor-pointer"
-                  >
+                  <label htmlFor={brand.name} className="text-sm cursor-pointer">
                     {brand.name}
                   </label>
                 </div>
@@ -162,10 +153,7 @@ export function SearchFilters() {
                     checked={selectedMaterials.includes(material.name)}
                     onCheckedChange={() => toggleMaterial(material.name)}
                   />
-                  <label
-                    htmlFor={material.name}
-                    className="text-sm cursor-pointer"
-                  >
+                  <label htmlFor={material.name} className="text-sm cursor-pointer">
                     {material.name}
                   </label>
                 </div>
@@ -208,14 +196,10 @@ export function SearchFilters() {
 
       {/* Clear Filters */}
       <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.95 }}>
-        <Button
-          variant="outline"
-          onClick={clearFilters}
-          className="w-full bg-transparent"
-        >
+        <Button variant="outline" onClick={clearFilters} className="w-full bg-transparent">
           Xóa tất cả bộ lọc
         </Button>
       </motion.div>
     </motion.div>
-  );
+  )
 }

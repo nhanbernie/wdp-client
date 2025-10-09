@@ -1,118 +1,143 @@
-"use client";
+'use client'
 
-import React, { createContext, useContext, useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import React, { createContext, useContext, useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import {
   useLoginMutation,
   useRegisterMutation,
   useProfileQuery,
-} from "@/services/auth/auth.service";
-import { StorageService } from "@/services/storage/secureStorage.service";
+  useLogoutMutation,
+} from '@/services/auth/auth.service'
+import { StorageService } from '@/services/storage/secureStorage.service'
+import { useToast } from '@/hooks/useToast'
 
-// Types
 export interface User {
-  id: string;
-  email: string;
-  name: string;
-  avatar?: string;
-  role: "admin" | "user";
+  id: string
+  email: string
+  name: string
+  avatar?: string
+  role: 'admin' | 'user' | 'vendor'
 }
 
 export interface AuthContextType {
-  user: User | null;
-  isLoading: boolean;
-  isAuthenticated: boolean;
-  logout: () => void;
-  refreshUserProfile: () => Promise<void>;
+  user: User | null
+  isLoading: boolean
+  isAuthenticated: boolean
+  logout: () => void
+  refreshUserProfile: () => Promise<void>
 }
 
 // Create context
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
+const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
 // Auth Provider Component
-export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
-  children,
-}) => {
-  const [user, setUser] = useState<User | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [shouldFetchProfile, setShouldFetchProfile] = useState(false);
-  const router = useRouter();
-  const [loginMutation] = useLoginMutation();
-  const [registerMutation] = useRegisterMutation();
-  const { data: profileData, refetch: refetchProfile } = useProfileQuery(
-    undefined,
-    {
-      skip: !shouldFetchProfile,
-    }
-  );
+export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [user, setUser] = useState<User | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
+  const [shouldFetchProfile, setShouldFetchProfile] = useState(false)
+  const router = useRouter()
+  const [loginMutation] = useLoginMutation()
+  const [registerMutation] = useRegisterMutation()
+  const [logoutMutation] = useLogoutMutation()
+  const toast = useToast()
+  const { data: profileData, refetch: refetchProfile } = useProfileQuery(undefined, {
+    skip: !shouldFetchProfile,
+  })
 
-  // Check if user is authenticated on mount
   useEffect(() => {
-    checkAuthStatus();
-  }, []);
+    checkAuthStatus()
+  }, [])
 
-  // Handle profile data when it's fetched
   useEffect(() => {
     if (profileData?.success && profileData.data) {
-      const { userId, email, roles } = profileData.data;
+      const { userId, email, roles } = profileData.data
 
-      // Update user with profile data
+      // Determine user role based on roles array
+      let userRole: 'admin' | 'user' | 'vendor' = 'user'
+      if (roles.includes('admin')) {
+        userRole = 'admin'
+      } else if (roles.includes('vendor')) {
+        userRole = 'vendor'
+      }
+
       const updatedUser: User = {
         id: userId,
         email: email,
-        name: email.split("@")[0], // Use email prefix as name
-        role: roles.includes("admin") ? "admin" : "user",
+        name: email.split('@')[0],
+        role: userRole,
         avatar: undefined,
-      };
+      }
 
-      // Update user state (no need to store in localStorage)
-      setUser(updatedUser);
-      setShouldFetchProfile(false); // Reset flag
+      setUser(updatedUser)
+      setShouldFetchProfile(false)
 
-      // Redirect based on role after profile is loaded
-      // if (updatedUser.role === "admin") {
-      //   router.push("/admin");
-      // }
-      // } else {
-      //   router.push("/marketing");
-      // }
+      // Redirect based on role
+      if (updatedUser.role === 'admin') {
+        router.push('/admin')
+      } else if (updatedUser.role === 'vendor') {
+        router.push('/vendor')
+      } else {
+        // Regular user - redirect to categories or stay on current page
+        if (typeof window !== 'undefined') {
+          const currentPath = window.location.pathname
+          if (currentPath === '/marketing' || currentPath === '/') {
+            router.push('/categories')
+          }
+        }
+      }
     }
-  }, [profileData, router]);
+  }, [profileData, router])
 
   const checkAuthStatus = async () => {
     try {
-      // Check storage for token only
-      const token = await StorageService.getAccessToken();
+      const token = await StorageService.getAccessToken()
 
       if (token) {
-        // If token exists, fetch profile to get user data
-        setShouldFetchProfile(true);
+        setShouldFetchProfile(true)
       }
     } catch (error) {
-      console.error("Error checking auth status:", error);
+      console.error('Error checking auth status:', error)
       // Clear invalid data
-      await StorageService.clearAuthData();
+      await StorageService.clearAuthData()
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
-  };
+  }
 
-  // Method to refresh user profile data
   const refreshUserProfile = async () => {
-    setShouldFetchProfile(true);
-    await refetchProfile();
-  };
+    setShouldFetchProfile(true)
+    await refetchProfile()
+  }
 
   const logout = async () => {
-    // Clear storage
-    await StorageService.clearAuthData();
+    try {
+      const refreshToken = await StorageService.getRefreshToken()
 
-    // Clear state
-    setUser(null);
+      // Call logout API if refresh token exists
+      if (refreshToken) {
+        try {
+          await logoutMutation({ refreshToken }).unwrap()
+          toast.success('Đăng xuất thành công!', 'Bạn đã đăng xuất khỏi hệ thống')
+        } catch (error) {
+          // Even if logout API fails, we still proceed with local logout
+          console.warn('Logout API call failed:', error)
+          toast.warning('Đăng xuất', 'Đã đăng xuất khỏi thiết bị này')
+        }
+      } else {
+        toast.info('Đăng xuất', 'Đã đăng xuất khỏi thiết bị này')
+      }
+    } catch (error) {
+      console.error('Error during logout:', error)
+      toast.error('Lỗi đăng xuất', 'Đã xảy ra lỗi khi đăng xuất')
+    } finally {
+      // Always clear local storage and state
+      await StorageService.clearAuthData()
+      setUser(null)
 
-    // Redirect to marketing page
-    router.push("/marketing");
-  };
+      // Redirect to marketing page
+      router.push('/marketing')
+    }
+  }
 
   const value: AuthContextType = {
     user,
@@ -120,18 +145,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     isAuthenticated: !!user,
     logout,
     refreshUserProfile,
-  };
-
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
-};
-
-// Custom hook to use auth context
-export const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (context === undefined) {
-    throw new Error("useAuth must be used within an AuthProvider");
   }
-  return context;
-};
 
-export default AuthContext;
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
+}
+export const useAuth = () => {
+  const context = useContext(AuthContext)
+  if (context === undefined) {
+    throw new Error('useAuth must be used within an AuthProvider')
+  }
+  return context
+}
+
+export default AuthContext

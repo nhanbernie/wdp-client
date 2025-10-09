@@ -1,4 +1,4 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
 :root {
   /* Essential theme variables */
@@ -6,7 +6,7 @@
   --foreground: #1f2937;
   --header-blur: #ffffff80;
   --card-background: #ffffff;
-  --border: #e5e7eb;
+  --border: #d1d5db;
 
   /* Tailwind CSS variables */
   --card: oklch(0.98 0 0);
@@ -26,26 +26,31 @@
   --input: oklch(0.98 0 0);
   --ring: oklch(0.65 0.15 35);
   --radius: 0.5rem;
-  
+
   /* Custom colors for this project */
-  --success: #00C951; /* Green for completed status */
-  --primary-accent: #C55E45; /* Orange-red for progress indicators and ratings */
+  --success: #00c951; /* Green for completed status */
+  --primary-accent: #c55e45; /* Orange-red for progress indicators and ratings */
   --warning: #f59e0b;
   --error: #ef4444;
+
+  /* Card specific colors */
+  --cart-card: #1a1a1a; /* Dark but brighter than background */
+  --cart-card-hover: #2a2a2a; /* Slightly lighter on hover */
+  --cart-card-border: #333333; /* Subtle border for cart cards */
 }
 
 :root.dark {
   /* Dark theme essentials */
-  --background: #060606;
+  --background: #0f0f0f;
   --foreground: #ffffff;
-  --header-blur: #0606061a;
+  --header-blur: #0f0f0f1a;
   --card-background: #1a1a1a;
-  --border: #333333;
+  --border: #404040;
 
   /* Tailwind CSS dark theme variables */
-  --card: oklch(0.05 0 0);
+  --card: oklch(0.12 0 0);
   --card-foreground: oklch(0.98 0 0);
-  --popover: oklch(0.05 0 0);
+  --popover: oklch(0.12 0 0);
   --popover-foreground: oklch(0.98 0 0);
   --primary: oklch(0.65 0.15 35);
   --primary-foreground: oklch(0.98 0 0);
@@ -59,12 +64,17 @@
   --destructive-foreground: oklch(0.98 0 0);
   --input: oklch(0.1 0 0);
   --ring: oklch(0.65 0.15 35);
-  
+
   /* Custom colors for dark theme */
-  --success: #00C951;
-  --primary-accent: #C55E45;
+  --success: #00c951;
+  --primary-accent: #c55e45;
   --warning: #f59e0b;
   --error: #ef4444;
+
+  /* Card specific colors - Dark theme */
+  --cart-card: #1a1a1a; /* Dark but brighter than background */
+  --cart-card-hover: #2a2a2a; /* Slightly lighter on hover */
+  --cart-card-border: #333333; /* Subtle border for cart cards */
 }
 
 @layer base {
@@ -85,28 +95,38 @@
   backdrop-filter: blur(27px);
 }
 
+/* Cart card utilities */
+.cart-card {
+  background-color: var(--cart-card);
+  border-color: var(--cart-card-border);
+}
+
+.cart-card-hover:hover {
+  background-color: var(--cart-card-hover);
+}
+
 /* Custom colors for different elements */
 .bg-success {
-  background-color: #00C951 !important;
+  background-color: #00c951 !important;
 }
 
 .text-success {
-  color: #00C951 !important;
+  color: #00c951 !important;
 }
 
 .bg-primary-accent {
-  background-color: #C55E45 !important;
+  background-color: #c55e45 !important;
 }
 
 .text-primary-accent {
-  color: #C55E45 !important;
+  color: #c55e45 !important;
 }
 
 /* Force delivery progress color */
 [data-radix-progress-indicator] {
-  background-color: #C55E45 !important;
+  background-color: #c55e45 !important;
 }
 
 .delivery-progress [data-radix-progress-indicator] {
-  background-color: #C55E45 !important;
+  background-color: #c55e45 !important;
 }

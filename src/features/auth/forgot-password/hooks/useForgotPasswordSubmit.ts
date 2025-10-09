@@ -1,44 +1,50 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useForgotPasswordMutation } from "@/services/auth/auth.service";
+import { useToast } from "@/hooks/useToast";
 
-interface ForgotPasswordData {
-  email: string;
-}
+export const useForgotPasswordSubmit = () => {
+  const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
+  const [forgotPasswordMutation] = useForgotPasswordMutation();
+  const toast = useToast();
 
-interface UseForgotPasswordSubmitReturn {
-  forgotPassword: (data: ForgotPasswordData) => Promise<void>;
-  isLoading: boolean;
-  error: Error | null;
-}
-
-export const useForgotPasswordSubmit = (): UseForgotPasswordSubmitReturn => {
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [error, setError] = useState<Error | null>(null);
-
-  const forgotPassword = async (data: ForgotPasswordData): Promise<void> => {
-    setIsLoading(true);
-    setError(null);
-
+  const submitForgotPassword = async (data: { email: string }) => {
     try {
-      // TODO: Implement forgot password logic with Redux
-      console.log("Forgot password data:", data);
+      setIsLoading(true);
+      
+      const result = await forgotPasswordMutation({
+        email: data.email,
+      }).unwrap() as any;
 
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-    } catch (err) {
-      const error = err as Error;
-      console.error("Forgot password failed:", error);
-      setError(error);
-      throw error;
+      if (result.success) {
+        toast.success("Email đặt lại mật khẩu đã được gửi!", "Vui lòng kiểm tra hộp thư của bạn");
+        router.push("/forgot-password/success");
+      } else {
+        toast.error("Gửi email thất bại", result.message || "Không thể gửi email đặt lại mật khẩu");
+      }
+    } catch (error: any) {
+      console.error("Forgot password error:", error);
+      
+      // Handle different error types
+      if (error?.data?.message) {
+        toast.error("Lỗi xảy ra", error.data.message);
+      } else if (error?.status === 404) {
+        toast.error("Email không tồn tại", "Vui lòng kiểm tra lại địa chỉ email của bạn");
+      } else if (error?.status === 400) {
+        toast.error("Địa chỉ email không hợp lệ", "Vui lòng nhập địa chỉ email đúng định dạng");
+      } else {
+        toast.error("Lỗi không xác định", "Đã xảy ra lỗi không mong muốn. Vui lòng thử lại.");
+      }
     } finally {
       setIsLoading(false);
     }
   };
 
   return {
-    forgotPassword,
+    submitForgotPassword,
     isLoading,
-    error,
   };
 };

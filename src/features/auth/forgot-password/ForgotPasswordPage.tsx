@@ -8,10 +8,10 @@ import { useForgotPasswordSubmit } from "./hooks/useForgotPasswordSubmit";
 
 export const ForgotPasswordPage = () => {
   const { colors } = useTheme();
-  const { forgotPassword, isLoading } = useForgotPasswordSubmit();
+  const { submitForgotPassword, isLoading } = useForgotPasswordSubmit();
 
   const handleForgotPassword = async (data: { email: string }) => {
-    await forgotPassword(data);
+    await submitForgotPassword(data);
   };
 
   return (
