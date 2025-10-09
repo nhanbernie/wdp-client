@@ -4,6 +4,8 @@ WDP Client là một ứng dụng web hiện đại được xây dựng để q
 
 ## 🚀 Công nghệ Frontend
 
+Remove-Item -Recurse -Force node_modules -ErrorAction SilentlyContinue npm cache
+
 ### Framework & Runtime
 
 - **[Next.js 15.5.3](https://nextjs.org)** - React framework với App Router

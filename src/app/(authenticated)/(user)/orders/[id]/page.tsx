@@ -1,15 +1,14 @@
-"use client";
+'use client'
 
-import { useState } from "react";
-import { useParams } from "next/navigation";
-import Link from "next/link";
-import { Header } from "@/components/ui/header";
-import { Footer } from "@/components/ui/footer";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
-import { Progress } from "@/components/ui/progress";
+import { useState } from 'react'
+import { useParams } from 'next/navigation'
+import Link from 'next/link'
+import AICMainLayout from '@/components/layouts/second-layout/AICMainLayout'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
+import { Separator } from '@/components/ui/separator'
+import { Progress } from '@/components/ui/progress'
 import {
   ArrowLeft,
   Package,
@@ -22,328 +21,148 @@ import {
   MessageCircle,
   RotateCcw,
   Star,
-} from "lucide-react";
+} from 'lucide-react'
 
 // Mock orders database
 const ordersDatabase = [
   {
-    id: "AIC123456789",
-    date: "2024-01-15",
-    status: "delivered",
+    id: 'AIC123456789',
+    date: '2024-01-15',
+    status: 'delivered',
     total: 4830000,
     subtotal: 4780000,
     shipping: 50000,
     discount: 0,
-    paymentMethod: "VNPay",
+    paymentMethod: 'VNPay',
     items: [
       {
         id: 1,
-        name: "Xi măng Portland PCB40 Holcim",
-        brand: "Holcim",
+        name: 'Xi măng Portland PCB40 Holcim',
+        brand: 'Holcim',
         quantity: 2,
         price: 165000,
-        image: "/cement-bag.png",
+        image: '/cement-bag.png',
       },
       {
         id: 2,
-        name: "Máy khoan búa Bosch GBH 2-28 DV",
-        brand: "Bosch",
+        name: 'Máy khoan búa Bosch GBH 2-28 DV',
+        brand: 'Bosch',
         quantity: 1,
         price: 4500000,
-        image: "/drill-machine.png",
+        image: '/drill-machine.png',
       },
     ],
     shippingAddress: {
-      name: "Nguyễn Văn A",
-      phone: "0123456789",
-      email: "nguyenvana@email.com",
-      address: "123 Đường ABC, Phường 1, Quận 1, TP.HCM",
+      name: 'Nguyễn Văn A',
+      phone: '0123456789',
+      email: 'nguyenvana@email.com',
+      address: '123 Đường ABC, Phường 1, Quận 1, TP.HCM',
     },
     timeline: [
       {
-        status: "confirmed",
-        title: "Đơn hàng được xác nhận",
-        description: "Đơn hàng đã được xác nhận và đang chuẩn bị",
-        date: "2024-01-15T10:00:00",
+        status: 'confirmed',
+        title: 'Đơn hàng được xác nhận',
+        description: 'Đơn hàng đã được xác nhận và đang chuẩn bị',
+        date: '2024-01-15T10:00:00',
         completed: true,
       },
       {
-        status: "processing",
-        title: "Đang chuẩn bị hàng",
-        description: "Sản phẩm đang được đóng gói",
-        date: "2024-01-15T14:30:00",
+        status: 'processing',
+        title: 'Đang chuẩn bị hàng',
+        description: 'Sản phẩm đang được đóng gói',
+        date: '2024-01-15T14:30:00',
         completed: true,
       },
       {
-        status: "shipped",
-        title: "Đã giao cho đơn vị vận chuyển",
-        description: "Mã vận đơn: VN123456789",
-        date: "2024-01-16T09:15:00",
+        status: 'shipped',
+        title: 'Đã giao cho đơn vị vận chuyển',
+        description: 'Mã vận đơn: VN123456789',
+        date: '2024-01-16T09:15:00',
         completed: true,
       },
       {
-        status: "delivered",
-        title: "Đã giao hàng thành công",
-        description: "Giao hàng thành công tại địa chỉ đã đăng ký",
-        date: "2024-01-17T15:45:00",
+        status: 'delivered',
+        title: 'Đã giao hàng thành công',
+        description: 'Giao hàng thành công tại địa chỉ đã đăng ký',
+        date: '2024-01-17T15:45:00',
         completed: true,
       },
     ],
-    trackingNumber: "VN123456789",
-    estimatedDelivery: "2024-01-18",
-    actualDelivery: "2024-01-17",
+    trackingNumber: 'VN123456789',
+    estimatedDelivery: '2024-01-18',
+    actualDelivery: '2024-01-17',
   },
-  {
-    id: "AIC987654321",
-    date: "2024-01-20",
-    status: "shipping",
-    total: 330000,
-    subtotal: 280000,
-    shipping: 50000,
-    discount: 0,
-    paymentMethod: "COD",
-    items: [
-      {
-        id: 3,
-        name: "Vít gỗ đầu chìm 4x50mm (100 cái)",
-        brand: "Stanley",
-        quantity: 3,
-        price: 45000,
-        image: "/screws.png",
-      },
-      {
-        id: 4,
-        name: "Búa cán gỗ 500g Stanley",
-        brand: "Stanley",
-        quantity: 1,
-        price: 285000,
-        image: "/hammer.png",
-      },
-    ],
-    shippingAddress: {
-      name: "Trần Thị B",
-      phone: "0987654321",
-      email: "tranthib@email.com",
-      address: "456 Đường XYZ, Phường 2, Quận 2, TP.HCM",
-    },
-    timeline: [
-      {
-        status: "confirmed",
-        title: "Đơn hàng được xác nhận",
-        description: "Đơn hàng đã được xác nhận và đang chuẩn bị",
-        date: "2024-01-20T10:00:00",
-        completed: true,
-      },
-      {
-        status: "processing",
-        title: "Đang chuẩn bị hàng",
-        description: "Sản phẩm đang được đóng gói",
-        date: "2024-01-20T14:30:00",
-        completed: true,
-      },
-      {
-        status: "shipped",
-        title: "Đã giao cho đơn vị vận chuyển",
-        description: "Mã vận đơn: VN987654321",
-        date: "2024-01-21T09:15:00",
-        completed: true,
-      },
-      {
-        status: "delivered",
-        title: "Đang giao hàng",
-        description: "Dự kiến giao hàng trong ngày hôm nay",
-        date: "2024-01-23T15:45:00",
-        completed: false,
-      },
-    ],
-    trackingNumber: "VN987654321",
-    estimatedDelivery: "2024-01-23",
-    actualDelivery: null,
-  },
-  {
-    id: "AIC456789123",
-    date: "2024-01-22",
-    status: "processing",
-    total: 940000,
-    subtotal: 890000,
-    shipping: 50000,
-    discount: 0,
-    paymentMethod: "VNPay",
-    items: [
-      {
-        id: 5,
-        name: "Sơn nước nội thất Dulux 5L",
-        brand: "Dulux",
-        quantity: 1,
-        price: 890000,
-        image: "/paint.png",
-      },
-    ],
-    shippingAddress: {
-      name: "Lê Văn C",
-      phone: "0456789123",
-      email: "levanc@email.com",
-      address: "789 Đường DEF, Phường 3, Quận 3, TP.HCM",
-    },
-    timeline: [
-      {
-        status: "confirmed",
-        title: "Đơn hàng được xác nhận",
-        description: "Đơn hàng đã được xác nhận và đang chuẩn bị",
-        date: "2024-01-22T10:00:00",
-        completed: true,
-      },
-      {
-        status: "processing",
-        title: "Đang chuẩn bị hàng",
-        description: "Sản phẩm đang được đóng gói",
-        date: "2024-01-22T14:30:00",
-        completed: false,
-      },
-      {
-        status: "shipped",
-        title: "Chờ giao cho đơn vị vận chuyển",
-        description: "Đang chờ xử lý",
-        date: null,
-        completed: false,
-      },
-      {
-        status: "delivered",
-        title: "Chờ giao hàng",
-        description: "Chưa được giao",
-        date: null,
-        completed: false,
-      },
-    ],
-    trackingNumber: null,
-    estimatedDelivery: "2024-01-25",
-    actualDelivery: null,
-  },
-  {
-    id: "AIC789123456",
-    date: "2024-01-10",
-    status: "cancelled",
-    total: 370000,
-    subtotal: 320000,
-    shipping: 50000,
-    discount: 0,
-    paymentMethod: "VNPay",
-    items: [
-      {
-        id: 6,
-        name: "Gạch ốp lát Viglacera 60x60cm",
-        brand: "Viglacera",
-        quantity: 1,
-        price: 320000,
-        image: "/tiles.png",
-      },
-    ],
-    shippingAddress: {
-      name: "Phạm Thị D",
-      phone: "0789123456",
-      email: "phamthid@email.com",
-      address: "321 Đường GHI, Phường 4, Quận 4, TP.HCM",
-    },
-    timeline: [
-      {
-        status: "confirmed",
-        title: "Đơn hàng được xác nhận",
-        description: "Đơn hàng đã được xác nhận",
-        date: "2024-01-10T10:00:00",
-        completed: true,
-      },
-      {
-        status: "cancelled",
-        title: "Đơn hàng đã bị hủy",
-        description: "Hủy theo yêu cầu của khách hàng",
-        date: "2024-01-10T15:30:00",
-        completed: true,
-      },
-    ],
-    trackingNumber: null,
-    estimatedDelivery: null,
-    actualDelivery: null,
-  },
-];
+]
 
 export default function OrderDetailPage() {
-  const params = useParams();
-  const [showReviewModal, setShowReviewModal] = useState(false);
+  const params = useParams()
+  const [showReviewModal, setShowReviewModal] = useState(false)
 
   // Find order by ID
-  const orderData = ordersDatabase.find((order) => order.id === params.id);
+  const orderData = ordersDatabase.find((order) => order.id === params.id)
 
   // If order not found, show 404
   if (!orderData) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">
-            Không tìm thấy đơn hàng
-          </h1>
-          <p className="text-gray-600 mb-4">
-            Đơn hàng với ID {params.id} không tồn tại.
-          </p>
+          <h1 className="text-2xl font-bold text-gray-900 mb-2">Không tìm thấy đơn hàng</h1>
+          <p className="text-gray-600 mb-4">Đơn hàng với ID {params.id} không tồn tại.</p>
           <Link href="/orders">
             <Button>Quay lại danh sách đơn hàng</Button>
           </Link>
         </div>
       </div>
-    );
+    )
   }
 
   const getProgressValue = () => {
-    const completedSteps = orderData.timeline.filter(
-      (step) => step.completed
-    ).length;
-    return (completedSteps / orderData.timeline.length) * 100;
-  };
+    const completedSteps = orderData.timeline.filter((step) => step.completed).length
+    return (completedSteps / orderData.timeline.length) * 100
+  }
 
   const getStatusConfig = (status: string) => {
     const statusMap = {
       processing: {
-        label: "Đang xử lý",
-        badgeClass: "bg-yellow-500 text-white",
-        message: "Đơn hàng đang được xử lý",
+        label: 'Đang xử lý',
+        badgeClass: 'bg-yellow-500 text-white',
+        message: 'Đơn hàng đang được xử lý',
         icon: Clock,
       },
       shipping: {
-        label: "Đang giao hàng",
-        badgeClass: "bg-blue-500 text-white",
+        label: 'Đang giao hàng',
+        badgeClass: 'bg-blue-500 text-white',
         message: `Dự kiến giao hàng ngày ${
           orderData.estimatedDelivery
-            ? new Date(orderData.estimatedDelivery).toLocaleDateString("vi-VN")
-            : "chưa xác định"
+            ? new Date(orderData.estimatedDelivery).toLocaleDateString('vi-VN')
+            : 'chưa xác định'
         }`,
         icon: Package,
       },
       delivered: {
-        label: "Đã giao hàng",
-        badgeClass: "bg-success text-white",
+        label: 'Đã giao hàng',
+        badgeClass: 'bg-success text-white',
         message: `Giao thành công ngày ${
           orderData.actualDelivery
-            ? new Date(orderData.actualDelivery).toLocaleDateString("vi-VN")
-            : ""
+            ? new Date(orderData.actualDelivery).toLocaleDateString('vi-VN')
+            : ''
         }`,
         icon: CheckCircle,
       },
       cancelled: {
-        label: "Đã hủy",
-        badgeClass: "bg-red-500 text-white",
-        message: "Đơn hàng đã được hủy",
+        label: 'Đã hủy',
+        badgeClass: 'bg-red-500 text-white',
+        message: 'Đơn hàng đã được hủy',
         icon: Clock,
       },
-    };
-    return statusMap[status as keyof typeof statusMap] || statusMap.processing;
-  };
+    }
+    return statusMap[status as keyof typeof statusMap] || statusMap.processing
+  }
 
-  const statusConfig = getStatusConfig(orderData.status);
+  const statusConfig = getStatusConfig(orderData.status)
 
   return (
-    <div className="min-h-screen bg-background">
-      <Header />
-
-      <main className="container mx-auto px-4 py-8">
+      <div className="space-y-6">
         {/* Page Header */}
         <div className="flex items-center justify-between mb-8">
           <div>
@@ -357,10 +176,9 @@ export default function OrderDetailPage() {
               <h1 className="text-3xl font-bold">Đơn hàng #{orderData.id}</h1>
             </div>
             <p className="text-muted-foreground">
-              Đặt ngày {new Date(orderData.date).toLocaleDateString("vi-VN")} •
-              Tổng tiền:{" "}
+              Đặt ngày {new Date(orderData.date).toLocaleDateString('vi-VN')} • Tổng tiền:{' '}
               <span className="font-semibold text-primary">
-                {orderData.total.toLocaleString("vi-VN")} ₫
+                {orderData.total.toLocaleString('vi-VN')} ₫
               </span>
             </p>
           </div>
@@ -370,7 +188,7 @@ export default function OrderDetailPage() {
               <Download className="h-4 w-4 mr-2" />
               Tải hóa đơn
             </Button>
-            {orderData.status === "delivered" && (
+            {orderData.status === 'delivered' && (
               <Button className="bg-primary-accent hover:bg-primary-accent/90 text-white">
                 <Star className="h-4 w-4 mr-2" />
                 Đánh giá
@@ -396,9 +214,7 @@ export default function OrderDetailPage() {
                     <statusConfig.icon className="h-3 w-3 mr-1" />
                     {statusConfig.label}
                   </Badge>
-                  <span className="text-sm text-muted-foreground">
-                    {statusConfig.message}
-                  </span>
+                  <span className="text-sm text-muted-foreground">{statusConfig.message}</span>
                 </div>
 
                 <div className="space-y-2">
@@ -419,8 +235,8 @@ export default function OrderDetailPage() {
                       <div
                         className={`w-8 h-8 rounded-full flex items-center justify-center ${
                           step.completed
-                            ? "bg-primary-accent text-white"
-                            : "bg-muted text-muted-foreground"
+                            ? 'bg-primary-accent text-white'
+                            : 'bg-muted text-muted-foreground'
                         }`}
                       >
                         {step.completed ? (
@@ -432,19 +248,15 @@ export default function OrderDetailPage() {
                       <div className="flex-1">
                         <h4
                           className={`font-medium ${
-                            step.completed
-                              ? "text-foreground"
-                              : "text-muted-foreground"
+                            step.completed ? 'text-foreground' : 'text-muted-foreground'
                           }`}
                         >
                           {step.title}
                         </h4>
-                        <p className="text-sm text-muted-foreground">
-                          {step.description}
-                        </p>
+                        <p className="text-sm text-muted-foreground">{step.description}</p>
                         {step.completed && step.date && (
                           <p className="text-xs text-muted-foreground mt-1">
-                            {new Date(step.date).toLocaleString("vi-VN")}
+                            {new Date(step.date).toLocaleString('vi-VN')}
                           </p>
                         )}
                       </div>
@@ -467,26 +279,21 @@ export default function OrderDetailPage() {
                       className="flex items-center space-x-4 p-4 border border-border rounded-lg"
                     >
                       <img
-                        src={item.image || "/placeholder.svg"}
+                        src={item.image || '/placeholder.svg'}
                         alt={item.name}
                         className="w-16 h-16 rounded-lg object-cover"
                       />
                       <div className="flex-1">
                         <h4 className="font-semibold">{item.name}</h4>
-                        <p className="text-sm text-muted-foreground">
-                          {item.brand}
-                        </p>
-                        <p className="text-sm text-muted-foreground">
-                          Số lượng: {item.quantity}
-                        </p>
+                        <p className="text-sm text-muted-foreground">{item.brand}</p>
+                        <p className="text-sm text-muted-foreground">Số lượng: {item.quantity}</p>
                       </div>
                       <div className="text-right">
                         <p className="font-semibold">
-                          {(item.price * item.quantity).toLocaleString("vi-VN")}{" "}
-                          ₫
+                          {(item.price * item.quantity).toLocaleString('vi-VN')} ₫
                         </p>
                         <p className="text-sm text-muted-foreground">
-                          {item.price.toLocaleString("vi-VN")} ₫/cái
+                          {item.price.toLocaleString('vi-VN')} ₫/cái
                         </p>
                       </div>
                     </div>
@@ -498,25 +305,23 @@ export default function OrderDetailPage() {
                 <div className="space-y-2">
                   <div className="flex justify-between">
                     <span>Tạm tính:</span>
-                    <span>{orderData.subtotal.toLocaleString("vi-VN")} ₫</span>
+                    <span>{orderData.subtotal.toLocaleString('vi-VN')} ₫</span>
                   </div>
                   <div className="flex justify-between">
                     <span>Phí vận chuyển:</span>
-                    <span>{orderData.shipping.toLocaleString("vi-VN")} ₫</span>
+                    <span>{orderData.shipping.toLocaleString('vi-VN')} ₫</span>
                   </div>
                   {orderData.discount > 0 && (
                     <div className="flex justify-between text-success">
                       <span>Giảm giá:</span>
-                      <span>
-                        -{orderData.discount.toLocaleString("vi-VN")} ₫
-                      </span>
+                      <span>-{orderData.discount.toLocaleString('vi-VN')} ₫</span>
                     </div>
                   )}
                   <Separator />
                   <div className="flex justify-between text-lg font-bold">
                     <span>Tổng cộng:</span>
                     <span className="text-primary">
-                      {orderData.total.toLocaleString("vi-VN")} ₫
+                      {orderData.total.toLocaleString('vi-VN')} ₫
                     </span>
                   </div>
                 </div>
@@ -588,15 +393,11 @@ export default function OrderDetailPage() {
                 <div className="space-y-2">
                   <div className="flex justify-between">
                     <span>Phương thức:</span>
-                    <span className="font-medium">
-                      {orderData.paymentMethod}
-                    </span>
+                    <span className="font-medium">{orderData.paymentMethod}</span>
                   </div>
                   <div className="flex justify-between">
                     <span>Trạng thái:</span>
-                    <Badge className="bg-success text-white">
-                      Đã thanh toán
-                    </Badge>
+                    <Badge className="bg-success text-white">Đã thanh toán</Badge>
                   </div>
                 </div>
               </CardContent>
@@ -624,9 +425,6 @@ export default function OrderDetailPage() {
             </Card>
           </div>
         </div>
-      </main>
-
-      <Footer />
-    </div>
-  );
+      </div>
+  )
 }

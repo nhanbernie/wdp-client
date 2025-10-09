@@ -1,9 +1,6 @@
-import React from "react";
+import AICMainLayout from '@/components/layouts/second-layout/AICMainLayout'
+import React from 'react'
 
-export default function UserLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
-  return <div>{children}</div>;
+export default function UserLayout({ children }: { children: React.ReactNode }) {
+  return <AICMainLayout>{children}</AICMainLayout>
 }

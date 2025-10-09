@@ -11,13 +11,12 @@ import {
 import { StorageService } from "@/services/storage/secureStorage.service";
 import { useToast } from "@/hooks/useToast";
 
-// Types
 export interface User {
   id: string;
   email: string;
   name: string;
   avatar?: string;
-  role: "admin" | "user";
+  role: "admin" | "user" | "vendor";
 }
 
 export interface AuthContextType {
@@ -50,45 +49,53 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   );
 
-  // Check if user is authenticated on mount
   useEffect(() => {
     checkAuthStatus();
   }, []);
 
-  // Handle profile data when it's fetched
   useEffect(() => {
     if (profileData?.success && profileData.data) {
       const { userId, email, roles } = profileData.data;
 
-      // Update user with profile data
+      // Determine user role based on roles array
+      let userRole: "admin" | "user" | "vendor" = "user";
+      if (roles.includes("admin")) {
+        userRole = "admin";
+      } else if (roles.includes("vendor")) {
+        userRole = "vendor";
+      }
+
       const updatedUser: User = {
         id: userId,
         email: email,
-        name: email.split("@")[0], // Use email prefix as name
-        role: roles.includes("admin") ? "admin" : "user",
+        name: email.split("@")[0],
+        role: userRole,
         avatar: undefined,
       };
 
-      // Update user state (no need to store in localStorage)
       setUser(updatedUser);
-      setShouldFetchProfile(false); // Reset flag
+      setShouldFetchProfile(false);
 
-      // Redirect based on role after profile is loaded
+      // Redirect based on role
       if (updatedUser.role === "admin") {
         router.push("/admin");
+      } else if (updatedUser.role === "vendor") {
+        router.push("/vendor");
       } else {
-        router.push("/marketing");
+        // Regular user - redirect to categories or stay on current page
+        const currentPath = window.location.pathname;
+        if (currentPath === "/marketing" || currentPath === "/") {
+          router.push("/categories");
+        }
       }
     }
   }, [profileData, router]);
 
   const checkAuthStatus = async () => {
     try {
-      // Check storage for token only
       const token = await StorageService.getAccessToken();
 
       if (token) {
-        // If token exists, fetch profile to get user data
         setShouldFetchProfile(true);
       }
     } catch (error) {
@@ -100,7 +107,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   };
 
-  // Method to refresh user profile data
   const refreshUserProfile = async () => {
     setShouldFetchProfile(true);
     await refetchProfile();
@@ -108,14 +114,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const logout = async () => {
     try {
-      // Get refresh token before clearing storage
       const refreshToken = await StorageService.getRefreshToken();
-      
+
       // Call logout API if refresh token exists
       if (refreshToken) {
         try {
           await logoutMutation({ refreshToken }).unwrap();
-          toast.success("Đăng xuất thành công!", "Bạn đã đăng xuất khỏi hệ thống");
+          toast.success(
+            "Đăng xuất thành công!",
+            "Bạn đã đăng xuất khỏi hệ thống"
+          );
         } catch (error) {
           // Even if logout API fails, we still proceed with local logout
           console.warn("Logout API call failed:", error);
@@ -131,7 +139,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       // Always clear local storage and state
       await StorageService.clearAuthData();
       setUser(null);
-      
+
       // Redirect to marketing page
       router.push("/marketing");
     }
@@ -147,8 +155,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
-
-// Custom hook to use auth context
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (context === undefined) {
