@@ -1,7 +1,7 @@
-import type { NextConfig } from "next";
+import type { NextConfig } from 'next'
 
 const nextConfig: NextConfig = {
-    eslint: {
+  eslint: {
     ignoreDuringBuilds: true,
   },
   typescript: {
@@ -9,7 +9,13 @@ const nextConfig: NextConfig = {
   },
   images: {
     unoptimized: true,
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: '**',
+      },
+    ],
   },
-};
+}
 
-export default nextConfig;
+export default nextConfig

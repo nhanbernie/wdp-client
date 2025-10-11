@@ -6,6 +6,7 @@ import { materialsApi } from '@/services/materials'
 import { authReducer } from './slices/auth.slice'
 import { productsApi } from '@/services/products'
 import { vendorApi } from '@/services/vendor/vendor.service'
+import { categoriesApi } from '@/services/categories/categories.service'
 // import { apiErrorHandler } from "@/services/api/apiErrorHandler";
 
 export const store = configureStore({
@@ -18,6 +19,7 @@ export const store = configureStore({
     [materialsApi.reducerPath]: materialsApi.reducer,
     [productsApi.reducerPath]: productsApi.reducer,
     [vendorApi.reducerPath]: vendorApi.reducer,
+    [categoriesApi.reducerPath]: categoriesApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
@@ -31,6 +33,7 @@ export const store = configureStore({
       materialsApi.middleware,
       productsApi.middleware,
       vendorApi.middleware,
+      categoriesApi.middleware,
     ),
   devTools: process.env.NODE_ENV !== 'production',
 })

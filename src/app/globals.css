@@ -70,6 +70,9 @@
   --primary-accent: #c55e45;
   --warning: #f59e0b;
   --error: #ef4444;
+
+  --header-height: 80px;
+  --header-horizontial-padding: 144px;
 }
 
 @layer base {

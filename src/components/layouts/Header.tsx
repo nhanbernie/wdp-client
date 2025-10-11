@@ -1,30 +1,29 @@
-"use client";
+'use client'
 
-import React, { useState } from "react";
-import { Search, Menu, Globe } from "lucide-react";
-import UserMenu from "./components/UserMenu";
-import MobileMenu from "./components/MobileMenu";
-import Logo from "../common/Logo";
-import { navigationItems } from "@/common/constants/navigate.constant";
-import Navigation from "./components/Navigation";
-import { motion } from "motion/react";
-import SearchBar from "../common/SearchBar";
-import NavigateButtons from "../common/NavigateButtons";
-import NotificationBadge from "../common/NotificationBadge";
-import CartBadge from "../common/CartBadge";
-// import { ThemeToggle } from "@/components/common/";
+import React, { useState } from 'react'
+import { Search, Menu, Globe } from 'lucide-react'
+import UserMenu from './components/UserMenu'
+import MobileMenu from './components/MobileMenu'
+import Logo from '../common/Logo'
+import { navigationItems } from '@/common/constants/navigate.constant'
+import Navigation from './components/Navigation'
+import { motion } from 'motion/react'
+import SearchBar from './components/SearchBar'
+import NavigateButtons from './components/NavigateButtons'
+import NotificationBadge from './components/NotificationBadge'
+import CartBadge from './components/CartBadge'
 
 // Main Header component
 const Header = () => {
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
 
   const handleMobileMenuToggle = () => {
-    setIsMobileMenuOpen(!isMobileMenuOpen);
-  };
+    setIsMobileMenuOpen(!isMobileMenuOpen)
+  }
 
   const handleMobileMenuClose = () => {
-    setIsMobileMenuOpen(false);
-  };
+    setIsMobileMenuOpen(false)
+  }
 
   return (
     // <>
@@ -91,7 +90,7 @@ const Header = () => {
     // </>
 
     <>
-      <div className="w-full h-[var(--header-height)] fixed bg-black px-36 flex items-center justify-between">
+      <div className="w-full h-[var(--header-height)] z-50 fixed bg-black md:px-36 flex items-center justify-between">
         <div className="flex items-center w-1/2">
           {/* Logo section */}
           <div className="">
@@ -99,14 +98,14 @@ const Header = () => {
           </div>
 
           {/* Search section */}
-          <div className="w-full">
+          <div className="w-full hidden md:block">
             <SearchBar />
           </div>
         </div>
 
         <div className="w-1/2 flex items-center justify-end gap-8">
           {/* Navigate Button */}
-          <div>
+          <div className="hidden lg:flex">
             <NavigateButtons />
           </div>
 
@@ -117,13 +116,28 @@ const Header = () => {
           </div>
 
           {/* User Menu */}
-          <div>
+          <div className="hidden md:block">
             <UserMenu />
           </div>
+
+          {/* Mobile menu button */}
+          <button
+            onClick={handleMobileMenuToggle}
+            className="lg:hidden p-2 text-gray-300 hover:text-white transition-colors rounded-lg hover:bg-white/10"
+          >
+            <Menu size={20} />
+          </button>
+
+          {/* Mobile Menu */}
+          <MobileMenu
+            isOpen={isMobileMenuOpen}
+            onClose={handleMobileMenuClose}
+            navigationItems={navigationItems}
+          />
         </div>
       </div>
     </>
-  );
-};
+  )
+}
 
-export default Header;
+export default Header
