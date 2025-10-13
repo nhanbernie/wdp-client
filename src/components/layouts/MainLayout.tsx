@@ -19,7 +19,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, footer = true }) => {
       style={{ background: colors.backgroundGradient }}
     >
       <Header />
-      <main className="flex-1">{children}</main>
+      <main className="flex-1 pt-[var(--header-height)]">{children}</main>
       {footer && <Footer />}
     </div>
   );

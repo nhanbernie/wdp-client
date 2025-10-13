@@ -1,0 +1,1 @@
+export { categoriesEndpoint } from './listCategory'
