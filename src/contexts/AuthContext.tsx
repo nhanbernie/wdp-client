@@ -17,6 +17,8 @@ export interface User {
   name: string
   avatar?: string
   role: 'admin' | 'user' | 'vendor'
+  roles: string[]
+  approvedStatus?: string | null
 }
 
 export interface AuthContextType {
@@ -50,7 +52,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   useEffect(() => {
     if (profileData?.success && profileData.data) {
-      const { userId, email, roles } = profileData.data
+      const { userId, email, roles, approvedStatus } = profileData.data
 
       // Determine user role based on roles array
       let userRole: 'admin' | 'user' | 'vendor' = 'user'
@@ -65,22 +67,32 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         email: email,
         name: email.split('@')[0],
         role: userRole,
+        roles: roles,
+        approvedStatus: approvedStatus,
         avatar: undefined,
       }
 
       setUser(updatedUser)
       setShouldFetchProfile(false)
 
-      // Redirect based on role
-      if (updatedUser.role === 'admin') {
-        router.push('/admin')
-      } else if (updatedUser.role === 'vendor') {
-        router.push('/vendor')
-      } else {
-        // Regular user - redirect to categories or stay on current page
-        if (typeof window !== 'undefined') {
-          const currentPath = window.location.pathname
-          if (currentPath === '/marketing' || currentPath === '/') {
+      // Only redirect on initial login, not on every profile update
+      if (typeof window !== 'undefined') {
+        const currentPath = window.location.pathname
+
+        // Only redirect if user is on marketing page or root
+        if (currentPath === '/marketing' || currentPath === '/') {
+          if (updatedUser.role === 'admin') {
+            router.push('/admin')
+          } else if (updatedUser.role === 'vendor') {
+            // Check vendor approval status
+            if (updatedUser.approvedStatus === 'pending' || !updatedUser.approvedStatus) {
+              router.push('/vendor-update/status')
+            } else if (updatedUser.approvedStatus === 'approved') {
+              router.push('/vendor')
+            } else {
+              router.push('/vendor-update/status')
+            }
+          } else {
             router.push('/categories')
           }
         }
