@@ -49,7 +49,7 @@ const UserMenu = ({ user: propUser }: UserMenuProps) => {
           e.currentTarget.style.color = colors.background
         }}
       >
-        Sign-Up
+        Sign-In
       </Link>
     )
   }

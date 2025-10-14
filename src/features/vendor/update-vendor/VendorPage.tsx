@@ -6,7 +6,7 @@ import { VendorForm } from './components/VendorForm'
 import { Building2, CheckCircle, Users, TrendingUp } from 'lucide-react'
 import FormProvider from '@/components/form/FormProvider'
 import { vendorFormSchema } from './schemas/vendor.schema'
-import { CreateVendorRequest } from '@/types/vendor.types'
+import { CreateVendorRequest } from '@/services/vendor/vendor.types'
 import { useVendor } from './hooks/useVendor'
 
 export const VendorPage: React.FC = () => {

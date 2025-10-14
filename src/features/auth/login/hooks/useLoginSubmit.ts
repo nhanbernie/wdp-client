@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useLoginMutation } from '@/services/auth/auth.service'
 import { StorageService } from '@/services/storage/secureStorage.service'
+import { useToast } from '@/hooks/useToast'
 
 interface LoginCredentials {
   email: string
@@ -22,13 +23,13 @@ export const useLoginSubmit = (): UseLoginSubmitReturn => {
   const [loginMutation] = useLoginMutation()
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [error, setError] = useState<Error | null>(null)
+  const toast = useToast()
 
   const login = async (data: LoginCredentials): Promise<void> => {
     setIsLoading(true)
     setError(null)
 
     try {
-      // Call login API directly
       const response = await loginMutation({
         email: data.email,
         password: data.password,
@@ -48,7 +49,8 @@ export const useLoginSubmit = (): UseLoginSubmitReturn => {
           !!data.rememberMe,
         )
 
-        // Redirect based on role
+        toast.success('Đăng nhập thành công!', `Chào mừng ${userData.email}`)
+
         if (userData.roles.includes('admin')) {
           router.push('/admin')
         } else {
@@ -59,8 +61,11 @@ export const useLoginSubmit = (): UseLoginSubmitReturn => {
         throw new Error(response.message || 'Login failed')
       }
     } catch (err) {
-      const error = err as Error
+      const error = err as any
       console.error('Login failed:', error)
+
+      const errorMessage = error?.data?.message || error?.message || 'Đăng nhập thất bại'
+      toast.error(errorMessage)
       setError(error)
       throw error // Let AuthForm handle the error display if needed
     } finally {

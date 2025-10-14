@@ -17,6 +17,8 @@ export interface User {
   name: string
   avatar?: string
   role: 'admin' | 'user' | 'vendor'
+  roles: string[]
+  approvedStatus?: string | null
 }
 
 export interface AuthContextType {
@@ -36,8 +38,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [isLoading, setIsLoading] = useState(true)
   const [shouldFetchProfile, setShouldFetchProfile] = useState(false)
   const router = useRouter()
-  const [loginMutation] = useLoginMutation()
-  const [registerMutation] = useRegisterMutation()
   const [logoutMutation] = useLogoutMutation()
   const toast = useToast()
   const { data: profileData, refetch: refetchProfile } = useProfileQuery(undefined, {
@@ -50,9 +50,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   useEffect(() => {
     if (profileData?.success && profileData.data) {
-      const { userId, email, roles } = profileData.data
+      const { userId, email, roles, approvedStatus } = profileData.data
 
-      // Determine user role based on roles array
       let userRole: 'admin' | 'user' | 'vendor' = 'user'
       if (roles.includes('admin')) {
         userRole = 'admin'
@@ -65,6 +64,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         email: email,
         name: email.split('@')[0],
         role: userRole,
+        roles: roles,
+        approvedStatus: approvedStatus,
         avatar: undefined,
       }
 
@@ -80,6 +81,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         // Regular user - redirect to categories or stay on current page
         if (typeof window !== 'undefined') {
           const currentPath = window.location.pathname
+          if (currentPath === '/marketing' || currentPath === '/') {
+            router.push('/categories')
+          }
         }
       }
       // else {

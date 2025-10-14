@@ -1,11 +1,11 @@
 'use client'
 
-import { VendorPage } from '@/features/vendor'
+import { VendorPage } from '@/features/vendor/update-vendor'
 import { motion } from 'motion/react'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
 
-export default function VendorManagementPage() {
+export default function VendorUpdatePage() {
   return (
     <div className="container mx-auto px-4 py-12">
       <motion.div
@@ -16,16 +16,16 @@ export default function VendorManagementPage() {
       >
         <div className="flex items-center gap-6 mb-8">
           <Link
-            href="/"
+            href="/vendor"
             className="p-3 rounded-2xl transition-all duration-200 cart-card border text-foreground hover:shadow-lg"
           >
             <ArrowLeft className="w-6 h-6" />
           </Link>
 
           <div>
-            <h1 className="text-4xl font-bold text-foreground">Đăng ký Vendor</h1>
+            <h1 className="text-4xl font-bold text-foreground">Cập nhật Vendor</h1>
             <p className="text-xl text-muted-foreground mt-2">
-              Trở thành đối tác bán hàng của chúng tôi
+              Cập nhật thông tin đối tác bán hàng
             </p>
           </div>
         </div>

@@ -13,10 +13,15 @@ import {
   useApproveVendorMutation,
   useRejectVendorMutation,
   useSuspendVendorMutation,
-} from '../../../services/vendor/vendor.service'
-import { CreateVendorRequest, VendorFilters, Vendor } from '../../../services/vendor/vendor.types'
+} from '@/services/vendor/vendor.service'
+import { CreateVendorRequest, VendorFilters, Vendor } from '@/services/vendor/vendor.types'
+import { useRouter } from 'next/navigation'
+import { useRoleGuard } from '@/hooks/useRoleGuard'
 
 export const useVendor = (filters?: VendorFilters) => {
+  const router = useRouter()
+  const { handleVendorUpdateSuccess } = useRoleGuard()
+
   // RTK Query hooks
   const [createVendorMutation, { isLoading: createLoading, error: createError }] =
     useCreateVendorMutation()
@@ -44,13 +49,7 @@ export const useVendor = (filters?: VendorFilters) => {
     refetch: refetchMyProfile,
   } = useGetMyVendorProfileQuery(undefined, { skip: true }) // Skip auto-fetch
 
-  // Method to get vendors by status
-  const getVendorsByStatus = useCallback(
-    (status: 'pending' | 'approved' | 'rejected' | 'suspended') => {
-      return useGetVendorsByStatusQuery(status)
-    },
-    [],
-  )
+  // Note: getVendorsByStatus removed - use useGetVendorsByStatusQuery directly in components
 
   // Actions
   const createVendor = useCallback(
@@ -62,9 +61,21 @@ export const useVendor = (filters?: VendorFilters) => {
 
   const updateVendor = useCallback(
     async (id: string, vendorData: Partial<CreateVendorRequest>) => {
-      return updateVendorMutation({ id, data: vendorData })
+      try {
+        const result = await updateVendorMutation({ id, data: vendorData }).unwrap()
+
+        // Refresh token and profile after successful update
+        await handleVendorUpdateSuccess()
+
+        toast.success('Cập nhật thông tin vendor thành công!')
+        return { data: result }
+      } catch (error: any) {
+        const errorMessage = error?.data?.message || error?.message || 'Cập nhật vendor thất bại!'
+        toast.error(errorMessage)
+        throw error
+      }
     },
-    [updateVendorMutation],
+    [updateVendorMutation, handleVendorUpdateSuccess],
   )
 
   const deleteVendor = useCallback(
@@ -98,20 +109,26 @@ export const useVendor = (filters?: VendorFilters) => {
   const handleSubmit = useCallback(
     async (data: CreateVendorRequest, onSuccess?: (vendor: any) => void) => {
       try {
-        const result = await createVendorMutation(data)
+        const result = await createVendorMutation(data).unwrap()
 
-        if ('data' in result) {
-          toast.success('Đăng ký vendor thành công!')
-          onSuccess?.(result.data.data)
-        } else if ('error' in result) {
-          toast.error('Đăng ký vendor thất bại!')
+        toast.success('Đăng ký vendor thành công!')
+
+        // Refresh token and profile after successful vendor registration
+        await handleVendorUpdateSuccess()
+
+        router.push('/vendor-update/status')
+        onSuccess?.(result.data)
+      } catch (error: any) {
+        if (error?.data?.message) {
+          toast.error(error.data.message)
+        } else if (error?.message) {
+          toast.error(error.message)
+        } else {
+          toast.error('Đăng ký vendor thất bại! Vui lòng thử lại.')
         }
-      } catch (err) {
-        console.error('Unexpected error:', err)
-        toast.error('Có lỗi xảy ra, vui lòng thử lại!')
       }
     },
-    [createVendorMutation],
+    [createVendorMutation, router, handleVendorUpdateSuccess],
   )
 
   return {
@@ -136,7 +153,7 @@ export const useVendor = (filters?: VendorFilters) => {
       suspendError ||
       fetchError ||
       profileError,
-    pagination: vendorsData?.pagination,
+    pagination: (vendorsData as any)?.pagination || undefined,
 
     // Actions
     createVendor,
@@ -145,7 +162,6 @@ export const useVendor = (filters?: VendorFilters) => {
     approveVendor,
     rejectVendor,
     suspendVendor,
-    getVendorsByStatus,
     handleSubmit,
 
     // Manual fetch methods
