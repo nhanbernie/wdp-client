@@ -35,7 +35,7 @@ export const store = configureStore({
       materialsApi.middleware,
       productsApi.middleware,
       vendorApi.middleware,
-      ordersApiSlice.middleware
+      ordersApiSlice.middleware,
       categoriesApi.middleware,
     ),
   devTools: process.env.NODE_ENV !== 'production',

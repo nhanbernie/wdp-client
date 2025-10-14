@@ -38,8 +38,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [isLoading, setIsLoading] = useState(true)
   const [shouldFetchProfile, setShouldFetchProfile] = useState(false)
   const router = useRouter()
-  const [loginMutation] = useLoginMutation()
-  const [registerMutation] = useRegisterMutation()
   const [logoutMutation] = useLogoutMutation()
   const toast = useToast()
   const { data: profileData, refetch: refetchProfile } = useProfileQuery(undefined, {
@@ -54,7 +52,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     if (profileData?.success && profileData.data) {
       const { userId, email, roles, approvedStatus } = profileData.data
 
-      // Determine user role based on roles array
       let userRole: 'admin' | 'user' | 'vendor' = 'user'
       if (roles.includes('admin')) {
         userRole = 'admin'
@@ -75,24 +72,32 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setUser(updatedUser)
       setShouldFetchProfile(false)
 
-      // Only redirect on initial login, not on every profile update
       if (typeof window !== 'undefined') {
         const currentPath = window.location.pathname
 
-        // Only redirect if user is on marketing page or root
-        if (currentPath === '/marketing' || currentPath === '/') {
-          if (updatedUser.role === 'admin') {
+        if (updatedUser.role === 'admin' && updatedUser.approvedStatus === null) {
+          if (!currentPath.startsWith('/admin')) {
             router.push('/admin')
-          } else if (updatedUser.role === 'vendor') {
-            // Check vendor approval status
-            if (updatedUser.approvedStatus === 'pending' || !updatedUser.approvedStatus) {
-              router.push('/vendor-update/status')
-            } else if (updatedUser.approvedStatus === 'approved') {
-              router.push('/vendor')
-            } else {
-              router.push('/vendor-update/status')
-            }
-          } else {
+          }
+        } else if (updatedUser.role === 'vendor' && updatedUser.approvedStatus === 'pending') {
+          if (!currentPath.startsWith('/vendor-update/status')) {
+            router.push('/vendor-update/status')
+          }
+        } else if (updatedUser.role === 'vendor' && updatedUser.approvedStatus === 'approved') {
+          if (!currentPath.startsWith('/vendor')) {
+            router.push('/vendor')
+          }
+        } else if (updatedUser.role === 'user' && updatedUser.approvedStatus === null) {
+          if (
+            currentPath.startsWith('/admin') ||
+            (currentPath.startsWith('/vendor') && !currentPath.startsWith('/vendor-update'))
+          ) {
+            router.push('/categories')
+          } else if (currentPath === '/marketing' || currentPath === '/') {
+            router.push('/categories')
+          }
+        } else {
+          if (currentPath === '/marketing' || currentPath === '/') {
             router.push('/categories')
           }
         }
