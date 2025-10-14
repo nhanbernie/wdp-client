@@ -5,7 +5,7 @@ import { useGetCategoriesQuery } from '@/services/categories/categories.service'
 
 export function useCategories(filters?: CategorySearchParams) {
   const { data, error, isLoading, isFetching, refetch } = useGetCategoriesQuery(
-    filters || { page: 1, limit: 20 },
+    filters || { page: 1, limit: 10 },
   )
 
   return {

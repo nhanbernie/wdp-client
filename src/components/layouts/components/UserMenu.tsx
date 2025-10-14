@@ -57,7 +57,7 @@ const UserMenu = ({ user: propUser }: UserMenuProps) => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <button className="flex items-center gap-2 p-2 rounded-lg hover:bg-muted transition-all duration-200">
+        <button className="flex items-center gap-2 py-1 rounded-lg hover:bg-[var(--primary)] transition-all duration-200 cursor-pointer">
           <div className="w-8 h-8 bg-muted rounded-full flex items-center justify-center">
             {currentUser?.avatar ? (
               <Image
@@ -84,23 +84,26 @@ const UserMenu = ({ user: propUser }: UserMenuProps) => {
                 <p className="text-xs leading-none text-muted-foreground">{currentUser.email}</p>
               </div>
             </DropdownMenuLabel>
-            <DropdownMenuSeparator />
+            <DropdownMenuSeparator className="bg-[#404040]" />
           </>
         )}
 
-        <DropdownMenuItem>
+        <DropdownMenuItem className="cursor-pointer hover:bg-[var(--primary)]">
           <User className="mr-2 h-4 w-4" />
           <span>Profile</span>
         </DropdownMenuItem>
 
-        <DropdownMenuItem>
+        <DropdownMenuItem className="cursor-pointer hover:bg-[var(--primary)]">
           <Settings className="mr-2 h-4 w-4" />
           <span>Settings</span>
         </DropdownMenuItem>
 
         <DropdownMenuSeparator />
 
-        <DropdownMenuItem onClick={logout} className="text-red-600 focus:text-red-600">
+        <DropdownMenuItem
+          onClick={logout}
+          className="text-red-600  cursor-pointer hover:bg-red-600 hover:text-white "
+        >
           <LogOut className="mr-2 h-4 w-4" />
           <span>Sign Out</span>
         </DropdownMenuItem>

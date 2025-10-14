@@ -54,7 +54,8 @@ export const useLoginSubmit = (): UseLoginSubmitReturn => {
         if (userData.roles.includes('admin')) {
           router.push('/admin')
         } else {
-          router.push('/categories')
+          // dang loi
+          router.push('/')
         }
       } else {
         throw new Error(response.message || 'Login failed')

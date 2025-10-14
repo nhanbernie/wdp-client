@@ -14,7 +14,7 @@ export const Breadcrumb: React.FC<BreadcrumbProps> = ({ category, productName, c
     <motion.nav
       initial={{ opacity: 0, y: -10 }}
       animate={{ opacity: 1, y: 0 }}
-      className="flex items-center space-x-2 text-sm mb-8 text-muted-foreground"
+      className="flex items-center space-x-2 text-sm text-muted-foreground py-5"
     >
       <Link href="/" className="hover:text-primary transition-colors">
         Trang chủ

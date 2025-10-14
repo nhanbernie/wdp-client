@@ -72,34 +72,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setUser(updatedUser)
       setShouldFetchProfile(false)
 
-      if (typeof window !== 'undefined') {
-        const currentPath = window.location.pathname
-
-        if (updatedUser.role === 'admin' && updatedUser.approvedStatus === null) {
-          if (!currentPath.startsWith('/admin')) {
-            router.push('/admin')
-          }
-        } else if (updatedUser.role === 'vendor' && updatedUser.approvedStatus === 'pending') {
-          if (!currentPath.startsWith('/vendor-update/status')) {
-            router.push('/vendor-update/status')
-          }
-        } else if (updatedUser.role === 'vendor' && updatedUser.approvedStatus === 'approved') {
-          if (!currentPath.startsWith('/vendor')) {
-            router.push('/vendor')
-          }
-        } else if (updatedUser.role === 'user' && updatedUser.approvedStatus === null) {
-          if (
-            currentPath.startsWith('/admin') ||
-            (currentPath.startsWith('/vendor') && !currentPath.startsWith('/vendor-update'))
-          ) {
-            router.push('/categories')
-          } else if (currentPath === '/marketing' || currentPath === '/') {
-            router.push('/categories')
-          }
-        } else {
-          if (currentPath === '/marketing' || currentPath === '/') {
-            router.push('/categories')
-          }
+      // Redirect based on role
+      if (updatedUser.role === 'admin') {
+        router.push('/admin')
+      } else if (updatedUser.role === 'vendor') {
+        router.push('/vendor')
+      } else {
+        // Regular user - redirect to categories or stay on current page
+        if (typeof window !== 'undefined') {
+          const currentPath = window.location.pathname
+          // if (currentPath === '/marketing' || currentPath === '/') {
+          //   router.push('/categories')
+          // }
         }
       }
       // else {
