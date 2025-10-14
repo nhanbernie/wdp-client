@@ -1,16 +1,16 @@
-"use client";
+'use client'
 
-import { Badge } from "@/components/ui/badge";
-import { Star } from "lucide-react";
+import { Badge } from '@/components/ui/badge'
+import { Star } from 'lucide-react'
 
 interface ProductInfoProps {
-  category?: string;
-  name: string;
-  brand?: string;
-  price: number;
-  salePrice?: number;
-  colors: any;
-  brandColors: any;
+  category?: string
+  name: string
+  brand?: string
+  price: number
+  salePrice?: number
+  colors: any
+  brandColors: any
 }
 
 export const ProductInfo: React.FC<ProductInfoProps> = ({
@@ -41,7 +41,7 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({
               <Star
                 key={i}
                 className={`h-5 w-5 ${
-                  i < 4 ? "fill-yellow-400 text-yellow-400" : "text-muted-foreground"
+                  i < 4 ? 'fill-yellow-400 text-yellow-400' : 'text-muted-foreground'
                 }`}
               />
             ))}
@@ -56,18 +56,16 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({
         {salePrice ? (
           <>
             <span className="text-3xl font-bold text-primary">
-              {salePrice.toLocaleString("vi-VN")} ₫
+              {salePrice.toLocaleString('vi-VN')} ₫
             </span>
             <span className="text-lg line-through text-muted-foreground">
-              {price.toLocaleString("vi-VN")} ₫
+              {price.toLocaleString('vi-VN')} ₫
             </span>
           </>
         ) : (
-          <span className="text-3xl font-bold text-primary">
-            {price.toLocaleString("vi-VN")} ₫
-          </span>
+          <span className="text-3xl font-bold text-primary">{price.toLocaleString('vi-VN')} ₫</span>
         )}
       </div>
     </div>
-  );
-};
+  )
+}

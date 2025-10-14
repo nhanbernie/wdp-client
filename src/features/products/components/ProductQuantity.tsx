@@ -1,7 +1,7 @@
-"use client";
+'use client'
 
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
+import { useState } from 'react'
+import { Button } from '@/components/ui/button'
 import {
   Minus,
   Plus,
@@ -12,22 +12,19 @@ import {
   Truck,
   RefreshCw,
   ShieldCheck,
-} from "lucide-react";
+} from 'lucide-react'
 
 interface ProductQuantityProps {
-  stock?: number;
-  colors: any;
+  stock?: number
+  colors: any
 }
 
-export const ProductQuantity: React.FC<ProductQuantityProps> = ({
-  stock,
-  colors,
-}) => {
-  const [quantity, setQuantity] = useState(1);
+export const ProductQuantity: React.FC<ProductQuantityProps> = ({ stock, colors }) => {
+  const [quantity, setQuantity] = useState(1)
 
   const handleQuantityChange = (change: number) => {
-    setQuantity((prev) => Math.max(1, Math.min(stock ?? 9999, prev + change)));
-  };
+    setQuantity((prev) => Math.max(1, Math.min(stock ?? 9999, prev + change)))
+  }
 
   return (
     <div className="space-y-6">
@@ -56,9 +53,7 @@ export const ProductQuantity: React.FC<ProductQuantityProps> = ({
               <Plus className="h-4 w-4" />
             </Button>
           </div>
-          <span className="text-sm text-muted-foreground">
-            {stock ?? "N/A"} sản phẩm có sẵn
-          </span>
+          <span className="text-sm text-muted-foreground">{stock ?? 'N/A'} sản phẩm có sẵn</span>
         </div>
       </div>
 
@@ -116,5 +111,5 @@ export const ProductQuantity: React.FC<ProductQuantityProps> = ({
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
