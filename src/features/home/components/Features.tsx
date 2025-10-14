@@ -59,7 +59,7 @@ const Features = () => {
               initial="hidden"
               whileInView="visible"
               viewport={{ once: true, amount: 0.3 }}
-              className="flex flex-col items-center justify-center gap-3 p-6 sm:p-8 rounded-xl bg-gray-200 shadow-sm hover:shadow-md transition"
+              className="flex flex-col items-center justify-center gap-3 p-6 sm:p-8 rounded-xl bg-[var(--card-background)] shadow-sm hover:shadow-md transition"
             >
               {item.icon}
               <p className="font-semibold text-center text-sm sm:text-base md:text-lg text-gray-800">

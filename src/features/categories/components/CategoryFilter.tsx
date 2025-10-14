@@ -17,7 +17,7 @@ export function CategoryFilter() {
   useEffect(() => {
     const categoryFromUrl = searchParams.get('categoryId') || ''
     setSelectedCategory(categoryFromUrl)
-  }, [searchParams]) // 👈 khi searchParams thay đổi (ví dụ do ClearFiltersButton), component sẽ sync lại state
+  }, [searchParams])
 
   const handleSelect = (id: string) => {
     const newSelected = selectedCategory === id ? '' : id
@@ -54,18 +54,16 @@ export function CategoryFilter() {
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               onClick={() => handleSelect(category.id)}
-              className={`flex items-center justify-between cursor-pointer rounded-lg px-3 py-2 transition-all border
+              className={`flex items-center justify-between cursor-pointer rounded-lg px-3 py-2 transition-all
                 ${
                   isSelected
                     ? 'bg-[var(--primary)] text-white border-[var(--primary)]'
-                    : 'hover:bg-[var(--primary)] border-transparent text-foreground'
+                    : 'hover:bg-[var(--primary)] hover:text-[var(--primary-foreground)] text-foreground'
                 }
               `}
             >
               <p className="font-medium text-[0.9rem]">{category.name}</p>
-              <div className={`text-[0.9rem] ${isSelected ? 'bg-background text-foreground' : ''}`}>
-                {category.productCount}
-              </div>
+              <p className="text-[0.9rem]">{category.productCount}</p>
             </motion.div>
           )
         })}

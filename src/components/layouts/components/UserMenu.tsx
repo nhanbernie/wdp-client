@@ -57,7 +57,7 @@ const UserMenu = ({ user: propUser }: UserMenuProps) => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <button className="flex items-center gap-2 p-2 rounded-lg hover:bg-muted transition-all duration-200">
+        <button className="flex items-center gap-2 py-1 rounded-lg hover:bg-[var(--primary)] transition-all duration-200 cursor-pointer">
           <div className="w-8 h-8 bg-muted rounded-full flex items-center justify-center">
             {currentUser?.avatar ? (
               <Image

@@ -26,7 +26,7 @@ const Header = () => {
 
   return (
     <>
-      <div className="w-full h-[var(--header-height)] z-50 fixed bg-black md:px-36 flex items-center justify-between">
+      <div className="w-full h-[var(--header-height)] z-50 fixed bg-[var(--background)] shadow-xl md:px-36 flex items-center justify-between">
         <div className="flex items-center w-1/2">
           {/* Logo section */}
           <div className="">

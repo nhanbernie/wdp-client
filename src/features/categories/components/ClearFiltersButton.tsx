@@ -19,7 +19,7 @@ export function ClearFiltersButton() {
     >
       <Button
         onClick={handleClear}
-        className="w-full bg-[var(--primary)] text-sm font-medium hover:opacity-80 hover:text-white transition-all cursor-pointer"
+        className="w-full bg-[var(--primary)] text-sm font-medium hover:opacity-80 text-[var(--primary-foreground)] transition-all cursor-pointer"
       >
         Xóa tất cả bộ lọc
       </Button>

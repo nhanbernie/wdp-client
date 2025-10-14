@@ -32,11 +32,7 @@ const NavigateButtons = () => {
         return (
           <Button
             key={item.text}
-            className={`cursor-pointer font-semibold ${
-              theme === 'dark'
-                ? 'text-white hover:text-[var(--primary)]'
-                : 'text-black hover:text-[var(--primary)]'
-            }`}
+            className={`cursor-pointer font-medium text-[var(--foreground)] hover:text-[var(--primary)] shadow-none`}
             onClick={() => handleNavigate(item.path)}
           >
             {item.text}

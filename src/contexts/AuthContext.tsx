@@ -81,9 +81,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         // Regular user - redirect to categories or stay on current page
         if (typeof window !== 'undefined') {
           const currentPath = window.location.pathname
-          if (currentPath === '/marketing' || currentPath === '/') {
-            router.push('/categories')
-          }
+          // if (currentPath === '/marketing' || currentPath === '/') {
+          //   router.push('/categories')
+          // }
         }
       }
       // else {
