@@ -1,94 +1,101 @@
 // API Configuration
 export const API_CONFIG = {
-  BASE_URL: process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000/api",
+  BASE_URL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api',
   TIMEOUT: 30000,
   RETRY_ATTEMPTS: 3,
-};
+}
 
 // API Endpoints
 export const API_ENDPOINTS = {
   // Authentication endpoints
   AUTH: {
-    LOGIN: "/auth/login",
-    REGISTER: "/auth/register",
-    REFRESH: "/auth/refresh",
-    LOGOUT: "/auth/logout",
-    FORGOT_PASSWORD: "/auth/forgot-password",
-    RESET_PASSWORD: "/auth/reset-password",
-    CHANGE_PASSWORD: "/auth/change-password",
-    VERIFY_EMAIL: "/auth/verify-email",
-    RESEND_VERIFICATION: "/auth/resend-verification",
-    PROFILE: "/auth/profile",
-    EXCHANGE_CODE: "/auth/exchange/code",
+    LOGIN: '/auth/login',
+    REGISTER: '/auth/register',
+    REFRESH: '/auth/refresh',
+    LOGOUT: '/auth/logout',
+    FORGOT_PASSWORD: '/auth/forgot-password',
+    RESET_PASSWORD: '/auth/reset-password',
+    CHANGE_PASSWORD: '/auth/change-password',
+    VERIFY_EMAIL: '/auth/verify-email',
+    RESEND_VERIFICATION: '/auth/resend-verification',
+    PROFILE: '/auth/profile',
+    EXCHANGE_CODE: '/auth/exchange/code',
   },
 
   // User endpoints
   USER: {
-    PROFILE: "/user/profile",
-    UPDATE_PROFILE: "/user/profile",
-    UPLOAD_AVATAR: "/user/avatar",
-    DELETE_ACCOUNT: "/user/delete",
-    CHANGE_PASSWORD: "/user/change-password",
+    PROFILE: '/user/profile',
+    UPDATE_PROFILE: '/user/profile',
+    UPLOAD_AVATAR: '/user/avatar',
+    DELETE_ACCOUNT: '/user/delete',
+    CHANGE_PASSWORD: '/user/change-password',
   },
 
   // OTP endpoints
   OTP: {
-    CREATE: "/otp/create",
-    VERIFY: "/otp/verify",
-    RESEND: "/otp/resend",
+    CREATE: '/otp/create',
+    VERIFY: '/otp/verify',
+    RESEND: '/otp/resend',
   },
 
   // Construction Materials endpoints
   MATERIALS: {
-    LIST: "/materials",
-    CATEGORIES: "/materials/categories",
-    SEARCH: "/materials/search",
-    DETAILS: "/materials/:id",
-    CREATE: "/materials",
-    UPDATE: "/materials/:id",
-    DELETE: "/materials/:id",
+    LIST: '/materials',
+    CATEGORIES: '/materials/categories',
+    SEARCH: '/materials/search',
+    DETAILS: '/materials/:id',
+    CREATE: '/materials',
+    UPDATE: '/materials/:id',
+    DELETE: '/materials/:id',
   },
 
   // Orders endpoints
   ORDERS: {
-    LIST: "/orders",
-    CREATE: "/orders",
-    DETAILS: "/orders/:id",
-    UPDATE: "/orders/:id",
-    CANCEL: "/orders/:id/cancel",
-    HISTORY: "/orders/history",
+    LIST: '/orders',
+    CREATE: '/orders',
+    DETAILS: '/orders/:id',
+    UPDATE: '/orders/:id',
+    CANCEL: '/orders/:id/cancel',
+    HISTORY: '/orders/history',
   },
 
   // Quotes endpoints
   QUOTES: {
-    REQUEST: "/quotes/request",
-    LIST: "/quotes",
-    DETAILS: "/quotes/:id",
-    ACCEPT: "/quotes/:id/accept",
-    DECLINE: "/quotes/:id/decline",
+    REQUEST: '/quotes/request',
+    LIST: '/quotes',
+    DETAILS: '/quotes/:id',
+    ACCEPT: '/quotes/:id/accept',
+    DECLINE: '/quotes/:id/decline',
   },
 
   // Suppliers endpoints
   SUPPLIERS: {
-    LIST: "/suppliers",
-    DETAILS: "/suppliers/:id",
-    MATERIALS: "/suppliers/:id/materials",
+    LIST: '/suppliers',
+    DETAILS: '/suppliers/:id',
+    MATERIALS: '/suppliers/:id/materials',
   },
 
   // Admin endpoints
   ADMIN: {
-    USERS: "/admin/users",
-    MATERIALS: "/admin/materials",
-    ORDERS: "/admin/orders",
-    SUPPLIERS: "/admin/suppliers",
-    ANALYTICS: "/admin/analytics",
+    USERS: '/admin/users',
+    MATERIALS: '/admin/materials',
+    ORDERS: '/admin/orders',
+    SUPPLIERS: '/admin/suppliers',
+    ANALYTICS: '/admin/analytics',
   },
+
+  // Products endpoints
   PRODUCTS: {
-    LIST: "/products",
+    LIST: '/products',
     DETAILS: (id: string) => `/products/${id}`,
-    DETAILS_PATTERN: "/products/",
+    DETAILS_PATTERN: '/products/',
   },
-};
+
+  // Categories endpoints
+  CATEGORIES: {
+    LIST: '/categories',
+  },
+}
 
 // Public endpoints that don't require authentication
 export const PUBLIC_ENDPOINTS = [
@@ -111,7 +118,7 @@ export const PUBLIC_ENDPOINTS = [
   API_ENDPOINTS.SUPPLIERS.MATERIALS,
   API_ENDPOINTS.PRODUCTS.LIST,
   API_ENDPOINTS.PRODUCTS.DETAILS_PATTERN,
-];
+]
 
 // HTTP Status Codes
 export const HTTP_STATUS = {
@@ -127,16 +134,16 @@ export const HTTP_STATUS = {
   INTERNAL_SERVER_ERROR: 500,
   BAD_GATEWAY: 502,
   SERVICE_UNAVAILABLE: 503,
-};
+}
 
 // Error Messages
 export const API_ERROR_MESSAGES = {
-  NETWORK_ERROR: "Network error. Please check your connection.",
-  TIMEOUT_ERROR: "Request timeout. Please try again.",
-  UNAUTHORIZED: "You are not authorized to perform this action.",
-  FORBIDDEN: "Access denied.",
-  NOT_FOUND: "Resource not found.",
-  VALIDATION_ERROR: "Please check your input and try again.",
-  SERVER_ERROR: "Server error. Please try again later.",
-  UNKNOWN_ERROR: "An unexpected error occurred.",
-};
+  NETWORK_ERROR: 'Network error. Please check your connection.',
+  TIMEOUT_ERROR: 'Request timeout. Please try again.',
+  UNAUTHORIZED: 'You are not authorized to perform this action.',
+  FORBIDDEN: 'Access denied.',
+  NOT_FOUND: 'Resource not found.',
+  VALIDATION_ERROR: 'Please check your input and try again.',
+  SERVER_ERROR: 'Server error. Please try again later.',
+  UNKNOWN_ERROR: 'An unexpected error occurred.',
+}

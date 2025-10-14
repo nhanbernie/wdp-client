@@ -71,10 +71,8 @@
   --warning: #f59e0b;
   --error: #ef4444;
 
-  /* Card specific colors - Dark theme */
-  --cart-card: #1a1a1a; /* Dark but brighter than background */
-  --cart-card-hover: #2a2a2a; /* Slightly lighter on hover */
-  --cart-card-border: #333333; /* Subtle border for cart cards */
+  --header-height: 80px;
+  --header-horizontial-padding: 144px;
 }
 
 @layer base {
