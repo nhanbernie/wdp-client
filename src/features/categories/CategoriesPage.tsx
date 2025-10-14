@@ -40,13 +40,13 @@ const CategoriesPage: React.FC = () => {
         </motion.div>
 
         {/* Content */}
-        <div className="grid lg:grid-cols-3 gap-10">
+        <div className="grid lg:grid-cols-[280px_1fr] gap-6">
           {/* Sidebar */}
           <motion.aside
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
-            className="hidden lg:block space-y-6"
+            className="hidden lg:block space-y-4"
           >
             <CategoryFilter />
             <SearchFilters />
@@ -57,7 +57,6 @@ const CategoriesPage: React.FC = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.3 }}
-            className="lg:col-span-2"
           >
             <ProductGrid viewMode={viewMode} />
           </motion.div>
