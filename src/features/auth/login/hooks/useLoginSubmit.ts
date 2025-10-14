@@ -1,31 +1,31 @@
-"use client";
+'use client'
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { useLoginMutation } from "@/services/auth/auth.service";
-import { StorageService } from "@/services/storage/secureStorage.service";
+import { useState } from 'react'
+import { useRouter } from 'next/navigation'
+import { useLoginMutation } from '@/services/auth/auth.service'
+import { StorageService } from '@/services/storage/secureStorage.service'
 
 interface LoginCredentials {
-  email: string;
-  password: string;
-  rememberMe?: boolean;
+  email: string
+  password: string
+  rememberMe?: boolean
 }
 
 interface UseLoginSubmitReturn {
-  login: (data: LoginCredentials) => Promise<void>;
-  isLoading: boolean;
-  error: Error | null;
+  login: (data: LoginCredentials) => Promise<void>
+  isLoading: boolean
+  error: Error | null
 }
 
 export const useLoginSubmit = (): UseLoginSubmitReturn => {
-  const router = useRouter();
-  const [loginMutation] = useLoginMutation();
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [error, setError] = useState<Error | null>(null);
+  const router = useRouter()
+  const [loginMutation] = useLoginMutation()
+  const [isLoading, setIsLoading] = useState<boolean>(false)
+  const [error, setError] = useState<Error | null>(null)
 
   const login = async (data: LoginCredentials): Promise<void> => {
-    setIsLoading(true);
-    setError(null);
+    setIsLoading(true)
+    setError(null)
 
     try {
       // Call login API directly
@@ -33,10 +33,10 @@ export const useLoginSubmit = (): UseLoginSubmitReturn => {
         email: data.email,
         password: data.password,
         rememberMe: data.rememberMe,
-      }).unwrap();
+      }).unwrap()
 
       if (response.success && response.data) {
-        const { accessToken, refreshToken, user: userData } = response.data;
+        const { accessToken, refreshToken, user: userData } = response.data
 
         // Store tokens
         await StorageService.setTokenData(
@@ -45,32 +45,32 @@ export const useLoginSubmit = (): UseLoginSubmitReturn => {
             refresh_token: refreshToken,
             expires_in: 3600, // Default 1 hour
           },
-          !!data.rememberMe
-        );
+          !!data.rememberMe,
+        )
 
         // Redirect based on role
-        if (userData.roles.includes("admin")) {
-          router.push("/admin");
+        if (userData.roles.includes('admin')) {
+          router.push('/admin')
         } else {
-            // dang loi
-          router.push("/dashboard");
+          // dang loi
+          router.push('/')
         }
       } else {
-        throw new Error(response.message || "Login failed");
+        throw new Error(response.message || 'Login failed')
       }
     } catch (err) {
-      const error = err as Error;
-      console.error("Login failed:", error);
-      setError(error);
-      throw error; // Let AuthForm handle the error display if needed
+      const error = err as Error
+      console.error('Login failed:', error)
+      setError(error)
+      throw error // Let AuthForm handle the error display if needed
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
-  };
+  }
 
   return {
     login,
     isLoading,
     error,
-  };
-};
+  }
+}

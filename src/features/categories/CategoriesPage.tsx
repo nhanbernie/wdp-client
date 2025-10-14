@@ -8,13 +8,15 @@ import { useCategories } from './hooks'
 import { CategoryFilter } from './components/CategoryFilter'
 import { SearchFilters } from './components/SearchFilters'
 import { ProductGrid } from './components/ProductGrid'
+import { PriceFilter } from './components/PriceFilter'
+import { ClearFiltersButton } from './components/ClearFiltersButton'
 
 const CategoriesPage: React.FC = () => {
   const { viewMode } = useCategories()
 
   return (
     <div className="min-h-screen pt-20 bg-background">
-      <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-[var(--header-horizontal-padding)] py-8">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
@@ -40,7 +42,7 @@ const CategoriesPage: React.FC = () => {
         </motion.div>
 
         {/* Content */}
-        <div className="grid lg:grid-cols-3 gap-10">
+        <div className="grid lg:grid-cols-3 gap-4">
           {/* Sidebar */}
           <motion.aside
             initial={{ opacity: 0, x: -20 }}
@@ -49,7 +51,8 @@ const CategoriesPage: React.FC = () => {
             className="hidden lg:block space-y-6"
           >
             <CategoryFilter />
-            <SearchFilters />
+            <PriceFilter />
+            <ClearFiltersButton />
           </motion.aside>
 
           {/* Product Grid */}

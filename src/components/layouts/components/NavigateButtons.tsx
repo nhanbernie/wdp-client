@@ -13,17 +13,17 @@ const NavigateButtons = () => {
 
   const buttonItem: ButtonItem[] = [
     {
-      text: 'Category',
-      path: '',
+      text: 'Danh mục',
+      path: '/categories',
     },
     {
-      text: 'Quote',
+      text: 'Báo giá',
       path: '',
     },
   ]
 
   const handleNavigate = (path: string) => {
-    router.push(`/${path}`)
+    router.push(path)
   }
 
   return (

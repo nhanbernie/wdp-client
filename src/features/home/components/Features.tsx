@@ -38,7 +38,7 @@ const Features = () => {
   }
 
   return (
-    <div className="py-12 sm:py-16 mx-[var(--header-horizontial-padding)]">
+    <div className="py-12 sm:py-16 mx-[var(--header-horizontal-padding)]">
       <div className="max-w-7xl mx-auto">
         <motion.h2
           initial={{ opacity: 0, y: 20 }}

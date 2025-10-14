@@ -84,23 +84,26 @@ const UserMenu = ({ user: propUser }: UserMenuProps) => {
                 <p className="text-xs leading-none text-muted-foreground">{currentUser.email}</p>
               </div>
             </DropdownMenuLabel>
-            <DropdownMenuSeparator />
+            <DropdownMenuSeparator className="bg-[#404040]" />
           </>
         )}
 
-        <DropdownMenuItem>
+        <DropdownMenuItem className="cursor-pointer hover:bg-[var(--primary)]">
           <User className="mr-2 h-4 w-4" />
           <span>Profile</span>
         </DropdownMenuItem>
 
-        <DropdownMenuItem>
+        <DropdownMenuItem className="cursor-pointer hover:bg-[var(--primary)]">
           <Settings className="mr-2 h-4 w-4" />
           <span>Settings</span>
         </DropdownMenuItem>
 
         <DropdownMenuSeparator />
 
-        <DropdownMenuItem onClick={logout} className="text-red-600 focus:text-red-600">
+        <DropdownMenuItem
+          onClick={logout}
+          className="text-red-600  cursor-pointer hover:bg-red-600 hover:text-white "
+        >
           <LogOut className="mr-2 h-4 w-4" />
           <span>Sign Out</span>
         </DropdownMenuItem>
