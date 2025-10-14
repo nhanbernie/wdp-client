@@ -52,7 +52,7 @@ export const ProductForm: React.FC<ProductFormPropsNew> = ({ onCancel }) => {
   }
 
   return (
-    <form className="space-y-6">
+    <div className="space-y-6">
       <Tabs defaultValue="basic" className="w-full">
         <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="basic" className="gap-2">
@@ -267,6 +267,6 @@ export const ProductForm: React.FC<ProductFormPropsNew> = ({ onCancel }) => {
           {isSubmitting ? 'Đang lưu...' : 'Lưu sản phẩm'}
         </Button>
       </div>
-    </form>
+    </div>
   )
 }
