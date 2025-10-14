@@ -2,7 +2,7 @@
 
 import { useCallback } from 'react'
 import { useAuth } from '@/contexts/AuthContext'
-import { useProfileQuery } from '@/services/auth/auth.service'
+import { useProfileQuery, useRefreshTokenMutation } from '@/services/auth/auth.service'
 import { StorageService } from '@/services/storage/secureStorage.service'
 
 export const useRoleGuard = () => {
@@ -10,6 +10,7 @@ export const useRoleGuard = () => {
   const { refetch: refetchProfile } = useProfileQuery(undefined, {
     skip: true, // Skip automatic fetching, we'll call manually
   })
+  const [refreshTokenMutation] = useRefreshTokenMutation()
 
   const refreshTokenAndProfile = useCallback(async () => {
     try {
@@ -22,13 +23,28 @@ export const useRoleGuard = () => {
         return false
       }
 
-      // Call profile API to refresh user data
-      const result = await refetchProfile()
+      // Call refresh token API
+      const refreshResult = await refreshTokenMutation({ refreshToken }).unwrap()
 
-      if (result.data?.success) {
-        // Update user profile in context
-        await refreshUserProfile()
-        return true
+      if (refreshResult.success && refreshResult.data) {
+        // Store new tokens
+        await StorageService.setTokenData(
+          {
+            access_token: refreshResult.data.accessToken,
+            refresh_token: refreshResult.data.refreshToken,
+            expires_in: refreshResult.data.expiresIn || 3600,
+          },
+          true, // Remember me
+        )
+
+        // Call profile API to get updated user data with new roles
+        const profileResult = await refetchProfile()
+
+        if (profileResult.data?.success) {
+          // Update user profile in context
+          await refreshUserProfile()
+          return true
+        }
       }
 
       return false
@@ -36,7 +52,7 @@ export const useRoleGuard = () => {
       console.error('Error refreshing token and profile:', error)
       return false
     }
-  }, [refetchProfile, refreshUserProfile])
+  }, [refetchProfile, refreshUserProfile, refreshTokenMutation])
 
   const handleVendorUpdateSuccess = useCallback(async () => {
     try {
