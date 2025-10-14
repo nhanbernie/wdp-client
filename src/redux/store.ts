@@ -4,6 +4,7 @@ import { authApi } from '@/services/auth'
 import { userApi } from '@/services/user'
 import { materialsApi } from '@/services/materials'
 import { authReducer } from './slices/auth.slice'
+import { productReducer } from './slices/product.slice'
 import { productsApi } from '@/services/products'
 import { vendorApi } from '@/services/vendor/vendor.service'
 import { ordersApiSlice } from './slices/ordersApiSlice'
@@ -12,8 +13,9 @@ import { categoriesApi } from '@/services/categories/categories.service'
 
 export const store = configureStore({
   reducer: {
-    // Auth slice
+    // Local state slices
     auth: authReducer,
+    product: productReducer,
     // RTK Query APIs
     [authApi.reducerPath]: authApi.reducer,
     [userApi.reducerPath]: userApi.reducer,

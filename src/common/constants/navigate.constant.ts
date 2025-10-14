@@ -31,14 +31,16 @@ export const userNavigationItems: NavItem[] = [
   { label: 'Giỏ hàng', href: '/cart' },
 ]
 
-export const adminNavigationItems: NavItem[] = [
-  { label: 'Dashboard', href: '/admin' },
-  { label: 'Người dùng', href: '/admin/users' },
-  { label: 'Sản phẩm', href: '/admin/products' },
-  { label: 'Đơn hàng', href: '/admin/orders' },
-]
+import { LayoutDashboard, Package, ShoppingBag, BarChart3, User, Settings, Users } from 'lucide-react'
 
-import { LayoutDashboard, Package, ShoppingBag, BarChart3, User, Settings } from 'lucide-react'
+export const adminNavigationItems: NavItem[] = [
+  { label: 'Dashboard', href: '/admin', icon: LayoutDashboard },
+  { label: 'Quản lý User', href: '/admin/user-management', icon: Users },
+  { label: 'Sản phẩm', href: '/admin/products', icon: Package },
+  { label: 'Đơn hàng', href: '/admin/orders', icon: ShoppingBag },
+  { label: 'Thống kê', href: '/admin/analytics', icon: BarChart3 },
+  { label: 'Cài đặt', href: '/admin/settings', icon: Settings },
+]
 
 export const vendorNavigationItems: NavItem[] = [
   { label: 'Dashboard', href: '/vendor', icon: LayoutDashboard },

@@ -1,2 +1,6 @@
-export { productsEndpoint } from "./listProduct";
-export { productDetailEndpoint } from "./getProductDetail";
+export { productsEndpoint } from './listProduct'
+export { productDetailEndpoint } from './getProductDetail'
+export { createProductEndpoint } from './createProduct'
+export { updateProductEndpoint } from './updateProduct'
+export { deleteProductEndpoint } from './deleteProduct'
+export { getProductBySlugEndpoint } from './getProductBySlug'

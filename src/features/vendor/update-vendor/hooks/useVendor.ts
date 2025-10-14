@@ -49,13 +49,7 @@ export const useVendor = (filters?: VendorFilters) => {
     refetch: refetchMyProfile,
   } = useGetMyVendorProfileQuery(undefined, { skip: true }) // Skip auto-fetch
 
-  // Method to get vendors by status
-  const getVendorsByStatus = useCallback(
-    (status: 'pending' | 'approved' | 'rejected' | 'suspended') => {
-      return useGetVendorsByStatusQuery(status)
-    },
-    [],
-  )
+  // Note: getVendorsByStatus removed - use useGetVendorsByStatusQuery directly in components
 
   // Actions
   const createVendor = useCallback(
@@ -67,9 +61,21 @@ export const useVendor = (filters?: VendorFilters) => {
 
   const updateVendor = useCallback(
     async (id: string, vendorData: Partial<CreateVendorRequest>) => {
-      return updateVendorMutation({ id, data: vendorData })
+      try {
+        const result = await updateVendorMutation({ id, data: vendorData }).unwrap()
+
+        // Refresh token and profile after successful update
+        await handleVendorUpdateSuccess()
+
+        toast.success('Cập nhật thông tin vendor thành công!')
+        return { data: result }
+      } catch (error: any) {
+        const errorMessage = error?.data?.message || error?.message || 'Cập nhật vendor thất bại!'
+        toast.error(errorMessage)
+        throw error
+      }
     },
-    [updateVendorMutation],
+    [updateVendorMutation, handleVendorUpdateSuccess],
   )
 
   const deleteVendor = useCallback(
@@ -122,7 +128,7 @@ export const useVendor = (filters?: VendorFilters) => {
         }
       }
     },
-    [createVendorMutation, router, toast, handleVendorUpdateSuccess],
+    [createVendorMutation, router, handleVendorUpdateSuccess],
   )
 
   return {
@@ -156,7 +162,6 @@ export const useVendor = (filters?: VendorFilters) => {
     approveVendor,
     rejectVendor,
     suspendVendor,
-    getVendorsByStatus,
     handleSubmit,
 
     // Manual fetch methods
