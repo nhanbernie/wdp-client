@@ -7,6 +7,7 @@ import {
   useApproveVendorMutation,
   useRejectVendorMutation,
   useSuspendVendorMutation,
+  useDeleteVendorMutation,
 } from '@/services/vendor/vendor.service'
 import { VendorFilters } from '@/services/vendor/vendor.types'
 
@@ -23,6 +24,7 @@ export const useVendorManagement = (filters?: VendorFilters) => {
   const [approveVendorMutation, { isLoading: approving }] = useApproveVendorMutation()
   const [rejectVendorMutation, { isLoading: rejecting }] = useRejectVendorMutation()
   const [suspendVendorMutation, { isLoading: suspending }] = useSuspendVendorMutation()
+  const [deleteVendorMutation, { isLoading: deleting }] = useDeleteVendorMutation()
 
   const approveVendor = useCallback(
     async (id: string) => {
@@ -66,14 +68,29 @@ export const useVendorManagement = (filters?: VendorFilters) => {
     [suspendVendorMutation, refetch],
   )
 
+  const deleteVendor = useCallback(
+    async (id: string) => {
+      try {
+        await deleteVendorMutation(id).unwrap()
+        toast.success('Đã xóa vendor thành công!')
+        refetch()
+      } catch (error: any) {
+        const errorMessage = error?.data?.message || 'Xóa vendor thất bại!'
+        toast.error(errorMessage)
+      }
+    },
+    [deleteVendorMutation, refetch],
+  )
+
   return {
     vendors: vendorsData?.data || [],
     pagination: (vendorsData as any)?.pagination,
-    isLoading: isLoading || approving || rejecting || suspending,
+    isLoading: isLoading || approving || rejecting || suspending || deleting,
     error,
     approveVendor,
     rejectVendor,
     suspendVendor,
+    deleteVendor,
     refetch,
   }
 }

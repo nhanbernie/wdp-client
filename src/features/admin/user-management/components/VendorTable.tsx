@@ -12,7 +12,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui'
-import { Eye, MoreVertical, CheckCircle, XCircle, Ban } from 'lucide-react'
+import { Eye, MoreVertical, CheckCircle, XCircle, Ban, Trash2 } from 'lucide-react'
 import { Vendor } from '@/services/vendor/vendor.types'
 import { useRouter } from 'next/navigation'
 
@@ -21,10 +21,18 @@ interface VendorTableProps {
   onApprove: (id: string) => void
   onReject: (id: string) => void
   onSuspend: (id: string) => void
+  onDelete: (id: string) => void
   isLoading?: boolean
 }
 
-export function VendorTable({ vendors, onApprove, onReject, onSuspend, isLoading }: VendorTableProps) {
+export function VendorTable({
+  vendors,
+  onApprove,
+  onReject,
+  onSuspend,
+  onDelete,
+  isLoading,
+}: VendorTableProps) {
   const router = useRouter()
 
   const getStatusBadge = (status: string) => {
@@ -71,12 +79,20 @@ export function VendorTable({ vendors, onApprove, onReject, onSuspend, isLoading
       <table className="w-full">
         <thead className="bg-muted/50 border-b border-border">
           <tr>
-            <th className="px-4 py-3 text-left text-sm font-semibold text-foreground">Tên doanh nghiệp</th>
+            <th className="px-4 py-3 text-left text-sm font-semibold text-foreground">
+              Tên doanh nghiệp
+            </th>
             <th className="px-4 py-3 text-left text-sm font-semibold text-foreground">Email</th>
-            <th className="px-4 py-3 text-left text-sm font-semibold text-foreground">Số điện thoại</th>
-            <th className="px-4 py-3 text-left text-sm font-semibold text-foreground">Trạng thái</th>
+            <th className="px-4 py-3 text-left text-sm font-semibold text-foreground">
+              Số điện thoại
+            </th>
+            <th className="px-4 py-3 text-left text-sm font-semibold text-foreground">
+              Trạng thái
+            </th>
             <th className="px-4 py-3 text-left text-sm font-semibold text-foreground">Ngày tạo</th>
-            <th className="px-4 py-3 text-center text-sm font-semibold text-foreground">Thao tác</th>
+            <th className="px-4 py-3 text-center text-sm font-semibold text-foreground">
+              Thao tác
+            </th>
           </tr>
         </thead>
         <tbody className="divide-y divide-border">
@@ -86,22 +102,16 @@ export function VendorTable({ vendors, onApprove, onReject, onSuspend, isLoading
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.05 }}
-              className="hover:bg-muted/30 transition-colors"
+              className="hover:bg-muted/50 transition-colors duration-150"
             >
               <td className="px-4 py-3">
                 <div>
                   <p className="font-medium text-foreground">{vendor.businessName}</p>
-                  <p className="text-xs text-muted-foreground mt-0.5">
-                    Mã số thuế: {vendor.taxId}
-                  </p>
+                  <p className="text-xs text-muted-foreground mt-0.5">Mã số thuế: {vendor.taxId}</p>
                 </div>
               </td>
-              <td className="px-4 py-3 text-sm text-muted-foreground">
-                {vendor.businessEmail}
-              </td>
-              <td className="px-4 py-3 text-sm text-muted-foreground">
-                {vendor.businessPhone}
-              </td>
+              <td className="px-4 py-3 text-sm text-muted-foreground">{vendor.businessEmail}</td>
+              <td className="px-4 py-3 text-sm text-muted-foreground">{vendor.businessPhone}</td>
               <td className="px-4 py-3">{getStatusBadge(vendor.status)}</td>
               <td className="px-4 py-3 text-sm text-muted-foreground">
                 {formatDate(vendor.createdAt)}
@@ -118,37 +128,37 @@ export function VendorTable({ vendors, onApprove, onReject, onSuspend, isLoading
                     <DropdownMenuSeparator />
                     <DropdownMenuItem
                       onClick={() => router.push(`/admin/user-management/vendor/${vendor.id}`)}
+                      className="gap-2"
                     >
-                      <Eye className="mr-2 h-4 w-4" />
+                      <Eye className="h-4 w-4" />
                       Xem chi tiết
                     </DropdownMenuItem>
                     {vendor.status === 'pending' && (
                       <>
-                        <DropdownMenuItem
-                          onClick={() => onApprove(vendor.id)}
-                          className="text-green-600"
-                        >
-                          <CheckCircle className="mr-2 h-4 w-4" />
+                        <DropdownMenuItem onClick={() => onApprove(vendor.id)} className="gap-2">
+                          <CheckCircle className="h-4 w-4" />
                           Phê duyệt
                         </DropdownMenuItem>
-                        <DropdownMenuItem
-                          onClick={() => onReject(vendor.id)}
-                          className="text-red-600"
-                        >
-                          <XCircle className="mr-2 h-4 w-4" />
+                        <DropdownMenuItem onClick={() => onReject(vendor.id)} className="gap-2">
+                          <XCircle className="h-4 w-4" />
                           Từ chối
                         </DropdownMenuItem>
                       </>
                     )}
                     {vendor.status === 'approved' && (
-                      <DropdownMenuItem
-                        onClick={() => onSuspend(vendor.id)}
-                        className="text-orange-600"
-                      >
-                        <Ban className="mr-2 h-4 w-4" />
+                      <DropdownMenuItem onClick={() => onSuspend(vendor.id)} className="gap-2">
+                        <Ban className="h-4 w-4" />
                         Đình chỉ
                       </DropdownMenuItem>
                     )}
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem
+                      onClick={() => onDelete(vendor.id)}
+                      className="gap-2 text-destructive"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                      Xóa vendor
+                    </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
               </td>
