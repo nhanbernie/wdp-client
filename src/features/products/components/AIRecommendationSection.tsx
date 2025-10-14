@@ -40,7 +40,7 @@ export const AIRecommendationSection: React.FC<
   if (loading)
     return (
       <div className="flex justify-center items-center py-10">
-        <p>Đang phân tích AI...</p>
+        <p className="text-muted-foreground">Đang phân tích AI...</p>
       </div>
     );
 
@@ -48,7 +48,7 @@ export const AIRecommendationSection: React.FC<
     <section className="mt-16">
       <div className="flex items-center gap-2 mb-6">
         <Sparkles className="text-orange-400" />
-        <h2 className="text-2xl font-semibold">Sản phẩm AI gợi ý</h2>
+        <h2 className="text-2xl font-semibold text-foreground">Sản phẩm AI gợi ý</h2>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -59,7 +59,7 @@ export const AIRecommendationSection: React.FC<
             transition={{ duration: 0.2 }}
           >
             <Link href={`/products/${item.id}`}>
-              <Card className="rounded-2xl shadow-md overflow-hidden transition bg-secondary">
+              <Card className="rounded-2xl shadow-md overflow-hidden transition bg-card border-border hover:shadow-lg">
                 <Image
                   src={item.image}
                   alt={item.name}
@@ -68,8 +68,8 @@ export const AIRecommendationSection: React.FC<
                   className="w-full h-56 object-cover"
                 />
                 <CardContent className="p-4">
-                  <p className="text-lg font-medium">{item.name}</p>
-                  <p className="text-sm text-gray-500 mt-1">
+                  <p className="text-lg font-medium text-foreground">{item.name}</p>
+                  <p className="text-sm text-muted-foreground mt-1">
                     {item.description}
                   </p>
                   <span className="block font-semibold text-primary mt-2">

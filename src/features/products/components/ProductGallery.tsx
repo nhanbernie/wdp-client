@@ -25,10 +25,7 @@ export const ProductGallery: React.FC<ProductGalleryProps> = ({
       transition={{ duration: 0.4 }}
       className="space-y-4"
     >
-      <div
-        className="aspect-square rounded-lg overflow-hidden shadow"
-        style={{ backgroundColor: colors.cardBackgroundSecondary }}
-      >
+      <div className="aspect-square rounded-lg overflow-hidden shadow-lg bg-card border border-border">
         <img
           src={images?.[selectedImage]?.url || thumbnail || "/placeholder.svg"}
           alt={name}
@@ -43,7 +40,7 @@ export const ProductGallery: React.FC<ProductGalleryProps> = ({
             key={image.id}
             onClick={() => setSelectedImage(index)}
             className={`aspect-square rounded-lg overflow-hidden border-2 transition-colors ${
-              selectedImage === index ? "border-blue-500" : "border-transparent"
+              selectedImage === index ? "border-primary" : "border-transparent"
             }`}
           >
             <img

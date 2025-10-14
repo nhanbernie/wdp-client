@@ -13,14 +13,15 @@ import {
   useApproveVendorMutation,
   useRejectVendorMutation,
   useSuspendVendorMutation,
-} from '../../../../services/vendor/vendor.service'
-import {
-  CreateVendorRequest,
-  VendorFilters,
-  Vendor,
-} from '../../../../services/vendor/vendor.types'
+} from '@/services/vendor/vendor.service'
+import { CreateVendorRequest, VendorFilters, Vendor } from '@/services/vendor/vendor.types'
+import { useRouter } from 'next/navigation'
+import { useRoleGuard } from '@/hooks/useRoleGuard'
 
 export const useVendor = (filters?: VendorFilters) => {
+  const router = useRouter()
+  const { handleVendorUpdateSuccess } = useRoleGuard()
+
   // RTK Query hooks
   const [createVendorMutation, { isLoading: createLoading, error: createError }] =
     useCreateVendorMutation()
@@ -102,20 +103,26 @@ export const useVendor = (filters?: VendorFilters) => {
   const handleSubmit = useCallback(
     async (data: CreateVendorRequest, onSuccess?: (vendor: any) => void) => {
       try {
-        const result = await createVendorMutation(data)
+        const result = await createVendorMutation(data).unwrap()
 
-        if ('data' in result) {
-          toast.success('Đăng ký vendor thành công!')
-          onSuccess?.(result.data.data)
-        } else if ('error' in result) {
-          toast.error('Đăng ký vendor thất bại!')
+        toast.success('Đăng ký vendor thành công!')
+
+        // Refresh token and profile after successful vendor registration
+        await handleVendorUpdateSuccess()
+
+        router.push('/vendor-update/status')
+        onSuccess?.(result.data)
+      } catch (error: any) {
+        if (error?.data?.message) {
+          toast.error(error.data.message)
+        } else if (error?.message) {
+          toast.error(error.message)
+        } else {
+          toast.error('Đăng ký vendor thất bại! Vui lòng thử lại.')
         }
-      } catch (err) {
-        console.error('Unexpected error:', err)
-        toast.error('Có lỗi xảy ra, vui lòng thử lại!')
       }
     },
-    [createVendorMutation],
+    [createVendorMutation, router, toast, handleVendorUpdateSuccess],
   )
 
   return {
@@ -140,7 +147,7 @@ export const useVendor = (filters?: VendorFilters) => {
       suspendError ||
       fetchError ||
       profileError,
-    pagination: vendorsData?.pagination,
+    pagination: (vendorsData as any)?.pagination || undefined,
 
     // Actions
     createVendor,

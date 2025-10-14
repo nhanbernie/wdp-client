@@ -18,18 +18,17 @@ export const Breadcrumb: React.FC<BreadcrumbProps> = ({
     <motion.nav
       initial={{ opacity: 0, y: -10 }}
       animate={{ opacity: 1, y: 0 }}
-      className="flex items-center space-x-2 text-sm mb-8"
-      style={{ color: colors.textSecondary }}
+      className="flex items-center space-x-2 text-sm mb-8 text-muted-foreground"
     >
-      <Link href="/" className="hover:text-blue-600">
+      <Link href="/" className="hover:text-primary transition-colors">
         Trang chủ
       </Link>
       <span>/</span>
-      <Link href="/categories" className="hover:text-blue-600">
+      <Link href="/categories" className="hover:text-primary transition-colors">
         {category || "Danh mục"}
       </Link>
       <span>/</span>
-      <span style={{ color: colors.text }}>{productName}</span>
+      <span className="text-foreground">{productName}</span>
     </motion.nav>
   );
 };

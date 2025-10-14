@@ -33,12 +33,9 @@ export const ProductQuantity: React.FC<ProductQuantityProps> = ({
     <div className="space-y-6">
       {/* Quantity Selector */}
       <div>
-        <label className="text-sm font-medium mb-2 block">Số lượng</label>
+        <label className="text-sm font-medium mb-2 block text-foreground">Số lượng</label>
         <div className="flex items-center gap-4">
-          <div
-            className="flex items-center rounded-lg border shadow-sm  overflow-hidden"
-            style={{ borderColor: colors.border }}
-          >
+          <div className="flex items-center rounded-lg border border-border shadow-sm overflow-hidden bg-card">
             <Button
               variant="ghost"
               size="icon"
@@ -47,7 +44,7 @@ export const ProductQuantity: React.FC<ProductQuantityProps> = ({
             >
               <Minus className="h-4 w-4" />
             </Button>
-            <span className="px-6 py-2 min-w-[70px] text-center font-semibold text-lg">
+            <span className="px-6 py-2 min-w-[70px] text-center font-semibold text-lg text-foreground">
               {quantity}
             </span>
             <Button
@@ -59,7 +56,7 @@ export const ProductQuantity: React.FC<ProductQuantityProps> = ({
               <Plus className="h-4 w-4" />
             </Button>
           </div>
-          <span className="text-sm text-gray-500">
+          <span className="text-sm text-muted-foreground">
             {stock ?? "N/A"} sản phẩm có sẵn
           </span>
         </div>
@@ -74,7 +71,7 @@ export const ProductQuantity: React.FC<ProductQuantityProps> = ({
           <ShoppingCart className="h-5 w-5 mr-2" />
           Thêm vào giỏ
         </Button>
-        <Button variant="outline" size="lg" className="rounded-lg ">
+        <Button variant="outline" size="lg" className="rounded-lg">
           <FileText className="h-5 w-5 mr-2" />
           Yêu cầu báo giá
         </Button>
@@ -86,7 +83,7 @@ export const ProductQuantity: React.FC<ProductQuantityProps> = ({
           variant="outline"
           size="icon"
           title="Yêu thích"
-          className="rounded-full hover:bg-red-50 hover:text-red-500"
+          className="rounded-full hover:bg-red-50 hover:text-red-500 dark:hover:bg-red-950"
         >
           <Heart className="h-5 w-5" />
         </Button>
@@ -94,28 +91,28 @@ export const ProductQuantity: React.FC<ProductQuantityProps> = ({
           variant="outline"
           size="icon"
           title="Chia sẻ"
-          className="rounded-full hover:bg-blue-50 hover:text-blue-500"
+          className="rounded-full hover:bg-blue-50 hover:text-blue-500 dark:hover:bg-blue-950"
         >
           <Share2 className="h-5 w-5" />
         </Button>
       </div>
 
       {/* Extra Info Section */}
-      <div className="border-t pt-6 grid grid-cols-3 gap-4 text-center text-sm">
+      <div className="border-t border-border pt-6 grid grid-cols-3 gap-4 text-center text-sm">
         <div className="flex flex-col items-center gap-1">
           <Truck className="h-5 w-5 text-orange-500" />
-          <p className="font-medium">Giao nhanh</p>
-          <p className="text-gray-500">2-3 ngày</p>
+          <p className="font-medium text-foreground">Giao nhanh</p>
+          <p className="text-muted-foreground">2-3 ngày</p>
         </div>
         <div className="flex flex-col items-center gap-1">
           <ShieldCheck className="h-5 w-5 text-green-500" />
-          <p className="font-medium">Bảo hành</p>
-          <p className="text-gray-500">6 tháng</p>
+          <p className="font-medium text-foreground">Bảo hành</p>
+          <p className="text-muted-foreground">6 tháng</p>
         </div>
         <div className="flex flex-col items-center gap-1">
           <RefreshCw className="h-5 w-5 text-blue-500" />
-          <p className="font-medium">Đổi trả</p>
-          <p className="text-gray-500">7 ngày</p>
+          <p className="font-medium text-foreground">Đổi trả</p>
+          <p className="text-muted-foreground">7 ngày</p>
         </div>
       </div>
     </div>

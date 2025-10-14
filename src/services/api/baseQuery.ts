@@ -6,7 +6,6 @@ import {
 } from "@reduxjs/toolkit/query/react";
 import { API_CONFIG, API_ENDPOINTS, PUBLIC_ENDPOINTS } from "@/common/constants/endpoint.constant";
 import { StorageService } from "@/services/storage/secureStorage.service";
-
 const getUrlFromArgs = (arg: any) => {
   if (typeof arg === "string") return arg;
   if (typeof arg === "object" && arg.url) return arg.url;

@@ -65,16 +65,15 @@ export const ProductTabs: React.FC<ProductTabsProps> = ({
           return (
             <div
               key={key}
-              className="flex items-center justify-between border-b pb-2 hover:bg-muted/40 transition-colors rounded-md px-2"
-              style={{ borderColor: colors.border }}
+              className="flex items-center justify-between border-b border-border pb-2 hover:bg-muted/40 transition-colors rounded-md px-2"
             >
               <div className="flex items-center gap-2">
                 {getIcon()}
-                <span className="capitalize font-medium text-gray-800 dark:text-gray-200">
+                <span className="capitalize font-medium text-foreground">
                   {key.replace(/_/g, " ")}
                 </span>
               </div>
-              <span className="text-gray-600 dark:text-gray-300 font-medium">
+              <span className="text-muted-foreground font-medium">
                 {displayValue}
               </span>
             </div>
@@ -86,13 +85,8 @@ export const ProductTabs: React.FC<ProductTabsProps> = ({
 
   return (
     <Tabs defaultValue="description" className="mb-12">
-      <TabsList
-        className="grid w-full grid-cols-3 border rounded-lg overflow-hidden"
-        style={{
-          backgroundColor: colors.cardBackgroundSecondary,
-          borderColor: colors.border,
-        }}
-      >
+      <TabsList className="grid w-full grid-cols-3 rounded-lg bg-card border border-border">
+
         {["description", "specifications", "reviews"].map((tab) => (
           <TabsTrigger
             key={tab}
@@ -115,18 +109,13 @@ export const ProductTabs: React.FC<ProductTabsProps> = ({
 
       {/* Tab mô tả */}
       <TabsContent value="description" className="mt-6">
-        <Card
-          style={{
-            backgroundColor: colors.cardBackground,
-            borderColor: colors.border,
-          }}
-        >
+        <Card className="bg-card border-border">
           <CardContent className="p-6">
             <h3 className="text-2xl font-bold mb-4 text-primary">
               Mô tả sản phẩm
             </h3>
             <div
-              className="prose prose-sm sm:prose-base max-w-none text-gray-800 dark:text-gray-200 leading-relaxed"
+              className="prose prose-sm sm:prose-base max-w-none text-foreground leading-relaxed"
               dangerouslySetInnerHTML={{ __html: description || "" }}
             />
           </CardContent>
@@ -135,12 +124,7 @@ export const ProductTabs: React.FC<ProductTabsProps> = ({
 
       {/* Tab thông số kỹ thuật */}
       <TabsContent value="specifications" className="mt-6">
-        <Card
-          style={{
-            backgroundColor: colors.cardBackground,
-            borderColor: colors.border,
-          }}
-        >
+        <Card className="bg-card border-border">
           <CardContent className="p-6">
             <h3 className="text-2xl font-bold mb-4 text-primary">
               Thông số kỹ thuật
@@ -152,17 +136,12 @@ export const ProductTabs: React.FC<ProductTabsProps> = ({
 
       {/* Tab đánh giá */}
       <TabsContent value="reviews" className="mt-6">
-        <Card
-          style={{
-            backgroundColor: colors.cardBackground,
-            borderColor: colors.border,
-          }}
-        >
+        <Card className="bg-card border-border">
           <CardContent className="p-6 text-center">
             <h3 className="text-2xl font-bold mb-4 text-primary">
               Đánh giá khách hàng
             </h3>
-            <div className="py-8 text-gray-500 dark:text-gray-400">
+            <div className="py-8 text-muted-foreground">
               <MessageCircle className="h-12 w-12 mx-auto mb-4 opacity-60" />
               <p className="text-base">
                 Tính năng đánh giá sẽ được cập nhật sớm
