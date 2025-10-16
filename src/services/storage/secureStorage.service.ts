@@ -29,6 +29,47 @@ export interface StoredUserData {
 class SecureStorageService {
   private isClient = typeof window !== "undefined";
 
+  // Cookie helper methods
+  private setCookie(name: string, value: string, days = 7): void {
+    if (!this.isClient) return;
+    
+    try {
+      const expires = new Date();
+      expires.setTime(expires.getTime() + days * 24 * 60 * 60 * 1000);
+      document.cookie = `${name}=${value};expires=${expires.toUTCString()};path=/;SameSite=Lax`;
+    } catch (error) {
+      console.error(`Error setting cookie ${name}:`, error);
+    }
+  }
+
+  private getCookie(name: string): string | null {
+    if (!this.isClient) return null;
+    
+    try {
+      const nameEQ = name + "=";
+      const ca = document.cookie.split(';');
+      for (let i = 0; i < ca.length; i++) {
+        let c = ca[i];
+        while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+        if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
+      }
+      return null;
+    } catch (error) {
+      console.error(`Error getting cookie ${name}:`, error);
+      return null;
+    }
+  }
+
+  private removeCookie(name: string): void {
+    if (!this.isClient) return;
+    
+    try {
+      document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;`;
+    } catch (error) {
+      console.error(`Error removing cookie ${name}:`, error);
+    }
+  }
+
   // Generic storage methods - Always use localStorage
   private setItem(key: string, value: string, persistent = true): void {
     if (!this.isClient) return;
@@ -61,23 +102,30 @@ class SecureStorageService {
     }
   }
 
-  // Token management - Always use localStorage
+  // Token management - Use both localStorage and cookies
   async setTokenData(tokenData: TokenData, rememberMe = true): Promise<void> {
     try {
+      // Set in localStorage
       this.setItem(STORAGE_KEYS.ACCESS_TOKEN, tokenData.access_token, true);
       this.setItem(STORAGE_KEYS.REFRESH_TOKEN, tokenData.refresh_token, true);
       this.setItem(STORAGE_KEYS.REMEMBER_ME, rememberMe.toString(), true);
+      
+      // Also set in cookies for middleware access
+      this.setCookie('accessToken', tokenData.access_token, rememberMe ? 30 : 1);
+      this.setCookie('refreshToken', tokenData.refresh_token, rememberMe ? 30 : 1);
     } catch (error) {
       console.error("Error setting token data:", error);
     }
   }
 
   async getAccessToken(): Promise<string | null> {
-    return this.getItem(STORAGE_KEYS.ACCESS_TOKEN);
+    // Try localStorage first, then cookies
+    return this.getItem(STORAGE_KEYS.ACCESS_TOKEN) || this.getCookie('accessToken');
   }
 
   async getRefreshToken(): Promise<string | null> {
-    return this.getItem(STORAGE_KEYS.REFRESH_TOKEN);
+    // Try localStorage first, then cookies
+    return this.getItem(STORAGE_KEYS.REFRESH_TOKEN) || this.getCookie('refreshToken');
   }
 
   async getRememberMe(): Promise<boolean> {
@@ -125,10 +173,15 @@ class SecureStorageService {
   // Clear methods
   async clearAuthData(): Promise<void> {
     try {
+      // Clear localStorage
       this.removeItem(STORAGE_KEYS.ACCESS_TOKEN);
       this.removeItem(STORAGE_KEYS.REFRESH_TOKEN);
       this.removeItem(STORAGE_KEYS.USER_DATA);
       this.removeItem(STORAGE_KEYS.REMEMBER_ME);
+      
+      // Clear cookies
+      this.removeCookie('accessToken');
+      this.removeCookie('refreshToken');
     } catch (error) {
       console.error("Error clearing auth data:", error);
     }

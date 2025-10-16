@@ -25,6 +25,8 @@ const Header = () => {
     setIsMobileMenuOpen(false)
   }
 
+  const { isAuthenticated, isLoading } = useAuth()
+
   return (
     <>
       <div className="w-full h-[var(--header-height)] z-50 fixed bg-[var(--background)] shadow-xl md:px-36 flex items-center justify-between">
@@ -36,23 +38,29 @@ const Header = () => {
             </Link>
           </div>
 
-          {/* Search section */}
-          <div className="w-full hidden md:block">
-            <SearchBar />
-          </div>
+          {/* Search section - only show when authenticated */}
+          {isAuthenticated && (
+            <div className="w-full hidden md:block">
+              <SearchBar />
+            </div>
+          )}
         </div>
 
         <div className="w-1/2 flex items-center justify-end gap-8">
-          {/* Navigate Button */}
-          <div className="hidden xl:flex">
-            <NavigateButtons />
-          </div>
+          {/* Navigate Button - only show when authenticated */}
+          {isAuthenticated && (
+            <div className="hidden xl:flex">
+              <NavigateButtons />
+            </div>
+          )}
 
-          {/* Badges */}
-          <div className="flex gap-6">
-            <NotificationBadge />
-            <CartBadge />
-          </div>
+          {/* Badges - only show when authenticated */}
+          {isAuthenticated && (
+            <div className="flex gap-6">
+              <NotificationBadge />
+              <CartBadge />
+            </div>
+          )}
 
           {/* User Menu */}
           <div className="hidden lg:block">

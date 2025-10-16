@@ -2,6 +2,7 @@
 
 import React from 'react'
 import AICManageLayout from '@/components/layouts/AICManageLayout'
+import { AuthGuard } from '@/components/guards/AuthGuard'
 import { vendorNavigationItems } from '@/common/constants/navigate.constant'
 
 interface VendorLayoutProps {
@@ -10,13 +11,15 @@ interface VendorLayoutProps {
 
 export default function VendorLayout({ children }: VendorLayoutProps) {
   return (
-    <AICManageLayout
-      navigationItems={vendorNavigationItems}
-      showSearch={true}
-      showNotifications={true}
-      userRole="vendor"
-    >
-      {children}
-    </AICManageLayout>
+    <AuthGuard requiredRole="vendor">
+      <AICManageLayout
+        navigationItems={vendorNavigationItems}
+        showSearch={true}
+        showNotifications={true}
+        userRole="vendor"
+      >
+        {children}
+      </AICManageLayout>
+    </AuthGuard>
   )
 }
