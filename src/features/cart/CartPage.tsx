@@ -3,16 +3,24 @@
 import React, { useState } from 'react'
 import { motion } from 'motion/react'
 import { ArrowLeft, Trash2 } from 'lucide-react'
-import { SAMPLE_CART_ITEMS, SAMPLE_CART_SUMMARY } from './data/sample-data'
-import { CartItem, CartEmpty, CartSummary } from './components'
-import { useCart } from './hooks'
+import { CartEmpty, CartSummary } from './components'
+import ApiCartItem from './components/ApiCartItem'
+import { useCartApi } from './hooks'
 import Link from 'next/link'
 
 const CartPage: React.FC = () => {
-  const { items, summary, updateQuantity, removeItem, saveForLater, applyCoupon, checkout } =
-    useCart(SAMPLE_CART_ITEMS, SAMPLE_CART_SUMMARY)
+  const { 
+    cart, 
+    isLoadingCart, 
+    updateQuantity, 
+    removeFromCart, 
+    clearCart
+  } = useCartApi()
 
   const [selectedItems, setSelectedItems] = useState<string[]>([])
+
+  const items = cart?.items || []
+  const itemCount = cart?.totalQuantity || 0
 
   const handleToggleSelect = (itemId: string) => {
     setSelectedItems((prev) =>
@@ -29,12 +37,33 @@ const CartPage: React.FC = () => {
   }
 
   const handleDeleteSelected = () => {
-    selectedItems.forEach((itemId) => removeItem(itemId))
+    selectedItems.forEach((itemId) => removeFromCart(itemId))
     setSelectedItems([])
   }
 
+  const handleRemoveItem = (itemId: string) => {
+    removeFromCart(itemId)
+  }
+
+  const handleUpdateQuantity = (itemId: string, quantity: number) => {
+    updateQuantity(itemId, quantity)
+  }
+
+  // Show loading state
+  if (isLoadingCart) {
+    return (
+      <div className="min-h-screen pt-20 bg-gray-50">
+        <div className="container mx-auto px-4 py-12">
+          <div className="flex items-center justify-center h-64">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   return (
-    <div className="min-h-screen pt-20 bg-background">
+    <div className="min-h-screen pt-20 bg-gray-50">
       <div className="container mx-auto px-4 py-12">
         {/* Header */}
         <motion.div
@@ -47,15 +76,15 @@ const CartPage: React.FC = () => {
             <div className="flex items-center gap-6">
               <Link
                 href="/"
-                className="p-3 rounded-2xl transition-all duration-200 cart-card border text-foreground hover:shadow-lg"
+                className="p-3 rounded-2xl transition-all duration-200 bg-white border border-gray-200 text-gray-800 hover:shadow-lg hover:bg-gray-50"
               >
                 <ArrowLeft className="w-6 h-6" />
               </Link>
 
               <div>
-                <h1 className="text-4xl font-bold text-foreground">Giỏ hàng của bạn</h1>
-                <p className="text-xl text-muted-foreground mt-2">
-                  {summary.itemCount} sản phẩm trong giỏ
+                <h1 className="text-4xl font-bold text-gray-900">Giỏ hàng của bạn</h1>
+                <p className="text-xl text-gray-600 mt-2">
+                  {itemCount} sản phẩm trong giỏ
                 </p>
               </div>
             </div>
@@ -65,7 +94,7 @@ const CartPage: React.FC = () => {
               <div className="flex items-center gap-4">
                 <button
                   onClick={handleSelectAll}
-                  className="px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 text-foreground cart-card border hover:shadow-md"
+                  className="px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 text-gray-800 bg-white border border-gray-200 hover:shadow-md hover:bg-gray-50"
                 >
                   {selectedItems.length === items.length ? 'Bỏ chọn tất cả' : 'Chọn tất cả'}
                 </button>
@@ -104,11 +133,10 @@ const CartPage: React.FC = () => {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.4, delay: index * 0.1 }}
                   >
-                    <CartItem
+                    <ApiCartItem
                       item={item}
-                      onUpdateQuantity={updateQuantity}
-                      onRemoveItem={removeItem}
-                      onSaveForLater={saveForLater}
+                      onUpdateQuantity={handleUpdateQuantity}
+                      onRemoveItem={handleRemoveItem}
                       isSelected={selectedItems.includes(item.id)}
                       onToggleSelect={handleToggleSelect}
                     />
@@ -124,7 +152,7 @@ const CartPage: React.FC = () => {
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.5, delay: 0.4 }}
               >
-                <CartSummary summary={summary} onCheckout={checkout} onApplyCoupon={applyCoupon} />
+                <CartSummary cart={cart} />
               </motion.div>
             </div>
           </div>

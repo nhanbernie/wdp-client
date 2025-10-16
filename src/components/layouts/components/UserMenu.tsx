@@ -1,7 +1,7 @@
 'use client'
 
 import React from 'react'
-import { User, Settings, LogOut, ChevronDown } from 'lucide-react'
+import { User, Settings, LogOut, ChevronDown, Package } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useAuth } from '@/contexts/AuthContext'
@@ -91,6 +91,13 @@ const UserMenu = ({ user: propUser }: UserMenuProps) => {
         <DropdownMenuItem className="cursor-pointer hover:bg-[var(--primary)]">
           <User className="mr-2 h-4 w-4" />
           <span>Profile</span>
+        </DropdownMenuItem>
+
+        <DropdownMenuItem className="cursor-pointer hover:bg-[var(--primary)]" asChild>
+          <Link href="/orders">
+            <Package className="mr-2 h-4 w-4" />
+            <span>Đơn hàng</span>
+          </Link>
         </DropdownMenuItem>
 
         <DropdownMenuItem className="cursor-pointer hover:bg-[var(--primary)]">

@@ -13,17 +13,29 @@ import {
   RefreshCw,
   ShieldCheck,
 } from 'lucide-react'
+import { useCartApi } from '@/features/cart/hooks'
 
 interface ProductQuantityProps {
   stock?: number
   colors: any
+  productId?: string
 }
 
-export const ProductQuantity: React.FC<ProductQuantityProps> = ({ stock, colors }) => {
+export const ProductQuantity: React.FC<ProductQuantityProps> = ({ stock, colors, productId }) => {
   const [quantity, setQuantity] = useState(1)
+  const { addToCart, isAddingToCart } = useCartApi()
 
   const handleQuantityChange = (change: number) => {
     setQuantity((prev) => Math.max(1, Math.min(stock ?? 9999, prev + change)))
+  }
+
+  const handleAddToCart = async () => {
+    if (!productId) {
+      console.error('Product ID is required to add to cart')
+      return
+    }
+
+    await addToCart(productId, quantity)
   }
 
   return (
@@ -62,9 +74,11 @@ export const ProductQuantity: React.FC<ProductQuantityProps> = ({ stock, colors 
         <Button
           className="flex-1 bg-gradient-to-r from-orange-500 to-red-500 hover:opacity-90 text-white shadow-md rounded-lg"
           size="lg"
+          onClick={handleAddToCart}
+          disabled={isAddingToCart || !productId}
         >
           <ShoppingCart className="h-5 w-5 mr-2" />
-          Thêm vào giỏ
+          {isAddingToCart ? 'Đang thêm...' : 'Thêm vào giỏ'}
         </Button>
         <Button variant="outline" size="lg" className="rounded-lg">
           <FileText className="h-5 w-5 mr-2" />
