@@ -25,8 +25,8 @@ const CartEmpty: React.FC<CartEmptyProps> = ({ onContinueShopping }) => {
         className="relative mb-12"
       >
         {/* Main Shopping Bag */}
-        <div className="relative w-48 h-48 rounded-3xl flex items-center justify-center bg-card border-2 border-dashed border-border shadow-2xl">
-          <ShoppingBag className="w-20 h-20 text-muted-foreground" />
+        <div className="relative w-48 h-48 rounded-3xl flex items-center justify-center bg-white border-2 border-dashed border-gray-300 shadow-2xl">
+          <ShoppingBag className="w-20 h-20 text-gray-400" />
 
           {/* Floating Elements */}
           <motion.div
@@ -103,9 +103,9 @@ const CartEmpty: React.FC<CartEmptyProps> = ({ onContinueShopping }) => {
         transition={{ duration: 0.6, delay: 0.4 }}
         className="max-w-lg mx-auto"
       >
-        <h2 className="text-4xl font-bold mb-6 text-foreground">Giỏ hàng trống</h2>
+        <h2 className="text-4xl font-bold mb-6 text-gray-900">Giỏ hàng trống</h2>
 
-        <p className="text-xl mb-10 leading-relaxed text-muted-foreground">
+        <p className="text-xl mb-10 leading-relaxed text-gray-600">
           Bạn chưa có sản phẩm nào trong giỏ hàng. Hãy khám phá các sản phẩm vật liệu xây dựng chất
           lượng cao của chúng tôi!
         </p>
@@ -117,7 +117,7 @@ const CartEmpty: React.FC<CartEmptyProps> = ({ onContinueShopping }) => {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={onContinueShopping}
-              className="inline-flex items-center justify-center px-10 py-4 font-semibold rounded-2xl transition-all duration-300 shadow-xl hover:shadow-2xl bg-primary text-primary-foreground hover:bg-primary/90"
+              className="inline-flex items-center justify-center px-10 py-4 font-semibold rounded-2xl transition-all duration-300 shadow-xl hover:shadow-2xl bg-orange-500 text-white hover:bg-orange-600"
             >
               <ShoppingBag className="mr-3 w-6 h-6" />
               Tiếp tục mua sắm
@@ -127,7 +127,7 @@ const CartEmpty: React.FC<CartEmptyProps> = ({ onContinueShopping }) => {
               <motion.div
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="inline-flex items-center justify-center px-10 py-4 font-semibold rounded-2xl transition-all duration-300 shadow-xl hover:shadow-2xl bg-primary text-primary-foreground hover:bg-primary/90"
+                className="inline-flex items-center justify-center px-10 py-4 font-semibold rounded-2xl transition-all duration-300 shadow-xl hover:shadow-2xl bg-orange-500 text-white hover:bg-orange-600"
               >
                 <ShoppingBag className="mr-3 w-6 h-6" />
                 Tiếp tục mua sắm
@@ -139,7 +139,7 @@ const CartEmpty: React.FC<CartEmptyProps> = ({ onContinueShopping }) => {
             <motion.div
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="inline-flex items-center justify-center px-10 py-4 font-semibold rounded-2xl transition-all duration-300 backdrop-blur-sm border-2 border-border text-foreground hover:bg-muted hover:border-primary"
+              className="inline-flex items-center justify-center px-10 py-4 font-semibold rounded-2xl transition-all duration-300 bg-white border-2 border-gray-200 text-gray-800 hover:bg-gray-50 hover:border-orange-500"
             >
               <ArrowLeft className="mr-3 w-6 h-6" />
               Về trang chủ

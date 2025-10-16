@@ -11,6 +11,7 @@ import NavigateButtons from './components/NavigateButtons'
 import NotificationBadge from './components/NotificationBadge'
 import CartBadge from './components/CartBadge'
 import Link from 'next/link'
+import { useAuth } from '@/contexts/AuthContext'
 
 // Main Header component
 const Header = () => {

@@ -26,7 +26,7 @@ export interface AuthContextType {
   isLoading: boolean
   isAuthenticated: boolean
   logout: () => void
-  refreshUserProfile: () => Promise<void>
+  refreshUserProfile: () => void
 }
 
 // Create context
@@ -108,9 +108,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   }
 
-  const refreshUserProfile = async () => {
+  const refreshUserProfile = () => {
+    // Just set the flag, useEffect will handle the profile fetch
     setShouldFetchProfile(true)
-    await refetchProfile()
   }
 
   const logout = async () => {

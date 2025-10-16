@@ -7,8 +7,10 @@ import { authReducer } from './slices/auth.slice'
 import { productReducer } from './slices/product.slice'
 import { productsApi } from '@/services/products'
 import { vendorApi } from '@/services/vendor/vendor.service'
-import { ordersApiSlice } from './slices/ordersApiSlice'
+
 import { categoriesApi } from '@/services/categories/categories.service'
+import { cartApi } from '@/services/cart'
+import { ordersApi } from '@/services/orders/orders.service'
 // import { apiErrorHandler } from "@/services/api/apiErrorHandler";
 
 export const store = configureStore({
@@ -22,8 +24,10 @@ export const store = configureStore({
     [materialsApi.reducerPath]: materialsApi.reducer,
     [productsApi.reducerPath]: productsApi.reducer,
     [vendorApi.reducerPath]: vendorApi.reducer,
-    [ordersApiSlice.reducerPath]: ordersApiSlice.reducer,
+
     [categoriesApi.reducerPath]: categoriesApi.reducer,
+    [cartApi.reducerPath]: cartApi.reducer,
+    [ordersApi.reducerPath]: ordersApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
@@ -37,8 +41,10 @@ export const store = configureStore({
       materialsApi.middleware,
       productsApi.middleware,
       vendorApi.middleware,
-      ordersApiSlice.middleware,
+
       categoriesApi.middleware,
+      cartApi.middleware,
+      ordersApi.middleware,
     ),
   devTools: process.env.NODE_ENV !== 'production',
 })

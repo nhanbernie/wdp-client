@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { useLoginMutation } from '@/services/auth/auth.service'
 import { StorageService } from '@/services/storage/secureStorage.service'
 import { useToast } from '@/hooks/useToast'
+import { useAuth } from '@/contexts/AuthContext'
 
 interface LoginCredentials {
   email: string
@@ -24,6 +25,7 @@ export const useLoginSubmit = (): UseLoginSubmitReturn => {
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [error, setError] = useState<Error | null>(null)
   const toast = useToast()
+  const { refreshUserProfile } = useAuth()
 
   const login = async (data: LoginCredentials): Promise<void> => {
     setIsLoading(true)
@@ -48,6 +50,9 @@ export const useLoginSubmit = (): UseLoginSubmitReturn => {
           },
           !!data.rememberMe,
         )
+
+        // Trigger auth context to fetch user profile
+        refreshUserProfile()
 
         toast.success('Đăng nhập thành công!', `Chào mừng ${userData.email}`)
 

@@ -1,3 +1,4 @@
+// Legacy types for backward compatibility
 export interface CartItem {
   id: string;
   name: string;
@@ -26,4 +27,37 @@ export interface CartSummary {
 export interface CartState {
   items: CartItem[];
   summary: CartSummary;
+}
+
+// API-based types
+export interface CartVariant {
+  id: string;
+  sku: string;
+  optionValues: Array<{
+    optionName: string;
+    value: string;
+  }>;
+}
+
+export interface CartProduct {
+  id: string;
+  name: string;
+  images: string[];
+}
+
+export interface ApiCartItem {
+  id: string;
+  quantity: number;
+  unitPrice: number;
+  totalPrice: number;
+  product: CartProduct;
+  variant?: CartVariant;
+}
+
+export interface ApiCart {
+  items: ApiCartItem[];
+  totalItems: number;
+  totalQuantity: number;
+  subtotal: number;
+  total: number;
 }

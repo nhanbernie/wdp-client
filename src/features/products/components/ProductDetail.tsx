@@ -61,7 +61,11 @@ const ProductDetail: React.FC<ProductDetailProps> = ({ id }) => {
               colors={colors}
               brandColors={brandColors}
             />
-            <ProductQuantity stock={productData.stock?.quantity} colors={colors} />
+            <ProductQuantity 
+              stock={productData.stock?.quantity} 
+              colors={colors} 
+              productId={productData.id}
+            />
           </div>
         </div>
 

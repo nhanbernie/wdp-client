@@ -49,14 +49,27 @@ export const API_ENDPOINTS = {
     DELETE: '/materials/:id',
   },
 
+  // Cart endpoints
+  CART: {
+    ADD: '/cart/add',
+    GET: '/cart',
+    COUNT: '/cart/count',
+    UPDATE_ITEM: '/cart/:id',
+    REMOVE_ITEM: '/cart/:id',
+    CLEAR: '/cart',
+  },
+
   // Orders endpoints
   ORDERS: {
     LIST: '/orders',
     CREATE: '/orders',
+    FROM_CART: '/orders/from-cart',
     DETAILS: '/orders/:id',
+    BY_NUMBER: '/orders/number/:orderNumber',
     UPDATE: '/orders/:id',
     CANCEL: '/orders/:id/cancel',
     HISTORY: '/orders/history',
+    STATISTICS: '/orders/statistics',
   },
 
   // Quotes endpoints
