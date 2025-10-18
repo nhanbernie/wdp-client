@@ -15,7 +15,6 @@ export default function VendorLayout({ children }: VendorLayoutProps) {
       showSearch={true}
       showNotifications={true}
       userRole="vendor"
-      fullWidth={true}
     >
       {children}
     </AICManageLayout>
