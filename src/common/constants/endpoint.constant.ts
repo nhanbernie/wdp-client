@@ -90,9 +90,34 @@ export const API_ENDPOINTS = {
 
   // Admin endpoints
   ADMIN: {
-    USERS: '/admin/users',
-    MATERIALS: '/admin/materials',
+    // Dashboard
+    DASHBOARD_STATS: '/admin/dashboard/stats',
+    
+    // Reports
+    REVENUE_REPORT: '/admin/reports/revenue',
+    
+    // Analytics
+    USER_ANALYTICS: '/admin/analytics/users',
+    PRODUCT_ANALYTICS: '/admin/analytics/products',
+    
+    // Orders Management
     ORDERS: '/admin/orders',
+    ORDER_DETAILS: (id: string) => `/admin/orders/${id}/details`,
+    ORDER_STATUS: (id: string) => `/admin/orders/${id}/status`,
+    ORDER_CANCEL: (id: string) => `/admin/orders/${id}/cancel`,
+    
+    // Users Management
+    USERS: '/admin/users',
+    USER_ACTIVITY: (id: string) => `/admin/users/${id}/activity`,
+    USER_BAN: (id: string) => `/admin/users/${id}/ban`,
+    USER_ROLE: (id: string) => `/admin/users/${id}/role`,
+    
+    // Products Management
+    PRODUCTS: '/admin/products',
+    PRODUCT_STOCK: (id: string) => `/admin/products/${id}/stock`,
+    
+    // Legacy endpoints
+    MATERIALS: '/admin/materials',
     SUPPLIERS: '/admin/suppliers',
     ANALYTICS: '/admin/analytics',
   },

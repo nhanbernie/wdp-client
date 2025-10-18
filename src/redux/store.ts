@@ -7,7 +7,7 @@ import { authReducer } from './slices/auth.slice'
 import { productReducer } from './slices/product.slice'
 import { productsApi } from '@/services/products'
 import { vendorApi } from '@/services/vendor/vendor.service'
-
+import { adminApi } from '@/services/admin'
 import { categoriesApi } from '@/services/categories/categories.service'
 import { cartApi } from '@/services/cart'
 import { ordersApi } from '@/services/orders/orders.service'
@@ -24,7 +24,7 @@ export const store = configureStore({
     [materialsApi.reducerPath]: materialsApi.reducer,
     [productsApi.reducerPath]: productsApi.reducer,
     [vendorApi.reducerPath]: vendorApi.reducer,
-
+    [adminApi.reducerPath]: adminApi.reducer,
     [categoriesApi.reducerPath]: categoriesApi.reducer,
     [cartApi.reducerPath]: cartApi.reducer,
     [ordersApi.reducerPath]: ordersApi.reducer,
@@ -41,7 +41,7 @@ export const store = configureStore({
       materialsApi.middleware,
       productsApi.middleware,
       vendorApi.middleware,
-
+      adminApi.middleware,
       categoriesApi.middleware,
       cartApi.middleware,
       ordersApi.middleware,

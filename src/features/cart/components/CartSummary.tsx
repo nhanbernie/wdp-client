@@ -79,53 +79,50 @@ const CartSummary: React.FC<CartSummaryProps> = ({ cart, summary, onCheckout, on
       transition={{ duration: 0.5 }}
       className="sticky top-6"
     >
-      <div className="rounded-3xl p-8 shadow-lg bg-white border border-gray-200">
+      <div className="rounded-3xl p-8 shadow-2xl bg-white border-2 border-slate-200">
         {/* Header */}
         <div className="flex items-center gap-4 mb-8">
-          <div className="w-12 h-12 rounded-2xl flex items-center justify-center bg-orange-500 text-white shadow-lg">
-            <ShoppingCart className="w-6 h-6" />
+          <div className="w-14 h-14 rounded-2xl flex items-center justify-center bg-gradient-to-br from-orange-500 to-pink-500 text-white shadow-xl">
+            <ShoppingCart className="w-7 h-7" />
           </div>
           <div>
-            <h2 className="text-2xl font-bold text-gray-900">Tóm tắt đơn hàng</h2>
-            <p className="text-gray-600">{itemCount} sản phẩm trong giỏ</p>
+            <h2 className="text-3xl font-black text-slate-900">Tóm tắt</h2>
+            <p className="text-slate-600 font-bold">{itemCount} sản phẩm</p>
           </div>
-        </div>
-
-        {/* Item Count */}
-        <div className="flex items-center justify-between py-3 mb-6">
-          <span className="text-sm font-medium text-gray-700">Sản phẩm</span>
-          <span className="text-sm font-bold text-gray-900">{itemCount} món</span>
         </div>
 
         {/* Order Summary */}
-        <div className="space-y-4 mb-8">
+        <div className="space-y-6 mb-8">
           {/* Subtotal */}
-          <div className="flex items-center justify-between py-2">
-            <span className="text-sm font-medium text-gray-700">Tạm tính</span>
-            <span className="text-sm font-bold text-gray-900">
-              {formatPrice(subtotal)}
-            </span>
+          <div className="flex items-center justify-between py-3 px-4 rounded-xl bg-slate-50">
+            <span className="text-sm font-black text-slate-700">Tạm tính</span>
+            <span className="text-xl font-black text-slate-900">{formatPrice(subtotal)}</span>
           </div>
 
           {/* Shipping */}
-          <div className="flex items-center justify-between py-2">
-            <span className="text-sm font-medium text-gray-700">Phí vận chuyển</span>
-            <span className="text-sm font-bold text-gray-900">
+          <div className="flex items-center justify-between py-3 px-4 rounded-xl bg-gradient-to-r from-emerald-50 to-teal-50 border-2 border-emerald-200">
+            <div className="flex items-center gap-2">
+              <Truck className="w-5 h-5 text-emerald-600" />
+              <span className="text-sm font-black text-emerald-900">Phí vận chuyển</span>
+            </div>
+            <span className="text-lg font-black text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-teal-600">
               {shipping === 0 ? 'Miễn phí' : formatPrice(shipping)}
             </span>
           </div>
 
           {/* Tax */}
-          <div className="flex items-center justify-between py-2">
-            <span className="text-sm font-medium text-gray-700">Thuế VAT</span>
-            <span className="text-sm font-bold text-gray-900">{formatPrice(tax)}</span>
-          </div>
+          {tax > 0 && (
+            <div className="flex items-center justify-between py-3 px-4 rounded-xl bg-slate-50">
+              <span className="text-sm font-black text-slate-700">Thuế VAT</span>
+              <span className="text-lg font-black text-slate-900">{formatPrice(tax)}</span>
+            </div>
+          )}
 
           {/* Discount */}
           {discount > 0 && (
-            <div className="flex items-center justify-between py-2">
-              <span className="text-sm font-medium text-green-600">Giảm giá</span>
-              <span className="text-sm font-bold text-green-600">
+            <div className="flex items-center justify-between py-3 px-4 rounded-xl bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-200">
+              <span className="text-sm font-black text-green-900">Giảm giá</span>
+              <span className="text-lg font-black text-transparent bg-clip-text bg-gradient-to-r from-green-600 to-emerald-600">
                 -{formatPrice(discount)}
               </span>
             </div>
@@ -139,39 +136,41 @@ const CartSummary: React.FC<CartSummaryProps> = ({ cart, summary, onCheckout, on
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
-              className="flex items-center justify-between p-4 rounded-2xl bg-gradient-to-r from-purple-50 to-blue-50 dark:from-purple-900/20 dark:to-blue-900/20 border border-purple-200 dark:border-purple-800"
+              className="flex items-center justify-between p-4 rounded-2xl bg-gradient-to-r from-purple-50 via-blue-50 to-indigo-50 border-2 border-purple-200 shadow-lg"
             >
               <div className="flex items-center gap-3">
-                <CheckCircle className="w-5 h-5 text-purple-600 dark:text-purple-400" />
-                <span className="text-sm font-semibold text-purple-700 dark:text-purple-400">
-                  Mã giảm giá: {appliedCoupon}
-                </span>
+                <CheckCircle className="w-6 h-6 text-purple-600" />
+                <span className="text-sm font-black text-purple-900">Mã: {appliedCoupon}</span>
               </div>
-              <button
+              <motion.button
                 onClick={handleRemoveCoupon}
-                className="text-xs px-3 py-1 rounded-lg text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/30 hover:bg-red-100 dark:hover:bg-red-900/50 transition-colors"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="px-4 py-2 rounded-xl text-xs font-black bg-red-500 text-white hover:bg-red-600 transition-colors shadow-lg"
               >
                 Xóa
-              </button>
+              </motion.button>
             </motion.div>
           ) : (
             <div>
-              <button
+              <motion.button
                 onClick={() => setShowCouponForm(!showCouponForm)}
-                className="flex items-center justify-between w-full p-4 rounded-2xl transition-all duration-200 bg-gradient-to-r from-slate-50 to-slate-100 dark:from-slate-700 dark:to-slate-600 border border-slate-200 dark:border-slate-600 hover:border-purple-300 dark:hover:border-purple-600 hover:shadow-lg"
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                className="flex items-center justify-between w-full p-5 rounded-2xl transition-all duration-300 bg-gradient-to-r from-slate-50 to-slate-100 border-2 border-slate-200 hover:border-purple-300 hover:shadow-xl"
               >
                 <div className="flex items-center gap-3">
-                  <Tag className="w-5 h-5 text-slate-500 dark:text-slate-400" />
-                  <span className="text-sm font-semibold text-slate-700 dark:text-slate-300">
-                    Áp dụng mã giảm giá
-                  </span>
+                  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center shadow-lg">
+                    <Tag className="w-5 h-5 text-white" />
+                  </div>
+                  <span className="text-sm font-black text-slate-900">Áp dụng mã giảm giá</span>
                 </div>
                 {showCouponForm ? (
-                  <ChevronUp className="w-5 h-5 text-slate-500 dark:text-slate-400" />
+                  <ChevronUp className="w-6 h-6 text-slate-500" />
                 ) : (
-                  <ChevronDown className="w-5 h-5 text-slate-500 dark:text-slate-400" />
+                  <ChevronDown className="w-6 h-6 text-slate-500" />
                 )}
-              </button>
+              </motion.button>
 
               <AnimatePresence>
                 {showCouponForm && (
@@ -188,15 +187,17 @@ const CartSummary: React.FC<CartSummaryProps> = ({ cart, summary, onCheckout, on
                         value={couponCode}
                         onChange={(e) => setCouponCode(e.target.value)}
                         placeholder="Nhập mã giảm giá"
-                        className="flex-1 px-4 py-3 rounded-xl text-sm border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-500 dark:placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200"
+                        className="flex-1 px-5 py-4 rounded-xl text-sm font-bold border-2 border-slate-200 bg-white text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-4 focus:ring-purple-200 focus:border-purple-400 transition-all duration-300"
                       />
-                      <button
+                      <motion.button
                         onClick={handleApplyCoupon}
                         disabled={!couponCode.trim()}
-                        className="px-6 py-3 rounded-xl text-sm font-semibold transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed bg-gradient-to-r from-purple-600 to-blue-600 text-white hover:from-purple-700 hover:to-blue-700 hover:shadow-lg"
+                        whileHover={{ scale: couponCode.trim() ? 1.05 : 1 }}
+                        whileTap={{ scale: couponCode.trim() ? 0.95 : 1 }}
+                        className="px-8 py-4 rounded-xl text-sm font-black transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed bg-gradient-to-r from-purple-600 via-purple-500 to-blue-600 text-white hover:shadow-xl hover:shadow-purple-500/50"
                       >
                         Áp dụng
-                      </button>
+                      </motion.button>
                     </div>
                   </motion.div>
                 )}
@@ -206,23 +207,54 @@ const CartSummary: React.FC<CartSummaryProps> = ({ cart, summary, onCheckout, on
         </div>
 
         {/* Total */}
-        <div className="py-4 px-6 rounded-lg mb-6 bg-gray-50 border border-gray-200">
-          <div className="flex items-center justify-between">
-            <span className="text-lg font-bold text-gray-900">Tổng cộng</span>
-            <span className="text-2xl font-bold text-orange-500">{formatPrice(total)}</span>
+        <div className="py-6 px-8 rounded-2xl mb-8 bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 border-2 border-indigo-200 shadow-xl">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-lg font-black text-slate-900">Tổng cộng</span>
+            <Sparkles className="w-6 h-6 text-purple-500" />
+          </div>
+          <div className="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600">
+            {formatPrice(total)}
+          </div>
+        </div>
+
+        {/* Trust badges */}
+        <div className="grid grid-cols-2 gap-4 mb-8">
+          <div className="flex items-center gap-2 p-4 rounded-xl bg-gradient-to-br from-emerald-50 to-teal-50 border-2 border-emerald-200">
+            <Shield className="w-6 h-6 text-emerald-600 flex-shrink-0" />
+            <span className="text-xs font-black text-emerald-900">An toàn</span>
+          </div>
+          <div className="flex items-center gap-2 p-4 rounded-xl bg-gradient-to-br from-blue-50 to-indigo-50 border-2 border-blue-200">
+            <Gift className="w-6 h-6 text-blue-600 flex-shrink-0" />
+            <span className="text-xs font-black text-blue-900">Ưu đãi</span>
           </div>
         </div>
 
         {/* Checkout Button */}
-        <button
+        <motion.button
           onClick={handleCheckout}
-          className="w-full py-4 rounded-lg font-bold text-lg transition-all duration-300 bg-orange-500 text-white hover:bg-orange-600"
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
+          className="relative w-full h-16 rounded-2xl font-black text-xl transition-all duration-300 bg-gradient-to-r from-orange-500 via-orange-600 to-pink-500 text-white shadow-2xl shadow-orange-500/50 hover:shadow-orange-500/70 overflow-hidden group"
         >
-          <div className="flex items-center justify-center gap-2">
-            <CreditCard className="w-5 h-5" />
+          {/* Shine effect */}
+          <motion.div
+            className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent"
+            animate={{
+              x: ['-100%', '100%'],
+            }}
+            transition={{
+              duration: 2,
+              repeat: Infinity,
+              ease: 'linear',
+              repeatDelay: 1,
+            }}
+          />
+
+          <div className="relative flex items-center justify-center gap-3">
+            <CreditCard className="w-6 h-6" />
             Thanh toán ngay
           </div>
-        </button>
+        </motion.button>
       </div>
     </motion.div>
   )

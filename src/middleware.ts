@@ -47,8 +47,15 @@ export function middleware(request: NextRequest) {
     return NextResponse.redirect(loginUrl)
   }
   
-  // Nếu đã có token và đang ở trang login/register, redirect về categories
+  // Nếu đã có token và đang ở trang login/register
+  // Redirect về trang chủ authenticated, AuthContext sẽ xử lý redirect dựa trên role
   if (accessToken && (pathname === '/login' || pathname === '/register')) {
+    // Kiểm tra xem có URL "from" không (URL muốn quay về sau khi login)
+    const fromUrl = request.nextUrl.searchParams.get('from')
+    if (fromUrl && fromUrl !== '/login' && fromUrl !== '/register') {
+      return NextResponse.redirect(new URL(fromUrl, request.url))
+    }
+    // Mặc định redirect về /categories, AuthContext sẽ redirect lại nếu cần
     return NextResponse.redirect(new URL('/categories', request.url))
   }
   

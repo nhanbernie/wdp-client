@@ -2,7 +2,7 @@
 
 import React, { ReactNode, useEffect, useState } from 'react'
 import { usePathname } from 'next/navigation'
-import { Search, Bell, Settings, ChevronLeft, ChevronRight } from 'lucide-react'
+import { Search, Bell, Settings, ChevronLeft, ChevronRight, Sparkles } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
@@ -12,6 +12,7 @@ import {
   adminNavigationItems,
   vendorNavigationItems,
 } from '@/common/constants/navigate.constant'
+import { motion, AnimatePresence } from 'framer-motion'
 
 interface AICManageLayoutProps {
   children: ReactNode
@@ -63,166 +64,265 @@ const AICManageLayout: React.FC<AICManageLayoutProps> = ({
 
   return (
     <div className="h-screen flex relative overflow-hidden">
-      {/* Background */}
-      <div className="absolute inset-0 bg-background">
-        {/* Subtle pattern overlay */}
+      {/* Modern Gradient Background */}
+      <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50">
+        {/* Animated gradient orbs */}
+        <div className="absolute top-0 left-0 w-96 h-96 bg-gradient-to-br from-blue-400/20 to-purple-400/20 rounded-full blur-3xl animate-pulse"></div>
         <div
-          className="absolute inset-0 opacity-5"
-          style={{
-            backgroundImage: `radial-gradient(circle at 20% 30%, rgba(148, 163, 184, 0.1) 0%, transparent 60%)`,
-          }}
+          className="absolute bottom-0 right-0 w-96 h-96 bg-gradient-to-br from-pink-400/20 to-orange-400/20 rounded-full blur-3xl animate-pulse"
+          style={{ animationDelay: '1s' }}
+        ></div>
+        <div
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-br from-purple-400/10 to-blue-400/10 rounded-full blur-3xl animate-pulse"
+          style={{ animationDelay: '2s' }}
         ></div>
       </div>
 
       {/* Main container */}
-      <div className="relative z-10 flex w-full h-screen bg-card border border-border overflow-hidden shadow-lg">
-        {/* Sidebar - Fixed */}
-        <aside
+      <div className="relative z-10 flex w-full h-screen bg-white/80 backdrop-blur-xl border-2 border-purple-200/50 overflow-hidden shadow-2xl">
+        {/* Modern Sidebar with Gradient */}
+        <motion.aside
+          initial={{ x: -20, opacity: 0 }}
+          animate={{ x: 0, opacity: 1 }}
+          transition={{ duration: 0.3 }}
           className={`
-          relative flex flex-col bg-transparent transition-all duration-300 py-6 px-4 h-screen overflow-y-auto overflow-x-hidden
+          relative flex flex-col bg-gradient-to-b from-white/90 to-purple-50/50 backdrop-blur-xl border-r-2 border-purple-200/50 transition-all duration-300 py-6 px-4 h-screen overflow-y-auto overflow-x-hidden shadow-xl
           ${sidebarExpanded ? 'w-64' : 'w-20'}
         `}
         >
-          {/* Logo - Always visible */}
-          <div className="flex items-center justify-between mb-4">
-            <div
+          {/* Modern Logo with Gradient */}
+          <div className="flex items-center justify-between mb-6">
+            <motion.div
+              whileHover={{ scale: 1.05 }}
               className={`flex items-center ${
                 sidebarExpanded ? 'justify-start' : 'justify-center w-full'
               }`}
             >
-              <div className="flex items-center space-x-2">
-                <div className="h-8 w-8 rounded bg-primary flex items-center justify-center">
-                  <span className="text-primary-foreground font-bold text-sm">AI</span>
+              <div className="flex items-center space-x-3">
+                <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-200 relative">
+                  <Sparkles className="h-5 w-5 text-white absolute" />
+                  <span className="text-white font-bold text-sm relative z-10">AI</span>
                 </div>
-                {sidebarExpanded && (
-                  <span className="font-bold text-xl text-foreground">AICShop</span>
-                )}
+                <AnimatePresence>
+                  {sidebarExpanded && (
+                    <motion.span
+                      initial={{ opacity: 0, x: -10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      exit={{ opacity: 0, x: -10 }}
+                      className="font-black text-2xl bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent"
+                    >
+                      AICShop
+                    </motion.span>
+                  )}
+                </AnimatePresence>
               </div>
-            </div>
+            </motion.div>
           </div>
 
-          {/* Toggle Button - Always visible */}
+          {/* Modern Toggle Button */}
           <div
             className={`flex items-center mb-8 ${
               sidebarExpanded ? 'justify-end' : 'justify-center'
             }`}
           >
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => setSidebarExpanded(!sidebarExpanded)}
-              className="w-8 h-8 bg-muted/80 text-muted-foreground hover:bg-muted backdrop-blur-sm border border-border/50 shadow-sm rounded-lg transition-all duration-200"
-              title={sidebarExpanded ? 'Collapse Sidebar' : 'Expand Sidebar'}
-            >
-              {sidebarExpanded ? (
-                <ChevronLeft className="h-4 w-4" />
-              ) : (
-                <ChevronRight className="h-4 w-4" />
-              )}
-            </Button>
+            <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.95 }}>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setSidebarExpanded(!sidebarExpanded)}
+                className="w-9 h-9 bg-gradient-to-br from-blue-500/10 to-purple-500/10 hover:from-blue-500/20 hover:to-purple-500/20 backdrop-blur-sm border-2 border-purple-300/50 shadow-md hover:shadow-lg rounded-xl transition-all duration-200"
+                title={sidebarExpanded ? 'Thu gọn' : 'Mở rộng'}
+              >
+                <motion.div
+                  animate={{ rotate: sidebarExpanded ? 0 : 180 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  {sidebarExpanded ? (
+                    <ChevronLeft className="h-4 w-4 text-purple-600" />
+                  ) : (
+                    <ChevronRight className="h-4 w-4 text-purple-600" />
+                  )}
+                </motion.div>
+              </Button>
+            </motion.div>
           </div>
 
-          {/* Navigation */}
+          {/* Modern Navigation with Animations */}
           <nav className="flex-1">
             <div className="space-y-2">
-              {currentNavigationItems.map((item) => {
+              {currentNavigationItems.map((item, index) => {
                 const isActive = isRouteActive(item.href)
                 const IconComponent = item.icon
                 return (
-                  <Button
+                  <motion.div
                     key={item.label}
-                    variant={isActive ? 'default' : 'ghost'}
-                    className={`w-full justify-start transition-all duration-200 ${
-                      sidebarExpanded ? 'px-4' : 'px-2'
-                    } ${
-                      isActive
-                        ? 'bg-primary text-primary-foreground shadow-md'
-                        : 'text-muted-foreground hover:bg-muted hover:text-foreground'
-                    }`}
-                    asChild
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: index * 0.05 }}
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
                   >
-                    <a href={item.href}>
-                      {IconComponent && (
-                        <IconComponent className={`h-4 w-4 ${sidebarExpanded ? 'mr-3' : ''}`} />
-                      )}
-                      {sidebarExpanded && (
-                        <span className="text-sm font-medium whitespace-nowrap">{item.label}</span>
-                      )}
-                    </a>
-                  </Button>
+                    <Button
+                      variant={isActive ? 'default' : 'ghost'}
+                      className={`w-full justify-start transition-all duration-200 rounded-xl ${
+                        sidebarExpanded ? 'px-4 h-12' : 'px-2 h-12'
+                      } ${
+                        isActive
+                          ? 'bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg hover:shadow-xl hover:from-blue-600 hover:to-purple-700'
+                          : 'text-gray-700 hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 hover:text-purple-700 border border-transparent hover:border-purple-200'
+                      }`}
+                      asChild
+                    >
+                      <a href={item.href}>
+                        {IconComponent && (
+                          <motion.div
+                            animate={isActive ? { scale: [1, 1.2, 1] } : {}}
+                            transition={{ duration: 0.3 }}
+                          >
+                            <IconComponent
+                              className={`h-5 w-5 ${sidebarExpanded ? 'mr-3' : ''} ${
+                                isActive ? 'drop-shadow-lg' : ''
+                              }`}
+                            />
+                          </motion.div>
+                        )}
+                        <AnimatePresence>
+                          {sidebarExpanded && (
+                            <motion.span
+                              initial={{ opacity: 0 }}
+                              animate={{ opacity: 1 }}
+                              exit={{ opacity: 0 }}
+                              className={`text-sm font-semibold whitespace-nowrap ${
+                                isActive ? 'drop-shadow' : ''
+                              }`}
+                            >
+                              {item.label}
+                            </motion.span>
+                          )}
+                        </AnimatePresence>
+                      </a>
+                    </Button>
+                  </motion.div>
                 )
               })}
             </div>
           </nav>
 
-          {/* Bottom controls */}
-          <div className="py-4 space-y-2">
-            {/* Theme Toggle */}
-            <div
-              className={`
-              flex items-center transition-all duration-200
-              ${
-                sidebarExpanded
-                  ? 'gap-3 px-4 py-3 rounded-lg justify-start'
-                  : 'justify-center w-12 h-12 rounded-lg bg-muted/60'
-              }
-              ${sidebarExpanded ? 'text-muted-foreground' : 'text-muted-foreground hover:bg-muted'}
-            `}
-            >
-              <div className="w-5 h-5 flex items-center justify-center flex-shrink-0">
-                <Settings className="h-4 w-4" />
-              </div>
-              {sidebarExpanded && (
-                <span className="font-medium text-sm whitespace-nowrap">Settings</span>
-              )}
-            </div>
+          {/* Modern Bottom Controls */}
+          <div className="py-4 space-y-2 border-t-2 border-purple-200/50">
+            <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+              <Button
+                variant="ghost"
+                className={`
+                  w-full transition-all duration-200 rounded-xl
+                  ${
+                    sidebarExpanded
+                      ? 'px-4 py-3 h-12 justify-start'
+                      : 'w-12 h-12 p-0 justify-center'
+                  }
+                  bg-gradient-to-r from-gray-100 to-gray-200 hover:from-purple-100 hover:to-blue-100 border border-gray-300 hover:border-purple-300 text-gray-700 hover:text-purple-700
+                `}
+              >
+                <Settings className={`h-5 w-5 ${sidebarExpanded ? 'mr-3' : ''}`} />
+                <AnimatePresence>
+                  {sidebarExpanded && (
+                    <motion.span
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      className="font-semibold text-sm whitespace-nowrap"
+                    >
+                      ⚙️ Settings
+                    </motion.span>
+                  )}
+                </AnimatePresence>
+              </Button>
+            </motion.div>
           </div>
-        </aside>
+        </motion.aside>
 
         {/* Main content */}
         <div className="flex-1 flex flex-col h-screen">
-          {/* Header - Fixed */}
-          <header
-            className={`h-20 flex items-center justify-end px-6 lg:px-8 flex-shrink-0 ${
-              isScrolled ? 'bg-background/80' : 'bg-transparent'
+          {/* Modern Header with Gradient */}
+          <motion.header
+            initial={{ y: -20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ duration: 0.3, delay: 0.2 }}
+            className={`h-20 flex items-center justify-end px-6 lg:px-8 flex-shrink-0 backdrop-blur-xl transition-all duration-300 border-b-2 ${
+              isScrolled
+                ? 'bg-white/80 border-purple-200/50 shadow-lg'
+                : 'bg-white/50 border-transparent'
             }`}
           >
             {/* Right side - Search, Notifications, User */}
-            <div className="flex items-center gap-3">
-              {/* Search */}
+            <div className="flex items-center gap-4">
+              {/* Modern Search */}
               {showSearch && (
-                <div className="hidden md:flex items-center gap-2 px-4 py-2 bg-muted rounded-lg border border-border min-w-[300px]">
-                  <Search className="w-4 h-4 text-muted-foreground" />
+                <motion.div
+                  initial={{ scale: 0.9, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  transition={{ delay: 0.3 }}
+                  whileHover={{ scale: 1.02 }}
+                  className="hidden md:flex items-center gap-3 px-5 py-3 bg-gradient-to-r from-white to-purple-50 rounded-xl border-2 border-purple-200/50 min-w-[320px] shadow-md hover:shadow-lg transition-all duration-200"
+                >
+                  <Search className="w-5 h-5 text-purple-600" />
                   <Input
                     type="text"
-                    placeholder="Tìm kiếm..."
-                    className="flex-1 bg-transparent border-none focus-visible:ring-0 text-sm"
+                    placeholder="🔍 Tìm kiếm..."
+                    className="flex-1 bg-transparent border-none focus-visible:ring-0 text-sm placeholder:text-gray-400 font-medium"
                   />
-                </div>
+                </motion.div>
               )}
 
-              {/* Notifications */}
+              {/* Modern Notifications */}
               {showNotifications && (
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="relative p-2 rounded-lg hover:bg-muted"
+                <motion.div
+                  initial={{ scale: 0.9, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  transition={{ delay: 0.4 }}
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.95 }}
                 >
-                  <Bell className="h-5 w-5" />
-                  <Badge className="absolute -top-1 -right-1 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs">
-                    3
-                  </Badge>
-                </Button>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="relative w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500/10 to-purple-500/10 hover:from-blue-500/20 hover:to-purple-500/20 border-2 border-purple-300/50 shadow-md hover:shadow-lg transition-all duration-200"
+                  >
+                    <Bell className="h-5 w-5 text-purple-600" />
+                    <motion.div
+                      initial={{ scale: 0 }}
+                      animate={{ scale: 1 }}
+                      transition={{ delay: 0.5, type: 'spring', stiffness: 500 }}
+                    >
+                      <Badge className="absolute -top-1 -right-1 h-6 w-6 rounded-full p-0 flex items-center justify-center text-xs bg-gradient-to-br from-red-500 to-pink-600 text-white shadow-lg border-2 border-white">
+                        3
+                      </Badge>
+                    </motion.div>
+                  </Button>
+                </motion.div>
               )}
 
               {/* User Menu */}
-              <UserMenu />
+              <motion.div
+                initial={{ scale: 0.9, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ delay: 0.5 }}
+              >
+                <UserMenu />
+              </motion.div>
             </div>
-          </header>
+          </motion.header>
 
-          {/* Main Content - Scrollable */}
-          <main className="flex-1 overflow-y-auto overflow-x-hidden">
-            <div className={fullWidth ? 'w-full' : 'max-w-8xl mx-auto p-8'}>{children}</div>
+          {/* Main Content - Scrollable with Modern Style */}
+          <main className="flex-1 overflow-y-auto overflow-x-hidden bg-gradient-to-br from-transparent via-purple-50/30 to-blue-50/30">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, delay: 0.3 }}
+              className={fullWidth ? 'w-full' : 'max-w-8xl mx-auto p-8'}
+            >
+              {children}
+            </motion.div>
           </main>
         </div>
       </div>

@@ -2,7 +2,7 @@
 
 import React from 'react'
 import { motion } from 'motion/react'
-import { Minus, Plus, Package, Trash2 } from 'lucide-react'
+import { Minus, Plus, Package, Trash2, Star, Sparkles } from 'lucide-react'
 import * as CheckboxPrimitive from '@radix-ui/react-checkbox'
 import { Check } from 'lucide-react'
 import type { ApiCartItem as ApiCartItemType } from '../types/cart.types'
@@ -40,7 +40,7 @@ const ApiCartItem: React.FC<ApiCartItemProps> = ({
 
   const getVariantDisplay = () => {
     if (!item.variant?.optionValues?.length) return null
-    
+
     return item.variant.optionValues
       .map((option: any) => `${option.optionName}: ${option.value}`)
       .join(' / ')
@@ -56,114 +56,165 @@ const ApiCartItem: React.FC<ApiCartItemProps> = ({
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20 }}
-      className="bg-white rounded-3xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow overflow-hidden"
+      transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+      className="group"
     >
-      <div className="p-8">
-        <div className="flex items-start gap-6">
-          {/* Checkbox */}
-          {onToggleSelect && (
-            <div className="flex items-center pt-2">
-              <CheckboxPrimitive.Root
-                checked={isSelected}
-                onCheckedChange={() => onToggleSelect(item.id)}
-                className="w-5 h-5 rounded border-2 border-muted-foreground/30 data-[state=checked]:bg-primary data-[state=checked]:border-primary flex items-center justify-center transition-all duration-200"
-              >
-                <CheckboxPrimitive.Indicator>
-                  <Check className="w-3 h-3 text-white" />
-                </CheckboxPrimitive.Indicator>
-              </CheckboxPrimitive.Root>
-            </div>
-          )}
-
-          {/* Product Image */}
-          <div className="relative w-24 h-24 rounded-2xl overflow-hidden bg-muted/50 flex-shrink-0">
-            <Image
-              src={getProductImage()}
-              alt={item.product.name}
-              fill
-              className="object-cover"
-              unoptimized
-            />
+      <div className="flex items-start gap-6">
+        {/* Checkbox */}
+        {onToggleSelect && (
+          <div className="flex items-center pt-4">
+            <CheckboxPrimitive.Root
+              checked={isSelected}
+              onCheckedChange={() => onToggleSelect(item.id)}
+              className="w-6 h-6 rounded-lg border-2 border-slate-300 data-[state=checked]:bg-gradient-to-br data-[state=checked]:from-indigo-500 data-[state=checked]:to-purple-500 data-[state=checked]:border-transparent flex items-center justify-center transition-all duration-300 hover:border-indigo-400 cursor-pointer"
+            >
+              <CheckboxPrimitive.Indicator>
+                <motion.div
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{ type: 'spring', stiffness: 500, damping: 30 }}
+                >
+                  <Check className="w-4 h-4 text-white stroke-[3]" />
+                </motion.div>
+              </CheckboxPrimitive.Indicator>
+            </CheckboxPrimitive.Root>
           </div>
+        )}
 
-          {/* Product Details */}
-          <div className="flex-1 min-w-0">
-            <div className="flex justify-between items-start gap-4">
-              <div className="flex-1">
-                <h3 className="text-xl font-semibold text-gray-900 mb-2 line-clamp-2">
-                  {item.product.name}
-                </h3>
+        {/* Main Card */}
+        <motion.div
+          whileHover={{ y: -2 }}
+          className="flex-1 rounded-3xl border-2 border-slate-200 bg-white p-8 shadow-xl hover:shadow-2xl hover:border-indigo-200 transition-all duration-300 overflow-hidden relative"
+        >
+          {/* Gradient background on hover */}
+          <div className="absolute inset-0 bg-gradient-to-br from-indigo-50/0 via-purple-50/0 to-pink-50/0 group-hover:from-indigo-50/50 group-hover:via-purple-50/50 group-hover:to-pink-50/50 transition-all duration-500 pointer-events-none" />
 
-                {/* Variant Info */}
-                {getVariantDisplay() && (
-                  <p className="text-sm text-muted-foreground mb-2">
-                    {getVariantDisplay()}
-                  </p>
-                )}
+          <div className="relative flex items-start gap-6">
+            {/* Product Image */}
+            <motion.div
+              whileHover={{ scale: 1.05 }}
+              className="relative w-32 h-32 rounded-2xl overflow-hidden bg-slate-100 flex-shrink-0 border-2 border-white shadow-xl"
+            >
+              <Image
+                src={getProductImage()}
+                alt={item.product.name}
+                fill
+                className="object-cover transition-transform duration-500 group-hover:scale-110"
+                unoptimized
+              />
 
-                {/* SKU */}
-                {item.variant?.sku && (
-                  <p className="text-xs text-muted-foreground mb-3">
-                    SKU: {item.variant.sku}
-                  </p>
-                )}
+              {/* Shine effect overlay */}
+              <motion.div
+                className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent"
+                animate={{
+                  x: ['-100%', '100%'],
+                }}
+                transition={{
+                  duration: 3,
+                  repeat: Infinity,
+                  ease: 'linear',
+                  repeatDelay: 2,
+                }}
+              />
+            </motion.div>
 
-                {/* Price */}
-                <div className="flex items-center gap-3 mb-4">
-                  <span className="text-2xl font-bold text-primary">
-                    {formatPrice(item.unitPrice)}
-                  </span>
-                </div>
+            {/* Product Details */}
+            <div className="flex-1 min-w-0">
+              <div className="flex justify-between items-start gap-6">
+                <div className="flex-1">
+                  {/* Product Name */}
+                  <h3 className="text-2xl font-black text-slate-900 mb-3 line-clamp-2 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-indigo-600 group-hover:via-purple-600 group-hover:to-pink-600 transition-all duration-300">
+                    {item.product.name}
+                  </h3>
 
-                {/* Quantity Controls */}
-                <div className="flex items-center gap-4">
-                  <div className="flex items-center border-2 border-muted/30 rounded-xl overflow-hidden">
-                    <button
-                      onClick={() => handleQuantityChange(item.quantity - 1)}
-                      disabled={item.quantity <= 1}
-                      className="p-2 hover:bg-muted/50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                    >
-                      <Minus className="w-4 h-4" />
-                    </button>
+                  {/* Variant Info */}
+                  {getVariantDisplay() && (
+                    <div className="flex items-center gap-2 mb-3">
+                      <div className="px-4 py-2 rounded-xl bg-gradient-to-r from-slate-100 to-slate-50 border-2 border-slate-200">
+                        <p className="text-sm font-black text-slate-700">{getVariantDisplay()}</p>
+                      </div>
+                    </div>
+                  )}
 
-                    <div className="px-4 py-2 min-w-[60px] text-center font-medium bg-muted/20">
-                      {item.quantity}
+                  {/* SKU */}
+                  {item.variant?.sku && (
+                    <p className="text-xs font-bold text-slate-500 mb-4">SKU: {item.variant.sku}</p>
+                  )}
+
+                  {/* Price */}
+                  <div className="flex items-center gap-3 mb-6">
+                    <span className="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600">
+                      {formatPrice(item.unitPrice)}
+                    </span>
+                    <div className="px-3 py-1 rounded-lg bg-gradient-to-r from-emerald-500 to-teal-500 text-white text-xs font-black shadow-lg">
+                      <Sparkles className="w-3 h-3 inline mr-1" />
+                      GIÁ TỐT
+                    </div>
+                  </div>
+
+                  {/* Quantity Controls */}
+                  <div className="flex items-center gap-6">
+                    <div className="flex items-center border-2 border-slate-200 rounded-2xl overflow-hidden bg-white shadow-lg">
+                      <motion.button
+                        onClick={() => handleQuantityChange(item.quantity - 1)}
+                        disabled={item.quantity <= 1}
+                        whileHover={{ scale: item.quantity > 1 ? 1.1 : 1 }}
+                        whileTap={{ scale: item.quantity > 1 ? 0.9 : 1 }}
+                        className="p-4 hover:bg-gradient-to-r hover:from-indigo-50 hover:to-purple-50 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300"
+                      >
+                        <Minus className="w-5 h-5 text-slate-700" />
+                      </motion.button>
+
+                      <div className="px-8 py-4 min-w-[80px] text-center">
+                        <span className="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600">
+                          {item.quantity}
+                        </span>
+                      </div>
+
+                      <motion.button
+                        onClick={() => handleQuantityChange(item.quantity + 1)}
+                        whileHover={{ scale: 1.1 }}
+                        whileTap={{ scale: 0.9 }}
+                        className="p-4 hover:bg-gradient-to-r hover:from-indigo-50 hover:to-purple-50 transition-all duration-300"
+                      >
+                        <Plus className="w-5 h-5 text-slate-700" />
+                      </motion.button>
                     </div>
 
-                    <button
-                      onClick={() => handleQuantityChange(item.quantity + 1)}
-                      className="p-2 hover:bg-muted/50 transition-colors"
-                    >
-                      <Plus className="w-4 h-4" />
-                    </button>
-                  </div>
-
-                  <div className="text-sm text-muted-foreground">
-                    <Package className="w-4 h-4 inline mr-1" />
-                    Có sẵn
+                    <div className="flex items-center gap-2 px-4 py-3 rounded-xl bg-gradient-to-r from-emerald-50 to-teal-50 border-2 border-emerald-200">
+                      <Package className="w-5 h-5 text-emerald-600" />
+                      <span className="text-sm font-black text-emerald-900">Có sẵn</span>
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              {/* Total Price & Actions */}
-              <div className="text-right flex-shrink-0">
-                <div className="text-2xl font-bold text-gray-900 mb-4">
-                  {formatPrice(item.totalPrice)}
-                </div>
+                {/* Total Price & Actions */}
+                <div className="text-right flex-shrink-0">
+                  {/* Total price */}
+                  <div className="mb-6">
+                    <p className="text-sm font-bold text-slate-600 mb-2">Tổng cộng</p>
+                    <div className="px-6 py-4 rounded-2xl bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 border-2 border-indigo-200 shadow-xl">
+                      <p className="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600">
+                        {formatPrice(item.totalPrice)}
+                      </p>
+                    </div>
+                  </div>
 
-                <div className="flex flex-col gap-2">
-                  <button
+                  {/* Delete button */}
+                  <motion.button
                     onClick={() => onRemoveItem(item.id)}
-                    className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-destructive hover:bg-destructive/10 rounded-xl transition-colors"
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    className="flex items-center gap-2 px-6 py-3 text-sm font-black rounded-2xl transition-all duration-300 bg-gradient-to-r from-red-500 to-pink-500 text-white hover:shadow-xl hover:shadow-red-500/50"
                   >
-                    <Trash2 className="w-4 h-4" />
+                    <Trash2 className="w-5 h-5" />
                     Xóa
-                  </button>
+                  </motion.button>
                 </div>
               </div>
             </div>
           </div>
-        </div>
+        </motion.div>
       </div>
     </motion.div>
   )

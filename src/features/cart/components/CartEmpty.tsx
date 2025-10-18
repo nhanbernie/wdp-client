@@ -2,7 +2,7 @@
 
 import React from 'react'
 import { motion } from 'motion/react'
-import { ShoppingBag, ArrowLeft, Package, Sparkles } from 'lucide-react'
+import { ShoppingBag, ArrowLeft, Package, Sparkles, TrendingUp } from 'lucide-react'
 import Link from 'next/link'
 
 interface CartEmptyProps {
@@ -24,32 +24,46 @@ const CartEmpty: React.FC<CartEmptyProps> = ({ onContinueShopping }) => {
         transition={{ duration: 0.6, delay: 0.2 }}
         className="relative mb-12"
       >
+        {/* Background decoration */}
+        <motion.div
+          animate={{
+            scale: [1, 1.2, 1],
+            opacity: [0.2, 0.5, 0.2],
+          }}
+          transition={{
+            duration: 4,
+            repeat: Infinity,
+            ease: 'easeInOut',
+          }}
+          className="absolute inset-0 rounded-full bg-gradient-to-r from-indigo-200 via-purple-200 to-pink-200 blur-3xl"
+        />
+
         {/* Main Shopping Bag */}
-        <div className="relative w-48 h-48 rounded-3xl flex items-center justify-center bg-white border-2 border-dashed border-gray-300 shadow-2xl">
-          <ShoppingBag className="w-20 h-20 text-gray-400" />
+        <div className="relative w-56 h-56 rounded-3xl flex items-center justify-center bg-white border-2 border-dashed border-slate-300 shadow-2xl">
+          <ShoppingBag className="w-24 h-24 text-slate-400" />
 
           {/* Floating Elements */}
           <motion.div
             animate={{
-              y: [0, -15, 0],
-              rotate: [0, 10, -10, 0],
+              y: [0, -20, 0],
+              rotate: [0, 15, -15, 0],
             }}
             transition={{
               duration: 4,
               repeat: Infinity,
               ease: 'easeInOut',
             }}
-            className="absolute -top-4 -right-4"
+            className="absolute -top-6 -right-6"
           >
-            <div className="w-8 h-8 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center shadow-lg">
-              <Package className="w-4 h-4 text-white" />
+            <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center shadow-2xl border-2 border-white">
+              <Package className="w-7 h-7 text-white" />
             </div>
           </motion.div>
 
           <motion.div
             animate={{
-              y: [0, -12, 0],
-              rotate: [0, -8, 8, 0],
+              y: [0, -15, 0],
+              rotate: [0, -12, 12, 0],
             }}
             transition={{
               duration: 3.5,
@@ -57,17 +71,17 @@ const CartEmpty: React.FC<CartEmptyProps> = ({ onContinueShopping }) => {
               ease: 'easeInOut',
               delay: 0.5,
             }}
-            className="absolute -bottom-4 -left-4"
+            className="absolute -bottom-6 -left-6"
           >
-            <div className="w-6 h-6 rounded-full bg-gradient-to-r from-orange-500 to-pink-500 flex items-center justify-center shadow-lg">
-              <Sparkles className="w-3 h-3 text-white" />
+            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-orange-500 to-pink-500 flex items-center justify-center shadow-2xl border-2 border-white">
+              <Sparkles className="w-6 h-6 text-white" />
             </div>
           </motion.div>
 
           <motion.div
             animate={{
-              y: [0, -8, 0],
-              rotate: [0, 5, -5, 0],
+              y: [0, -10, 0],
+              rotate: [0, 8, -8, 0],
             }}
             transition={{
               duration: 2.8,
@@ -75,25 +89,13 @@ const CartEmpty: React.FC<CartEmptyProps> = ({ onContinueShopping }) => {
               ease: 'easeInOut',
               delay: 1,
             }}
-            className="absolute top-8 -left-8"
+            className="absolute top-12 -left-10"
           >
-            <div className="w-4 h-4 rounded-full bg-gradient-to-r from-green-500 to-teal-500 shadow-lg" />
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-500 shadow-2xl border-2 border-white flex items-center justify-center">
+              <TrendingUp className="w-5 h-5 text-white" />
+            </div>
           </motion.div>
         </div>
-
-        {/* Decorative Background */}
-        <motion.div
-          animate={{
-            scale: [1, 1.1, 1],
-            opacity: [0.3, 0.6, 0.3],
-          }}
-          transition={{
-            duration: 3,
-            repeat: Infinity,
-            ease: 'easeInOut',
-          }}
-          className="absolute inset-0 rounded-3xl bg-gradient-to-r from-purple-200/50 via-blue-200/50 to-transparent dark:from-purple-800/30 dark:via-blue-800/30"
-        />
       </motion.div>
 
       {/* Empty State Content */}
@@ -101,36 +103,64 @@ const CartEmpty: React.FC<CartEmptyProps> = ({ onContinueShopping }) => {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, delay: 0.4 }}
-        className="max-w-lg mx-auto"
+        className="max-w-2xl mx-auto"
       >
-        <h2 className="text-4xl font-bold mb-6 text-gray-900">Giỏ hàng trống</h2>
+        <h2 className="text-6xl font-black mb-6 text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600">
+          Giỏ hàng trống
+        </h2>
 
-        <p className="text-xl mb-10 leading-relaxed text-gray-600">
+        <p className="text-2xl mb-12 leading-relaxed text-slate-600 font-medium">
           Bạn chưa có sản phẩm nào trong giỏ hàng. Hãy khám phá các sản phẩm vật liệu xây dựng chất
           lượng cao của chúng tôi!
         </p>
 
         {/* Action Buttons */}
-        <div className="flex flex-col sm:flex-row gap-4 justify-center">
+        <div className="flex flex-col sm:flex-row gap-6 justify-center">
           {onContinueShopping ? (
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={onContinueShopping}
-              className="inline-flex items-center justify-center px-10 py-4 font-semibold rounded-2xl transition-all duration-300 shadow-xl hover:shadow-2xl bg-orange-500 text-white hover:bg-orange-600"
+              className="inline-flex items-center justify-center px-12 py-5 font-black text-xl rounded-2xl transition-all duration-300 shadow-2xl hover:shadow-purple-500/50 bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 text-white relative overflow-hidden group"
             >
-              <ShoppingBag className="mr-3 w-6 h-6" />
-              Tiếp tục mua sắm
+              {/* Shine effect */}
+              <motion.div
+                className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent"
+                animate={{
+                  x: ['-100%', '100%'],
+                }}
+                transition={{
+                  duration: 2,
+                  repeat: Infinity,
+                  ease: 'linear',
+                  repeatDelay: 1,
+                }}
+              />
+              <ShoppingBag className="mr-3 w-7 h-7 relative z-10" />
+              <span className="relative z-10">Tiếp tục mua sắm</span>
             </motion.button>
           ) : (
             <Link href="/">
               <motion.div
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="inline-flex items-center justify-center px-10 py-4 font-semibold rounded-2xl transition-all duration-300 shadow-xl hover:shadow-2xl bg-orange-500 text-white hover:bg-orange-600"
+                className="inline-flex items-center justify-center px-12 py-5 font-black text-xl rounded-2xl transition-all duration-300 shadow-2xl hover:shadow-purple-500/50 bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 text-white relative overflow-hidden group"
               >
-                <ShoppingBag className="mr-3 w-6 h-6" />
-                Tiếp tục mua sắm
+                {/* Shine effect */}
+                <motion.div
+                  className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent"
+                  animate={{
+                    x: ['-100%', '100%'],
+                  }}
+                  transition={{
+                    duration: 2,
+                    repeat: Infinity,
+                    ease: 'linear',
+                    repeatDelay: 1,
+                  }}
+                />
+                <ShoppingBag className="mr-3 w-7 h-7 relative z-10" />
+                <span className="relative z-10">Tiếp tục mua sắm</span>
               </motion.div>
             </Link>
           )}
@@ -139,9 +169,9 @@ const CartEmpty: React.FC<CartEmptyProps> = ({ onContinueShopping }) => {
             <motion.div
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="inline-flex items-center justify-center px-10 py-4 font-semibold rounded-2xl transition-all duration-300 bg-white border-2 border-gray-200 text-gray-800 hover:bg-gray-50 hover:border-orange-500"
+              className="inline-flex items-center justify-center px-12 py-5 font-black text-xl rounded-2xl transition-all duration-300 bg-white border-2 border-slate-200 text-slate-800 hover:bg-slate-50 hover:border-indigo-300 hover:shadow-xl"
             >
-              <ArrowLeft className="mr-3 w-6 h-6" />
+              <ArrowLeft className="mr-3 w-7 h-7" />
               Về trang chủ
             </motion.div>
           </Link>

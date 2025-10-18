@@ -1,6 +1,6 @@
 'use client'
 
-import React, { createContext, useContext, useState, useEffect } from 'react'
+import React, { createContext, useContext, useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import {
   useLoginMutation,
@@ -37,10 +37,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [user, setUser] = useState<User | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [shouldFetchProfile, setShouldFetchProfile] = useState(false)
+  const hasRedirected = useRef(false) // Track if we've already redirected
   const router = useRouter()
   const [logoutMutation] = useLogoutMutation()
   const toast = useToast()
-  const { data: profileData, refetch: refetchProfile } = useProfileQuery(undefined, {
+  const {
+    data: profileData,
+    error: profileError,
+    isLoading: isProfileLoading,
+    refetch: refetchProfile,
+  } = useProfileQuery(undefined, {
     skip: !shouldFetchProfile,
   })
 
@@ -48,6 +54,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     checkAuthStatus()
   }, [])
 
+  // Handle profile data success
   useEffect(() => {
     if (profileData?.success && profileData.data) {
       const { userId, email, roles, approvedStatus } = profileData.data
@@ -69,28 +76,62 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         avatar: undefined,
       }
 
+      // IMPORTANT: Set user state FIRST before any redirects
       setUser(updatedUser)
       setShouldFetchProfile(false)
+      setIsLoading(false)
 
-      // Redirect based on role
-      if (updatedUser.role === 'admin') {
-        router.push('/admin')
-      } else if (updatedUser.role === 'vendor') {
-        router.push('/vendor')
-      } else {
-        // Regular user - redirect to categories or stay on current page
-        if (typeof window !== 'undefined') {
-          const currentPath = window.location.pathname
-          // if (currentPath === '/marketing' || currentPath === '/') {
-          //   router.push('/categories')
-          // }
+      // Handle redirects based on role (only once per profile load)
+      if (typeof window !== 'undefined' && !hasRedirected.current) {
+        const currentPath = window.location.pathname
+
+        // Don't redirect if user is already on an appropriate page for their role
+        const isOnCorrectRolePage =
+          (updatedUser.role === 'admin' && currentPath.startsWith('/admin')) ||
+          (updatedUser.role === 'vendor' && currentPath.startsWith('/vendor')) ||
+          (updatedUser.role === 'user' &&
+            !currentPath.startsWith('/admin') &&
+            !currentPath.startsWith('/vendor'))
+
+        if (isOnCorrectRolePage) {
+          hasRedirected.current = true // Mark as handled
+          return
+        }
+
+        // Redirect if on wrong role page or public pages
+        const shouldRedirect =
+          currentPath === '/login' ||
+          currentPath === '/register' ||
+          currentPath === '/' ||
+          (updatedUser.role === 'admin' && !currentPath.startsWith('/admin')) ||
+          (updatedUser.role === 'vendor' && !currentPath.startsWith('/vendor'))
+
+        if (shouldRedirect) {
+          hasRedirected.current = true // Mark as redirected
+          if (updatedUser.role === 'admin') {
+            router.push('/admin')
+          } else if (updatedUser.role === 'vendor') {
+            router.push('/vendor')
+          } else {
+            router.push('/')
+          }
         }
       }
-      // else {
-      //   router.push("/marketing");
-      // }
     }
-  }, [profileData, router])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [profileData])
+
+  // Handle profile fetch error
+  useEffect(() => {
+    if (profileError) {
+      console.error('Failed to fetch profile:', profileError)
+      setUser(null)
+      setShouldFetchProfile(false)
+      setIsLoading(false)
+      // Clear auth data if profile fetch fails
+      StorageService.clearAuthData()
+    }
+  }, [profileError])
 
   const checkAuthStatus = async () => {
     try {
@@ -98,17 +139,21 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       if (token) {
         setShouldFetchProfile(true)
+      } else {
+        // No token, stop loading immediately
+        setIsLoading(false)
       }
     } catch (error) {
       console.error('Error checking auth status:', error)
       // Clear invalid data
       await StorageService.clearAuthData()
-    } finally {
       setIsLoading(false)
     }
   }
 
   const refreshUserProfile = () => {
+    // Reset redirect flag when refreshing profile
+    hasRedirected.current = false
     // Just set the flag, useEffect will handle the profile fetch
     setShouldFetchProfile(true)
   }
@@ -137,9 +182,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       // Always clear local storage and state
       await StorageService.clearAuthData()
       setUser(null)
+      hasRedirected.current = false // Reset redirect flag on logout
 
       // Redirect to marketing page
-      router.push('/marketing')
+      router.push('/')
     }
   }
 
