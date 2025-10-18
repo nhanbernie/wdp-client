@@ -12,6 +12,7 @@ import { useCartApi, useOrders } from '../hooks'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image' // Thêm Image component của Next.js
+import { usePayment } from '@/features/payment/hooks'
 
 interface CheckoutFormData {
   paymentMethod: 'cod' | 'bank_transfer' | 'credit_card' | 'e_wallet'
@@ -29,6 +30,7 @@ const CheckoutPage: React.FC = () => {
   const router = useRouter()
   const { cart, isLoadingCart, clearCart } = useCartApi()
   const { checkoutFromCart } = useOrders()
+  const { createPayment } = usePayment()
 
   const [formData, setFormData] = useState<CheckoutFormData>({
     paymentMethod: 'cod',
@@ -43,6 +45,7 @@ const CheckoutPage: React.FC = () => {
   })
 
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [createdOrder, setCreatedOrder] = useState<any>(null)
 
   // Giữ nguyên logic xử lý
   const handleInputChange = (field: keyof CheckoutFormData, value: string) => {
@@ -58,8 +61,30 @@ const CheckoutPage: React.FC = () => {
     try {
       const order = await checkoutFromCart(formData)
       if (order) {
-        await clearCart()
-        router.push(`/orders/${order.id}`)
+        setCreatedOrder(order)
+
+        if (formData.paymentMethod === 'bank_transfer') {
+          try {
+            const payment = await createPayment({
+              orderId: order.id,
+              amount: Number(order.totalAmount),
+              description: `Đơn hàng #${order.orderNumber}`,
+            })
+
+            if ((payment as any)?.data?.data?.payosData?.data?.checkoutUrl) {
+              window.open((payment as any).data.data.payosData?.data?.checkoutUrl, '_blank')
+              router.push(`/orders/${order.id}`)
+            } else {
+              console.error('No checkout URL found in payment response')
+              router.push(`/orders/${order.id}`)
+            }
+          } catch (paymentError) {
+            console.error('Payment creation failed:', paymentError)
+            router.push(`/orders/${order.id}`)
+          }
+        } else {
+          router.push(`/orders/${order.id}`)
+        }
       }
     } catch (error) {
       console.error('Checkout failed:', error)
@@ -83,7 +108,7 @@ const CheckoutPage: React.FC = () => {
     },
     {
       value: 'bank_transfer',
-      label: 'Chuyển khoản ngân hàng',
+      label: 'Chuyển khoản ngân hàng (PayOS)',
       icon: <Banknote className="h-6 w-6 text-muted-foreground" />,
     },
     {
@@ -146,76 +171,156 @@ const CheckoutPage: React.FC = () => {
             <div className="lg:col-span-7">
               <div className="space-y-8 rounded-lg border bg-card p-6 shadow-sm">
                 {/* 1. Thông tin giao hàng */}
-                <div>
-                  <h2 className="text-xl font-semibold flex items-center gap-3 mb-5">
-                    <MapPin className="h-6 w-6 text-primary" />
-                    Thông tin giao hàng
-                  </h2>
-                  <div className="space-y-4">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div>
-                        <Label htmlFor="shippingName">Họ và tên *</Label>
-                        <Input
-                          id="shippingName"
-                          value={formData.shippingName}
-                          onChange={(e) => handleInputChange('shippingName', e.target.value)}
-                          required
-                        />
-                      </div>
-                      <div>
-                        <Label htmlFor="shippingPhone">Số điện thoại *</Label>
-                        <Input
-                          id="shippingPhone"
-                          type="tel"
-                          value={formData.shippingPhone}
-                          onChange={(e) => handleInputChange('shippingPhone', e.target.value)}
-                          required
-                        />
-                      </div>
+                <div className="bg-gradient-to-br from-slate-50 to-slate-100/50 rounded-xl p-6 border border-slate-200/60">
+                  <div className="flex items-center gap-3 mb-6">
+                    <div className="p-2 bg-primary/10 rounded-lg">
+                      <MapPin className="h-6 w-6 text-primary" />
                     </div>
                     <div>
-                      <Label htmlFor="shippingAddress">Địa chỉ *</Label>
-                      <Input
-                        id="shippingAddress"
-                        value={formData.shippingAddress}
-                        onChange={(e) => handleInputChange('shippingAddress', e.target.value)}
-                        required
-                      />
+                      <h2 className="text-xl font-semibold text-slate-800">Thông tin giao hàng</h2>
+                      <p className="text-sm text-slate-600">
+                        Vui lòng điền đầy đủ thông tin để chúng tôi có thể giao hàng
+                      </p>
                     </div>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                      <div>
-                        <Label htmlFor="shippingWard">Phường/Xã</Label>
-                        <Input
-                          id="shippingWard"
-                          value={formData.shippingWard}
-                          onChange={(e) => handleInputChange('shippingWard', e.target.value)}
-                        />
-                      </div>
-                      <div>
-                        <Label htmlFor="shippingDistrict">Quận/Huyện</Label>
-                        <Input
-                          id="shippingDistrict"
-                          value={formData.shippingDistrict}
-                          onChange={(e) => handleInputChange('shippingDistrict', e.target.value)}
-                        />
-                      </div>
-                      <div>
-                        <Label htmlFor="shippingCity">Tỉnh/Thành phố</Label>
-                        <Input
-                          id="shippingCity"
-                          value={formData.shippingCity}
-                          onChange={(e) => handleInputChange('shippingCity', e.target.value)}
-                        />
+                  </div>
+
+                  <div className="space-y-6">
+                    {/* Thông tin cá nhân */}
+                    <div className="space-y-4">
+                      <h3 className="text-sm font-medium text-slate-700 uppercase tracking-wide">
+                        Thông tin cá nhân
+                      </h3>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <Label
+                            htmlFor="shippingName"
+                            className="text-sm font-medium text-slate-700"
+                          >
+                            Họ và tên <span className="text-red-500">*</span>
+                          </Label>
+                          <Input
+                            id="shippingName"
+                            value={formData.shippingName}
+                            onChange={(e) => handleInputChange('shippingName', e.target.value)}
+                            required
+                            className="h-11 border-slate-300 focus:border-primary focus:ring-primary/20 transition-all duration-200"
+                            placeholder="Nhập họ và tên đầy đủ"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label
+                            htmlFor="shippingPhone"
+                            className="text-sm font-medium text-slate-700"
+                          >
+                            Số điện thoại <span className="text-red-500">*</span>
+                          </Label>
+                          <Input
+                            id="shippingPhone"
+                            type="tel"
+                            value={formData.shippingPhone}
+                            onChange={(e) => handleInputChange('shippingPhone', e.target.value)}
+                            required
+                            className="h-11 border-slate-300 focus:border-primary focus:ring-primary/20 transition-all duration-200"
+                            placeholder="Nhập số điện thoại"
+                          />
+                        </div>
                       </div>
                     </div>
-                    <div>
-                      <Label htmlFor="customerNotes">Ghi chú đơn hàng (tùy chọn)</Label>
-                      <Textarea
-                        id="customerNotes"
-                        value={formData.customerNotes}
-                        onChange={(e) => handleInputChange('customerNotes', e.target.value)}
-                        placeholder="Ghi chú thêm cho người giao hàng..."
-                      />
+
+                    {/* Địa chỉ giao hàng */}
+                    <div className="space-y-4">
+                      <h3 className="text-sm font-medium text-slate-700 uppercase tracking-wide">
+                        Địa chỉ giao hàng
+                      </h3>
+                      <div className="space-y-4">
+                        <div className="space-y-2">
+                          <Label
+                            htmlFor="shippingAddress"
+                            className="text-sm font-medium text-slate-700"
+                          >
+                            Địa chỉ chi tiết <span className="text-red-500">*</span>
+                          </Label>
+                          <Input
+                            id="shippingAddress"
+                            value={formData.shippingAddress}
+                            onChange={(e) => handleInputChange('shippingAddress', e.target.value)}
+                            required
+                            className="h-11 border-slate-300 focus:border-primary focus:ring-primary/20 transition-all duration-200"
+                            placeholder="Số nhà, tên đường, tên khu phố..."
+                          />
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                          <div className="space-y-2">
+                            <Label
+                              htmlFor="shippingWard"
+                              className="text-sm font-medium text-slate-700"
+                            >
+                              Phường/Xã
+                            </Label>
+                            <Input
+                              id="shippingWard"
+                              value={formData.shippingWard}
+                              onChange={(e) => handleInputChange('shippingWard', e.target.value)}
+                              className="h-11 border-slate-300 focus:border-primary focus:ring-primary/20 transition-all duration-200"
+                              placeholder="Phường/Xã"
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <Label
+                              htmlFor="shippingDistrict"
+                              className="text-sm font-medium text-slate-700"
+                            >
+                              Quận/Huyện
+                            </Label>
+                            <Input
+                              id="shippingDistrict"
+                              value={formData.shippingDistrict}
+                              onChange={(e) =>
+                                handleInputChange('shippingDistrict', e.target.value)
+                              }
+                              className="h-11 border-slate-300 focus:border-primary focus:ring-primary/20 transition-all duration-200"
+                              placeholder="Quận/Huyện"
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <Label
+                              htmlFor="shippingCity"
+                              className="text-sm font-medium text-slate-700"
+                            >
+                              Tỉnh/Thành phố
+                            </Label>
+                            <Input
+                              id="shippingCity"
+                              value={formData.shippingCity}
+                              onChange={(e) => handleInputChange('shippingCity', e.target.value)}
+                              className="h-11 border-slate-300 focus:border-primary focus:ring-primary/20 transition-all duration-200"
+                              placeholder="Tỉnh/Thành phố"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Ghi chú */}
+                    <div className="space-y-4">
+                      <h3 className="text-sm font-medium text-slate-700 uppercase tracking-wide">
+                        Ghi chú bổ sung
+                      </h3>
+                      <div className="space-y-2">
+                        <Label
+                          htmlFor="customerNotes"
+                          className="text-sm font-medium text-slate-700"
+                        >
+                          Ghi chú đơn hàng <span className="text-slate-400">(tùy chọn)</span>
+                        </Label>
+                        <Textarea
+                          id="customerNotes"
+                          value={formData.customerNotes}
+                          onChange={(e) => handleInputChange('customerNotes', e.target.value)}
+                          placeholder="Ghi chú thêm cho người giao hàng (ví dụ: giao vào giờ hành chính, để ở cổng...)"
+                          className="min-h-[100px] border-slate-300 focus:border-primary focus:ring-primary/20 transition-all duration-200 resize-none"
+                        />
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -241,7 +346,7 @@ const CheckoutPage: React.FC = () => {
                           }
                           className="peer absolute opacity-0"
                         />
-                        <div className="flex items-center gap-4 p-4 rounded-lg border cursor-pointer transition-all duration-300 peer-checked:border-primary peer-checked:bg-primary/10 peer-checked:shadow-md hover:bg-muted/50">
+                        <div className="flex items-center gap-4 p-4 rounded-lg border cursor-pointer transition-all duration-200 peer-checked:border-orange-400 peer-checked:bg-orange-50 hover:bg-muted/50">
                           {method.icon}
                           <span className="font-medium">{method.label}</span>
                         </div>

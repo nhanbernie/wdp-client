@@ -108,6 +108,11 @@ export const API_ENDPOINTS = {
   CATEGORIES: {
     LIST: '/categories',
   },
+
+  // Payments endpoints
+  PAYMENTS: {
+    CREATE: '/payments'
+  },
 }
 
 // Public endpoints that don't require authentication
