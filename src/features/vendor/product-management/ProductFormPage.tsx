@@ -35,20 +35,24 @@ export const ProductFormPage: React.FC<ProductFormPageProps> = ({
   }
 
   const handleFormSubmit = async (data: ProductFormData) => {
-    // Add vendorId to the data and handle null values
-    const dataWithVendorId = {
-      ...data,
-      vendorId: (user as any)?.vendorId || user?.id || '',
-      salePrice: data.salePrice || undefined,
-      badges: data.badges || undefined,
-      specs: data.specs || undefined,
-      options: data.options || undefined,
-      variants: data.variants || undefined,
-      datasheetUrl: data.datasheetUrl || undefined,
-    }
+    try {
+      // Add vendorId to the data and handle null values
+      const dataWithVendorId = {
+        ...data,
+        vendorId: (user as any)?.vendorId || user?.id || '',
+        salePrice: data.salePrice || undefined,
+        badges: data.badges || undefined,
+        specs: data.specs || undefined,
+        options: data.options || undefined,
+        variants: data.variants || undefined,
+        datasheetUrl: data.datasheetUrl || undefined,
+      }
 
-    await onSubmit(dataWithVendorId as any)
-    router.push('/vendor/products')
+      await onSubmit(dataWithVendorId as any)
+      router.push('/vendor/products')
+    } catch (error) {
+      // Error is already handled in the hook with toast
+    }
   }
 
   return (
