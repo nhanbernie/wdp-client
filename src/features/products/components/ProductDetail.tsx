@@ -35,8 +35,8 @@ const ProductDetail: React.FC<ProductDetailProps> = ({ id }) => {
   const productData = product.data as unknown as ProductDetailDto
 
   return (
-    <div className="min-h-screen bg-background transition-colors pt-20">
-      <main className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div className="min-h-screen bg-background transition-colors px-[var(--header-horizontal-padding)]">
+      <main className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8">
         <Breadcrumb
           category={productData.category?.name}
           productName={productData.name}
@@ -61,7 +61,11 @@ const ProductDetail: React.FC<ProductDetailProps> = ({ id }) => {
               colors={colors}
               brandColors={brandColors}
             />
-            <ProductQuantity stock={productData.stock?.quantity} colors={colors} />
+            <ProductQuantity 
+              stock={productData.stock?.quantity} 
+              colors={colors} 
+              productId={productData.id}
+            />
           </div>
         </div>
 

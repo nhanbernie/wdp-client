@@ -1,4 +1,5 @@
 'use client'
+import { CategoryDto } from '@/services/categories/category.type'
 import { useCategories } from '../hooks/useCategories'
 import CategoryCard from './CategoryCard'
 
@@ -6,7 +7,7 @@ const CategoryShowcase = () => {
   const { categories, loading } = useCategories({ productCount: true })
 
   return (
-    <div className="w-full px-4 sm:px-8 md:px-16 lg:px-24 py-16">
+    <div className="w-full px-4 sm:px-8 md:px-16 lg:px-[var(--header-horizontal-padding)] py-16">
       {/* Categories title */}
       <div className="text-center mb-8">
         <h1 className="text-2xl sm:text-3xl font-bold mb-3">Khám phá vật liệu xây dựng</h1>
@@ -19,7 +20,7 @@ const CategoryShowcase = () => {
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 sm:gap-8 lg:gap-12">
         {!loading
           ? categories.length > 0 &&
-            categories.map((cate) => (
+            categories.map((cate: CategoryDto) => (
               <div key={cate.id} className="group">
                 <CategoryCard data={cate} />
               </div>

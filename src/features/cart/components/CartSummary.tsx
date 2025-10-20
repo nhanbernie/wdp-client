@@ -14,18 +14,38 @@ import {
   Sparkles,
   Gift,
 } from 'lucide-react'
-import { CartSummary as CartSummaryType } from '../types/cart.types'
+import { CartSummary as CartSummaryType, ApiCart } from '../types/cart.types'
+import { useRouter } from 'next/navigation'
 
 interface CartSummaryProps {
-  summary: CartSummaryType
-  onCheckout: () => void
+  cart?: ApiCart
+  summary?: CartSummaryType // Legacy support
+  onCheckout?: () => void
   onApplyCoupon?: (coupon: string) => void
 }
 
-const CartSummary: React.FC<CartSummaryProps> = ({ summary, onCheckout, onApplyCoupon }) => {
+const CartSummary: React.FC<CartSummaryProps> = ({ cart, summary, onCheckout, onApplyCoupon }) => {
+  const router = useRouter()
   const [couponCode, setCouponCode] = useState('')
   const [showCouponForm, setShowCouponForm] = useState(false)
   const [appliedCoupon, setAppliedCoupon] = useState<string | null>(null)
+
+  // Use cart data if available, otherwise fallback to legacy summary
+  const itemCount = cart?.totalQuantity || summary?.itemCount || 0
+  const subtotal = cart?.subtotal || summary?.subtotal || 0
+  const shipping = summary?.shipping || 0 // API doesn't provide shipping fee yet
+  const tax = summary?.tax || 0 // API doesn't provide tax yet
+  const discount = summary?.discount || 0 // API doesn't provide discount yet
+  const total = cart?.total || summary?.total || 0
+
+  const handleCheckout = () => {
+    if (onCheckout) {
+      onCheckout()
+    } else {
+      // Navigate to checkout page
+      router.push('/checkout')
+    }
+  }
 
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat('vi-VN', {
@@ -59,54 +79,54 @@ const CartSummary: React.FC<CartSummaryProps> = ({ summary, onCheckout, onApplyC
       transition={{ duration: 0.5 }}
       className="sticky top-6"
     >
-      <div className="rounded-3xl p-8 shadow-2xl cart-card border backdrop-blur-sm">
+      <div className="rounded-3xl p-8 shadow-lg bg-white border border-gray-200">
         {/* Header */}
         <div className="flex items-center gap-4 mb-8">
-          <div className="w-12 h-12 rounded-2xl flex items-center justify-center bg-primary text-primary-foreground shadow-lg">
+          <div className="w-12 h-12 rounded-2xl flex items-center justify-center bg-orange-500 text-white shadow-lg">
             <ShoppingCart className="w-6 h-6" />
           </div>
           <div>
-            <h2 className="text-2xl font-bold text-foreground">Tóm tắt đơn hàng</h2>
-            <p className="text-muted-foreground">{summary.itemCount} sản phẩm trong giỏ</p>
+            <h2 className="text-2xl font-bold text-gray-900">Tóm tắt đơn hàng</h2>
+            <p className="text-gray-600">{itemCount} sản phẩm trong giỏ</p>
           </div>
         </div>
 
         {/* Item Count */}
         <div className="flex items-center justify-between py-3 mb-6">
-          <span className="text-sm font-medium text-foreground">Sản phẩm</span>
-          <span className="text-sm font-bold text-foreground">{summary.itemCount} món</span>
+          <span className="text-sm font-medium text-gray-700">Sản phẩm</span>
+          <span className="text-sm font-bold text-gray-900">{itemCount} món</span>
         </div>
 
         {/* Order Summary */}
         <div className="space-y-4 mb-8">
           {/* Subtotal */}
           <div className="flex items-center justify-between py-2">
-            <span className="text-sm font-medium text-foreground">Tạm tính</span>
-            <span className="text-sm font-bold text-foreground">
-              {formatPrice(summary.subtotal)}
+            <span className="text-sm font-medium text-gray-700">Tạm tính</span>
+            <span className="text-sm font-bold text-gray-900">
+              {formatPrice(subtotal)}
             </span>
           </div>
 
           {/* Shipping */}
           <div className="flex items-center justify-between py-2">
-            <span className="text-sm font-medium text-foreground">Phí vận chuyển</span>
-            <span className="text-sm font-bold text-foreground">
-              {summary.shipping === 0 ? 'Miễn phí' : formatPrice(summary.shipping)}
+            <span className="text-sm font-medium text-gray-700">Phí vận chuyển</span>
+            <span className="text-sm font-bold text-gray-900">
+              {shipping === 0 ? 'Miễn phí' : formatPrice(shipping)}
             </span>
           </div>
 
           {/* Tax */}
           <div className="flex items-center justify-between py-2">
-            <span className="text-sm font-medium text-foreground">Thuế VAT</span>
-            <span className="text-sm font-bold text-foreground">{formatPrice(summary.tax)}</span>
+            <span className="text-sm font-medium text-gray-700">Thuế VAT</span>
+            <span className="text-sm font-bold text-gray-900">{formatPrice(tax)}</span>
           </div>
 
           {/* Discount */}
-          {summary.discount > 0 && (
+          {discount > 0 && (
             <div className="flex items-center justify-between py-2">
               <span className="text-sm font-medium text-green-600">Giảm giá</span>
               <span className="text-sm font-bold text-green-600">
-                -{formatPrice(summary.discount)}
+                -{formatPrice(discount)}
               </span>
             </div>
           )}
@@ -186,17 +206,17 @@ const CartSummary: React.FC<CartSummaryProps> = ({ summary, onCheckout, onApplyC
         </div>
 
         {/* Total */}
-        <div className="py-4 px-6 rounded-lg mb-6 bg-muted border border-border">
+        <div className="py-4 px-6 rounded-lg mb-6 bg-gray-50 border border-gray-200">
           <div className="flex items-center justify-between">
-            <span className="text-lg font-bold text-foreground">Tổng cộng</span>
-            <span className="text-2xl font-bold text-primary">{formatPrice(summary.total)}</span>
+            <span className="text-lg font-bold text-gray-900">Tổng cộng</span>
+            <span className="text-2xl font-bold text-orange-500">{formatPrice(total)}</span>
           </div>
         </div>
 
         {/* Checkout Button */}
         <button
-          onClick={onCheckout}
-          className="w-full py-4 rounded-lg font-bold text-lg transition-all duration-300 bg-primary text-primary-foreground hover:bg-primary/90"
+          onClick={handleCheckout}
+          className="w-full py-4 rounded-lg font-bold text-lg transition-all duration-300 bg-orange-500 text-white hover:bg-orange-600"
         >
           <div className="flex items-center justify-center gap-2">
             <CreditCard className="w-5 h-5" />

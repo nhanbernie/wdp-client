@@ -3,7 +3,7 @@ import { Input } from '@/components/ui/input'
 
 const NewsletterSignupSection = () => {
   return (
-    <div className="grid grid-cols-2 mx-[var(--header-horizontial-padding)] bg-[var(--primary)] p-8 mb-16">
+    <div className="grid grid-cols-2 mx-[var(--header-horizontal-padding)] bg-[var(--primary)] p-8 mb-16">
       <div>
         <h1 className="font-bold text-2xl">ĐĂNG KÝ NHẬN ƯU ĐÃI NGAY</h1>
         <p className="text-[0.9rem]">

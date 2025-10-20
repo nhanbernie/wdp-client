@@ -30,7 +30,7 @@ const LatestProductSection = () => {
   }, [products])
 
   return (
-    <div className="w-vw mx-[var(--header-horizontial-padding)]">
+    <div className="w-vw mx-[var(--header-horizontal-padding)]">
       <div className="text-center mb-8">
         <h1 className="text-3xl font-bold text-center">Sản phẩm mới nhất</h1>
         <p className="text-lg text-[var(--muted-foreground)]">
