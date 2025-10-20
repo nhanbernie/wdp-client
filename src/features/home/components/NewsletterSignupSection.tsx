@@ -1,19 +1,136 @@
+'use client'
+
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { motion } from 'framer-motion'
+import { Mail, ArrowRight, Gift, Bell } from 'lucide-react'
 
 const NewsletterSignupSection = () => {
   return (
-    <div className="grid grid-cols-2 mx-[var(--header-horizontal-padding)] bg-[var(--primary)] p-8 mb-16">
-      <div>
-        <h1 className="font-bold text-2xl">ĐĂNG KÝ NHẬN ƯU ĐÃI NGAY</h1>
-        <p className="text-[0.9rem]">
-          Để lại email bạn sẽ biết thêm về các ưu đãi đặc biệt và hơn thế nữa!
-        </p>
-      </div>
-      <div className="flex gap-4">
-        <Input placeholder="Email của bạn..." className="focus-visible:ring-0 border-white" />
-        <Button className="bg-[var(--background)] cursor-pointer hover:opacity-85">Đăng ký</Button>
-      </div>
+    <div className="mx-[var(--header-horizontal-padding)] mb-20">
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.6 }}
+        className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-600 p-12 lg:p-16 shadow-2xl shadow-indigo-500/50"
+      >
+        {/* Decorative background elements */}
+        <div className="absolute top-0 right-0 w-96 h-96 bg-white/10 rounded-full blur-3xl" />
+        <div className="absolute bottom-0 left-0 w-80 h-80 bg-white/10 rounded-full blur-3xl" />
+
+        {/* Floating icons decoration */}
+        <motion.div
+          animate={{ y: [0, -20, 0] }}
+          transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
+          className="absolute top-10 right-20 p-4 rounded-2xl bg-white/10 backdrop-blur-sm"
+        >
+          <Gift className="h-8 w-8 text-white" />
+        </motion.div>
+        <motion.div
+          animate={{ y: [0, 20, 0] }}
+          transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
+          className="absolute bottom-10 left-20 p-4 rounded-2xl bg-white/10 backdrop-blur-sm"
+        >
+          <Bell className="h-8 w-8 text-white" />
+        </motion.div>
+
+        <div className="relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
+          {/* Left side - Text content */}
+          <div className="text-white">
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/20 backdrop-blur-sm border border-white/30 mb-6"
+            >
+              <Mail className="h-5 w-5" />
+              <span className="text-sm font-bold">Newsletter</span>
+            </motion.div>
+
+            <motion.h2
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.3 }}
+              className="text-3xl lg:text-4xl font-black mb-4 leading-tight"
+            >
+              ĐĂNG KÝ NHẬN ƯU ĐÃI NGAY
+            </motion.h2>
+
+            <motion.p
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.4 }}
+              className="text-lg text-white/90 leading-relaxed"
+            >
+              Để lại email bạn sẽ biết thêm về các ưu đãi đặc biệt, sản phẩm mới và nhiều hơn thế
+              nữa!
+            </motion.p>
+
+            {/* Benefits list */}
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.5 }}
+              className="mt-6 space-y-3"
+            >
+              {['Giảm giá 10% cho đơn đầu tiên', 'Thông tin sản phẩm mới', 'Ưu đãi độc quyền'].map(
+                (benefit, index) => (
+                  <div key={index} className="flex items-center gap-3">
+                    <div className="p-1 rounded-full bg-white/20">
+                      <div className="w-2 h-2 rounded-full bg-white" />
+                    </div>
+                    <span className="text-white/90">{benefit}</span>
+                  </div>
+                ),
+              )}
+            </motion.div>
+          </div>
+
+          {/* Right side - Form */}
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.6 }}
+            className="relative"
+          >
+            <div className="p-8 rounded-3xl bg-white/10 backdrop-blur-md border-2 border-white/20 shadow-2xl">
+              <div className="flex flex-col gap-4">
+                <div className="relative">
+                  <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" />
+                  <Input
+                    type="email"
+                    placeholder="Nhập email của bạn..."
+                    className="pl-12 h-14 rounded-2xl border-2 border-white/30 bg-white focus-visible:ring-2 focus-visible:ring-white focus-visible:border-transparent text-lg"
+                  />
+                </div>
+
+                <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+                  <Button
+                    size="lg"
+                    className="w-full h-14 rounded-2xl bg-white text-indigo-600 hover:bg-white/90 font-bold text-lg shadow-xl cursor-pointer group"
+                  >
+                    Đăng ký ngay
+                    <ArrowRight className="h-6 w-6 ml-2 group-hover:translate-x-1 transition-transform" />
+                  </Button>
+                </motion.div>
+
+                <p className="text-center text-sm text-white/70 mt-2">
+                  Bằng việc đăng ký, bạn đồng ý với{' '}
+                  <span className="underline cursor-pointer hover:text-white">
+                    điều khoản dịch vụ
+                  </span>
+                </p>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      </motion.div>
     </div>
   )
 }

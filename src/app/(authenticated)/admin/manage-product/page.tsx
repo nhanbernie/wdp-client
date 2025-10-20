@@ -1,5 +1,7 @@
-const ManageProduct = () => {
-  return <div>ManageProduct</div>
-}
+'use client'
 
-export default ManageProduct
+import { ProductsManagement } from '@/features/admin/products'
+
+export default function AdminProductsPage() {
+  return <ProductsManagement />
+}

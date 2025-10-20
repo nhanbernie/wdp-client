@@ -3,6 +3,7 @@
 import { Button } from '@/components/ui/button'
 import { useRouter, usePathname } from 'next/navigation'
 import { motion } from 'framer-motion'
+import { RotateCcw, Sparkles } from 'lucide-react'
 
 export function ClearFiltersButton() {
   const router = useRouter()
@@ -15,13 +16,19 @@ export function ClearFiltersButton() {
 
   return (
     <motion.div
-    // whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3, delay: 0.2 }}
+      whileHover={{ scale: 1.03 }}
+      whileTap={{ scale: 0.97 }}
     >
       <Button
         onClick={handleClear}
-        className="w-full bg-[var(--primary)] text-sm font-medium hover:opacity-80 text-[var(--primary-foreground)] transition-all cursor-pointer"
+        className="w-full bg-gradient-to-r from-red-500 to-pink-600 hover:from-red-600 hover:to-pink-700 text-white font-bold shadow-lg hover:shadow-xl transition-all duration-200 flex items-center justify-center gap-2 h-12 rounded-xl"
       >
+        <RotateCcw className="h-5 w-5" />
         Xóa tất cả bộ lọc
+        <Sparkles className="h-4 w-4" />
       </Button>
     </motion.div>
   )
