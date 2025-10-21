@@ -1,28 +1,38 @@
 'use client'
 
-import React, { useState } from 'react'
-import { useFormContext } from 'react-hook-form'
+import React, { useState, useEffect } from 'react'
+import { useFormContext, Controller } from 'react-hook-form'
 import { Button } from '@/components/ui/button'
 import { TextField } from '@/components/common/TextField'
 import { TextAreaField } from '@/components/common/TextAreaField'
 import { SelectField } from '@/components/common/SelectField'
+import { ImageUpload, MultipleImageUpload } from '@/components/common'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { Plus, Trash2, Package, DollarSign, Image as ImageIcon, List } from 'lucide-react'
+import { Plus, Trash2, Package, DollarSign, Image as ImageIcon, List, Settings } from 'lucide-react'
 import { useGetCategoriesQuery } from '@/services/categories/categories.service'
 import { ProductFormData } from '../types/product.types'
+import { ProductOptionsField } from './ProductOptionsField'
+import { ProductVariantsField } from './ProductVariantsField'
+import { ProductSpecsField } from './ProductSpecsField'
+import { ProductBadgesField } from './ProductBadgesField'
 
 interface ProductFormPropsNew {
   onCancel: () => void
+  mode?: 'create' | 'edit' // Control which tabs to show
 }
 
-export const ProductForm: React.FC<ProductFormPropsNew> = ({ onCancel }) => {
+export const ProductForm: React.FC<ProductFormPropsNew> = ({ onCancel, mode = 'create' }) => {
   const {
+    control,
     watch,
     setValue,
+    getValues,
     formState: { errors, isSubmitting },
   } = useFormContext<ProductFormData>()
+
+  // Debug logs
 
   const { data: categoriesData } = useGetCategoriesQuery({})
   const categoriesArray = Array.isArray(categoriesData?.data)
@@ -34,27 +44,14 @@ export const ProductForm: React.FC<ProductFormPropsNew> = ({ onCancel }) => {
     label: cat.name,
   }))
 
-  const [newImage, setNewImage] = useState('')
-  const images = watch('images') || []
-
-  const handleAddImage = () => {
-    if (newImage.trim()) {
-      setValue('images', [...images, newImage.trim()])
-      setNewImage('')
-    }
-  }
-
-  const handleRemoveImage = (index: number) => {
-    setValue(
-      'images',
-      images.filter((_, i) => i !== index),
-    )
-  }
+  // Determine number of columns based on mode
+  const tabCount = mode === 'edit' ? 4 : 6
+  const gridCols = mode === 'edit' ? 'grid-cols-4' : 'grid-cols-6'
 
   return (
     <div className="space-y-6">
       <Tabs defaultValue="basic" className="w-full">
-        <TabsList className="grid w-full grid-cols-4">
+        <TabsList className={`grid w-full ${gridCols}`}>
           <TabsTrigger value="basic" className="gap-2">
             <Package className="h-4 w-4" />
             Cơ bản
@@ -67,6 +64,18 @@ export const ProductForm: React.FC<ProductFormPropsNew> = ({ onCancel }) => {
             <ImageIcon className="h-4 w-4" />
             Hình ảnh
           </TabsTrigger>
+          {mode === 'create' && (
+            <>
+              <TabsTrigger value="specs" className="gap-2">
+                <Settings className="h-4 w-4" />
+                Thông số & Nhãn
+              </TabsTrigger>
+              <TabsTrigger value="options" className="gap-2">
+                <Settings className="h-4 w-4" />
+                Tùy chọn
+              </TabsTrigger>
+            </>
+          )}
           <TabsTrigger value="description" className="gap-2">
             <List className="h-4 w-4" />
             Mô tả
@@ -165,11 +174,37 @@ export const ProductForm: React.FC<ProductFormPropsNew> = ({ onCancel }) => {
               <CardTitle>Ảnh đại diện</CardTitle>
             </CardHeader>
             <CardContent>
-              <TextField
+              <Controller
                 name="thumbnail"
-                label="URL ảnh đại diện"
-                placeholder="https://example.com/image.jpg"
-                required
+                control={control}
+                rules={{ required: 'Ảnh đại diện là bắt buộc' }}
+                render={({ field, fieldState }) => (
+                  <ImageUpload
+                    value={field.value}
+                    onChange={(file) => {
+                      if (file) {
+                        field.onChange(file)
+                        // Force update to persist the value
+                        setValue('thumbnail', file, {
+                          shouldValidate: true,
+                          shouldDirty: true,
+                          shouldTouch: true,
+                        })
+                      }
+                    }}
+                    onUrlChange={(url) => {
+                      field.onChange(url)
+                      setValue('thumbnail', url, {
+                        shouldValidate: true,
+                        shouldDirty: true,
+                        shouldTouch: true,
+                      })
+                    }}
+                    label="Ảnh đại diện sản phẩm"
+                    error={fieldState.error?.message}
+                    maxSize={5}
+                  />
+                )}
               />
             </CardContent>
           </Card>
@@ -179,51 +214,81 @@ export const ProductForm: React.FC<ProductFormPropsNew> = ({ onCancel }) => {
               <CardTitle>Thư viện ảnh</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="flex gap-2">
-                <input
-                  type="text"
-                  value={newImage}
-                  onChange={(e) => setNewImage(e.target.value)}
-                  placeholder="Nhập URL ảnh"
-                  className="flex-1 px-3 py-2 border rounded-md"
-                />
-                <Button type="button" onClick={handleAddImage} className="gap-2">
-                  <Plus className="h-4 w-4" />
-                  Thêm
-                </Button>
-              </div>
-
-              {errors.images && (
-                <p className="text-sm text-red-500">{errors.images.message as string}</p>
-              )}
-
-              {images.length > 0 && (
-                <div className="grid grid-cols-3 gap-4">
-                  {images.map((url, index) => (
-                    <div key={index} className="relative group">
-                      <div className="aspect-square rounded-lg overflow-hidden bg-muted">
-                        <img
-                          src={url}
-                          alt={`Product ${index + 1}`}
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
-                      <Button
-                        type="button"
-                        variant="destructive"
-                        size="icon"
-                        className="absolute top-2 right-2 h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity"
-                        onClick={() => handleRemoveImage(index)}
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  ))}
-                </div>
-              )}
+              <Controller
+                name="images"
+                control={control}
+                rules={
+                  mode === 'edit'
+                    ? {}
+                    : {
+                        required: 'Phải có ít nhất 1 ảnh sản phẩm',
+                        validate: (value) => {
+                          if (!value || value.length === 0) {
+                            return 'Phải có ít nhất 1 ảnh sản phẩm'
+                          }
+                          return true
+                        },
+                      }
+                }
+                render={({ field, fieldState }) => (
+                  <MultipleImageUpload
+                    values={field.value || []}
+                    onChange={(files) => {
+                      if (files.length > 0) {
+                        field.onChange(files)
+                        // Force update to persist the values
+                        setValue('images', files, {
+                          shouldValidate: true,
+                          shouldDirty: true,
+                          shouldTouch: true,
+                        })
+                      }
+                    }}
+                    onUrlsChange={(urls) => {
+                      if (urls.length > 0) {
+                        field.onChange(urls)
+                        setValue('images', urls, {
+                          shouldValidate: true,
+                          shouldDirty: true,
+                          shouldTouch: true,
+                        })
+                      }
+                    }}
+                    label="Ảnh sản phẩm (tối đa 10 ảnh)"
+                    error={fieldState.error?.message}
+                    maxSize={5}
+                    maxFiles={10}
+                  />
+                )}
+              />
             </CardContent>
           </Card>
         </TabsContent>
+
+        {/* Specs & Badges Tab - Only in create mode */}
+        {mode === 'create' && (
+          <TabsContent value="specs" className="space-y-6 mt-6">
+            <ProductSpecsField name="specs" />
+            <ProductBadgesField name="badges" />
+          </TabsContent>
+        )}
+
+        {/* Options & Variants Tab - Only in create mode */}
+        {mode === 'create' && (
+          <TabsContent value="options" className="space-y-6 mt-6">
+            <Card>
+              <CardContent className="pt-6">
+                <ProductOptionsField name="options" />
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardContent className="pt-6">
+                <ProductVariantsField name="variants" />
+              </CardContent>
+            </Card>
+          </TabsContent>
+        )}
 
         {/* Description Tab */}
         <TabsContent value="description" className="space-y-4 mt-6">
@@ -263,7 +328,11 @@ export const ProductForm: React.FC<ProductFormPropsNew> = ({ onCancel }) => {
         <Button type="button" variant="outline" onClick={onCancel} disabled={isSubmitting}>
           Hủy
         </Button>
-        <Button type="submit" disabled={isSubmitting}>
+        <Button
+          type="submit"
+          disabled={isSubmitting}
+          onClick={() => console.log('Submit button clicked!')}
+        >
           {isSubmitting ? 'Đang lưu...' : 'Lưu sản phẩm'}
         </Button>
       </div>

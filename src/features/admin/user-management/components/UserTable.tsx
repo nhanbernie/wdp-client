@@ -44,6 +44,19 @@ import { UserListItem } from '@/services/admin/users.service'
 import { formatCurrency } from '@/lib/utils'
 import { format } from 'date-fns'
 
+// Helper function to safely format date
+const formatDate = (dateString: string | null | undefined): string => {
+  if (!dateString) return 'N/A'
+
+  try {
+    const date = new Date(dateString)
+    if (isNaN(date.getTime())) return 'N/A'
+    return format(date, 'dd/MM/yyyy')
+  } catch (error) {
+    return 'N/A'
+  }
+}
+
 interface UserTableProps {
   users: UserListItem[]
   isLoading?: boolean
@@ -205,7 +218,7 @@ export const UserTable: React.FC<UserTableProps> = ({
                 <TableCell>
                   <div className="text-sm flex items-center gap-1 text-gray-600">
                     <Calendar className="h-3 w-3" />
-                    {format(new Date(user.createdAt), 'dd/MM/yyyy')}
+                    {formatDate(user.createdAt)}
                   </div>
                 </TableCell>
                 <TableCell className="text-right">

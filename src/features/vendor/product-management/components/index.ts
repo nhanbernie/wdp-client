@@ -1,3 +1,5 @@
 export { ProductFormDialog } from './ProductFormDialog'
 export { ProductForm } from './ProductFormSimple'
 export { ProductTable } from './ProductTable'
+export { ProductOptionsField } from './ProductOptionsField'
+export { ProductVariantsField } from './ProductVariantsField'

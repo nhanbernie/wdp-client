@@ -13,12 +13,12 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui'
 import { Eye, MoreVertical, Edit, Trash2, Package } from 'lucide-react'
-import { ProductDto } from '@/services/api/product.type'
+import { Product } from '@/services/vendor/vendor.types'
 
 interface ProductTableProps {
-  products: ProductDto[]
-  onView: (product: ProductDto) => void
-  onEdit: (product: ProductDto) => void
+  products: Product[]
+  onView: (product: Product) => void
+  onEdit: (product: Product) => void
   onDelete: (id: string) => void
   isLoading?: boolean
 }
@@ -109,21 +109,23 @@ export function ProductTable({ products, onView, onEdit, onDelete, isLoading }: 
                   </div>
                 </div>
               </td>
-              <td className="px-4 py-3 text-sm text-muted-foreground">{product.category.name}</td>
+              <td className="px-4 py-3 text-sm text-muted-foreground">
+                {product.category?.name || 'N/A'}
+              </td>
               <td className="px-4 py-3">
                 <div>
-                  {product.salePrice && product.salePrice < product.price ? (
+                  {product.salePrice && Number(product.salePrice) < Number(product.price) ? (
                     <>
                       <p className="text-sm font-semibold text-foreground">
-                        {formatPrice(product.salePrice, product.currency)}
+                        {formatPrice(Number(product.salePrice), product.currency)}
                       </p>
                       <p className="text-xs text-muted-foreground line-through">
-                        {formatPrice(product.price, product.currency)}
+                        {formatPrice(Number(product.price), product.currency)}
                       </p>
                     </>
                   ) : (
                     <p className="text-sm font-semibold text-foreground">
-                      {formatPrice(product.price, product.currency)}
+                      {formatPrice(Number(product.price), product.currency)}
                     </p>
                   )}
                 </div>
@@ -131,14 +133,14 @@ export function ProductTable({ products, onView, onEdit, onDelete, isLoading }: 
               <td className="px-4 py-3">
                 <div>
                   <p className="text-sm text-foreground">
-                    {product.stock.quantity} {product.stock.unit}
+                    {product.stockQty} {product.stockUnit}
                   </p>
-                  {getStockBadge(product.stock.quantity)}
+                  {getStockBadge(product.stockQty)}
                 </div>
               </td>
               <td className="px-4 py-3">
                 <div className="flex flex-wrap gap-1">
-                  {product.badges.map((badge) => (
+                  {product.badges?.map((badge) => (
                     <Badge key={badge} variant="secondary" className="text-xs">
                       {badge}
                     </Badge>

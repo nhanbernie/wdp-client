@@ -3,8 +3,8 @@ export interface ProductFormData {
   slug: string
   categoryId: string
   brand: string
-  thumbnail: string
-  images: string[]
+  thumbnail: string | File
+  images: (string | File)[]
   price: number
   salePrice?: number | null
   currency: string
@@ -23,8 +23,8 @@ export interface ProductFormData {
 
 export interface ProductOption {
   name: string
-  displayName: string
-  values: ProductOptionValue[]
+  displayName?: string // Optional, can be auto-generated from name
+  values: string[] | ProductOptionValue[] // Support both formats
 }
 
 export interface ProductOptionValue {
@@ -32,10 +32,12 @@ export interface ProductOptionValue {
 }
 
 export interface ProductVariant {
-  sku: string
+  sku?: string | null
   options: Record<string, string>
-  price: number
-  stockQty: number
+  price: number | string
+  stockQty?: number
+  stock?: number | string // Alternative field name for stockQty
+  image?: string | File | null // Variant-specific image
   specs?: Record<string, any> | null
 }
 

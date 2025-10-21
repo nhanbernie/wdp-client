@@ -3,6 +3,7 @@
  */
 
 import { CreateProductDto, UpdateProductDto } from '@/services/products/product.types'
+import { ProductFormData as ProductFormDataLocal } from './product.types'
 
 export interface ProductFormData extends Omit<CreateProductDto, 'vendorId'> {
   id?: string
@@ -12,8 +13,8 @@ export type ProductFormMode = 'create' | 'edit' | 'view'
 
 export interface ProductFormProps {
   mode: ProductFormMode
-  initialData?: ProductFormData
-  onSubmit: (data: ProductFormData) => Promise<void>
+  initialData?: ProductFormDataLocal
+  onSubmit: (data: ProductFormDataLocal) => Promise<void>
   onCancel: () => void
   isLoading?: boolean
 }

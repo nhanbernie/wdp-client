@@ -1,6 +1,7 @@
 export { ProductManagementPage } from './ProductManagementPage'
 export { ProductListPage } from './ProductListPage'
 export { ProductFormPage } from './ProductFormPage'
+export { ProductDetailPage } from './ProductDetailPage'
 export * from './components'
 export * from './hooks/useProductManagement'
 export * from './types/product.types'

@@ -92,30 +92,30 @@ export const API_ENDPOINTS = {
   ADMIN: {
     // Dashboard
     DASHBOARD_STATS: '/admin/dashboard/stats',
-    
+
     // Reports
     REVENUE_REPORT: '/admin/reports/revenue',
-    
+
     // Analytics
     USER_ANALYTICS: '/admin/analytics/users',
     PRODUCT_ANALYTICS: '/admin/analytics/products',
-    
+
     // Orders Management
     ORDERS: '/admin/orders',
     ORDER_DETAILS: (id: string) => `/admin/orders/${id}/details`,
     ORDER_STATUS: (id: string) => `/admin/orders/${id}/status`,
     ORDER_CANCEL: (id: string) => `/admin/orders/${id}/cancel`,
-    
+
     // Users Management
     USERS: '/admin/users',
     USER_ACTIVITY: (id: string) => `/admin/users/${id}/activity`,
     USER_BAN: (id: string) => `/admin/users/${id}/ban`,
     USER_ROLE: (id: string) => `/admin/users/${id}/role`,
-    
+
     // Products Management
     PRODUCTS: '/admin/products',
     PRODUCT_STOCK: (id: string) => `/admin/products/${id}/stock`,
-    
+
     // Legacy endpoints
     MATERIALS: '/admin/materials',
     SUPPLIERS: '/admin/suppliers',
@@ -127,6 +127,9 @@ export const API_ENDPOINTS = {
     LIST: '/products',
     DETAILS: (id: string) => `/products/${id}`,
     DETAILS_PATTERN: '/products/',
+    CREATE: '/products',
+    UPDATE: (id: string) => `/products/${id}`,
+    DELETE: (id: string) => `/products/${id}`,
   },
 
   // Categories endpoints
@@ -136,7 +139,32 @@ export const API_ENDPOINTS = {
 
   // Payments endpoints
   PAYMENTS: {
-    CREATE: '/payments'
+    CREATE: '/payments',
+  },
+  // Vendor endpoints
+  VENDOR: {
+    // Profile
+    MY_PROFILE: '/vendors/my-profile',
+    UPDATE_PROFILE: '/vendors/my-profile',
+
+    // Products (vendor's own products)
+    PRODUCTS: {
+      LIST: '/products/my-products', // GET my products
+      CREATE: '/products', // POST
+      UPDATE: (id: string) => `/products/${id}`, // PUT
+      DELETE: (id: string) => `/products/${id}`, // DELETE
+      DETAILS: (id: string) => `/products/${id}`, // GET
+    },
+
+    // Quote Requests
+    QUOTE_REQUESTS: '/quote-requests/vendor-requests',
+    QUOTE_REQUEST_DETAIL: (id: string) => `/quote-requests/${id}`,
+    QUOTE_RESPOND: (id: string) => `/quote-requests/${id}/respond`,
+
+    // Orders - Use ORDERS endpoints above with vendor filter
+
+    // Statistics
+    ORDER_STATISTICS: '/orders/statistics',
   },
 }
 
@@ -161,6 +189,7 @@ export const PUBLIC_ENDPOINTS = [
   API_ENDPOINTS.SUPPLIERS.MATERIALS,
   API_ENDPOINTS.PRODUCTS.LIST,
   API_ENDPOINTS.PRODUCTS.DETAILS_PATTERN,
+  API_ENDPOINTS.CATEGORIES.LIST,
 ]
 
 // HTTP Status Codes

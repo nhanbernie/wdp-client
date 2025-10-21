@@ -58,15 +58,41 @@ export const productFormSchema = yup.object().shape({
       .max(20, 'Đơn vị không được quá 20 ký tự'),
   }),
 
-  // Images
+  // Images - Accept both File and URL string
   thumbnail: yup
-    .string()
+    .mixed()
     .required('Ảnh đại diện là bắt buộc')
-    .url('Ảnh đại diện phải là URL hợp lệ'),
+    .test('is-file-or-url', 'Ảnh đại diện phải là file hoặc URL hợp lệ', (value) => {
+      if (!value) return false
+      // Allow empty string for edit mode (keeping existing)
+      if (typeof value === 'string') {
+        if (value.trim() === '') return true // Allow empty string
+        try {
+          new URL(value)
+          return true
+        } catch {
+          return false
+        }
+      }
+      return value instanceof File
+    }),
 
   images: yup
     .array()
-    .of(yup.string().url('Ảnh phải là URL hợp lệ'))
+    .of(
+      yup.mixed().test('is-file-or-url', 'Ảnh phải là file hoặc URL hợp lệ', (value) => {
+        if (typeof value === 'string') {
+          if (value.trim() === '') return false // Empty strings not allowed
+          try {
+            new URL(value)
+            return true
+          } catch {
+            return false
+          }
+        }
+        return value instanceof File
+      }),
+    )
     .min(1, 'Phải có ít nhất 1 ảnh')
     .required('Ảnh sản phẩm là bắt buộc'),
 
@@ -74,13 +100,13 @@ export const productFormSchema = yup.object().shape({
   shortDescription: yup
     .string()
     .required('Mô tả ngắn là bắt buộc')
-    .min(10, 'Mô tả ngắn phải có ít nhất 10 ký tự')
+    .min(3, 'Mô tả ngắn phải có ít nhất 3 ký tự')
     .max(500, 'Mô tả ngắn không được quá 500 ký tự'),
 
   description: yup
     .string()
     .required('Mô tả chi tiết là bắt buộc')
-    .min(50, 'Mô tả chi tiết phải có ít nhất 50 ký tự'),
+    .min(10, 'Mô tả chi tiết phải có ít nhất 10 ký tự'),
 
   // Optional fields
   badges: yup.array().of(yup.string()),
@@ -89,18 +115,24 @@ export const productFormSchema = yup.object().shape({
 
   datasheetUrl: yup.string().url('Datasheet phải là URL hợp lệ').nullable(),
 
-  // Options
+  // Options - simplified schema
   options: yup
     .array()
     .of(
       yup.object().shape({
         name: yup.string().required('Tên tùy chọn là bắt buộc'),
-        displayName: yup.string().required('Tên hiển thị là bắt buộc'),
+        displayName: yup.string().nullable(),
         values: yup
           .array()
           .of(
-            yup.object().shape({
-              value: yup.string().required('Giá trị là bắt buộc'),
+            yup.lazy((value) => {
+              // Support both string[] and ProductOptionValue[] formats
+              if (typeof value === 'string') {
+                return yup.string().required('Giá trị không được để trống')
+              }
+              return yup.object().shape({
+                value: yup.string().required('Giá trị không được để trống'),
+              })
             }),
           )
           .min(1, 'Phải có ít nhất 1 giá trị'),
@@ -108,19 +140,25 @@ export const productFormSchema = yup.object().shape({
     )
     .nullable(),
 
-  // Variants
+  // Variants - simplified, make fields optional
   variants: yup
     .array()
     .of(
       yup.object().shape({
-        sku: yup.string().required('SKU là bắt buộc'),
-        price: yup.number().required('Giá là bắt buộc').min(0, 'Giá phải lớn hơn 0'),
+        sku: yup.string().nullable(),
+        price: yup.number().min(0, 'Giá phải lớn hơn 0').nullable(),
         stockQty: yup
           .number()
-          .required('Số lượng là bắt buộc')
           .min(0, 'Số lượng phải lớn hơn 0')
-          .integer('Số lượng phải là số nguyên'),
-        options: yup.object().required('Options là bắt buộc'),
+          .integer('Số lượng phải là số nguyên')
+          .nullable(),
+        stock: yup
+          .number()
+          .min(0, 'Số lượng phải lớn hơn 0')
+          .integer('Số lượng phải là số nguyên')
+          .nullable(),
+        options: yup.object().nullable(),
+        image: yup.mixed().nullable(), // Allow File or string or null
         specs: yup.object().nullable(),
       }),
     )

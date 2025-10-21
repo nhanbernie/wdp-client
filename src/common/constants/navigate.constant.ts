@@ -39,6 +39,7 @@ import {
   User,
   Settings,
   Users,
+  MessageSquareQuote,
 } from 'lucide-react'
 
 export const adminNavigationItems: NavItem[] = [
@@ -51,9 +52,10 @@ export const adminNavigationItems: NavItem[] = [
 
 export const vendorNavigationItems: NavItem[] = [
   { label: 'Dashboard', href: '/vendor', icon: LayoutDashboard },
-  { label: 'Sản phẩm', href: '/vendor/products', icon: Package },
+  { label: 'Thông tin Vendor', href: '/vendor/profile', icon: User },
+  { label: 'Quản lý sản phẩm', href: '/vendor/product-management', icon: Package },
+  { label: 'Yêu cầu báo giá', href: '/vendor/quotes', icon: MessageSquareQuote },
   { label: 'Đơn hàng', href: '/vendor/orders', icon: ShoppingBag },
   { label: 'Thống kê', href: '/vendor/analytics', icon: BarChart3 },
-  { label: 'Cập nhật', href: '/vendor/update', icon: User },
   { label: 'Trạng thái', href: '/vendor/status', icon: Settings },
 ]

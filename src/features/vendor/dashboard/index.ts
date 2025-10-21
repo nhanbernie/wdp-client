@@ -1,0 +1,1 @@
+export { VendorDashboardPage } from './VendorDashboardPage'
