@@ -76,10 +76,18 @@ export interface GetOrdersParams {
   paymentStatus?: string
 }
 
+export interface OrdersByStatusResponse {
+  data: {
+    status: string
+    count: string
+  }[]
+  total: string
+}
+
 export const ordersApi = createApi({
   reducerPath: 'ordersApi',
   baseQuery: baseQueryWithReauth,
-  tagTypes: ['Order', 'OrderStats'],
+  tagTypes: ['Order', 'OrderStats', 'OrderStatus'],
   endpoints: (builder) => ({
     // Checkout from cart (create order)
     checkoutFromCart: builder.mutation<{ data: Order }, CheckoutFromCartRequest>({
@@ -136,6 +144,15 @@ export const ordersApi = createApi({
       }),
       invalidatesTags: ['Order'],
     }),
+
+    // Get orders by status (for admin dashboard charts)
+    getOrdersByStatus: builder.query<{ data: OrdersByStatusResponse }, void>({
+      query: () => ({
+        url: API_ENDPOINTS.ORDERS.BY_STATUS,
+        method: 'GET',
+      }),
+      providesTags: ['OrderStatus'],
+    }),
   }),
 })
 
@@ -146,4 +163,5 @@ export const {
   useGetOrderByNumberQuery,
   useGetOrderStatisticsQuery,
   useCancelOrderMutation,
+  useGetOrdersByStatusQuery,
 } = ordersApi

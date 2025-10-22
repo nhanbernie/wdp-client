@@ -1,5 +1,8 @@
 'use client'
 
+import OrdersByStatusChart from '@/features/admin/overview/components/OrdersByStatusChart'
+import RevenueOvertimeChart from '@/features/admin/overview/components/RevenueOvertimeChart'
+
 export default function AdminPage() {
   return (
     <div className="space-y-6">
@@ -25,6 +28,11 @@ export default function AdminPage() {
           <h3 className="text-lg font-semibold">Sản phẩm</h3>
           <p className="text-3xl font-bold text-primary">2,847</p>
         </div>
+      </div>
+
+      <div className="mb-10 w-full">
+        <RevenueOvertimeChart />
+        <OrdersByStatusChart />
       </div>
     </div>
   )

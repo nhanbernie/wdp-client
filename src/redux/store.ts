@@ -12,6 +12,7 @@ import { categoriesApi } from '@/services/categories/categories.service'
 import { cartApi } from '@/services/cart'
 import { ordersApi } from '@/services/orders/orders.service'
 import { paymentApi } from '@/services/payments'
+import { adminApi } from '@/services/admin/admin.service'
 // import { apiErrorHandler } from "@/services/api/apiErrorHandler";
 
 export const store = configureStore({
@@ -30,6 +31,7 @@ export const store = configureStore({
     [cartApi.reducerPath]: cartApi.reducer,
     [ordersApi.reducerPath]: ordersApi.reducer,
     [paymentApi.reducerPath]: paymentApi.reducer,
+    [adminApi.reducerPath]: adminApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
@@ -48,6 +50,7 @@ export const store = configureStore({
       cartApi.middleware,
       ordersApi.middleware,
       paymentApi.middleware,
+      adminApi.middleware,
     ),
   devTools: process.env.NODE_ENV !== 'production',
 })

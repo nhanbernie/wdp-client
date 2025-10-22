@@ -1,7 +1,7 @@
 'use client'
 
 import React, { createContext, useContext, useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import {
   useLoginMutation,
   useRegisterMutation,
@@ -44,6 +44,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     skip: !shouldFetchProfile,
   })
 
+  const pathName = usePathname()
+
   useEffect(() => {
     checkAuthStatus()
   }, [])
@@ -73,7 +75,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setShouldFetchProfile(false)
 
       // Redirect based on role
-      if (updatedUser.role === 'admin') {
+      if (updatedUser.role === 'admin' && !pathName.startsWith('/admin')) {
         router.push('/admin')
       } else if (updatedUser.role === 'vendor') {
         router.push('/vendor')

@@ -70,6 +70,7 @@ export const API_ENDPOINTS = {
     CANCEL: '/orders/:id/cancel',
     HISTORY: '/orders/history',
     STATISTICS: '/orders/statistics',
+    BY_STATUS: '/admin/orders/status',
   },
 
   // Quotes endpoints
@@ -95,6 +96,7 @@ export const API_ENDPOINTS = {
     ORDERS: '/admin/orders',
     SUPPLIERS: '/admin/suppliers',
     ANALYTICS: '/admin/analytics',
+    REVENUE_OVERTIME: '/admin/revenue-overtime',
   },
 
   // Products endpoints
@@ -111,7 +113,7 @@ export const API_ENDPOINTS = {
 
   // Payments endpoints
   PAYMENTS: {
-    CREATE: '/payments'
+    CREATE: '/payments',
   },
 }
 

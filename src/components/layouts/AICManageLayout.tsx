@@ -12,6 +12,7 @@ import {
   adminNavigationItems,
   vendorNavigationItems,
 } from '@/common/constants/navigate.constant'
+import AICManageSidebar from './components/AICManageSidebar'
 
 interface AICManageLayoutProps {
   children: ReactNode
@@ -77,107 +78,7 @@ const AICManageLayout: React.FC<AICManageLayoutProps> = ({
       {/* Main container */}
       <div className="relative z-10 flex w-full h-screen bg-card border border-border overflow-hidden shadow-lg">
         {/* Sidebar - Fixed */}
-        <aside
-          className={`
-          relative flex flex-col bg-transparent transition-all duration-300 py-6 px-4 h-screen overflow-y-auto overflow-x-hidden
-          ${sidebarExpanded ? 'w-64' : 'w-20'}
-        `}
-        >
-          {/* Logo - Always visible */}
-          <div className="flex items-center justify-between mb-4">
-            <div
-              className={`flex items-center ${
-                sidebarExpanded ? 'justify-start' : 'justify-center w-full'
-              }`}
-            >
-              <div className="flex items-center space-x-2">
-                <div className="h-8 w-8 rounded bg-primary flex items-center justify-center">
-                  <span className="text-primary-foreground font-bold text-sm">AI</span>
-                </div>
-                {sidebarExpanded && (
-                  <span className="font-bold text-xl text-foreground">AICShop</span>
-                )}
-              </div>
-            </div>
-          </div>
-
-          {/* Toggle Button - Always visible */}
-          <div
-            className={`flex items-center mb-8 ${
-              sidebarExpanded ? 'justify-end' : 'justify-center'
-            }`}
-          >
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => setSidebarExpanded(!sidebarExpanded)}
-              className="w-8 h-8 bg-muted/80 text-muted-foreground hover:bg-muted backdrop-blur-sm border border-border/50 shadow-sm rounded-lg transition-all duration-200"
-              title={sidebarExpanded ? 'Collapse Sidebar' : 'Expand Sidebar'}
-            >
-              {sidebarExpanded ? (
-                <ChevronLeft className="h-4 w-4" />
-              ) : (
-                <ChevronRight className="h-4 w-4" />
-              )}
-            </Button>
-          </div>
-
-          {/* Navigation */}
-          <nav className="flex-1">
-            <div className="space-y-2">
-              {currentNavigationItems.map((item) => {
-                const isActive = isRouteActive(item.href)
-                const IconComponent = item.icon
-                return (
-                  <Button
-                    key={item.label}
-                    variant={isActive ? 'default' : 'ghost'}
-                    className={`w-full justify-start transition-all duration-200 ${
-                      sidebarExpanded ? 'px-4' : 'px-2'
-                    } ${
-                      isActive
-                        ? 'bg-primary text-primary-foreground shadow-md'
-                        : 'text-muted-foreground hover:bg-muted hover:text-foreground'
-                    }`}
-                    asChild
-                  >
-                    <a href={item.href}>
-                      {IconComponent && (
-                        <IconComponent className={`h-4 w-4 ${sidebarExpanded ? 'mr-3' : ''}`} />
-                      )}
-                      {sidebarExpanded && (
-                        <span className="text-sm font-medium whitespace-nowrap">{item.label}</span>
-                      )}
-                    </a>
-                  </Button>
-                )
-              })}
-            </div>
-          </nav>
-
-          {/* Bottom controls */}
-          <div className="py-4 space-y-2">
-            {/* Theme Toggle */}
-            <div
-              className={`
-              flex items-center transition-all duration-200
-              ${
-                sidebarExpanded
-                  ? 'gap-3 px-4 py-3 rounded-lg justify-start'
-                  : 'justify-center w-12 h-12 rounded-lg bg-muted/60'
-              }
-              ${sidebarExpanded ? 'text-muted-foreground' : 'text-muted-foreground hover:bg-muted'}
-            `}
-            >
-              <div className="w-5 h-5 flex items-center justify-center flex-shrink-0">
-                <Settings className="h-4 w-4" />
-              </div>
-              {sidebarExpanded && (
-                <span className="font-medium text-sm whitespace-nowrap">Settings</span>
-              )}
-            </div>
-          </div>
-        </aside>
+        <AICManageSidebar userRole="admin" className={`h-full`} />
 
         {/* Main content */}
         <div className="flex-1 flex flex-col h-screen">
