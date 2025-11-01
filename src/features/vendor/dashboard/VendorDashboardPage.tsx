@@ -138,40 +138,134 @@ export const VendorDashboardPage: React.FC = () => {
             </CardContent>
           </Card>
 
-          <Card className="col-span-2">
+          <Card>
             <CardHeader className="pb-3">
               <CardTitle className="text-sm font-medium text-gray-600">Doanh thu</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="flex items-center gap-2">
-                <DollarSign className="w-6 h-6 text-purple-600" />
-                <span className="text-3xl font-bold text-purple-600">
-                  {statistics?.totalRevenue
-                    ? parseInt(statistics.totalRevenue).toLocaleString('vi-VN')
-                    : '0'}{' '}
+                <DollarSign className="w-5 h-5 text-purple-600" />
+                <span className="text-2xl font-bold text-purple-600">
+                  {statistics?.totalRevenue ? statistics.totalRevenue.toLocaleString('vi-VN') : '0'}{' '}
                   VND
                 </span>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle className="text-sm font-medium text-gray-600">Khách hàng</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="flex items-center gap-2">
+                <TrendingUp className="w-5 h-5 text-orange-600" />
+                <span className="text-2xl font-bold">{statistics?.totalCustomers || 0}</span>
               </div>
             </CardContent>
           </Card>
         </div>
 
         {/* Order Status Overview */}
-        {statistics && (
+        {statistics && statistics.ordersByStatus && (
           <Card className="mb-6">
             <CardHeader>
               <CardTitle>Tình trạng đơn hàng</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="grid md:grid-cols-5 gap-4">
-                <StatCard label="Chờ xác nhận" value={statistics.byStatus.pending} color="yellow" />
-                <StatCard label="Đã xác nhận" value={statistics.byStatus.confirmed} color="blue" />
-                <StatCard label="Đang giao" value={statistics.byStatus.shipping} color="purple" />
-                <StatCard label="Đã giao" value={statistics.byStatus.delivered} color="green" />
-                <StatCard label="Đã hủy" value={statistics.byStatus.cancelled} color="red" />
+                <StatCard
+                  label="Chờ xác nhận"
+                  value={statistics.ordersByStatus.pending}
+                  color="yellow"
+                />
+                <StatCard
+                  label="Đang xử lý"
+                  value={statistics.ordersByStatus.processing}
+                  color="blue"
+                />
+                <StatCard
+                  label="Đang giao"
+                  value={statistics.ordersByStatus.shipping}
+                  color="purple"
+                />
+                <StatCard
+                  label="Đã giao"
+                  value={statistics.ordersByStatus.delivered}
+                  color="green"
+                />
+                <StatCard label="Đã hủy" value={statistics.ordersByStatus.cancelled} color="red" />
               </div>
             </CardContent>
           </Card>
+        )}
+
+        {/* Top Products & Customers */}
+        {statistics && (statistics.topProducts?.length > 0 || statistics.customers?.length > 0) && (
+          <div className="grid md:grid-cols-2 gap-6 mb-6">
+            {/* Top Products */}
+            {statistics.topProducts && statistics.topProducts.length > 0 && (
+              <Card>
+                <CardHeader>
+                  <CardTitle>Sản phẩm bán chạy</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    {statistics.topProducts.map((product, index) => (
+                      <div key={product.productId} className="flex items-center gap-3">
+                        <div className="flex-shrink-0 w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold">
+                          {index + 1}
+                        </div>
+                        <img
+                          src={product.thumbnail}
+                          alt={product.productName}
+                          className="w-12 h-12 rounded-lg object-cover"
+                        />
+                        <div className="flex-1 min-w-0">
+                          <p className="font-medium text-gray-900 truncate">
+                            {product.productName}
+                          </p>
+                          <p className="text-sm text-gray-500">
+                            Đã bán: {product.totalQuantity} | Doanh thu:{' '}
+                            {product.totalRevenue.toLocaleString('vi-VN')} VND
+                          </p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
+            {/* Customers */}
+            {statistics.customers && statistics.customers.length > 0 && (
+              <Card>
+                <CardHeader>
+                  <CardTitle>Khách hàng ({statistics.totalCustomers})</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-3">
+                    {statistics.customers.map((customer) => (
+                      <div
+                        key={customer.userId}
+                        className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg"
+                      >
+                        <div className="flex-shrink-0 w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center text-white font-bold">
+                          {customer.name ? customer.name.charAt(0).toUpperCase() : 'U'}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="font-medium text-gray-900">
+                            {customer.name || 'Chưa cập nhật'}
+                          </p>
+                          <p className="text-sm text-gray-500 truncate">{customer.email}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+          </div>
         )}
 
         {/* Quick Actions */}

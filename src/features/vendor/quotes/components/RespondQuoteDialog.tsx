@@ -35,15 +35,13 @@ export const RespondQuoteDialog: React.FC<RespondQuoteDialogProps> = ({
   const defaultValues: RespondQuoteFormData = {
     responsePrice: quote.product?.price ? Number(quote.product.price) : 1,
     responseNotes: '',
-    validUntil: '',
+    validUntil: undefined,
   }
 
   const onSubmit = async (data: RespondQuoteFormData) => {
     try {
       const submitData: any = {
         responsePrice: Number(data.responsePrice),
-        responseNotes: data.responseNotes || undefined,
-        validUntil: data.validUntil ? new Date(data.validUntil).toISOString() : undefined,
       }
 
       if (data.responseNotes) {
@@ -51,7 +49,10 @@ export const RespondQuoteDialog: React.FC<RespondQuoteDialogProps> = ({
       }
 
       if (data.validUntil) {
-        submitData.validUntil = new Date(data.validUntil).toISOString()
+        // Convert to ISO string - validUntil can be Date or string from datetime-local input
+        const dateValue =
+          typeof data.validUntil === 'string' ? new Date(data.validUntil) : data.validUntil
+        submitData.validUntil = dateValue.toISOString()
       }
 
       await handleRespond(quote.id, submitData)
@@ -99,7 +100,12 @@ export const RespondQuoteDialog: React.FC<RespondQuoteDialogProps> = ({
               required
             />
 
-            <TextField name="validUntil" label="Hạn báo giá" type="text" placeholder="2025-10-30" />
+            <TextField
+              name="validUntil"
+              label="Hạn báo giá"
+              type="datetime-local"
+              placeholder="Chọn ngày và giờ hết hạn"
+            />
 
             <TextAreaField
               name="responseNotes"

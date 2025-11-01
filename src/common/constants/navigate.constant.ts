@@ -28,7 +28,7 @@ export const navigateMarketItems: NavItem[] = [
 export const userNavigationItems: NavItem[] = [
   { label: 'Danh mục', href: '/categories' },
   { label: 'Đơn hàng', href: '/orders' },
-  { label: 'Giỏ hàng', href: '/cart' },
+  { label: 'Báo giá', href: '/quote-requests' },
 ]
 
 import {
@@ -56,6 +56,4 @@ export const vendorNavigationItems: NavItem[] = [
   { label: 'Quản lý sản phẩm', href: '/vendor/product-management', icon: Package },
   { label: 'Yêu cầu báo giá', href: '/vendor/quotes', icon: MessageSquareQuote },
   { label: 'Đơn hàng', href: '/vendor/orders', icon: ShoppingBag },
-  { label: 'Thống kê', href: '/vendor/analytics', icon: BarChart3 },
-  { label: 'Trạng thái', href: '/vendor/status', icon: Settings },
 ]

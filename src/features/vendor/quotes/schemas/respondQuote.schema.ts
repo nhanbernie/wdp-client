@@ -8,7 +8,9 @@ export const respondQuoteSchema = z.object({
   }, z.number().min(1, 'Giá phải lớn hơn 0')),
 
   responseNotes: z.string().max(1000, 'Ghi chú không quá 1000 ký tự').optional(),
-  validUntil: z.string().optional(),
+
+  // Date object for date picker, will be converted to ISO string before API call
+  validUntil: z.date().optional().or(z.string().optional()),
 })
 
 export type RespondQuoteFormData = z.infer<typeof respondQuoteSchema>

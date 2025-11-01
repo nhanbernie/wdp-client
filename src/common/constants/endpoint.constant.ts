@@ -160,10 +160,12 @@ export const API_ENDPOINTS = {
     QUOTE_REQUEST_DETAIL: (id: string) => `/quote-requests/${id}`,
     QUOTE_RESPOND: (id: string) => `/quote-requests/${id}/respond`,
 
-    // Orders - Use ORDERS endpoints above with vendor filter
+    // Orders
+    ORDERS: '/vendors/orders', // GET vendor's orders (orders containing vendor's products)
+    ORDER_DETAIL: (id: string) => `/vendors/orders/${id}`, // GET specific order details
 
     // Statistics
-    ORDER_STATISTICS: '/orders/statistics',
+    STATISTICS: '/vendors/statistics', // GET vendor statistics (orders, revenue, products)
   },
 }
 

@@ -26,9 +26,13 @@ export interface UserDto {
   id: string;
   email: string;
   name: string;
+  firstName: string;
+  lastName: string;
   role: "admin" | "user" | "supplier";
+  roles: string[];
   avatar?: string;
   phone?: string;
+  phoneNumber?: string;
   address?: string;
   isEmailVerified: boolean;
   isActive: boolean;

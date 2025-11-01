@@ -196,50 +196,70 @@ export interface RespondQuoteRequest {
 // Order Types
 export interface OrderItem {
   id: string
+  orderId: string
   productId: string
   variantId: string | null
+  productName: string
+  variantName: string | null
+  sku: string | null
+  thumbnail: string
   quantity: number
   unitPrice: string
   totalPrice: string
+  currency: string
+  createdAt: string
   product?: Product
+  variant?: any
 }
 
 export interface Order {
   id: string
   orderNumber: string
   userId: string
-  status: 'pending' | 'confirmed' | 'shipping' | 'delivered' | 'cancelled'
+  status: 'pending' | 'processing' | 'confirmed' | 'shipping' | 'delivered' | 'cancelled'
   paymentStatus: 'pending' | 'paid' | 'failed' | 'refunded'
   paymentMethod: string
-  paymentTransactionId: string | null
+  paymentTransactionId?: string | null
   subtotal: string
   shippingFee: string
-  total: string
+  taxAmount: string
+  discountAmount: string
+  totalAmount: string
+  total?: string // alias for totalAmount
   currency: string
+  shippingName: string
+  shippingPhone: string
   shippingAddress: string
+  shippingCity: string
+  shippingDistrict: string
+  shippingWard: string
+  shippingPostalCode: string
   customerNotes: string | null
   notes: string | null
   trackingNumber: string | null
-  shippingProvider: string | null
+  shippingProvider?: string | null
   estimatedDelivery: string | null
   actualDelivery: string | null
   createdAt: string
   updatedAt: string
-  confirmedAt: string | null
-  shippedAt: string | null
-  deliveredAt: string | null
-  cancelledAt: string | null
+  confirmedAt?: string | null
+  shippedAt?: string | null
+  deliveredAt?: string | null
+  cancelledAt?: string | null
   items: OrderItem[]
   user?: {
     id: string
     email: string
-    name: string
-    phone: string
+    firstName: string
+    lastName: string
+    phoneNumber: string
+    roles: string[]
+    isActive: boolean
   }
 }
 
 export interface OrderFilters {
-  status?: 'pending' | 'confirmed' | 'shipping' | 'delivered' | 'cancelled'
+  status?: 'pending' | 'processing' | 'confirmed' | 'shipping' | 'delivered' | 'cancelled'
   paymentStatus?: 'pending' | 'paid' | 'failed' | 'refunded'
   fromDate?: string
   toDate?: string
@@ -247,23 +267,33 @@ export interface OrderFilters {
   limit?: number
 }
 
+export interface TopProduct {
+  productId: string
+  productName: string
+  thumbnail: string
+  totalQuantity: number
+  totalRevenue: number
+}
+
+export interface Customer {
+  userId: string
+  email: string
+  name: string
+}
+
 export interface OrderStatistics {
   totalOrders: number
-  totalRevenue: string
-  byStatus: {
+  totalCustomers: number
+  totalRevenue: number
+  ordersByStatus: {
     pending: number
-    confirmed: number
+    processing: number
     shipping: number
     delivered: number
     cancelled: number
   }
-  byPaymentStatus: {
-    pending: number
-    paid: number
-    failed: number
-    refunded: number
-  }
-  recentOrders: Order[]
+  topProducts: TopProduct[]
+  customers: Customer[]
 }
 
 // Response Types

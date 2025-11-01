@@ -11,7 +11,7 @@ interface TextFieldProps
   extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'value' | 'onChange'> {
   name: string
   label?: string
-  type?: 'text' | 'password' | 'email' | 'number'
+  type?: 'text' | 'password' | 'email' | 'number' | 'datetime-local' | 'date' | 'time'
 }
 
 export const TextField = forwardRef<HTMLInputElement, TextFieldProps>(

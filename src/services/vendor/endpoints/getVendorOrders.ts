@@ -15,7 +15,7 @@ export const getVendorOrdersEndpoint = (builder: EndpointBuilder<any, any, any>)
       if (filters && filters.limit) params.append('limit', filters.limit.toString())
 
       return {
-        url: `${API_ENDPOINTS.ORDERS.LIST}?${params.toString()}`,
+        url: `${API_ENDPOINTS.VENDOR.ORDERS}?${params.toString()}`,
         method: 'GET',
       }
     },

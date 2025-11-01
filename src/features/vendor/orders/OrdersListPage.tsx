@@ -9,7 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Loader2, ShoppingBag, DollarSign, Package, TrendingUp } from 'lucide-react'
 import type { OrderFilters } from '@/services/vendor/vendor.types'
 
-type OrderStatus = 'pending' | 'confirmed' | 'shipping' | 'delivered' | 'cancelled'
+type OrderStatus = 'pending' | 'processing' | 'confirmed' | 'shipping' | 'delivered' | 'cancelled'
 
 export const OrdersListPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<OrderStatus | 'all'>('all')
@@ -22,9 +22,10 @@ export const OrdersListPage: React.FC = () => {
   const tabs = [
     { value: 'all', label: 'Tất cả' },
     { value: 'pending', label: 'Chờ xác nhận' },
-    { value: 'confirmed', label: 'Đã xác nhận' },
+    { value: 'processing', label: 'Đang xử lý' },
     { value: 'shipping', label: 'Đang giao' },
     { value: 'delivered', label: 'Đã giao' },
+    { value: 'cancelled', label: 'Đã hủy' },
   ]
 
   return (
@@ -44,7 +45,7 @@ export const OrdersListPage: React.FC = () => {
 
         {/* Statistics Cards */}
         {!statsLoading && statistics && (
-          <div className="grid md:grid-cols-4 gap-6 mb-8">
+          <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-6 mb-8">
             <Card>
               <CardHeader className="pb-3">
                 <CardTitle className="text-sm font-medium text-gray-600">Tổng đơn hàng</CardTitle>
@@ -59,13 +60,25 @@ export const OrdersListPage: React.FC = () => {
 
             <Card>
               <CardHeader className="pb-3">
+                <CardTitle className="text-sm font-medium text-gray-600">Khách hàng</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="flex items-center gap-2">
+                  <TrendingUp className="w-5 h-5 text-orange-600" />
+                  <span className="text-2xl font-bold">{statistics.totalCustomers}</span>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="pb-3">
                 <CardTitle className="text-sm font-medium text-gray-600">Doanh thu</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="flex items-center gap-2">
                   <DollarSign className="w-5 h-5 text-green-600" />
                   <span className="text-2xl font-bold">
-                    {parseInt(statistics.totalRevenue).toLocaleString('vi-VN')}
+                    {statistics.totalRevenue.toLocaleString('vi-VN')}
                   </span>
                 </div>
               </CardContent>
@@ -73,12 +86,15 @@ export const OrdersListPage: React.FC = () => {
 
             <Card>
               <CardHeader className="pb-3">
-                <CardTitle className="text-sm font-medium text-gray-600">Chờ xác nhận</CardTitle>
+                <CardTitle className="text-sm font-medium text-gray-600">Chờ xử lý</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="flex items-center gap-2">
                   <TrendingUp className="w-5 h-5 text-yellow-600" />
-                  <span className="text-2xl font-bold">{statistics.byStatus.pending}</span>
+                  <span className="text-2xl font-bold">
+                    {(statistics.ordersByStatus?.pending || 0) +
+                      (statistics.ordersByStatus?.processing || 0)}
+                  </span>
                 </div>
               </CardContent>
             </Card>
@@ -90,7 +106,9 @@ export const OrdersListPage: React.FC = () => {
               <CardContent>
                 <div className="flex items-center gap-2">
                   <TrendingUp className="w-5 h-5 text-green-600" />
-                  <span className="text-2xl font-bold">{statistics.byStatus.delivered}</span>
+                  <span className="text-2xl font-bold">
+                    {statistics.ordersByStatus?.delivered || 0}
+                  </span>
                 </div>
               </CardContent>
             </Card>

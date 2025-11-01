@@ -5,7 +5,7 @@ import { API_ENDPOINTS } from '@/common/constants/endpoint.constant'
 export const getOrderStatisticsEndpoint = (builder: EndpointBuilder<any, any, any>) =>
   builder.query<OrderStatisticsResponse, void>({
     query: () => ({
-      url: API_ENDPOINTS.VENDOR.ORDER_STATISTICS,
+      url: API_ENDPOINTS.VENDOR.STATISTICS,
       method: 'GET',
     }),
     providesTags: ['Vendor'],
