@@ -85,7 +85,7 @@ export const ProductsManagement: React.FC = () => {
         className="bg-white rounded-2xl shadow-lg p-6 border border-purple-100"
       >
         <div className="flex items-center gap-4">
-          <span className="text-sm font-semibold text-gray-700">🔍 Lọc theo:</span>
+          <span className="text-sm font-semibold text-gray-700">Lọc theo:</span>
           <select
             value={stockFilter}
             onChange={(e) => {
@@ -95,8 +95,8 @@ export const ProductsManagement: React.FC = () => {
             className="flex-1 max-w-xs px-4 py-3 border-2 border-purple-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 bg-gradient-to-r from-white to-purple-50 font-medium"
           >
             <option value="">Tất cả sản phẩm</option>
-            <option value="low">⚠️ Sắp hết hàng</option>
-            <option value="out">❌ Hết hàng</option>
+            <option value="low">Sắp hết hàng</option>
+            <option value="out">Hết hàng</option>
           </select>
         </div>
       </motion.div>
@@ -112,14 +112,14 @@ export const ProductsManagement: React.FC = () => {
           <table className="w-full border-collapse">
             <thead>
               <tr className="bg-gradient-to-r from-blue-500 to-purple-600 text-white">
-                <th className="p-4 text-left text-sm font-semibold">📦 Tên sản phẩm</th>
-                <th className="p-4 text-left text-sm font-semibold">🏷️ Danh mục</th>
-                <th className="p-4 text-left text-sm font-semibold">🏪 Vendor</th>
-                <th className="p-4 text-right text-sm font-semibold">💰 Giá</th>
-                <th className="p-4 text-right text-sm font-semibold">📊 Tồn kho</th>
-                <th className="p-4 text-right text-sm font-semibold">🔥 Đã bán</th>
-                <th className="p-4 text-left text-sm font-semibold">⚡ Trạng thái</th>
-                <th className="p-4 text-left text-sm font-semibold">⚙️ Thao tác</th>
+                <th className="p-4 text-left text-sm font-semibold">Tên sản phẩm</th>
+                <th className="p-4 text-left text-sm font-semibold">Danh mục</th>
+                <th className="p-4 text-left text-sm font-semibold">Vendor</th>
+                <th className="p-4 text-right text-sm font-semibold">Giá</th>
+                <th className="p-4 text-right text-sm font-semibold">Tồn kho</th>
+                <th className="p-4 text-right text-sm font-semibold">Đã bán</th>
+                <th className="p-4 text-left text-sm font-semibold">Trạng thái</th>
+                <th className="p-4 text-left text-sm font-semibold">Thao tác</th>
               </tr>
             </thead>
             <tbody>
@@ -165,7 +165,7 @@ export const ProductsManagement: React.FC = () => {
                           : 'bg-gray-200 text-gray-700'
                       }
                     >
-                      {product.isActive ? '✓ Hoạt động' : '⏸ Tạm dừng'}
+                      {product.isActive ? 'Hoạt động' : 'Tạm dừng'}
                     </Badge>
                   </td>
                   <td className="p-4">
@@ -178,7 +178,7 @@ export const ProductsManagement: React.FC = () => {
                       }}
                       className="bg-gradient-to-r from-blue-500 to-purple-600 text-white border-0 hover:from-blue-600 hover:to-purple-700 hover:scale-105 transition-all duration-200 shadow-md"
                     >
-                      ✏️ Cập nhật
+                      Cập nhật
                     </Button>
                   </td>
                 </motion.tr>
@@ -236,7 +236,7 @@ export const ProductsManagement: React.FC = () => {
               </div>
               <div>
                 <h3 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                  📦 Cập nhật tồn kho
+                  Cập nhật tồn kho
                 </h3>
                 <p className="text-sm text-gray-500">Điều chỉnh số lượng sản phẩm</p>
               </div>
@@ -246,7 +246,7 @@ export const ProductsManagement: React.FC = () => {
               {/* Stock Input */}
               <div>
                 <label className="flex items-center gap-2 text-sm font-semibold text-gray-700 mb-3">
-                  📊 Số lượng mới
+                  Số lượng mới
                 </label>
                 <input
                   type="number"
@@ -260,7 +260,7 @@ export const ProductsManagement: React.FC = () => {
               {/* Reason Input */}
               <div>
                 <label className="flex items-center gap-2 text-sm font-semibold text-gray-700 mb-3">
-                  📝 Lý do <span className="text-red-500">*</span>
+                  Lý do <span className="text-red-500">*</span>
                 </label>
                 <textarea
                   value={reason}
@@ -282,14 +282,14 @@ export const ProductsManagement: React.FC = () => {
                   }}
                   className="flex-1 border-2 border-gray-300 hover:bg-gray-100 transition-all duration-200 py-3 font-semibold"
                 >
-                  ❌ Hủy
+                  Hủy
                 </Button>
                 <Button
                   onClick={handleUpdateStock}
                   disabled={updating || !reason.trim()}
                   className="flex-1 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white border-0 shadow-lg hover:shadow-xl transition-all duration-200 py-3 font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  {updating ? '⏳ Đang cập nhật...' : '✓ Xác nhận'}
+                  {updating ? 'Đang cập nhật...' : 'Xác nhận'}
                 </Button>
               </div>
             </div>

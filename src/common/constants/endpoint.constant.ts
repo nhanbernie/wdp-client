@@ -145,6 +145,7 @@ export const API_ENDPOINTS = {
   VENDOR: {
     // Profile
     MY_PROFILE: '/vendors/my-profile',
+    APPLICATION_STATUS: '/vendors/application-status', // GET vendor application status
 
     // Products (vendor's own products)
     PRODUCTS: {

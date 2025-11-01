@@ -14,6 +14,7 @@ import { vi } from 'date-fns/locale'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { updateProfileSchema, UpdateProfileFormData } from './schemas/profile.schema'
+import { BecomeVendorCard } from './components/BecomeVendorCard'
 
 export const UserProfilePage: React.FC = () => {
   const { profile, isLoading, handleUpdateProfile, isUpdating } = useUserProfile()
@@ -229,6 +230,9 @@ export const UserProfilePage: React.FC = () => {
               </div>
             </CardContent>
           </Card>
+
+          {/* Become Vendor Card */}
+          <BecomeVendorCard />
         </div>
       </motion.div>
     </div>

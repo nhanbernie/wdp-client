@@ -175,10 +175,10 @@ export const AnalyticsPage: React.FC = () => {
                           </p>
                           <div className="flex items-center gap-2 mt-1">
                             <span className="text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full font-semibold">
-                              🛍️ {customer.totalOrders} đơn
+                              {customer.totalOrders} đơn
                             </span>
                             <span className="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full font-semibold">
-                              💰 {(customer.totalSpent / 1000000).toFixed(1)}M
+                              {(customer.totalSpent / 1000000).toFixed(1)}M
                             </span>
                           </div>
                         </div>
@@ -271,9 +271,9 @@ export const AnalyticsPage: React.FC = () => {
                   <thead>
                     <tr className="bg-gradient-to-r from-orange-500 to-red-600 text-white">
                       <th className="p-4 text-left rounded-tl-xl font-bold">#</th>
-                      <th className="p-4 text-left font-bold">📦 Tên sản phẩm</th>
-                      <th className="p-4 text-right font-bold">🛍️ Đã bán</th>
-                      <th className="p-4 text-right rounded-tr-xl font-bold">💰 Doanh thu</th>
+                      <th className="p-4 text-left font-bold">Tên sản phẩm</th>
+                      <th className="p-4 text-right font-bold">Đã bán</th>
+                      <th className="p-4 text-right rounded-tr-xl font-bold">Doanh thu</th>
                     </tr>
                   </thead>
                   <tbody>

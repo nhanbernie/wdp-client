@@ -232,7 +232,7 @@ const AICManageLayout: React.FC<AICManageLayoutProps> = ({
                       exit={{ opacity: 0 }}
                       className="font-semibold text-sm whitespace-nowrap"
                     >
-                      ⚙️ Settings
+                      Settings
                     </motion.span>
                   )}
                 </AnimatePresence>
@@ -268,7 +268,7 @@ const AICManageLayout: React.FC<AICManageLayoutProps> = ({
                   <Search className="w-5 h-5 text-purple-600" />
                   <Input
                     type="text"
-                    placeholder="🔍 Tìm kiếm..."
+                    placeholder="Tìm kiếm..."
                     className="flex-1 bg-transparent border-none focus-visible:ring-0 text-sm placeholder:text-gray-400 font-medium"
                   />
                 </motion.div>

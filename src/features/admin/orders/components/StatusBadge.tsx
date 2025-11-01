@@ -42,19 +42,19 @@ export const StatusBadge: React.FC<StatusBadgeProps> = ({ status, type = 'order'
   const getStatusLabel = () => {
     if (type === 'order') {
       const labels: Record<string, string> = {
-        pending: '⏳ Chờ xử lý',
-        processing: '⚙️ Đang xử lý',
-        shipping: '🚚 Đang giao',
-        delivered: '✅ Đã giao',
-        cancelled: '❌ Đã hủy',
+        pending: 'Chờ xử lý',
+        processing: 'Đang xử lý',
+        shipping: 'Đang giao',
+        delivered: 'Đã giao',
+        cancelled: 'Đã hủy',
       }
       return labels[status] || status
     } else {
       const labels: Record<string, string> = {
-        pending: '⏳ Chờ thanh toán',
-        paid: '💳 Đã thanh toán',
-        failed: '❌ Thất bại',
-        refunded: '↩️ Đã hoàn tiền',
+        pending: 'Chờ thanh toán',
+        paid: 'Đã thanh toán',
+        failed: 'Thất bại',
+        refunded: 'Đã hoàn tiền',
       }
       return labels[status] || status
     }

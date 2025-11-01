@@ -24,14 +24,13 @@ export const OrdersTable: React.FC<OrdersTableProps> = ({ orders, onViewDetails 
       <Table>
         <TableHeader>
           <TableRow className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700">
-            <TableHead className="font-bold text-sm text-white">🆔 ID</TableHead>
-            <TableHead className="font-bold text-sm text-white">📧 Email</TableHead>
-            <TableHead className="font-bold text-sm text-white">💰 Tổng tiền</TableHead>
-            <TableHead className="font-bold text-sm text-white">📦 Trạng thái</TableHead>
-            <TableHead className="font-bold text-sm text-white">💳 Thanh toán</TableHead>
-            <TableHead className="font-bold text-sm text-white">🛍️ Số sản phẩm</TableHead>
-            <TableHead className="font-bold text-sm text-white">📅 Ngày tạo</TableHead>
-            <TableHead className="font-bold text-sm text-white text-right">⚙️ Thao tác</TableHead>
+            <TableHead className="font-bold text-sm text-white">ID</TableHead>
+            <TableHead className="font-bold text-sm text-white">Email</TableHead>
+            <TableHead className="font-bold text-sm text-white">Tổng tiền</TableHead>
+            <TableHead className="font-bold text-sm text-white">Trạng thái</TableHead>
+            <TableHead className="font-bold text-sm text-white">Thanh toán</TableHead>
+            <TableHead className="font-bold text-sm text-white">Số sản phẩm</TableHead>
+            <TableHead className="font-bold text-sm text-white text-right">Thao tác</TableHead>
           </TableRow>
         </TableHeader>
 
@@ -64,12 +63,6 @@ export const OrdersTable: React.FC<OrdersTableProps> = ({ orders, onViewDetails 
                 <span className="flex items-center justify-center gap-1 text-sm font-semibold text-purple-600">
                   <ShoppingBag className="h-4 w-4" />
                   {order.itemsCount}
-                </span>
-              </TableCell>
-              <TableCell>
-                <span className="flex items-center gap-1 text-sm text-gray-600">
-                  <Calendar className="h-4 w-4" />
-                  {new Date(order.createdAt).toLocaleDateString('vi-VN')}
                 </span>
               </TableCell>
               <TableCell className="text-right">
