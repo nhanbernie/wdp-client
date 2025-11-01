@@ -1,4 +1,5 @@
 export interface ProductFormData {
+  id?: string
   name: string
   slug: string
   categoryId: string
@@ -6,19 +7,19 @@ export interface ProductFormData {
   thumbnail: string | File
   images: (string | File)[]
   price: number
-  salePrice?: number | null
+  salePrice?: number
   currency: string
   stock: {
     quantity: number
     unit: string
   }
   badges?: string[]
-  specs?: Record<string, any> | null
-  options?: ProductOption[] | null
-  variants?: ProductVariant[] | null
+  specs?: Record<string, any>
+  options?: ProductOption[]
+  variants?: ProductVariant[]
   shortDescription: string
   description: string
-  datasheetUrl?: string | null
+  datasheetUrl?: string
 }
 
 export interface ProductOption {
@@ -32,13 +33,11 @@ export interface ProductOptionValue {
 }
 
 export interface ProductVariant {
-  sku?: string | null
+  sku: string
   options: Record<string, string>
-  price: number | string
-  stockQty?: number
-  stock?: number | string // Alternative field name for stockQty
-  image?: string | File | null // Variant-specific image
-  specs?: Record<string, any> | null
+  price: number
+  stockQty: number
+  specs?: Record<string, any>
 }
 
 export interface ProductTableItem {

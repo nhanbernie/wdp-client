@@ -31,16 +31,18 @@ export const VendorProfilePage: React.FC = () => {
 
   const defaultValues: VendorProfileFormData = {
     businessName: profile.businessName,
-    businessEmail: profile.businessEmail,
-    businessPhone: profile.businessPhone,
+    businessDescription: profile.businessDescription,
     businessAddress: profile.businessAddress,
+    businessPhone: profile.businessPhone,
+    businessEmail: profile.businessEmail,
+    businessLicense: profile.businessLicense,
     taxId: profile.taxId,
-    description: profile.description || '',
-    logo: profile.logo || '',
   }
 
   const onSubmit = async (data: VendorProfileFormData) => {
-    await handleUpdate(data)
+    try {
+      await handleUpdate(data)
+    } catch (error) {}
   }
 
   return (
@@ -57,6 +59,7 @@ export const VendorProfilePage: React.FC = () => {
 
         {isEditing ? (
           <FormProvider<VendorProfileFormData>
+            key={`edit-${profile.id}-${profile.updatedAt}`}
             defaultValues={defaultValues}
             validationSchema={vendorProfileSchema}
             onSubmit={onSubmit}
@@ -65,7 +68,11 @@ export const VendorProfilePage: React.FC = () => {
             <VendorProfileForm onCancel={() => setIsEditing(false)} isLoading={isUpdating} />
           </FormProvider>
         ) : (
-          <VendorProfileView profile={profile} onEdit={() => setIsEditing(true)} />
+          <VendorProfileView
+            key={`view-${profile.id}-${profile.updatedAt}`}
+            profile={profile}
+            onEdit={() => setIsEditing(true)}
+          />
         )}
       </motion.div>
     </div>

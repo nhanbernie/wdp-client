@@ -8,6 +8,7 @@ import {
   useProfileQuery,
   useLogoutMutation,
 } from '@/services/auth/auth.service'
+import { useGetMyVendorProfileQuery } from '@/services/vendor/vendor.service'
 import { StorageService } from '@/services/storage/secureStorage.service'
 import { useToast } from '@/hooks/useToast'
 
@@ -19,6 +20,7 @@ export interface User {
   role: 'admin' | 'user' | 'vendor'
   roles: string[]
   approvedStatus?: string | null
+  vendorId?: string // Add vendorId for vendor users
 }
 
 export interface AuthContextType {
@@ -37,6 +39,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [user, setUser] = useState<User | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [shouldFetchProfile, setShouldFetchProfile] = useState(false)
+  const [shouldFetchVendorProfile, setShouldFetchVendorProfile] = useState(false)
   const hasRedirected = useRef(false) // Track if we've already redirected
   const router = useRouter()
   const [logoutMutation] = useLogoutMutation()
@@ -49,6 +52,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   } = useProfileQuery(undefined, {
     skip: !shouldFetchProfile,
   })
+
+  const { data: vendorProfileData, error: vendorProfileError } = useGetMyVendorProfileQuery(
+    undefined,
+    {
+      skip: !shouldFetchVendorProfile,
+    },
+  )
 
   useEffect(() => {
     checkAuthStatus()
@@ -64,6 +74,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         userRole = 'admin'
       } else if (roles.includes('vendor')) {
         userRole = 'vendor'
+      }
+
+      // If user is vendor, fetch vendor profile to get vendorId
+      if (userRole === 'vendor' && !shouldFetchVendorProfile) {
+        setShouldFetchVendorProfile(true)
+        return // Wait for vendor profile
       }
 
       const updatedUser: User = {
@@ -120,6 +136,72 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [profileData])
+
+  // Handle vendor profile data success
+  useEffect(() => {
+    if (vendorProfileData?.success && vendorProfileData.data && profileData?.data) {
+      const { userId, email, roles, approvedStatus } = profileData.data
+      const vendorId = vendorProfileData.data.id
+
+      const updatedUser: User = {
+        id: userId,
+        email: email,
+        name: email.split('@')[0],
+        role: 'vendor',
+        roles: roles,
+        approvedStatus: approvedStatus,
+        avatar: undefined,
+        vendorId: vendorId, // Add vendorId
+      }
+
+      setUser(updatedUser)
+      setShouldFetchProfile(false)
+      setShouldFetchVendorProfile(false)
+      setIsLoading(false)
+
+      // Handle redirects for vendor
+      if (typeof window !== 'undefined' && !hasRedirected.current) {
+        const currentPath = window.location.pathname
+
+        if (currentPath.startsWith('/vendor')) {
+          hasRedirected.current = true
+          return
+        }
+
+        const shouldRedirect =
+          currentPath === '/login' ||
+          currentPath === '/register' ||
+          currentPath === '/' ||
+          !currentPath.startsWith('/vendor')
+
+        if (shouldRedirect) {
+          hasRedirected.current = true
+          router.push('/vendor')
+        }
+      }
+    }
+  }, [vendorProfileData, profileData, router])
+
+  // Handle vendor profile fetch error
+  useEffect(() => {
+    if (vendorProfileError) {
+      // Still set user but without vendorId
+      if (profileData?.data) {
+        const { userId, email, roles, approvedStatus } = profileData.data
+        setUser({
+          id: userId,
+          email: email,
+          name: email.split('@')[0],
+          role: 'vendor',
+          roles: roles,
+          approvedStatus: approvedStatus,
+          avatar: undefined,
+        })
+      }
+      setShouldFetchVendorProfile(false)
+      setIsLoading(false)
+    }
+  }, [vendorProfileError, profileData])
 
   // Handle profile fetch error
   useEffect(() => {

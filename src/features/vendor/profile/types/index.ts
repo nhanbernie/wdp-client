@@ -2,12 +2,12 @@ import { VendorProfile } from '@/services/vendor/vendor.types'
 
 export interface VendorProfileFormData {
   businessName: string
-  businessEmail: string
-  businessPhone: string
+  businessDescription: string
   businessAddress: string
+  businessPhone: string
+  businessEmail: string
+  businessLicense: string
   taxId: string
-  description?: string
-  logo?: string
 }
 
 export interface VendorProfileState {

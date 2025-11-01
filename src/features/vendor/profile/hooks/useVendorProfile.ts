@@ -18,12 +18,18 @@ export const useVendorProfile = () => {
   const handleUpdate = async (data: UpdateVendorProfileRequest) => {
     try {
       const result = await updateProfile(data).unwrap()
+      // Show success message
       toast.success('Thành công', 'Cập nhật thông tin thành công')
+      // Close edit mode
       setIsEditing(false)
-      refetch()
+
+      // Force refetch to get updated data
+      const refetchResult = await refetch()
+
       return result
     } catch (error: any) {
-      toast.error('Lỗi', error?.data?.message || 'Không thể cập nhật thông tin')
+      const errorMessage = error?.data?.message || error?.message || 'Không thể cập nhật thông tin'
+      toast.error('Lỗi', errorMessage)
       throw error
     }
   }

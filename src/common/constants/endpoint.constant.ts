@@ -145,13 +145,12 @@ export const API_ENDPOINTS = {
   VENDOR: {
     // Profile
     MY_PROFILE: '/vendors/my-profile',
-    UPDATE_PROFILE: '/vendors/my-profile',
 
     // Products (vendor's own products)
     PRODUCTS: {
       LIST: '/products/my-products', // GET my products
       CREATE: '/products', // POST
-      UPDATE: (id: string) => `/products/${id}`, // PUT
+      UPDATE: (id: string) => `/products/${id}`, // PATCH
       DELETE: (id: string) => `/products/${id}`, // DELETE
       DETAILS: (id: string) => `/products/${id}`, // GET
     },

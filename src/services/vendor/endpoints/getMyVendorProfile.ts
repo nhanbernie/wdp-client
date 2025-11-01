@@ -8,5 +8,6 @@ export const getMyVendorProfileEndpoint = (builder: EndpointBuilder<any, any, an
       url: API_ENDPOINTS.VENDOR.MY_PROFILE,
       method: 'GET',
     }),
-    providesTags: ['Vendor'],
+    providesTags: (result) =>
+      result ? [{ type: 'Vendor', id: 'MY_PROFILE' }, 'Vendor'] : ['Vendor'],
   })

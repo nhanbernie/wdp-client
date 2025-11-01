@@ -98,12 +98,11 @@ export const useProductManagement = () => {
             formData.append(key, String(value))
           }
         })
-
-        await updateProductMutation({ id, data: formData }).unwrap()
+        const result = await updateProductMutation({ id, data: formData }).unwrap()
         toast.success('Thành công', 'Cập nhật sản phẩm thành công!')
-        refetch()
+        await refetch()
       } catch (error: any) {
-        const errorMessage = error?.data?.message || 'Cập nhật sản phẩm thất bại!'
+        const errorMessage = error?.data?.message || error?.message || 'Cập nhật sản phẩm thất bại!'
         toast.error('Lỗi', errorMessage)
         throw error
       }

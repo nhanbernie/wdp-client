@@ -5,7 +5,7 @@ import { CreateVendorRequest, Vendor } from '../vendor.types'
 export const updateVendorEndpoint = (builder: EndpointBuilder<any, any, any>) =>
   builder.mutation<ApiResponse<Vendor>, { id: string; data: Partial<CreateVendorRequest> }>({
     query: ({ id, data }) => ({
-      url: `/vendors/${id}/ny-profile`,
+      url: `/vendors/${id}/my-profile`,
       method: 'PATCH',
       body: data,
     }),

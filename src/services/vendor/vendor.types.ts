@@ -13,32 +13,30 @@ export interface Vendor {
   updatedAt: string
 }
 
-// Vendor Profile (from API spec)
+// Vendor Profile (from API spec) - Same as Vendor
 export interface VendorProfile {
   id: string
   userId: string
   businessName: string
-  businessEmail: string
-  businessPhone: string
+  businessDescription: string
   businessAddress: string
+  businessPhone: string
+  businessEmail: string
+  businessLicense: string
   taxId: string
-  description: string
-  logo: string | null
   status: 'pending' | 'approved' | 'rejected' | 'suspended'
-  isVerified: boolean
   createdAt: string
   updatedAt: string
-  approvedAt: string | null
 }
 
 export interface UpdateVendorProfileRequest {
   businessName?: string
-  businessEmail?: string
-  businessPhone?: string
+  businessDescription?: string
   businessAddress?: string
+  businessPhone?: string
+  businessEmail?: string
+  businessLicense?: string
   taxId?: string
-  description?: string
-  logo?: string
 }
 
 // Product Types
@@ -75,7 +73,8 @@ export interface Product {
   currency: string
   stockQty: number
   stockUnit: string
-  stock: { // API also returns this format
+  stock: {
+    // API also returns this format
     quantity: number
     unit: string
   }

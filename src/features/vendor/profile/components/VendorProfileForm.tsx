@@ -6,7 +6,6 @@ import { TextField } from '@/components/common/TextField'
 import { TextAreaField } from '@/components/common/TextAreaField'
 import { Button } from '@/components/ui/button'
 import { Save, X } from 'lucide-react'
-import { VendorProfileFormData } from '../types'
 
 interface VendorProfileFormProps {
   onCancel: () => void
@@ -14,7 +13,6 @@ interface VendorProfileFormProps {
 }
 
 export const VendorProfileForm: React.FC<VendorProfileFormProps> = ({ onCancel, isLoading }) => {
-
   return (
     <div className="space-y-6">
       <Card>
@@ -30,22 +28,13 @@ export const VendorProfileForm: React.FC<VendorProfileFormProps> = ({ onCancel, 
             required
           />
 
-          <div className="grid md:grid-cols-2 gap-4">
-            <TextField
-              name="businessEmail"
-              label="Email doanh nghiệp"
-              placeholder="contact@company.com"
-              type="email"
-              required
-            />
-
-            <TextField
-              name="businessPhone"
-              label="Số điện thoại"
-              placeholder="0901234567"
-              required
-            />
-          </div>
+          <TextAreaField
+            name="businessDescription"
+            label="Mô tả doanh nghiệp"
+            placeholder="Nhập mô tả về doanh nghiệp của bạn..."
+            rows={4}
+            required
+          />
 
           <TextField
             name="businessAddress"
@@ -54,33 +43,33 @@ export const VendorProfileForm: React.FC<VendorProfileFormProps> = ({ onCancel, 
             required
           />
 
-          <TextField
-            name="taxId"
-            label="Mã số thuế"
-            placeholder="0123456789"
-            required
-          />
-        </CardContent>
-      </Card>
+          <div className="grid md:grid-cols-2 gap-4">
+            <TextField
+              name="businessPhone"
+              label="Số điện thoại"
+              placeholder="+84901234567"
+              required
+            />
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Thông tin bổ sung</CardTitle>
-          <CardDescription>Mô tả và hình ảnh doanh nghiệp</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <TextAreaField
-            name="description"
-            label="Mô tả doanh nghiệp"
-            placeholder="Nhập mô tả về doanh nghiệp của bạn..."
-            rows={5}
-          />
+            <TextField
+              name="businessEmail"
+              label="Email doanh nghiệp"
+              placeholder="contact@company.com"
+              type="email"
+              required
+            />
+          </div>
 
-          <TextField
-            name="logo"
-            label="URL Logo"
-            placeholder="https://res.cloudinary.com/.../logo.png"
-          />
+          <div className="grid md:grid-cols-2 gap-4">
+            <TextField
+              name="businessLicense"
+              label="Giấy phép kinh doanh"
+              placeholder="BL123456789"
+              required
+            />
+
+            <TextField name="taxId" label="Mã số thuế" placeholder="TAX123456789" required />
+          </div>
         </CardContent>
       </Card>
 

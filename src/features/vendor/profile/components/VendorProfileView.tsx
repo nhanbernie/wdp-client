@@ -44,17 +44,9 @@ export const VendorProfileView: React.FC<VendorProfileViewProps> = ({ profile, o
         <CardContent className="pt-6">
           <div className="flex items-start justify-between mb-6">
             <div className="flex items-center gap-4">
-              {profile.logo ? (
-                <img
-                  src={profile.logo}
-                  alt={profile.businessName}
-                  className="w-20 h-20 rounded-lg object-cover border-2 border-gray-200"
-                />
-              ) : (
-                <div className="w-20 h-20 rounded-lg bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center">
-                  <Building2 className="w-10 h-10 text-white" />
-                </div>
-              )}
+              <div className="w-20 h-20 rounded-lg bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center">
+                <Building2 className="w-10 h-10 text-white" />
+              </div>
               <div>
                 <h2 className="text-2xl font-bold text-gray-900">{profile.businessName}</h2>
                 <div className="flex items-center gap-2 mt-2">
@@ -62,12 +54,6 @@ export const VendorProfileView: React.FC<VendorProfileViewProps> = ({ profile, o
                     <StatusIcon className="w-3 h-3 mr-1" />
                     {status.label}
                   </Badge>
-                  {profile.isVerified && (
-                    <Badge className="bg-blue-100 text-blue-800">
-                      <CheckCircle className="w-3 h-3 mr-1" />
-                      Đã xác minh
-                    </Badge>
-                  )}
                 </div>
               </div>
             </div>
@@ -82,16 +68,21 @@ export const VendorProfileView: React.FC<VendorProfileViewProps> = ({ profile, o
             <InfoItem icon={Phone} label="Số điện thoại" value={profile.businessPhone} />
             <InfoItem icon={MapPin} label="Địa chỉ" value={profile.businessAddress} />
             <InfoItem icon={FileText} label="Mã số thuế" value={profile.taxId} />
+            <InfoItem
+              icon={FileText}
+              label="Giấy phép kinh doanh"
+              value={profile.businessLicense}
+            />
           </div>
         </CardContent>
       </Card>
 
       {/* Description */}
-      {profile.description && (
+      {profile.businessDescription && (
         <Card>
           <CardContent className="pt-6">
             <h3 className="text-lg font-semibold text-gray-900 mb-3">Mô tả doanh nghiệp</h3>
-            <p className="text-gray-600 leading-relaxed">{profile.description}</p>
+            <p className="text-gray-600 leading-relaxed">{profile.businessDescription}</p>
           </CardContent>
         </Card>
       )}
@@ -100,12 +91,9 @@ export const VendorProfileView: React.FC<VendorProfileViewProps> = ({ profile, o
       <Card>
         <CardContent className="pt-6">
           <h3 className="text-lg font-semibold text-gray-900 mb-4">Thông tin thời gian</h3>
-          <div className="grid md:grid-cols-3 gap-4">
+          <div className="grid md:grid-cols-2 gap-4">
             <DateItem icon={Calendar} label="Ngày tạo" date={profile.createdAt} />
             <DateItem icon={Calendar} label="Cập nhật lần cuối" date={profile.updatedAt} />
-            {profile.approvedAt && (
-              <DateItem icon={CheckCircle} label="Ngày phê duyệt" date={profile.approvedAt} />
-            )}
           </div>
         </CardContent>
       </Card>
