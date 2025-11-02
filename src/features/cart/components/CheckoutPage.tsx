@@ -557,7 +557,7 @@ const CheckoutPage: React.FC = () => {
                           {method.icon}
                           <span className="font-medium">{method.label}</span>
                         </div>
-                      </label>
+                      </motion.label>
                     ))}
                   </div>
                 </div>

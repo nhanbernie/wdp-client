@@ -86,7 +86,7 @@ export const OrdersManagement: React.FC = () => {
       <div className="bg-white p-6 rounded-xl shadow-lg border-2 border-primary/20">
         <div className="flex flex-col md:flex-row gap-4 items-center">
           <label className="text-sm font-semibold text-gray-700 flex items-center gap-2">
-            🔍 Lọc theo trạng thái:
+            Lọc theo trạng thái:
           </label>
           <select
             value={statusFilter}
@@ -96,12 +96,12 @@ export const OrdersManagement: React.FC = () => {
             }}
             className="flex-1 md:flex-none md:w-64 p-3 border-2 border-primary/30 rounded-lg focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all shadow-sm"
           >
-            <option value="">🌐 Tất cả trạng thái</option>
-            <option value="pending">⏳ Chờ xử lý</option>
-            <option value="processing">⚙️ Đang xử lý</option>
-            <option value="shipping">🚚 Đang giao</option>
-            <option value="delivered">✅ Đã giao</option>
-            <option value="cancelled">❌ Đã hủy</option>
+            <option value="">Tất cả trạng thái</option>
+            <option value="pending">Chờ xử lý</option>
+            <option value="processing">Đang xử lý</option>
+            <option value="shipping">Đang giao</option>
+            <option value="delivered">Đã giao</option>
+            <option value="cancelled">Đã hủy</option>
           </select>
         </div>
       </div>
@@ -114,7 +114,7 @@ export const OrdersManagement: React.FC = () => {
       {/* Pagination with modern design */}
       <div className="flex items-center justify-between bg-white p-6 rounded-xl shadow-lg border-2 border-primary/20">
         <p className="text-base font-medium text-gray-700">
-          📄 Trang <span className="text-primary font-bold">{meta.page}</span> /{' '}
+          Trang <span className="text-primary font-bold">{meta.page}</span> /{' '}
           <span className="text-primary font-bold">{meta.totalPages}</span>
         </p>
         <div className="flex gap-3">

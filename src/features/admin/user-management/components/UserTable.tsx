@@ -44,6 +44,19 @@ import { UserListItem } from '@/services/admin/users.service'
 import { formatCurrency } from '@/lib/utils'
 import { format } from 'date-fns'
 
+// Helper function to safely format date
+const formatDate = (dateString: string | null | undefined): string => {
+  if (!dateString) return 'N/A'
+
+  try {
+    const date = new Date(dateString)
+    if (isNaN(date.getTime())) return 'N/A'
+    return format(date, 'dd/MM/yyyy')
+  } catch (error) {
+    return 'N/A'
+  }
+}
+
 interface UserTableProps {
   users: UserListItem[]
   isLoading?: boolean
@@ -121,7 +134,7 @@ export const UserTable: React.FC<UserTableProps> = ({
         animate={{ opacity: 1 }}
         className="text-center py-12 bg-white rounded-2xl shadow-lg border border-purple-200"
       >
-        <p className="text-gray-500 text-lg">👤 Không có người dùng nào</p>
+        <p className="text-gray-500 text-lg">Không có người dùng nào</p>
       </motion.div>
     )
   }
@@ -132,13 +145,12 @@ export const UserTable: React.FC<UserTableProps> = ({
         <Table>
           <TableHeader>
             <TableRow className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700">
-              <TableHead className="text-white font-bold">👤 Người dùng</TableHead>
-              <TableHead className="text-white font-bold">📞 Liên hệ</TableHead>
-              <TableHead className="text-white font-bold">🎭 Vai trò</TableHead>
-              <TableHead className="text-white font-bold">⚡ Trạng thái</TableHead>
-              <TableHead className="text-white font-bold">📊 Thống kê</TableHead>
-              <TableHead className="text-white font-bold">📅 Ngày tạo</TableHead>
-              <TableHead className="text-right text-white font-bold">⚙️ Thao tác</TableHead>
+              <TableHead className="text-white font-bold">Người dùng</TableHead>
+              <TableHead className="text-white font-bold">Liên hệ</TableHead>
+              <TableHead className="text-white font-bold">Vai trò</TableHead>
+              <TableHead className="text-white font-bold">Trạng thái</TableHead>
+              <TableHead className="text-white font-bold">Thống kê</TableHead>
+              <TableHead className="text-right text-white font-bold">Thao tác</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -187,7 +199,7 @@ export const UserTable: React.FC<UserTableProps> = ({
                         : 'bg-gradient-to-r from-red-500 to-red-700 text-white shadow-md'
                     }
                   >
-                    {user.isActive ? '✓ Hoạt động' : '🚫 Bị cấm'}
+                    {user.isActive ? 'Hoạt động' : 'Bị cấm'}
                   </Badge>
                 </TableCell>
                 <TableCell>
@@ -200,12 +212,6 @@ export const UserTable: React.FC<UserTableProps> = ({
                       <DollarSign className="h-4 w-4" />
                       {formatCurrency(user.totalSpent, 'VND')}
                     </div>
-                  </div>
-                </TableCell>
-                <TableCell>
-                  <div className="text-sm flex items-center gap-1 text-gray-600">
-                    <Calendar className="h-3 w-3" />
-                    {format(new Date(user.createdAt), 'dd/MM/yyyy')}
                   </div>
                 </TableCell>
                 <TableCell className="text-right">
@@ -287,7 +293,7 @@ export const UserTable: React.FC<UserTableProps> = ({
                 htmlFor="ban-reason"
                 className="text-sm font-semibold text-gray-700 flex items-center gap-2"
               >
-                📝 Lý do <span className="text-red-500">*</span>
+                Lý do <span className="text-red-500">*</span>
               </Label>
               <Textarea
                 id="ban-reason"
@@ -305,7 +311,7 @@ export const UserTable: React.FC<UserTableProps> = ({
               onClick={() => setBanDialogOpen(false)}
               className="border-2 border-gray-300 hover:bg-gray-100 transition-all duration-200 font-semibold"
             >
-              ❌ Hủy
+              Hủy
             </Button>
             <Button
               onClick={handleBanSubmit}
@@ -343,7 +349,7 @@ export const UserTable: React.FC<UserTableProps> = ({
                 htmlFor="role"
                 className="text-sm font-semibold text-gray-700 flex items-center gap-2"
               >
-                🎭 Vai trò mới
+                Vai trò mới
               </Label>
               <select
                 id="role"
@@ -351,9 +357,9 @@ export const UserTable: React.FC<UserTableProps> = ({
                 onChange={(e) => setSelectedRole(e.target.value)}
                 className="w-full rounded-xl border-2 border-purple-200 bg-white px-4 py-3 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 font-medium"
               >
-                <option value="user">👤 User</option>
-                <option value="vendor">🏪 Vendor</option>
-                <option value="admin">👑 Admin</option>
+                <option value="user">User</option>
+                <option value="vendor">Vendor</option>
+                <option value="admin">Admin</option>
               </select>
             </div>
             <div className="space-y-2">
@@ -361,7 +367,7 @@ export const UserTable: React.FC<UserTableProps> = ({
                 htmlFor="role-reason"
                 className="text-sm font-semibold text-gray-700 flex items-center gap-2"
               >
-                📝 Lý do <span className="text-red-500">*</span>
+                Lý do <span className="text-red-500">*</span>
               </Label>
               <Textarea
                 id="role-reason"
@@ -379,14 +385,14 @@ export const UserTable: React.FC<UserTableProps> = ({
               onClick={() => setRoleDialogOpen(false)}
               className="border-2 border-gray-300 hover:bg-gray-100 transition-all duration-200 font-semibold"
             >
-              ❌ Hủy
+              Hủy
             </Button>
             <Button
               onClick={handleRoleSubmit}
               disabled={!roleReason.trim()}
               className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white border-0 shadow-lg hover:shadow-xl transition-all duration-200 font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              ✓ Xác nhận
+              Xác nhận
             </Button>
           </DialogFooter>
         </DialogContent>

@@ -11,7 +11,7 @@ export const userApi = createApi({
     // Get user profile
     getProfile: builder.query<ApiResponse<UserDto>, void>({
       query: () => ({
-        url: API_ENDPOINTS.USER.PROFILE,
+        url: API_ENDPOINTS.AUTH.PROFILE,
         method: "GET",
       }),
       providesTags: ["Profile"],
@@ -20,8 +20,8 @@ export const userApi = createApi({
     // Update user profile
     updateProfile: builder.mutation<ApiResponse<UserDto>, Partial<UserDto>>({
       query: (userData) => ({
-        url: API_ENDPOINTS.USER.UPDATE_PROFILE,
-        method: "PUT",
+        url: API_ENDPOINTS.AUTH.PROFILE,
+        method: "PATCH",
         body: userData,
       }),
       invalidatesTags: ["Profile", "User"],

@@ -1,12 +1,13 @@
 import { EndpointBuilder } from '@reduxjs/toolkit/query/react'
-import { ApiResponse } from '../../api/type'
-import { Vendor } from '../vendor.types'
+import { VendorProfileResponse } from '../vendor.types'
+import { API_ENDPOINTS } from '@/common/constants/endpoint.constant'
 
 export const getMyVendorProfileEndpoint = (builder: EndpointBuilder<any, any, any>) =>
-  builder.query<ApiResponse<Vendor>, void>({
+  builder.query<VendorProfileResponse, void>({
     query: () => ({
-      url: '/vendors/my-profile',
+      url: API_ENDPOINTS.VENDOR.MY_PROFILE,
       method: 'GET',
     }),
-    providesTags: ['Vendor'],
+    providesTags: (result) =>
+      result ? [{ type: 'Vendor', id: 'MY_PROFILE' }, 'Vendor'] : ['Vendor'],
   })

@@ -7,8 +7,8 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { TextField } from '@/components/common/TextField'
 import { TextAreaField } from '@/components/common/TextAreaField'
-import { CreateVendorRequest } from '@/types/vendor.types'
-import { Building2, Mail, Phone, MapPin, FileText, Hash } from 'lucide-react'
+import { CreateVendorRequest } from '@/services/vendor/vendor.types'
+import { Building2 } from 'lucide-react'
 
 interface VendorFormProps {
   onSuccess?: (vendor: any) => void
@@ -73,7 +73,7 @@ export const VendorForm: React.FC<VendorFormProps> = ({
             <TextField
               name="businessPhone"
               label="Số điện thoại *"
-              type="tel"
+              type="text"
               placeholder="+84xxxxxxxxx hoặc 0xxxxxxxxx"
               className="border hover:border-primary focus:border-primary transition-colors"
             />

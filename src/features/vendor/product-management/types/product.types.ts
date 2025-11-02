@@ -1,30 +1,31 @@
 export interface ProductFormData {
+  id?: string
   name: string
   slug: string
   categoryId: string
   brand: string
-  thumbnail: string
-  images: string[]
+  thumbnail: string | File
+  images: (string | File)[]
   price: number
-  salePrice?: number | null
+  salePrice?: number
   currency: string
   stock: {
     quantity: number
     unit: string
   }
   badges?: string[]
-  specs?: Record<string, any> | null
-  options?: ProductOption[] | null
-  variants?: ProductVariant[] | null
+  specs?: Record<string, any>
+  options?: ProductOption[]
+  variants?: ProductVariant[]
   shortDescription: string
   description: string
-  datasheetUrl?: string | null
+  datasheetUrl?: string
 }
 
 export interface ProductOption {
   name: string
-  displayName: string
-  values: ProductOptionValue[]
+  displayName?: string // Optional, can be auto-generated from name
+  values: string[] | ProductOptionValue[] // Support both formats
 }
 
 export interface ProductOptionValue {
@@ -36,7 +37,7 @@ export interface ProductVariant {
   options: Record<string, string>
   price: number
   stockQty: number
-  specs?: Record<string, any> | null
+  specs?: Record<string, any>
 }
 
 export interface ProductTableItem {

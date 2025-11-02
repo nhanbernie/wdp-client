@@ -81,7 +81,7 @@ export const AdminDashboard: React.FC = () => {
       {/* Stats Grid with modern cards */}
       <div className="space-y-6">
         <h2 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
-          <span className="text-3xl">📈</span> Thống kê tổng quan
+          <span className="text-3xl"></span> Thống kê tổng quan
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           <div className="transform hover:scale-105 transition-all duration-300">
@@ -142,7 +142,7 @@ export const AdminDashboard: React.FC = () => {
       {/* Today's Stats with modern design */}
       <div className="space-y-6">
         <h2 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
-          <span className="text-3xl">🌟</span> Hoạt động hôm nay
+          <span className="text-3xl"></span> Hoạt động hôm nay
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="transform hover:scale-105 transition-all duration-300">

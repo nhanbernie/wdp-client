@@ -137,21 +137,14 @@ const UserMenu = ({ user: propUser }: UserMenuProps) => {
         )}
 
         <motion.div whileHover={{ x: 4 }} transition={{ type: 'spring', stiffness: 300 }}>
-          <DropdownMenuItem className="cursor-pointer rounded-xl p-4 my-1 transition-all duration-300 hover:bg-gradient-to-r hover:from-indigo-50 hover:to-purple-50 hover:border-indigo-200 border-2 border-transparent">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center mr-3 shadow-lg">
-              <User className="h-5 w-5 text-white" />
-            </div>
-            <span className="font-black text-slate-900">Profile</span>
-          </DropdownMenuItem>
-        </motion.div>
-
-        <motion.div whileHover={{ x: 4 }} transition={{ type: 'spring', stiffness: 300 }}>
-          <DropdownMenuItem className="cursor-pointer rounded-xl p-4 my-1 transition-all duration-300 hover:bg-gradient-to-r hover:from-blue-50 hover:to-indigo-50 hover:border-blue-200 border-2 border-transparent">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-500 flex items-center justify-center mr-3 shadow-lg">
-              <Settings className="h-5 w-5 text-white" />
-            </div>
-            <span className="font-black text-slate-900">Settings</span>
-          </DropdownMenuItem>
+          <Link href="/profile">
+            <DropdownMenuItem className="cursor-pointer rounded-xl p-4 my-1 transition-all duration-300 hover:bg-gradient-to-r hover:from-indigo-50 hover:to-purple-50 hover:border-indigo-200 border-2 border-transparent">
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center mr-3 shadow-lg">
+                <User className="h-5 w-5 text-white" />
+              </div>
+              <span className="font-black text-slate-900">Profile</span>
+            </DropdownMenuItem>
+          </Link>
         </motion.div>
 
         <DropdownMenuSeparator className="bg-slate-200 my-2" />

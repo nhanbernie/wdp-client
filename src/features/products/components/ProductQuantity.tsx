@@ -16,6 +16,7 @@ import {
   Package,
 } from 'lucide-react'
 import { useCartApi } from '@/features/cart/hooks'
+import { RequestQuoteButton } from '@/features/quote-requests/components'
 import { motion } from 'framer-motion'
 
 interface ProductQuantityProps {
@@ -132,14 +133,7 @@ export const ProductQuantity: React.FC<ProductQuantityProps> = ({ stock, colors,
           </span>
         </Button>
 
-        <Button
-          variant="outline"
-          size="lg"
-          className="w-full rounded-2xl h-14 text-base font-bold border-2 hover:bg-slate-50 hover:border-indigo-300 transition-all duration-300 hover:scale-[1.02] hover:shadow-lg"
-        >
-          <FileText className="h-5 w-5 mr-2" />
-          Yêu cầu báo giá
-        </Button>
+        {productId && <RequestQuoteButton productId={productId} />}
       </motion.div>
 
       {/* Extra Actions - Ultra Premium */}

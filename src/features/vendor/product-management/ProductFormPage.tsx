@@ -31,7 +31,7 @@ export const ProductFormPage: React.FC<ProductFormPageProps> = ({
   const { user } = useAuth()
 
   const handleCancel = () => {
-    router.push('/vendor/products')
+    router.push('/vendor/product-management')
   }
 
   const handleFormSubmit = async (data: ProductFormData) => {
@@ -41,17 +41,18 @@ export const ProductFormPage: React.FC<ProductFormPageProps> = ({
         ...data,
         vendorId: (user as any)?.vendorId || user?.id || '',
         salePrice: data.salePrice || undefined,
-        badges: data.badges || undefined,
-        specs: data.specs || undefined,
-        options: data.options || undefined,
-        variants: data.variants || undefined,
+        // ✅ Only include if has data (empty array = undefined)
+        badges: data.badges && data.badges.length > 0 ? data.badges : undefined,
+        specs: data.specs && Object.keys(data.specs).length > 0 ? data.specs : undefined,
+        options: data.options && data.options.length > 0 ? data.options : undefined,
+        variants: data.variants && data.variants.length > 0 ? data.variants : undefined,
         datasheetUrl: data.datasheetUrl || undefined,
       }
 
       await onSubmit(dataWithVendorId as any)
-      router.push('/vendor/products')
     } catch (error) {
-      // Error is already handled in the hook with toast
+      console.error('ProductFormPage - Error in handleFormSubmit:', error)
+      throw error // Re-throw to let the caller handle it
     }
   }
 
@@ -95,20 +96,26 @@ export const ProductFormPage: React.FC<ProductFormPageProps> = ({
                   currency: 'VND',
                   stock: {
                     quantity: 0,
-                    unit: '',
+                    unit: 'cái',
                   },
                   categoryId: '',
                   brand: '',
-                  thumbnail: '',
+                  thumbnail: undefined,
                   images: [],
                   shortDescription: '',
                   description: '',
+                  options: [], // Keep empty array for useFieldArray
+                  variants: [], // Keep empty array for useFieldArray
+                  specs: {}, // Keep empty object for field iteration
+                  badges: [], // Keep empty array for badges
+                  datasheetUrl: '',
+                  salePrice: undefined,
                 }
               }
               validationSchema={productFormSchema}
               onSubmit={handleFormSubmit}
             >
-              <ProductForm onCancel={handleCancel} />
+              <ProductForm onCancel={handleCancel} mode={mode} />
             </FormProvider>
           </CardContent>
         </Card>

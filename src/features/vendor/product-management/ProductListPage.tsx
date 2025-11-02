@@ -14,15 +14,15 @@ export const ProductListPage: React.FC = () => {
   const { products, isLoading, deleteProduct } = useProductManagement()
 
   const handleCreate = () => {
-    router.push('/vendor/products/new')
+    router.push('/vendor/product-management/new')
   }
 
   const handleEdit = (product: any) => {
-    router.push(`/vendor/products/${product.id}/edit`)
+    router.push(`/vendor/product-management/${product.id}/edit`)
   }
 
   const handleView = (product: any) => {
-    router.push(`/vendor/products/${product.id}`)
+    router.push(`/vendor/product-management/${product.id}`)
   }
 
   const handleDelete = async (id: string) => {
@@ -32,10 +32,11 @@ export const ProductListPage: React.FC = () => {
   }
 
   // Calculate stats
-  const totalProducts = products?.length || 0
-  const inStockProducts = products?.filter((p: any) => p.stock?.quantity > 0).length || 0
+  const productsList = Array.isArray(products) ? products : []
+  const totalProducts = productsList.length || 0
+  const inStockProducts = productsList.filter((p: any) => p.stockQty > 0).length || 0
   const lowStockProducts =
-    products?.filter((p: any) => p.stock?.quantity > 0 && p.stock?.quantity < 10).length || 0
+    productsList.filter((p: any) => p.stockQty > 0 && p.stockQty < 10).length || 0
 
   return (
     <div className="space-y-6">
@@ -110,7 +111,7 @@ export const ProductListPage: React.FC = () => {
           </CardHeader>
           <CardContent>
             <ProductTable
-              products={products || []}
+              products={productsList}
               isLoading={isLoading}
               onEdit={handleEdit}
               onView={handleView}

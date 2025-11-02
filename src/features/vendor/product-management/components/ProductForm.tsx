@@ -5,7 +5,7 @@ import { useForm, useFieldArray, Controller } from 'react-hook-form'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Textarea } from '@/components/common/TextAreaField'
+import { Textarea } from '@/components/ui/textarea'
 import {
   Select,
   SelectContent,
@@ -17,8 +17,10 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Plus, Trash2, X } from 'lucide-react'
-import { ProductFormProps, ProductFormData } from '../types'
+import { ProductFormProps } from '../types'
+import { ProductFormData } from '../types/product.types'
 import { useGetCategoriesQuery } from '@/services/categories/categories.service'
+import { ImageUpload, MultipleImageUpload } from '@/components/common'
 
 const CURRENCY_OPTIONS = ['VND', 'USD']
 const UNIT_OPTIONS = ['cái', 'bộ', 'hộp', 'kg', 'mét', 'thùng']
@@ -81,12 +83,14 @@ export function ProductForm({
     name: 'variants',
   })
 
-  const [imageUrls, setImageUrls] = useState<string[]>(initialData?.images || [])
-
   const [selectedBadges, setSelectedBadges] = useState<string[]>(initialData?.badges || [])
   const [customSpecs, setCustomSpecs] = useState<Record<string, any>>(initialData?.specs || {})
   const [newSpecKey, setNewSpecKey] = useState('')
   const [newSpecValue, setNewSpecValue] = useState('')
+
+  // State for file uploads
+  const [thumbnailFile, setThumbnailFile] = useState<File | null>(null)
+  const [imageFiles, setImageFiles] = useState<File[]>([])
 
   // Auto-generate slug from name
   const productName = watch('name')
@@ -106,10 +110,13 @@ export function ProductForm({
   }, [productName, mode, setValue])
 
   const handleFormSubmit = async (data: ProductFormData) => {
-    const formData = {
+    const formData: ProductFormData = {
       ...data,
       badges: selectedBadges,
       specs: customSpecs,
+      // Add file uploads
+      thumbnail: thumbnailFile || data.thumbnail,
+      images: imageFiles.length > 0 ? imageFiles : data.images,
     }
     await onSubmit(formData)
   }
@@ -568,68 +575,67 @@ export function ProductForm({
             </CardHeader>
             <CardContent className="space-y-4">
               {/* Thumbnail */}
-              <div>
-                <Label htmlFor="thumbnail">
-                  Ảnh đại diện <span className="text-destructive">*</span>
-                </Label>
-                <Input
-                  id="thumbnail"
-                  {...register('thumbnail', { required: 'Ảnh đại diện là bắt buộc' })}
-                  placeholder="https://cdn.example.com/thumb.jpg"
-                  disabled={isReadOnly}
-                />
-              </div>
+              <Controller
+                name="thumbnail"
+                control={control}
+                rules={{ required: 'Ảnh đại diện là bắt buộc' }}
+                render={({ field, fieldState }) => (
+                  <ImageUpload
+                    value={thumbnailFile || field.value}
+                    onChange={(file) => {
+                      setThumbnailFile(file)
+                      if (file) {
+                        field.onChange(file)
+                      }
+                    }}
+                    onUrlChange={(url) => {
+                      if (!thumbnailFile) {
+                        field.onChange(url)
+                      }
+                    }}
+                    label="Ảnh đại diện"
+                    error={fieldState.error?.message}
+                    disabled={isReadOnly}
+                    maxSize={5}
+                  />
+                )}
+              />
 
               {/* Images */}
-              <div>
-                <Label>Ảnh sản phẩm</Label>
-                <div className="space-y-2 mt-2">
-                  {imageUrls.map((url, index) => (
-                    <div key={index} className="flex items-center gap-2">
-                      <Input
-                        value={url}
-                        onChange={(e) => {
-                          const newUrls = [...imageUrls]
-                          newUrls[index] = e.target.value
-                          setImageUrls(newUrls)
-                          setValue('images', newUrls)
-                        }}
-                        placeholder={`https://cdn.example.com/${index + 1}.jpg`}
-                        disabled={isReadOnly}
-                      />
-                      {!isReadOnly && (
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => {
-                            const newUrls = imageUrls.filter((_, i) => i !== index)
-                            setImageUrls(newUrls)
-                            setValue('images', newUrls)
-                          }}
-                        >
-                          <X className="h-4 w-4" />
-                        </Button>
-                      )}
-                    </div>
-                  ))}
-                  {!isReadOnly && (
-                    <Button
-                      type="button"
-                      variant="outline"
-                      onClick={() => {
-                        const newUrls = [...imageUrls, '']
-                        setImageUrls(newUrls)
-                        setValue('images', newUrls)
-                      }}
-                      className="w-full"
-                    >
-                      <Plus className="h-4 w-4 mr-2" />
-                      Thêm ảnh
-                    </Button>
-                  )}
-                </div>
-              </div>
+              <Controller
+                name="images"
+                control={control}
+                rules={{
+                  required: 'Phải có ít nhất 1 ảnh sản phẩm',
+                  validate: (value) => {
+                    if (imageFiles.length === 0 && (!value || value.length === 0)) {
+                      return 'Phải có ít nhất 1 ảnh sản phẩm'
+                    }
+                    return true
+                  },
+                }}
+                render={({ field, fieldState }) => (
+                  <MultipleImageUpload
+                    values={imageFiles.length > 0 ? imageFiles : field.value}
+                    onChange={(files) => {
+                      setImageFiles(files)
+                      if (files.length > 0) {
+                        field.onChange(files)
+                      }
+                    }}
+                    onUrlsChange={(urls) => {
+                      if (imageFiles.length === 0) {
+                        field.onChange(urls)
+                      }
+                    }}
+                    label="Ảnh sản phẩm"
+                    error={fieldState.error?.message}
+                    disabled={isReadOnly}
+                    maxSize={5}
+                    maxFiles={10}
+                  />
+                )}
+              />
 
               {/* Datasheet */}
               <div>

@@ -3,9 +3,9 @@ import {
   BaseQueryFn,
   FetchArgs,
   FetchBaseQueryError,
-} from "@reduxjs/toolkit/query/react";
-import { API_CONFIG, API_ENDPOINTS, PUBLIC_ENDPOINTS } from "@/common/constants/endpoint.constant";
-import { StorageService } from "@/services/storage/secureStorage.service";
+} from '@reduxjs/toolkit/query/react'
+import { API_CONFIG, API_ENDPOINTS, PUBLIC_ENDPOINTS } from '@/common/constants/endpoint.constant'
+import { StorageService } from '@/services/storage/secureStorage.service'
 const getUrlFromArgs = (arg: any) => {
   if (typeof arg === 'string') return arg
   if (typeof arg === 'object' && arg.url) return arg.url
@@ -18,18 +18,55 @@ const redirectToLogin = () => {
   }
 }
 
+// Check if URL matches a public endpoint more precisely
+const isPublicEndpoint = (url: string, method: string = 'GET') => {
+  // Remove base URL and query params for comparison
+  const cleanUrl = url.split('?')[0].replace(API_CONFIG.BASE_URL, '')
+
+  // Special case: /products is only public for GET requests
+  if (cleanUrl === '/products' && method !== 'GET') {
+    return false
+  }
+
+  const result = PUBLIC_ENDPOINTS.some((ep) => {
+    // Exact match
+    if (cleanUrl === ep) {
+      return true
+    }
+
+    // Pattern match for endpoints with :id (e.g., /materials/:id)
+    if (ep.includes(':id')) {
+      const pattern = ep.replace(':id', '[^/]+')
+      const regex = new RegExp(`^${pattern}$`)
+      if (regex.test(cleanUrl)) {
+        return true
+      }
+    }
+
+    return false
+  })
+
+  return result
+}
 // Base query with keychain
 const baseQuery = fetchBaseQuery({
   baseUrl: `${API_CONFIG.BASE_URL}`,
   prepareHeaders: async (headers, { endpoint, ...rest }) => {
     const url = getUrlFromArgs(rest.arg)
-    const isPublic = PUBLIC_ENDPOINTS.some((ep) => url.includes(ep))
+    const method = typeof rest.arg === 'object' && rest.arg.method ? rest.arg.method : 'GET'
+    const isPublic = isPublicEndpoint(url, method)
 
     if (!isPublic) {
       const token = await StorageService.getAccessToken()
+
       if (token) {
         headers.set('Authorization', `Bearer ${token}`)
+        console.log('✅ Authorization header set')
+      } else {
+        console.warn('⚠️ No token found in storage!')
       }
+    } else {
+      console.log('🌍 Public endpoint - no auth needed')
     }
 
     // Check if body is FormData, don't set Content-Type for FormData
@@ -52,7 +89,8 @@ export const baseQueryWithReauth: BaseQueryFn<
 > = async (args, api, extraOptions) => {
   // Determine if this is a public endpoint
   const url = typeof args === 'string' ? args : args.url
-  const isPublic = PUBLIC_ENDPOINTS.some((ep) => url.includes(ep))
+  const method = typeof args === 'object' && args.method ? args.method : 'GET'
+  const isPublic = isPublicEndpoint(url, method)
   let result = await baseQuery(args, api, extraOptions)
 
   // If unauthorized (401), try to refresh token

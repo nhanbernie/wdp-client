@@ -27,18 +27,13 @@ export const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-4xl max-h-[85vh] overflow-y-auto">
         <DialogHeader className="border-b border-primary/10 pb-4">
-          <DialogTitle className="flex items-center gap-3 text-2xl">
-            <div className="p-2 rounded-xl bg-gradient-to-br from-purple-400 to-pink-500 shadow-md">
-              <span className="text-2xl">📦</span>
-            </div>
-            Chi tiết đơn hàng
-          </DialogTitle>
+          <DialogTitle className="flex items-center gap-3 text-2xl">Chi tiết đơn hàng</DialogTitle>
         </DialogHeader>
         <div className="space-y-6 pt-4">
           {/* Order Info with modern card */}
           <div className="bg-gradient-to-br from-primary/5 to-primary/10 p-5 rounded-xl border-2 border-primary/20 shadow-sm">
             <h3 className="font-bold mb-4 flex items-center gap-2 text-lg text-gray-900">
-              <span className="text-xl">📋</span> Thông tin đơn hàng
+              <span className="text-xl"></span> Thông tin đơn hàng
             </h3>
             <div className="grid grid-cols-2 gap-4 text-sm">
               <div className="bg-white p-3 rounded-lg shadow-sm">
@@ -65,22 +60,22 @@ export const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({
           {/* Customer Info with modern card */}
           <div className="bg-gradient-to-br from-blue-50 to-indigo-50 p-5 rounded-xl border-2 border-blue-200 shadow-sm">
             <h3 className="font-bold mb-4 flex items-center gap-2 text-lg text-gray-900">
-              <span className="text-xl">👤</span> Thông tin khách hàng
+              <span className="text-xl"></span> Thông tin khách hàng
             </h3>
             <div className="text-sm space-y-3">
               <div className="flex items-center gap-2 bg-white p-3 rounded-lg shadow-sm">
-                <span className="text-gray-600 font-medium">📧 Email:</span>
+                <span className="text-gray-600 font-medium">Email:</span>
                 <span className="font-semibold text-gray-900">{user.email}</span>
               </div>
               <div className="flex items-center gap-2 bg-white p-3 rounded-lg shadow-sm">
-                <span className="text-gray-600 font-medium">👨‍💼 Họ tên:</span>
+                <span className="text-gray-600 font-medium">Họ tên:</span>
                 <span className="font-semibold text-gray-900">
                   {user.firstName} {user.lastName}
                 </span>
               </div>
               {user.phoneNumber && (
                 <div className="flex items-center gap-2 bg-white p-3 rounded-lg shadow-sm">
-                  <span className="text-gray-600 font-medium">📱 SĐT:</span>
+                  <span className="text-gray-600 font-medium">SĐT:</span>
                   <span className="font-semibold text-gray-900">{user.phoneNumber}</span>
                 </div>
               )}
@@ -91,15 +86,13 @@ export const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({
           {order.shippingAddress && (
             <div className="bg-gradient-to-br from-green-50 to-emerald-50 p-5 rounded-xl border-2 border-green-200 shadow-sm">
               <h3 className="font-bold mb-4 flex items-center gap-2 text-lg text-gray-900">
-                <span className="text-xl">📍</span> Địa chỉ giao hàng
+                <span className="text-xl"></span> Địa chỉ giao hàng
               </h3>
               <div className="text-sm space-y-3 bg-white p-4 rounded-lg shadow-sm">
                 {order.shippingName && (
                   <p className="font-semibold text-gray-900">{order.shippingName}</p>
                 )}
-                {order.shippingPhone && (
-                  <p className="text-gray-700">📞 SĐT: {order.shippingPhone}</p>
-                )}
+                {order.shippingPhone && <p className="text-gray-700">SĐT: {order.shippingPhone}</p>}
                 <p className="text-gray-700 leading-relaxed">
                   {order.shippingAddress}
                   {order.shippingWard && `, ${order.shippingWard}`}
@@ -113,7 +106,7 @@ export const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({
           {/* Items with modern design */}
           <div className="bg-gradient-to-br from-purple-50 to-pink-50 p-5 rounded-xl border-2 border-purple-200 shadow-sm">
             <h3 className="font-bold mb-4 flex items-center gap-2 text-lg text-gray-900">
-              <span className="text-xl">🛍️</span> Sản phẩm
+              <span className="text-xl"></span> Sản phẩm
             </h3>
             <div className="space-y-3">
               {items.map((item, index) => (
@@ -129,7 +122,7 @@ export const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({
                       </p>
                     )}
                     <p className="text-sm text-gray-600 mt-2 font-medium">
-                      📦 Số lượng: <span className="text-primary">{item.quantity}</span>
+                      Số lượng: <span className="text-primary">{item.quantity}</span>
                     </p>
                   </div>
                   <div className="text-right">
@@ -154,13 +147,13 @@ export const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({
                   onClick={() => onUpdateStatus('processing')}
                   className="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white shadow-lg hover:shadow-xl transition-all"
                 >
-                  ✓ Xác nhận đơn
+                  Xác nhận đơn
                 </Button>
                 <Button
                   onClick={onCancel}
                   className="bg-gradient-to-r from-red-500 to-rose-600 hover:from-red-600 hover:to-rose-700 text-white shadow-lg hover:shadow-xl transition-all"
                 >
-                  ✗ Hủy đơn
+                  Hủy đơn
                 </Button>
               </>
             )}
@@ -169,7 +162,7 @@ export const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({
                 onClick={() => onUpdateStatus('shipping')}
                 className="bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white shadow-lg hover:shadow-xl transition-all"
               >
-                🚚 Bắt đầu giao hàng
+                Bắt đầu giao hàng
               </Button>
             )}
             {order.status === 'shipping' && (
@@ -177,7 +170,7 @@ export const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({
                 onClick={() => onUpdateStatus('delivered')}
                 className="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white shadow-lg hover:shadow-xl transition-all"
               >
-                ✓ Đã giao hàng
+                Đã giao hàng
               </Button>
             )}
           </div>
