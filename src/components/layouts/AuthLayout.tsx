@@ -32,7 +32,9 @@ const AuthLayout = ({ children }: { children: React.ReactNode }) => {
             {/* Left Side - Marketing Content */}
 
             <div className="space-y-8">
-              <Logo />
+              <Logo 
+                animated={false}
+              />
               {/* Main Headline */}
               <div className="space-y-4">
                 <h2

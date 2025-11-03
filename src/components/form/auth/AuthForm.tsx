@@ -74,7 +74,7 @@ const AuthForm = ({
 
     return (
       <div className="w-full">
-        <div className="space-y-5">
+        <div className="space-y-4 sm:space-y-5">
           {INPUT_FIELDS[type].map((field) => {
             return <TextField key={field.name} {...field} />;
           })}
@@ -82,8 +82,8 @@ const AuthForm = ({
 
         {/* Display email when in verifyOTP mode */}
         {type === "verifyOTP" && email && (
-          <div className="mt-2">
-            <p className="text-gray-500 text-center text-sm">
+          <div className="mt-3 sm:mt-4">
+            <p className="text-gray-500 text-center text-xs sm:text-sm px-2 break-words">
               Mã đã được gửi đến {email}
             </p>
           </div>
@@ -92,15 +92,15 @@ const AuthForm = ({
         <div className="flex">
           {/* add checkbox for remember me */}
           {type === "login" && (
-            <div className="flex items-center justify-between w-full">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between w-full gap-3 sm:gap-0">
               <button
                 type="button"
                 onClick={() => setRememberMe(!rememberMe)}
-                className="flex items-center"
+                className="flex items-center w-fit"
               >
                 <div
                   className={cn(
-                    "w-5 h-5 border rounded mr-2 flex items-center justify-center transition-colors",
+                    "w-4 h-4 sm:w-5 sm:h-5 border rounded mr-2 flex items-center justify-center transition-colors shrink-0",
                     rememberMe ? "border-transparent" : "border-gray-300"
                   )}
                   style={{
@@ -109,22 +109,22 @@ const AuthForm = ({
                   }}
                 >
                   {rememberMe && (
-                    <div className="w-2 h-2 bg-white rounded-full" />
+                    <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-white rounded-full" />
                   )}
                 </div>
                 <span
-                  className="text-sm"
+                  className="text-xs sm:text-sm"
                   style={{ color: colors.textSecondary }}
                 >
                   Ghi nhớ đăng nhập
                 </span>
               </button>
 
-              <div className="flex justify-end">
+              <div className="flex justify-start sm:justify-end">
                 <button
                   type="button"
                   onClick={() => router.push("/forgot-password")}
-                  className="text-sm hover:opacity-80 transition-opacity"
+                  className="text-xs sm:text-sm hover:opacity-80 transition-opacity"
                   style={{ color: colors.accent }}
                 >
                   Quên mật khẩu?
@@ -133,13 +133,13 @@ const AuthForm = ({
             </div>
           )}
         </div>
-        <div className="mt-6">
+        <div className="mt-5 sm:mt-6">
           <button
             type="submit"
             className={cn(
-              "w-full py-4 px-6 rounded-xl font-semibold text-base transition-all duration-200 text-white shadow-lg hover:shadow-xl",
+              "w-full py-3 px-4 sm:py-4 sm:px-6 rounded-xl font-semibold text-sm sm:text-base transition-all duration-200 text-white shadow-lg hover:shadow-xl",
               isValid && !isSubmitting
-                ? "hover:opacity-90 transform hover:scale-[1.02]"
+                ? "hover:opacity-90 transform hover:scale-[1.02] active:scale-[0.98]"
                 : "opacity-50 cursor-not-allowed"
             )}
             style={{
@@ -156,13 +156,13 @@ const AuthForm = ({
 
         {/* Footer text for login */}
         {type === "login" && (
-          <div className="mt-4 text-center">
-            <span className="text-sm" style={{ color: colors.textSecondary }}>
-              Chưa có tài khoản?
+          <div className="mt-4 sm:mt-5 text-center px-2">
+            <span className="text-xs sm:text-sm" style={{ color: colors.textSecondary }}>
+              Chưa có tài khoản?{" "}
               <button
                 type="button"
                 onClick={() => router.push("/register")}
-                className="font-medium ml-1 hover:opacity-80 transition-opacity"
+                className="font-medium hover:opacity-80 transition-opacity"
                 style={{ color: colors.accent }}
               >
                 Đăng ký
@@ -173,13 +173,13 @@ const AuthForm = ({
 
         {/* Footer text for register */}
         {type === "register" && (
-          <div className="mt-4 text-center">
-            <span className="text-sm" style={{ color: colors.textSecondary }}>
-              Đã có tài khoản?
+          <div className="mt-4 sm:mt-5 text-center px-2">
+            <span className="text-xs sm:text-sm" style={{ color: colors.textSecondary }}>
+              Đã có tài khoản?{" "}
               <button
                 type="button"
                 onClick={() => router.push("/login")}
-                className="font-medium ml-1 hover:opacity-80 transition-opacity"
+                className="font-medium hover:opacity-80 transition-opacity"
                 style={{ color: colors.accent }}
               >
                 Đăng nhập
@@ -190,13 +190,13 @@ const AuthForm = ({
 
         {/* Footer text for forgot password */}
         {type === "forgotPassword" && (
-          <div className="mt-4 text-center">
-            <span className="text-sm" style={{ color: colors.textSecondary }}>
-              Nhớ mật khẩu?
+          <div className="mt-4 sm:mt-5 text-center px-2">
+            <span className="text-xs sm:text-sm" style={{ color: colors.textSecondary }}>
+              Nhớ mật khẩu?{" "}
               <button
                 type="button"
                 onClick={() => router.push("/login")}
-                className="font-medium ml-1 hover:opacity-80 transition-opacity"
+                className="font-medium hover:opacity-80 transition-opacity"
                 style={{ color: colors.accent }}
               >
                 Đăng nhập
@@ -207,24 +207,26 @@ const AuthForm = ({
 
         {(type === "login" || type === "register") && (
           <>
-            <div className="text-sm " style={{ color: colors.textSecondary }}>
-              <div className="flex items-center gap-2 my-4">
+            <div className="text-xs sm:text-sm mt-5 sm:mt-6" style={{ color: colors.textSecondary }}>
+              <div className="flex items-center gap-2 sm:gap-3 my-4 sm:my-5 px-2">
                 <div
                   className="h-[1px] w-full"
                   style={{
                     backgroundColor: colors.textSecondary,
+                    opacity: 0.3,
                   }}
                 ></div>
-                <p>Or</p>
+                <p className="text-xs sm:text-sm whitespace-nowrap shrink-0">Hoặc</p>
                 <div
                   className="h-[1px] w-full"
                   style={{
                     backgroundColor: colors.textSecondary,
+                    opacity: 0.3,
                   }}
                 ></div>
               </div>
 
-              <div>
+              <div className="flex justify-center px-2">
                 <GoogleLoginButton />
               </div>
             </div>

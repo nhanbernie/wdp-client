@@ -9,6 +9,7 @@ const publicRoutes = [
   '/reset-password',
   '/login-success',
   '/marketing',
+  '/auth/callback', // Google OAuth callback route
   '/',
 ]
 

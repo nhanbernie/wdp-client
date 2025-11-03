@@ -12,7 +12,7 @@ interface ThemeContextType {
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined)
 
 export const ThemeProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [theme, setTheme] = useState<Theme>('light') // Default to dark
+  const [theme, setTheme] = useState<Theme>('dark') // Default to dark
 
   useEffect(() => {
     // Check localStorage only on client side
@@ -23,14 +23,14 @@ export const ThemeProvider: React.FC<{ children: ReactNode }> = ({ children }) =
         document.documentElement.classList.toggle('dark', savedTheme === 'dark')
       } else {
         // Default to dark theme
-        setTheme('light')
+        setTheme('dark')
         document.documentElement.classList.add('light')
       }
     }
   }, [])
 
   const toggleTheme = () => {
-    const newTheme = theme === 'light' ? 'dark' : 'light'
+    const newTheme = theme === 'dark' ? 'light' : 'dark'
     setTheme(newTheme)
     if (typeof window !== 'undefined') {
       localStorage.setItem('theme', newTheme)
