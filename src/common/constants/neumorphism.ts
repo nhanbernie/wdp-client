@@ -114,6 +114,29 @@ function createShadowString(config: NeumorphismConfig): string {
 }
 
 /**
+ * Tạo box-shadow string cho Trust Badge với màu cụ thể
+ */
+function createTrustBadgeShadowString(config: NeumorphismConfig, theme: Theme): string {
+  const { darkShadow, lightShadow } = config
+
+  if (theme === 'light') {
+    // Light mode: Shadow nhẹ hơn với màu #d9d9d9 nhưng opacity thấp hơn
+    // Sử dụng rgba để control opacity tốt hơn
+    const darkColor = `rgba(217, 217, 217, ${darkShadow.opacity})`
+    return [
+      `${darkShadow.offsetX}px ${darkShadow.offsetY}px ${darkShadow.blur}px ${darkColor}`,
+      `${lightShadow.offsetX}px ${lightShadow.offsetY}px ${lightShadow.blur}px rgba(255, 255, 255, ${lightShadow.opacity})`,
+    ].join(', ')
+  } else {
+    // Dark mode: Shadow rõ hơn để tạo độ tương phản
+    return [
+      `${darkShadow.offsetX}px ${darkShadow.offsetY}px ${darkShadow.blur}px rgba(0, 0, 0, ${darkShadow.opacity})`,
+      `${lightShadow.offsetX}px ${lightShadow.offsetY}px ${lightShadow.blur}px rgba(255, 255, 255, ${lightShadow.opacity})`,
+    ].join(', ')
+  }
+}
+
+/**
  * Lấy neumorphism shadow string theo theme
  * @param theme - 'light' hoặc 'dark'
  * @returns Box-shadow CSS string
@@ -139,6 +162,78 @@ export function getNeumorphismConfig(theme: Theme): NeumorphismConfig {
  */
 export function createCustomNeumorphismShadow(config: NeumorphismConfig): string {
   return createShadowString(config)
+}
+
+/**
+ * Cấu hình Neumorphism cho Trust Badges (Light mode)
+ * Border-radius: 50px, background: #ffffff
+ * Shadow: 20px 20px 60px #d9d9d9, -20px -20px 60px #ffffff
+ */
+export const LIGHT_NEUMORPHISM_TRUST_BADGE: NeumorphismConfig = {
+  darkShadow: {
+    offsetX: 20,
+    offsetY: 20,
+    blur: 60,
+    opacity: 0.15, // Giảm opacity để shadow nhẹ hơn, dễ nhìn hơn
+  },
+  lightShadow: {
+    offsetX: -20,
+    offsetY: -20,
+    blur: 60,
+    opacity: 1, // #ffffff
+  },
+  insetDark: {
+    offsetX: 0,
+    offsetY: 0,
+    blur: 0,
+    opacity: 0,
+  },
+  insetLight: {
+    offsetX: 0,
+    offsetY: 0,
+    blur: 0,
+    opacity: 0,
+  },
+}
+
+/**
+ * Cấu hình Neumorphism cho Trust Badges (Dark mode)
+ */
+export const DARK_NEUMORPHISM_TRUST_BADGE: NeumorphismConfig = {
+  darkShadow: {
+    offsetX: 20,
+    offsetY: 20,
+    blur: 60,
+    opacity: 0.3, // Giảm opacity để shadow không quá tối, không bị chìm
+  },
+  lightShadow: {
+    offsetX: -20,
+    offsetY: -20,
+    blur: 60,
+    opacity: 0.35, // Tăng highlight để tạo độ tương phản tốt hơn
+  },
+  insetDark: {
+    offsetX: 0,
+    offsetY: 0,
+    blur: 0,
+    opacity: 0,
+  },
+  insetLight: {
+    offsetX: 0,
+    offsetY: 0,
+    blur: 0,
+    opacity: 0,
+  },
+}
+
+/**
+ * Lấy Neumorphism shadow cho Trust Badges theo theme
+ * @param theme - 'light' hoặc 'dark'
+ * @returns Box-shadow CSS string
+ */
+export function getNeumorphismTrustBadgeShadow(theme: Theme): string {
+  const config = theme === 'dark' ? DARK_NEUMORPHISM_TRUST_BADGE : LIGHT_NEUMORPHISM_TRUST_BADGE
+  return createTrustBadgeShadowString(config, theme)
 }
 
 /**

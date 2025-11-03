@@ -5,6 +5,7 @@ import { useCategories } from '../hooks/useCategories'
 import CategoryCard from './CategoryCard'
 import { motion } from 'framer-motion'
 import { Sparkles } from 'lucide-react'
+import { SectionBadge } from '@/components/common'
 
 const CategoryShowcase = () => {
   const { categories, loading } = useCategories({ productCount: true })
@@ -20,18 +21,7 @@ const CategoryShowcase = () => {
       <div className="max-w-7xl mx-auto w-full">
         {/* Categories title */}
         <div className="text-center mb-16 relative">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-accent-primary/10 border border-accent-primary/30 shadow-lg mb-6"
-        >
-          <Sparkles className="h-5 w-5 text-accent-primary" />
-          <span className="text-sm font-bold text-accent-primary">
-            Danh mục sản phẩm
-          </span>
-        </motion.div>
+          <SectionBadge icon={Sparkles} text="Danh mục sản phẩm" className="mb-6" />
 
         <motion.h2
           initial={{ opacity: 0, y: 20 }}

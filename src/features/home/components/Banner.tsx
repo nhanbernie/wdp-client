@@ -4,13 +4,17 @@ import { Button } from '@/components/ui/button'
 import { ArrowRight, Shield, Sparkles, Truck, Zap } from 'lucide-react'
 import { motion } from 'framer-motion'
 import { useTheme } from '@/contexts/ThemeContext'
-import { getNeumorphismShadow } from '@/utils/neumorphism'
+import { getTextEmbossShadow, getNeumorphismTrustBadgeShadow } from '@/common/constants/neumorphism'
+import { SectionBadge } from '@/components/common'
 
 const Banner = () => {
   const { theme } = useTheme()
 
-  // Neumorphism shadow styles for light and dark modes
-  const neumorphismShadow = getNeumorphismShadow(theme)
+  // Text emboss shadow for 3D floating effect
+  const textEmbossShadow = getTextEmbossShadow(theme)
+  
+  // Neumorphism shadow for trust badges
+  const trustBadgeNeumorphismShadow = getNeumorphismTrustBadgeShadow(theme)
 
   return (
     <div className="px-4 sm:px-6 lg:px-8 py-20 lg:py-32 overflow-visible">
@@ -23,24 +27,11 @@ const Banner = () => {
           </div>
 
           {/* Hero Badge */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="relative"
-          >
-            <div
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-card text-accent-primary"
-              style={{
-                boxShadow: neumorphismShadow,
-              }}
-            >
-              <Zap className="h-5 w-5 text-accent-primary" />
-              <span className="text-sm font-bold text-accent-primary">
-                Công nghệ AI tiên tiến
-              </span>
-            </div>
-          </motion.div>
+          <SectionBadge
+            icon={Zap}
+            text="Công nghệ AI tiên tiến"
+            animationType="animate"
+          />
 
           {/* Main heading */}
           <motion.h1
@@ -48,6 +39,9 @@ const Banner = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
             className="font-black text-5xl lg:text-7xl text-center max-w-5xl leading-tight text-foreground"
+            style={{
+              textShadow: textEmbossShadow,
+            }}
           >
             Nền tảng mua sắm{' '}
             <span className="relative inline-block">
@@ -58,6 +52,10 @@ const Banner = () => {
                   WebkitBackgroundClip: 'text',
                   WebkitTextFillColor: 'transparent',
                   backgroundClip: 'text',
+                  textShadow: textEmbossShadow,
+                  filter: theme === 'dark' 
+                    ? 'drop-shadow(2px 2px 2px rgba(0, 0, 0, 0.3))'
+                    : 'drop-shadow(1px 1px 2px rgba(244, 168, 0, 0.2))',
                 }}
               >
                 vật liệu xây dựng
@@ -103,7 +101,7 @@ const Banner = () => {
               <Button
                 size="lg"
                 variant="outline"
-                className="cursor-pointer font-bold px-8 py-7 text-lg rounded-2xl bg-card border-2 border-border hover:border-accent-primary hover:bg-accent-primary/10 transition-all duration-300 shadow-xl"
+                className="cursor-pointer font-bold px-8 py-7 text-lg rounded-2xl bg-card border-0 hover:border-accent-primary hover:bg-accent-primary/10 transition-all duration-300 shadow-xl"
               >
                 <Sparkles className="h-6 w-6 mr-2 text-accent-primary" />
                 Xem demo AI
@@ -130,11 +128,20 @@ const Banner = () => {
                 transition={{ duration: 0.4, delay: 0.9 + index * 0.1 }}
                 whileHover={{ y: -2 }}
               >
-                <div className="flex items-center gap-3 px-6 py-4 rounded-2xl bg-card border border-border shadow-lg hover:shadow-xl hover:border-accent-primary transition-all duration-300">
+                <div
+                  className={`flex items-center gap-3 px-6 py-4 rounded-full transition-all duration-300 ${
+                    theme === 'dark' ? 'bg-card' : 'bg-white'
+                  }`}
+                  style={{
+                    boxShadow: trustBadgeNeumorphismShadow,
+                  }}
+                >
                   <div className="p-2 rounded-xl bg-accent-primary">
                     <item.icon className="h-5 w-5 text-white" />
                   </div>
-                  <span className="font-bold text-foreground">{item.text}</span>
+                  <span className={`font-bold ${theme === 'dark' ? 'text-foreground' : 'text-gray-900'}`}>
+                    {item.text}
+                  </span>
                 </div>
               </motion.div>
             ))}

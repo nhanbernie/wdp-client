@@ -23,7 +23,7 @@ export const COLOR_PALETTE = {
   // Neutral colors - Support bright accents
   neutralLight: "#F2F2F2", // Light surface/text
   neutralMedium: "#909090", // Medium gray for secondary text
-  neutralDark: "#000000", // Dark text/borders
+  neutralDark: "#00000", // Dark text/borders
   neutralBackgroundDark: "#161616", // Dark background
   
   // Accent colors - Bright highlights for key interactions

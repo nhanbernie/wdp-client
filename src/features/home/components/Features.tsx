@@ -3,6 +3,9 @@
 import { motion } from 'framer-motion'
 import { ClipboardCheck, Truck, HandCoins, Headphones, Award } from 'lucide-react'
 import { JSX } from 'react'
+import { useTheme } from '@/contexts/ThemeContext'
+import { getTextEmbossShadow } from '@/common/constants/neumorphism'
+import { SectionBadge } from '@/components/common'
 
 type FeatureItem = {
   icon: JSX.Element
@@ -10,6 +13,8 @@ type FeatureItem = {
 }
 
 const Features = () => {
+  const { theme } = useTheme()
+  const textEmbossShadow = getTextEmbossShadow(theme)
   const featureList: FeatureItem[] = [
     {
       icon: <ClipboardCheck className="w-8 h-8 text-white" />,
@@ -29,21 +34,6 @@ const Features = () => {
     },
   ]
 
-  // Animation variants
-  const itemVariants: Record<string, any> = {
-    hidden: { opacity: 0, y: 30, scale: 0.95 },
-    visible: (i: number) => ({
-      opacity: 1,
-      y: 0,
-      scale: 1,
-      transition: {
-        delay: i * 0.15,
-        duration: 0.5,
-        type: 'spring',
-        stiffness: 100,
-      },
-    }),
-  }
 
   return (
     <div className="py-16 sm:py-24 px-4 sm:px-6 lg:px-8 relative overflow-visible">
@@ -54,26 +44,18 @@ const Features = () => {
 
       <div className="max-w-7xl mx-auto w-full">
         {/* Section header */}
-        <div className="text-center mb-16">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-accent-primary/10 border border-accent-primary/30 shadow-lg mb-6"
-          >
-            <Award className="h-5 w-5 text-accent-primary" />
-            <span className="text-sm font-bold text-accent-primary">
-              Cam kết dịch vụ
-            </span>
-          </motion.div>
+        <div className="text-center mb-16 relative">
+          <SectionBadge icon={Award} text="Cam kết dịch vụ" className="mb-6" />
 
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
             viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.2 }}
             className="text-3xl sm:text-4xl md:text-5xl font-black mb-4 text-foreground"
+            style={{
+              textShadow: textEmbossShadow,
+            }}
           >
             CAM KẾT DỊCH VỤ CỦA CHÚNG TÔI
           </motion.h2>
@@ -84,11 +66,15 @@ const Features = () => {
           {featureList.map((item, index) => (
             <motion.div
               key={index}
-              custom={index}
-              variants={itemVariants}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, amount: 0.3 }}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{
+                duration: 0.5,
+                delay: index * 0.1,
+                type: 'spring',
+                stiffness: 100,
+              }}
               whileHover={{ y: -8, scale: 1.02 }}
               className="group relative w-full"
             >
@@ -101,7 +87,12 @@ const Features = () => {
                 </div>
 
                 {/* Title */}
-                <p className="font-black text-center text-base sm:text-lg text-foreground leading-tight min-h-[48px] flex items-center justify-center">
+                <p 
+                  className="font-black text-center text-base sm:text-lg text-foreground leading-tight min-h-[48px] flex items-center justify-center"
+                  style={{
+                    textShadow: textEmbossShadow,
+                  }}
+                >
                   {item.title}
                 </p>
 
