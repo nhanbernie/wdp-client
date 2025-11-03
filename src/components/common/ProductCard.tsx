@@ -25,14 +25,14 @@ const ProductCard = ({ data }: Props) => {
       whileHover={{ y: -8 }}
       onHoverStart={() => setIsHovered(true)}
       onHoverEnd={() => setIsHovered(false)}
-      className="min-h-[420px] h-full w-full cursor-pointer rounded-3xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-300 group relative flex flex-col"
+      className="w-full h-full min-h-[420px] cursor-pointer rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-300 group relative flex flex-col"
       style={{
         backgroundColor: colors.cardBackground,
       }}
       onClick={() => router.push(`/products/${data.id}`)}
     >
       {/* Image Container */}
-      <div className="flex-shrink-0 h-[252px] relative overflow-hidden rounded-t-3xl" style={{ backgroundColor: colors.cardBackgroundSecondary }}>
+      <div className="flex-shrink-0 h-[252px] relative overflow-hidden rounded-t-2xl" style={{ backgroundColor: colors.cardBackgroundSecondary }}>
         {/* Discount Badge */}
         {data.salePrice && (
           <div
@@ -99,7 +99,7 @@ const ProductCard = ({ data }: Props) => {
 
       {/* Content Container */}
       <div className="flex-1 min-h-0 p-5 flex flex-col justify-between rounded-b-3xl" style={{ backgroundColor: colors.cardBackground }}>
-        <div className="space-y-2.5">
+        <div className="space-y-2.5 flex-shrink-0">
           {/* Brand Badge */}
           <div
             className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold"
@@ -134,8 +134,8 @@ const ProductCard = ({ data }: Props) => {
         </div>
 
         {/* Price Container */}
-        <div className="flex items-end justify-between pt-3 mt-auto">
-          <div className="flex flex-col gap-0.5">
+        <div className="flex items-end justify-between pt-3 mt-auto flex-shrink-0">
+          <div className="flex flex-col gap-0.5 min-w-0 flex-1">
             {data.salePrice ? (
               <>
                 <span className="text-xs line-through font-medium" style={{ color: colors.textSecondary }}>

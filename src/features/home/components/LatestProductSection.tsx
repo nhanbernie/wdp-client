@@ -57,11 +57,12 @@ const LatestProductSection = () => {
               1280: { slidesPerView: 4 },
             }}
             loop
+            style={{ height: 'auto' }}
           >
             {!loading &&
               products.map((product) => (
-                <SwiperSlide key={product.id} className="!h-auto !flex">
-                  <div className="py-4 px-2 w-full h-full flex">
+                <SwiperSlide key={product.id} style={{ height: 'auto', display: 'flex' }}>
+                  <div className="w-full py-4 px-2 flex" style={{ minHeight: '440px' }}>
                     <ProductCard data={product} />
                   </div>
                 </SwiperSlide>
