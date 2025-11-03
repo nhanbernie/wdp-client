@@ -12,6 +12,7 @@ import {
 } from '@/components/ui/dialog'
 import { QuoteRequestForm } from './QuoteRequestForm'
 import { FileText } from 'lucide-react'
+import { useTheme } from '@/contexts/ThemeContext'
 
 interface Props {
   productId: string
@@ -19,6 +20,7 @@ interface Props {
 
 export const RequestQuoteButton: React.FC<Props> = ({ productId }) => {
   const [open, setOpen] = useState(false)
+  const { colors } = useTheme()
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -26,9 +28,24 @@ export const RequestQuoteButton: React.FC<Props> = ({ productId }) => {
         <Button
           variant="outline"
           size="lg"
-          className="w-full rounded-2xl h-14 text-base font-bold border-2 hover:bg-slate-50 hover:border-indigo-300 transition-all duration-300 hover:scale-[1.02] hover:shadow-lg"
+          className="w-full rounded-lg h-11 text-sm font-bold shadow-sm transition-all duration-200 hover:shadow-md"
+          style={{
+            backgroundColor: colors.cardBackground,
+            borderColor: colors.border,
+            color: colors.textSecondary,
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.backgroundColor = colors.hoverBackground
+            e.currentTarget.style.borderColor = colors.textSecondary
+            e.currentTarget.style.color = colors.text
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.backgroundColor = colors.cardBackground
+            e.currentTarget.style.borderColor = colors.border
+            e.currentTarget.style.color = colors.textSecondary
+          }}
         >
-          <FileText className="h-5 w-5 mr-2" />
+          <FileText className="h-4 w-4 mr-2" />
           Yêu cầu báo giá
         </Button>
       </DialogTrigger>

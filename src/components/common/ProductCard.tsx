@@ -32,7 +32,7 @@ const ProductCard = ({ data }: Props) => {
       onClick={() => router.push(`/products/${data.id}`)}
     >
       {/* Image Container */}
-      <div className="flex-shrink-0 h-[252px] relative overflow-hidden rounded-t-2xl" style={{ backgroundColor: colors.cardBackgroundSecondary }}>
+      <div className="flex-shrink-0 h-[252px] relative overflow-hidden rounded-t-2xl"   >
         {/* Discount Badge */}
         {data.salePrice && (
           <div
