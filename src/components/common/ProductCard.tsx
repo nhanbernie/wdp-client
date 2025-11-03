@@ -7,6 +7,7 @@ import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
 import { ShoppingCart, Eye, Heart, Zap } from 'lucide-react'
 import { useState } from 'react'
+import { useTheme } from '@/contexts/ThemeContext'
 
 type Props = {
   data: ProductDto
@@ -15,6 +16,7 @@ type Props = {
 const ProductCard = ({ data }: Props) => {
   const router = useRouter()
   const [isHovered, setIsHovered] = useState(false)
+  const { colors } = useTheme()
 
   return (
     <motion.div
@@ -23,45 +25,63 @@ const ProductCard = ({ data }: Props) => {
       whileHover={{ y: -8 }}
       onHoverStart={() => setIsHovered(true)}
       onHoverEnd={() => setIsHovered(false)}
-      className="h-[420px] cursor-pointer bg-white/90 backdrop-blur-sm rounded-2xl overflow-hidden border-2 border-purple-200/50 shadow-xl hover:shadow-2xl transition-all duration-300 group hover:border-purple-400 relative"
+      className="min-h-[420px] h-full w-full cursor-pointer rounded-3xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-300 group relative flex flex-col"
+      style={{
+        backgroundColor: colors.cardBackground,
+      }}
       onClick={() => router.push(`/products/${data.id}`)}
     >
       {/* Image Container */}
-      <div className="h-3/5 relative overflow-hidden bg-gradient-to-br from-purple-100 to-blue-100">
+      <div className="flex-shrink-0 h-[252px] relative overflow-hidden rounded-t-3xl" style={{ backgroundColor: colors.cardBackgroundSecondary }}>
         {/* Discount Badge */}
         {data.salePrice && (
-          <motion.div
-            initial={{ scale: 0, rotate: -180 }}
-            animate={{ scale: 1, rotate: 0 }}
-            className="absolute z-20 top-3 left-3 bg-gradient-to-br from-red-500 to-pink-600 rounded-full px-3 py-1.5 text-white shadow-lg"
+          <div
+            className="absolute z-20 top-4 left-4 rounded-full px-3 py-1.5 text-white shadow-lg"
+            style={{ backgroundColor: colors.error }}
           >
             <div className="flex items-center gap-1">
-              <Zap className="h-4 w-4" fill="currentColor" />
-              <p className="text-sm font-black">
+              <Zap className="h-3.5 w-3.5" fill="currentColor" />
+              <p className="text-xs font-bold">
                 -{calculateDiscountPercentage(data.price, data.salePrice)}%
               </p>
             </div>
-          </motion.div>
+          </div>
         )}
 
         {/* Quick Action Buttons */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: isHovered ? 1 : 0, y: isHovered ? 0 : 20 }}
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: isHovered ? 1 : 0, y: isHovered ? 0 : 10 }}
           transition={{ duration: 0.2 }}
-          className="absolute z-20 top-3 right-3 flex flex-col gap-2"
+          className="absolute z-20 top-4 right-4 flex flex-col gap-2"
         >
           <motion.button
             whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
-            className="p-2 bg-white/90 backdrop-blur-sm rounded-full shadow-lg hover:bg-gradient-to-br hover:from-blue-500 hover:to-purple-600 hover:text-white transition-all duration-200"
+            whileTap={{ scale: 0.95 }}
+            onClick={(e) => {
+              e.stopPropagation()
+              // Handle wishlist
+            }}
+            className="p-2 rounded-full shadow-lg transition-all duration-200 hover:bg-accent-primary hover:text-white"
+            style={{
+              backgroundColor: colors.cardBackground,
+              color: colors.text,
+            }}
           >
             <Heart className="h-4 w-4" />
           </motion.button>
           <motion.button
             whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
-            className="p-2 bg-white/90 backdrop-blur-sm rounded-full shadow-lg hover:bg-gradient-to-br hover:from-blue-500 hover:to-purple-600 hover:text-white transition-all duration-200"
+            whileTap={{ scale: 0.95 }}
+            onClick={(e) => {
+              e.stopPropagation()
+              // Handle quick view
+            }}
+            className="p-2 rounded-full shadow-lg transition-all duration-200 hover:bg-accent-primary hover:text-white"
+            style={{
+              backgroundColor: colors.cardBackground,
+              color: colors.text,
+            }}
           >
             <Eye className="h-4 w-4" />
           </motion.button>
@@ -75,36 +95,38 @@ const ProductCard = ({ data }: Props) => {
           className="object-cover group-hover:scale-110 transition-transform duration-500"
           sizes="(max-width: 768px) 100vw, 300px"
         />
-
-        {/* Overlay on hover */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: isHovered ? 0.1 : 0 }}
-          className="absolute inset-0 bg-gradient-to-t from-black to-transparent"
-        />
       </div>
 
       {/* Content Container */}
-      <div className="h-2/5 p-4 flex flex-col justify-between bg-gradient-to-br from-white to-purple-50/30">
-        <div className="space-y-2">
+      <div className="flex-1 min-h-0 p-5 flex flex-col justify-between rounded-b-3xl" style={{ backgroundColor: colors.cardBackground }}>
+        <div className="space-y-2.5">
           {/* Brand Badge */}
-          <Badge
-            variant="outline"
-            className="bg-gradient-to-r from-blue-100 to-purple-100 border-purple-300 text-purple-700 font-bold text-xs"
+          <div
+            className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold"
+            style={{
+              backgroundColor: `${colors.accent}15`,
+              color: colors.accent,
+            }}
           >
-            ✨ {data.brand}
-          </Badge>
+            {data.brand}
+          </div>
 
           {/* Product Name */}
-          <h1 className="font-bold text-base line-clamp-2 text-gray-800 group-hover:bg-gradient-to-r group-hover:from-blue-600 group-hover:to-purple-600 group-hover:bg-clip-text group-hover:text-transparent transition-all duration-200">
+          <h2
+            className="font-semibold text-base line-clamp-2 transition-colors duration-200 group-hover:text-accent-primary"
+            style={{ color: colors.text }}
+          >
             {data.name}
-          </h1>
+          </h2>
 
           {/* Stock Info */}
           {data.stock?.quantity > 0 && (
-            <div className="flex items-center gap-1 text-xs">
-              <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
-              <p className="text-green-600 font-semibold">
+            <div className="flex items-center gap-1.5 text-xs">
+              <div
+                className="w-1.5 h-1.5 rounded-full"
+                style={{ backgroundColor: colors.success }}
+              />
+              <p className="font-medium" style={{ color: colors.textSecondary }}>
                 Còn {data.stock.quantity} {data.stock.unit}
               </p>
             </div>
@@ -112,19 +134,19 @@ const ProductCard = ({ data }: Props) => {
         </div>
 
         {/* Price Container */}
-        <div className="flex items-end justify-between pt-2 border-t-2 border-purple-200/50">
-          <div className="flex flex-col gap-1">
+        <div className="flex items-end justify-between pt-3 mt-auto">
+          <div className="flex flex-col gap-0.5">
             {data.salePrice ? (
               <>
-                <span className="text-xs text-gray-400 line-through font-medium">
+                <span className="text-xs line-through font-medium" style={{ color: colors.textSecondary }}>
                   {formatCurrency(data.price, data.currency)}
                 </span>
-                <span className="text-lg font-black bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
+                <span className="text-xl font-bold" style={{ color: colors.accent }}>
                   {formatCurrency(data.salePrice, data.currency)}
                 </span>
               </>
             ) : (
-              <span className="text-lg font-black bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+              <span className="text-xl font-bold" style={{ color: colors.accent }}>
                 {formatCurrency(data.price, data.currency)}
               </span>
             )}
@@ -132,9 +154,14 @@ const ProductCard = ({ data }: Props) => {
 
           {/* Add to Cart Button */}
           <motion.button
-            whileHover={{ scale: 1.05 }}
+            whileHover={{ scale: 1.05, backgroundColor: colors.accentSecondary }}
             whileTap={{ scale: 0.95 }}
-            className="p-2.5 bg-gradient-to-br from-blue-500 to-purple-600 text-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-200"
+            onClick={(e) => {
+              e.stopPropagation()
+              // Handle add to cart
+            }}
+            className="p-2.5 text-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-200"
+            style={{ backgroundColor: colors.accent }}
           >
             <ShoppingCart className="h-5 w-5" />
           </motion.button>

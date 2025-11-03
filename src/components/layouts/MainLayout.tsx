@@ -16,7 +16,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, footer = true }) => {
   return (
     <div
       className="min-h-screen flex flex-col"
-      style={{ background: colors.backgroundGradient }}
+      // style={{ background: colors.backgroundGradient }}
     >
       <Header />
       <main className="flex-1 pt-[var(--header-height)]">{children}</main>
