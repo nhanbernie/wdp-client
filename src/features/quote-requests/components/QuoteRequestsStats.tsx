@@ -2,27 +2,26 @@
 
 import React from 'react'
 import { useGetMyQuoteRequestsQuery } from '@/services/quote-requests'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
-import { 
-  MessageSquareQuote, 
-  Clock, 
-  CheckCircle, 
-  XCircle, 
+import { Card, CardContent } from '@/components/ui/card'
+import {
+  MessageSquareQuote,
+  Clock,
+  CheckCircle,
   DollarSign,
-  TrendingUp 
 } from 'lucide-react'
+import { useTheme } from '@/contexts/ThemeContext'
 
 export const QuoteRequestsStats: React.FC = () => {
   const { data } = useGetMyQuoteRequestsQuery()
   const quotes = data?.data || []
+  const { colors } = useTheme()
 
   const stats = {
     total: quotes.length,
-    pending: quotes.filter(q => q.status === 'pending').length,
-    quoted: quotes.filter(q => q.status === 'quoted').length,
-    accepted: quotes.filter(q => q.status === 'accepted').length,
-    rejected: quotes.filter(q => q.status === 'rejected').length,
+    pending: quotes.filter((q) => q.status === 'pending').length,
+    quoted: quotes.filter((q) => q.status === 'quoted').length,
+    accepted: quotes.filter((q) => q.status === 'accepted').length,
+    rejected: quotes.filter((q) => q.status === 'rejected').length,
   }
 
   const statsCards = [
@@ -30,29 +29,29 @@ export const QuoteRequestsStats: React.FC = () => {
       title: 'Tổng số yêu cầu',
       value: stats.total,
       icon: MessageSquareQuote,
-      color: 'text-blue-600',
-      bgColor: 'bg-blue-50',
+      iconColor: colors.accent,
+      iconBg: `${colors.accent}15`,
     },
     {
       title: 'Chờ phản hồi',
       value: stats.pending,
       icon: Clock,
-      color: 'text-yellow-600',
-      bgColor: 'bg-yellow-50',
+      iconColor: colors.accent,
+      iconBg: `${colors.accent}15`,
     },
     {
       title: 'Đã báo giá',
       value: stats.quoted,
       icon: DollarSign,
-      color: 'text-purple-600',
-      bgColor: 'bg-purple-50',
+      iconColor: colors.accent,
+      iconBg: `${colors.accent}15`,
     },
     {
       title: 'Đã chấp nhận',
       value: stats.accepted,
       icon: CheckCircle,
-      color: 'text-green-600',
-      bgColor: 'bg-green-50',
+      iconColor: colors.success,
+      iconBg: `${colors.success}15`,
     },
   ]
 
@@ -61,15 +60,36 @@ export const QuoteRequestsStats: React.FC = () => {
       {statsCards.map((stat, index) => {
         const Icon = stat.icon
         return (
-          <Card key={index}>
-            <CardContent className="pt-6">
+          <Card
+            key={index}
+            style={{
+              backgroundColor: colors.cardBackground,
+              borderColor: colors.border,
+            }}
+          >
+            <CardContent className="pt-6" style={{ backgroundColor: colors.cardBackground }}>
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-600 mb-1">{stat.title}</p>
-                  <p className="text-3xl font-bold text-gray-900">{stat.value}</p>
+                  <p
+                    className="text-sm mb-1"
+                    style={{ color: colors.textSecondary }}
+                  >
+                    {stat.title}
+                  </p>
+                  <p
+                    className="text-3xl font-bold"
+                    style={{ color: colors.text }}
+                  >
+                    {stat.value}
+                  </p>
                 </div>
-                <div className={`p-3 rounded-lg ${stat.bgColor}`}>
-                  <Icon className={`w-6 h-6 ${stat.color}`} />
+                <div
+                  className="p-3 rounded-lg"
+                  style={{
+                    backgroundColor: stat.iconBg,
+                  }}
+                >
+                  <Icon className="w-6 h-6" style={{ color: stat.iconColor }} />
                 </div>
               </div>
             </CardContent>

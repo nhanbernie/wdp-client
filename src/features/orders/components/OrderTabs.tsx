@@ -3,6 +3,8 @@
 import { TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { ClipboardList, Clock, Package, Truck, CheckCircle, XCircle } from 'lucide-react'
 import { OrderStatus } from '@/services/orders/types'
+import { useTheme } from '@/contexts/ThemeContext'
+import { useEffect } from 'react'
 
 interface OrderTabsProps {
   activeTab: string
@@ -18,11 +20,73 @@ interface OrderTabsProps {
 }
 
 export function OrderTabs({ activeTab, onTabChange, counts }: OrderTabsProps) {
+  const { colors } = useTheme()
+
+  useEffect(() => {
+    const styleId = 'order-tabs-theme-styles'
+    let style = document.getElementById(styleId) as HTMLStyleElement
+
+    if (!style) {
+      style = document.createElement('style')
+      style.id = styleId
+      document.head.appendChild(style)
+    }
+
+    style.textContent = `
+      [data-order-tabs-list] {
+        background: ${colors.cardBackgroundSecondary} !important;
+        border-color: ${colors.border} !important;
+      }
+      
+      [data-order-tabs-list] button[data-state="active"] {
+        background: ${colors.accent} !important;
+        background-image: none !important;
+        background-color: ${colors.accent} !important;
+        color: white !important;
+        box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1) !important;
+      }
+      
+      [data-order-tabs-list] button[data-state="inactive"] {
+        background: transparent !important;
+        background-image: none !important;
+        background-color: transparent !important;
+        color: ${colors.textSecondary} !important;
+      }
+      
+      [data-order-tabs-list] button[data-state="inactive"]:hover {
+        background: ${colors.hoverBackground} !important;
+        background-image: none !important;
+        background-color: ${colors.hoverBackground} !important;
+      }
+      
+      [data-order-tabs-list] button[data-state="inactive"] svg {
+        color: ${colors.textSecondary} !important;
+      }
+      [data-order-tabs-list] button[data-state="active"] svg {
+        color: white !important;
+      }
+    `
+
+    return () => {
+      const existingStyle = document.getElementById(styleId)
+      if (existingStyle) {
+        document.head.removeChild(existingStyle)
+      }
+    }
+  }, [colors])
+
   return (
-    <TabsList className="grid grid-cols-2 lg:grid-cols-6 gap-2 bg-slate-100 p-2 rounded-2xl h-auto">
+    <TabsList
+      className="grid grid-cols-2 lg:grid-cols-6 gap-2 p-2 rounded-2xl h-auto border"
+      style={{
+        backgroundColor: colors.cardBackgroundSecondary,
+        borderColor: colors.border,
+      }}
+      data-order-tabs-list
+    >
       <TabsTrigger
         value="all"
-        className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-indigo-600 data-[state=active]:via-purple-600 data-[state=active]:to-pink-600 data-[state=active]:text-white data-[state=active]:shadow-xl h-14 rounded-xl text-base font-bold transition-all"
+        className="h-14 rounded-xl text-base font-bold transition-all"
       >
         <ClipboardList className="h-5 w-5 mr-2" />
         <span className="hidden sm:inline">Tất cả</span>
@@ -31,7 +95,7 @@ export function OrderTabs({ activeTab, onTabChange, counts }: OrderTabsProps) {
 
       <TabsTrigger
         value={OrderStatus.PENDING}
-        className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-amber-500 data-[state=active]:to-orange-500 data-[state=active]:text-white data-[state=active]:shadow-xl h-14 rounded-xl text-base font-bold transition-all"
+        className="h-14 rounded-xl text-base font-bold transition-all"
       >
         <Clock className="h-5 w-5 mr-2" />
         <span className="hidden sm:inline">Chờ</span>
@@ -40,7 +104,7 @@ export function OrderTabs({ activeTab, onTabChange, counts }: OrderTabsProps) {
 
       <TabsTrigger
         value={OrderStatus.PROCESSING}
-        className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-500 data-[state=active]:to-indigo-600 data-[state=active]:text-white data-[state=active]:shadow-xl h-14 rounded-xl text-base font-bold transition-all"
+        className="h-14 rounded-xl text-base font-bold transition-all"
       >
         <Package className="h-5 w-5 mr-2" />
         <span className="hidden sm:inline">Xử lý</span>
@@ -51,7 +115,7 @@ export function OrderTabs({ activeTab, onTabChange, counts }: OrderTabsProps) {
 
       <TabsTrigger
         value={OrderStatus.SHIPPING}
-        className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-indigo-500 data-[state=active]:to-purple-600 data-[state=active]:text-white data-[state=active]:shadow-xl h-14 rounded-xl text-base font-bold transition-all"
+        className="h-14 rounded-xl text-base font-bold transition-all"
       >
         <Truck className="h-5 w-5 mr-2" />
         <span className="hidden sm:inline">Giao</span>
@@ -60,7 +124,7 @@ export function OrderTabs({ activeTab, onTabChange, counts }: OrderTabsProps) {
 
       <TabsTrigger
         value={OrderStatus.DELIVERED}
-        className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-emerald-500 data-[state=active]:to-green-600 data-[state=active]:text-white data-[state=active]:shadow-xl h-14 rounded-xl text-base font-bold transition-all"
+        className="h-14 rounded-xl text-base font-bold transition-all"
       >
         <CheckCircle className="h-5 w-5 mr-2" />
         <span className="hidden sm:inline">Giao</span>
@@ -71,7 +135,7 @@ export function OrderTabs({ activeTab, onTabChange, counts }: OrderTabsProps) {
 
       <TabsTrigger
         value={OrderStatus.CANCELLED}
-        className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-red-500 data-[state=active]:to-rose-600 data-[state=active]:text-white data-[state=active]:shadow-xl h-14 rounded-xl text-base font-bold transition-all"
+        className="h-14 rounded-xl text-base font-bold transition-all"
       >
         <XCircle className="h-5 w-5 mr-2" />
         <span className="hidden sm:inline">Hủy</span>

@@ -5,12 +5,14 @@ import { CheckCircle } from 'lucide-react'
 import { orderSteps } from '../constants/order-status.constant'
 import { statusConfig } from '../constants/order-status.constant'
 import { OrderStatus } from '@/services/orders/types'
+import { useTheme } from '@/contexts/ThemeContext'
 
 interface OrderProgressTrackerProps {
   currentStatus: OrderStatus
 }
 
 export function OrderProgressTracker({ currentStatus }: OrderProgressTrackerProps) {
+  const { colors } = useTheme()
   const currentConfig = statusConfig[currentStatus]
   const currentStep = currentConfig.step
 
@@ -18,9 +20,21 @@ export function OrderProgressTracker({ currentStatus }: OrderProgressTrackerProp
   if (currentStep === 0) return null
 
   return (
-    <div className="mb-8 p-8 bg-white rounded-3xl shadow-xl border-2 border-slate-200">
-      <h3 className="text-2xl font-black mb-6 text-slate-900 flex items-center gap-3">
-        <div className="p-2 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl">
+    <div
+      className="mb-8 p-8 rounded-3xl shadow-xl border-2"
+      style={{
+        backgroundColor: colors.cardBackground,
+        borderColor: colors.border,
+      }}
+    >
+      <h3
+        className="text-2xl font-black mb-6 flex items-center gap-3"
+        style={{ color: colors.text }}
+      >
+        <div
+          className="p-2 rounded-xl"
+          style={{ backgroundColor: colors.accent }}
+        >
           <CheckCircle className="h-6 w-6 text-white" />
         </div>
         Tiến trình đơn hàng
@@ -28,14 +42,18 @@ export function OrderProgressTracker({ currentStatus }: OrderProgressTrackerProp
 
       <div className="relative">
         {/* Progress Line */}
-        <div className="absolute top-8 left-0 w-full h-2 bg-slate-200 rounded-full">
+        <div
+          className="absolute top-8 left-0 w-full h-2 rounded-full"
+          style={{ backgroundColor: colors.cardBackgroundSecondary }}
+        >
           <motion.div
             initial={{ width: 0 }}
             animate={{
               width: `${((currentStep - 1) / (orderSteps.length - 1)) * 100}%`,
             }}
             transition={{ duration: 1, ease: 'easeInOut' }}
-            className={`h-full rounded-full ${currentConfig.progressColor}`}
+            className="h-full rounded-full"
+            style={{ backgroundColor: colors.accent }}
           />
         </div>
 
@@ -57,26 +75,35 @@ export function OrderProgressTracker({ currentStatus }: OrderProgressTrackerProp
               >
                 <motion.div
                   whileHover={{ scale: 1.1 }}
-                  className={`relative mb-4 p-4 rounded-2xl shadow-lg ${
-                    isCompleted ? config.progressColor : 'bg-slate-300'
-                  } ${isCurrent ? 'ring-4 ring-offset-2 ' + config.ringColor : ''}`}
+                  className="relative mb-4 p-4 rounded-2xl shadow-lg"
+                  style={{
+                    backgroundColor: isCompleted ? colors.accent : colors.border,
+                    boxShadow: isCurrent
+                      ? `0 0 0 4px ${colors.background}, 0 0 0 8px ${colors.accent}40`
+                      : undefined,
+                  }}
                 >
                   <StepIcon className="h-6 w-6 text-white" />
                   {isCompleted && (
                     <motion.div
                       initial={{ scale: 0 }}
                       animate={{ scale: 1 }}
-                      className="absolute -top-1 -right-1 p-1 bg-white rounded-full shadow-lg"
+                      className="absolute -top-1 -right-1 p-1 rounded-full shadow-lg"
+                      style={{ backgroundColor: colors.cardBackground }}
                     >
-                      <CheckCircle className="h-4 w-4 text-emerald-600" />
+                      <CheckCircle
+                        className="h-4 w-4"
+                        style={{ color: colors.success }}
+                      />
                     </motion.div>
                   )}
                 </motion.div>
 
                 <p
-                  className={`text-sm font-bold text-center ${
-                    isCompleted ? 'text-slate-900' : 'text-slate-400'
-                  }`}
+                  className="text-sm font-bold text-center"
+                  style={{
+                    color: isCompleted ? colors.text : colors.textSecondary,
+                  }}
                 >
                   {step.name}
                 </p>

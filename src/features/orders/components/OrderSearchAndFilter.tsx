@@ -9,8 +9,19 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { Search, Calendar } from 'lucide-react'
+import {
+  Search,
+  Calendar,
+  ClipboardList,
+  Clock,
+  Package,
+  Truck,
+  CheckCircle,
+  XCircle,
+} from 'lucide-react'
 import { OrderStatus } from '@/services/orders/types'
+import { useTheme } from '@/contexts/ThemeContext'
+import { useEffect } from 'react'
 
 interface OrderSearchAndFilterProps {
   searchTerm: string
@@ -29,64 +40,159 @@ export function OrderSearchAndFilter({
   dateSort,
   onDateSortChange,
 }: OrderSearchAndFilterProps) {
+  const { colors } = useTheme()
+
+  useEffect(() => {
+    const styleId = 'order-select-theme-styles'
+    let style = document.getElementById(styleId) as HTMLStyleElement
+
+    if (!style) {
+      style = document.createElement('style')
+      style.id = styleId
+      document.head.appendChild(style)
+    }
+
+    style.textContent = `
+      [data-slot="select-content"] {
+        background-color: ${colors.cardBackground} !important;
+        border-color: ${colors.border} !important;
+        color: ${colors.text} !important;
+      }
+      
+      [data-slot="select-item"] {
+        color: ${colors.text} !important;
+      }
+      
+      [data-slot="select-item"]:hover,
+      [data-slot="select-item"][data-highlighted] {
+        background-color: ${colors.hoverBackground} !important;
+        color: ${colors.text} !important;
+      }
+      
+      [data-slot="select-item"][data-state="checked"] {
+        background-color: ${colors.accent}15 !important;
+      }
+    `
+
+    return () => {
+      const existingStyle = document.getElementById(styleId)
+      if (existingStyle) {
+        document.head.removeChild(existingStyle)
+      }
+    }
+  }, [colors])
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay: 0.2 }}
-      className="mb-8 p-6 bg-white rounded-2xl shadow-xl border-2 border-slate-200"
+      className="mb-8 p-6 rounded-2xl shadow-xl"
+      style={{
+        backgroundColor: colors.cardBackground,
+        borderColor: colors.border,
+      }}
     >
       <div className="flex flex-col lg:flex-row gap-4">
         {/* Search Input */}
         <div className="flex-1 relative">
-          <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-slate-400" />
+          <Search
+            className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5"
+            style={{ color: colors.textSecondary }}
+          />
           <Input
             placeholder="Tìm kiếm đơn hàng (mã đơn, sản phẩm)..."
             value={searchTerm}
             onChange={(e) => onSearchChange(e.target.value)}
-            className="pl-12 h-14 text-base rounded-2xl border-2 border-slate-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition-all"
+            className="pl-12 h-14 text-base rounded-2xl border-2 transition-all"
+            style={{
+              borderColor: colors.border,
+            }}
+            onFocus={(e) => {
+              e.currentTarget.style.borderColor = colors.accent
+            }}
+            onBlur={(e) => {
+              e.currentTarget.style.borderColor = colors.border
+            }}
           />
         </div>
 
         {/* Status Filter */}
         <Select value={statusFilter} onValueChange={onStatusFilterChange}>
-          <SelectTrigger className="lg:w-[220px] h-14 rounded-2xl border-2 border-slate-200 text-base font-medium">
+          <SelectTrigger
+            className="lg:w-[220px] h-14 rounded-2xl border-2 text-base font-medium"
+            style={{
+              borderColor: colors.border,
+              backgroundColor: colors.cardBackground,
+              color: colors.text,
+            }}
+          >
             <SelectValue placeholder="Lọc theo trạng thái" />
           </SelectTrigger>
-          <SelectContent className="rounded-xl">
+          <SelectContent
+            className="rounded-xl"
+            style={{
+              backgroundColor: colors.cardBackground,
+              borderColor: colors.border,
+            }}
+          >
             <SelectItem value="all" className="text-base">
-              📋 Tất cả trạng thái
+              <ClipboardList className="h-4 w-4 mr-2" style={{ color: colors.textSecondary }} />
+              Tất cả trạng thái
             </SelectItem>
             <SelectItem value={OrderStatus.PENDING} className="text-base">
-              ⏳ Chờ xử lý
+              <Clock className="h-4 w-4 mr-2" style={{ color: colors.textSecondary }} />
+              Chờ xử lý
             </SelectItem>
             <SelectItem value={OrderStatus.PROCESSING} className="text-base">
-              📦 Đang xử lý
+              <Package className="h-4 w-4 mr-2" style={{ color: colors.textSecondary }} />
+              Đang xử lý
             </SelectItem>
             <SelectItem value={OrderStatus.SHIPPING} className="text-base">
-              🚚 Đang giao
+              <Truck className="h-4 w-4 mr-2" style={{ color: colors.textSecondary }} />
+              Đang giao
             </SelectItem>
             <SelectItem value={OrderStatus.DELIVERED} className="text-base">
-              ✅ Đã giao
+              <CheckCircle className="h-4 w-4 mr-2" style={{ color: colors.success }} />
+              Đã giao
             </SelectItem>
             <SelectItem value={OrderStatus.CANCELLED} className="text-base">
-              ❌ Đã hủy
+              <XCircle className="h-4 w-4 mr-2" style={{ color: colors.error }} />
+              Đã hủy
             </SelectItem>
           </SelectContent>
         </Select>
 
         {/* Date Sort */}
         <Select value={dateSort} onValueChange={onDateSortChange}>
-          <SelectTrigger className="lg:w-[200px] h-14 rounded-2xl border-2 border-slate-200 text-base font-medium">
-            <Calendar className="h-5 w-5 mr-2" />
+          <SelectTrigger
+            className="lg:w-[200px] h-14 rounded-2xl border-2 text-base font-medium"
+            style={{
+              borderColor: colors.border,
+              backgroundColor: colors.cardBackground,
+              color: colors.text,
+            }}
+          >
+            {/* <Calendar
+              className="h-5 w-5 mr-2"
+              style={{ color: colors.textSecondary }}
+            /> */}
             <SelectValue placeholder="Sắp xếp" />
           </SelectTrigger>
-          <SelectContent className="rounded-xl">
+          <SelectContent
+            className="rounded-xl"
+            style={{
+              backgroundColor: colors.cardBackground,
+              borderColor: colors.border,
+            }}
+          >
             <SelectItem value="newest" className="text-base">
-              📅 Mới nhất
+              <Calendar className="h-4 w-4 mr-2" style={{ color: colors.textSecondary }} />
+              Mới nhất
             </SelectItem>
             <SelectItem value="oldest" className="text-base">
-              📆 Cũ nhất
+              <Calendar className="h-4 w-4 mr-2" style={{ color: colors.textSecondary }} />
+              Cũ nhất
             </SelectItem>
           </SelectContent>
         </Select>
