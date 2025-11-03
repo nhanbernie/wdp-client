@@ -1,9 +1,12 @@
 'use client'
 
 import React, { useState, useMemo } from 'react'
-import { Menu, Sparkles } from 'lucide-react'
+import { Search, ShoppingCart, Menu, MessageCircle, Bell } from 'lucide-react'
+import Link from 'next/link'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Badge } from '@/components/ui/badge'
 import UserMenu from './components/UserMenu'
-import MobileMenu from './components/MobileMenu'
 import Logo from '../common/Logo'
 import {
   navigationItems,
@@ -11,35 +14,19 @@ import {
   adminNavigationItems,
   vendorNavigationItems,
 } from '@/common/constants/navigate.constant'
-import SearchBar from './components/SearchBar'
-import NavigateButtons from './components/NavigateButtons'
-import NotificationBadge from './components/NotificationBadge'
-import CartBadge from './components/CartBadge'
-import Link from 'next/link'
 import { useAuth } from '@/contexts/AuthContext'
-import { motion } from 'framer-motion'
+import { useCartApi   } from '@/features/cart/hooks'
 
-// Main Header component
 const Header = () => {
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const { isAuthenticated, user } = useAuth()
+  const { cartCount } = useCartApi()
 
-  const handleMobileMenuToggle = () => {
-    setIsMobileMenuOpen(!isMobileMenuOpen)
-  }
-
-  const handleMobileMenuClose = () => {
-    setIsMobileMenuOpen(false)
-  }
-
-  const { isAuthenticated, isLoading, user } = useAuth()
-
-  // Determine navigation items based on user role
   const currentNavigationItems = useMemo(() => {
     if (!isAuthenticated || !user) {
       return navigationItems
     }
 
-    // Check user role and return appropriate navigation
     if (user.roles.includes('admin')) {
       return adminNavigationItems
     } else if (user.roles.includes('vendor')) {
@@ -49,112 +36,133 @@ const Header = () => {
     }
   }, [isAuthenticated, user])
 
+  const notificationCount = 0
+
   return (
-    <>
-      <motion.div
-        initial={{ y: -100 }}
-        animate={{ y: 0 }}
-        transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-        className="w-full h-[var(--header-height)] z-50 fixed backdrop-blur-xl bg-white/80 border-b-2 border-slate-200 shadow-2xl md:px-36 flex items-center justify-between"
-      >
-        {/* Gradient overlay for premium look */}
-        <div className="absolute inset-0 bg-gradient-to-r from-indigo-50/30 via-purple-50/30 to-pink-50/30 pointer-events-none" />
+    <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <div className="container mx-auto px-4">
+        <div className="flex h-16 items-center justify-between">
+          <Link href="/" className="flex items-center space-x-2">
+            <Logo showText={true} imageSize={32} />
+          </Link>
 
-        <div className="relative flex items-center w-1/2 gap-6">
-          {/* Logo section */}
-          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="relative">
-            <Link href="/">
-              <div className="relative">
-                <Logo showText={true} />
-                {/* Sparkle effect */}
-                {isAuthenticated && (
-                  <motion.div
-                    animate={{
-                      rotate: [0, 360],
-                      scale: [1, 1.2, 1],
-                    }}
-                    transition={{
-                      duration: 3,
-                      repeat: Infinity,
-                      ease: 'easeInOut',
-                    }}
-                    className="absolute -top-2 -right-2"
-                  >
-                    <Sparkles className="w-4 h-4 text-purple-500" />
-                  </motion.div>
-                )}
-              </div>
-            </Link>
-          </motion.div>
+          <div className="hidden md:flex flex-1 max-w-md mx-8">
+            <div className="relative w-full">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+              <Input
+                placeholder="Tìm kiếm vật liệu xây dựng..."
+                className="pl-10 bg-muted/50"
+              />
+            </div>
+          </div>
 
-          {/* Search section - only show when authenticated */}
           {isAuthenticated && (
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.2 }}
-              className="w-full hidden md:block"
-            >
-              <SearchBar />
-            </motion.div>
-          )}
-        </div>
-
-        <div className="relative w-1/2 flex items-center justify-end gap-6">
-          {/* Navigate Button - show for all authenticated users */}
-          {isAuthenticated && (
-            <motion.div
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 }}
-              className="hidden xl:flex"
-            >
-              <NavigateButtons navigationItems={currentNavigationItems} />
-            </motion.div>
+            <nav className="hidden md:flex items-center space-x-6">
+              {currentNavigationItems.map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={`text-sm font-medium transition-colors ${
+                    item.active
+                      ? 'text-primary'
+                      : 'text-muted-foreground hover:text-primary'
+                  }`}
+                >
+                  {item.label}
+                </Link>
+              ))}
+            </nav>
           )}
 
-          {/* Badges - only show for regular users, not admin */}
-          {isAuthenticated && user && !user.roles.includes('admin') && (
-            <motion.div
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.4, type: 'spring' }}
-              className="flex gap-4"
-            >
-              <NotificationBadge />
-              <CartBadge />
-            </motion.div>
-          )}
+          <div className="flex items-center space-x-4">
+            {isAuthenticated && (
+              <Button variant="ghost" size="sm" className="hidden md:flex" asChild>
+                <Link href="/ai-chat">
+                  <MessageCircle className="h-4 w-4 mr-2" />
+                  AI Hỗ trợ
+                </Link>
+              </Button>
+            )}
 
-          {/* User Menu */}
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.5 }}
-            className="hidden lg:block"
-          >
+            {isAuthenticated && user && !user.roles.includes('admin') && (
+              <Button variant="ghost" size="icon" className="relative" asChild>
+                <Link href="/notifications">
+                  <Bell className="h-4 w-4" />
+                  {notificationCount > 0 && (
+                    <Badge className="absolute -top-1 -right-1 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs">
+                      {notificationCount > 9 ? '9+' : notificationCount}
+                    </Badge>
+                  )}
+                </Link>
+              </Button>
+            )}
+
+            {isAuthenticated && user && !user.roles.includes('admin') && (
+              <Button variant="ghost" size="icon" className="relative" asChild>
+                <Link href="/cart">
+                  <ShoppingCart className="h-4 w-4" />
+                  {cartCount > 0 && (
+                    <Badge className="absolute -top-1 -right-1 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs">
+                      {cartCount > 9 ? '9+' : cartCount}
+                    </Badge>
+                  )}
+                </Link>
+              </Button>
+            )}
+
             <UserMenu />
-          </motion.div>
 
-          {/* Mobile menu button */}
-          <motion.button
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
-            onClick={handleMobileMenuToggle}
-            className="lg:hidden p-3 rounded-xl transition-all duration-300 bg-gradient-to-r from-indigo-500 to-purple-500 text-white shadow-lg hover:shadow-xl hover:from-indigo-600 hover:to-purple-600"
-          >
-            <Menu size={20} />
-          </motion.button>
-
-          {/* Mobile Menu */}
-          <MobileMenu
-            isOpen={isMobileMenuOpen}
-            onClose={handleMobileMenuClose}
-            navigationItems={currentNavigationItems}
-          />
+            <Button
+              variant="ghost"
+              size="icon"
+              className="md:hidden"
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+            >
+              <Menu className="h-4 w-4" />
+            </Button>
+          </div>
         </div>
-      </motion.div>
-    </>
+
+        <div className="md:hidden pb-4">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+            <Input
+              placeholder="Tìm kiếm vật liệu xây dựng..."
+              className="pl-10 bg-muted/50"
+            />
+          </div>
+        </div>
+
+        {isMenuOpen && (
+          <div className="md:hidden border-t border-border py-4">
+            <nav className="flex flex-col space-y-4">
+              {currentNavigationItems.map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={`text-sm font-medium transition-colors ${
+                    item.active
+                      ? 'text-primary'
+                      : 'text-muted-foreground hover:text-primary'
+                  }`}
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  {item.label}
+                </Link>
+              ))}
+              {isAuthenticated && (
+                <Button variant="ghost" size="sm" className="justify-start" asChild>
+                  <Link href="/ai-chat" onClick={() => setIsMenuOpen(false)}>
+                    <MessageCircle className="h-4 w-4 mr-2" />
+                    AI Hỗ trợ
+                  </Link>
+                </Button>
+              )}
+            </nav>
+          </div>
+        )}
+      </div>
+    </header>
   )
 }
 

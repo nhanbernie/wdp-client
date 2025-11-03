@@ -53,6 +53,13 @@ export default {
         ring: 'var(--ring)',
         success: 'var(--success)',
         'primary-accent': 'var(--primary-accent)',
+        // Color Palette - Semantic naming for easy scaling
+        'neutral-light': 'var(--neutral-light)',
+        'neutral-medium': 'var(--neutral-medium)',
+        'neutral-dark': 'var(--neutral-dark)',
+        'neutral-background-dark': 'var(--neutral-background-dark)',
+        'accent-primary': 'var(--accent-primary)',
+        'accent-secondary': 'var(--accent-secondary)',
         // Custom colors for this project
         'header-blur': 'var(--header-blur)',
         'card-background': 'var(--card-background)',

@@ -18,58 +18,75 @@ export interface ThemeColors {
 
 export type Theme = "light" | "dark";
 
+// Color Palette - Semantic naming for easy scaling
+export const COLOR_PALETTE = {
+  // Neutral colors - Support bright accents
+  neutralLight: "#F2F2F2", // Light surface/text
+  neutralMedium: "#909090", // Medium gray for secondary text
+  neutralDark: "#000000", // Dark text/borders
+  neutralBackgroundDark: "#161616", // Dark background
+  
+  // Accent colors - Bright highlights for key interactions
+  accentPrimary: "#F4A800", // Primary accent color
+  accentSecondary: "#F56F10", // Secondary accent color
+} as const;
+
 export const THEME_COLORS: Record<Theme, ThemeColors> = {
   dark: {
-    background: "#060606",
+    background: COLOR_PALETTE.neutralBackgroundDark, // #161616
     backgroundGradient:
-      "linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%)",
-    text: "#ffffff",
-    textSecondary: "#a1a1aa",
-    headerBlur: "#0606061a",
-    hoverBackground: "#ddd",
-    hoverText: "#141414",
+      `linear-gradient(135deg, ${COLOR_PALETTE.neutralDark} 0%, ${COLOR_PALETTE.neutralBackgroundDark} 50%, #1a1a2e 100%)`,
+    text: COLOR_PALETTE.neutralLight, // #F2F2F2
+    textSecondary: COLOR_PALETTE.neutralMedium, // #909090
+    headerBlur: `${COLOR_PALETTE.neutralBackgroundDark}1a`,
+    hoverBackground: "#2a2a2a",
+    hoverText: COLOR_PALETTE.neutralLight,
     cardBackground: "#1a1a1a",
     cardBackgroundSecondary: "#262626",
     border: "#333333",
-    accent: "#8b5cf6",
-    accentSecondary: "#a855f7",
+    accent: COLOR_PALETTE.accentPrimary, // #F4A800
+    accentSecondary: COLOR_PALETTE.accentSecondary, // #F56F10
     success: "#10b981",
-    warning: "#f59e0b",
+    warning: COLOR_PALETTE.accentPrimary,
     error: "#ef4444",
   },
   light: {
-    background: "#ffffff",
+    background: COLOR_PALETTE.neutralLight, // #F2F2F2
     backgroundGradient:
-      "linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #cbd5e1 100%)",
-    text: "#1f2937",
-    textSecondary: "#6b7280",
-    headerBlur: "#ffffff80",
-    hoverBackground: "#f3f4f6",
-    hoverText: "#1f2937",
+      `linear-gradient(135deg, ${COLOR_PALETTE.neutralLight} 0%, #e2e8f0 50%, #f8fafc 100%)`,
+    text: COLOR_PALETTE.neutralDark, // #000000
+    textSecondary: COLOR_PALETTE.neutralMedium, // #909090
+    headerBlur: `${COLOR_PALETTE.neutralLight}80`,
+    hoverBackground: "#e5e5e5",
+    hoverText: COLOR_PALETTE.neutralDark,
     cardBackground: "#ffffff",
     cardBackgroundSecondary: "#f9fafb",
-    border: "#e5e7eb",
-    accent: "#3b82f6",
-    accentSecondary: "#2563eb",
+    border: COLOR_PALETTE.neutralMedium, // #909090
+    accent: COLOR_PALETTE.accentPrimary, // #F4A800
+    accentSecondary: COLOR_PALETTE.accentSecondary, // #F56F10
     success: "#059669",
-    warning: "#d97706",
+    warning: COLOR_PALETTE.accentPrimary,
     error: "#dc2626",
   },
 };
 
-// Brand Colors - Construction Materials Theme
+// Brand Colors - Semantic naming
 export const BRAND_COLORS = {
-  primary: "#d97706", // Orange - construction/safety
-  primaryDark: "#b45309",
-  secondary: "#0369a1", // Blue - trust/reliability
-  secondaryDark: "#0c4a6e",
-  accent: "#dc2626", // Red - attention/important
-  accentLight: "#ef4444",
-  neutral: "#6b7280",
-  neutralLight: "#9ca3af",
+  primary: COLOR_PALETTE.accentPrimary, // Primary brand color
+  primaryDark: COLOR_PALETTE.accentSecondary, // Darker primary variant
+  secondary: COLOR_PALETTE.neutralMedium, // Secondary color
+  secondaryDark: COLOR_PALETTE.neutralBackgroundDark, // Darker secondary variant
+  accent: COLOR_PALETTE.accentSecondary, // Accent color for key interactions
+  accentLight: COLOR_PALETTE.accentPrimary, // Lighter accent variant
+  neutral: COLOR_PALETTE.neutralMedium,
+  neutralLight: COLOR_PALETTE.neutralLight,
+  neutralDark: COLOR_PALETTE.neutralDark,
+  neutralBackgroundDark: COLOR_PALETTE.neutralBackgroundDark,
   success: "#059669",
-  warning: "#d97706",
+  warning: COLOR_PALETTE.accentPrimary,
   error: "#dc2626",
+  // Palette colors for direct access
+  palette: COLOR_PALETTE,
 };
 
 // Construction Materials Specific Colors
