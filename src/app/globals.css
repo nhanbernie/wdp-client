@@ -131,6 +131,122 @@
   color: #c55e45 !important;
 }
 
+/* Color Palette - Semantic naming utilities */
+
+/* Neutral Colors */
+.text-neutral-light {
+  color: var(--neutral-light) !important;
+}
+
+.text-neutral-medium {
+  color: var(--neutral-medium) !important;
+}
+
+.text-neutral-dark {
+  color: var(--neutral-dark) !important;
+}
+
+.text-neutral-background-dark {
+  color: var(--neutral-background-dark) !important;
+}
+
+.bg-neutral-light {
+  background-color: var(--neutral-light) !important;
+}
+
+.bg-neutral-medium {
+  background-color: var(--neutral-medium) !important;
+}
+
+.bg-neutral-dark {
+  background-color: var(--neutral-dark) !important;
+}
+
+.bg-neutral-background-dark {
+  background-color: var(--neutral-background-dark) !important;
+}
+
+.border-neutral-light {
+  border-color: var(--neutral-light) !important;
+}
+
+.border-neutral-medium {
+  border-color: var(--neutral-medium) !important;
+}
+
+.border-neutral-dark {
+  border-color: var(--neutral-dark) !important;
+}
+
+.hover\:text-neutral-light:hover {
+  color: var(--neutral-light) !important;
+}
+
+.hover\:text-neutral-dark:hover {
+  color: var(--neutral-dark) !important;
+}
+
+.hover\:bg-neutral-medium:hover {
+  background-color: var(--neutral-medium) !important;
+}
+
+.hover\:bg-neutral-light:hover {
+  background-color: var(--neutral-light) !important;
+}
+
+.hover\:bg-neutral-background-dark:hover {
+  background-color: var(--neutral-background-dark) !important;
+}
+
+/* Accent Colors */
+.text-accent-primary {
+  color: var(--accent-primary) !important;
+}
+
+.text-accent-secondary {
+  color: var(--accent-secondary) !important;
+}
+
+.bg-accent-primary {
+  background-color: var(--accent-primary) !important;
+}
+
+.bg-accent-secondary {
+  background-color: var(--accent-secondary) !important;
+}
+
+.border-accent-primary {
+  border-color: var(--accent-primary) !important;
+}
+
+.border-accent-secondary {
+  border-color: var(--accent-secondary) !important;
+}
+
+.hover\:text-accent-primary:hover {
+  color: var(--accent-primary) !important;
+}
+
+.hover\:text-accent-secondary:hover {
+  color: var(--accent-secondary) !important;
+}
+
+.hover\:bg-accent-primary:hover {
+  background-color: var(--accent-primary) !important;
+}
+
+.hover\:bg-accent-secondary:hover {
+  background-color: var(--accent-secondary) !important;
+}
+
+.hover\:bg-accent-primary\/10:hover {
+  background-color: rgb(from var(--accent-primary) r g b / 0.1) !important;
+}
+
+.hover\:bg-accent-secondary\/10:hover {
+  background-color: rgb(from var(--accent-secondary) r g b / 0.1) !important;
+}
+
 /* Force delivery progress color */
 [data-radix-progress-indicator] {
   background-color: #c55e45 !important;

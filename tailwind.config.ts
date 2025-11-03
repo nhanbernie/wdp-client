@@ -41,6 +41,7 @@ export default {
         },
         accent: {
           DEFAULT: 'var(--accent)',
+          primary: 'var(--accent-primary)',
           secondary: 'var(--accent-secondary)',
           foreground: 'var(--accent-foreground)',
         },
@@ -52,6 +53,8 @@ export default {
         input: 'var(--input)',
         ring: 'var(--ring)',
         success: 'var(--success)',
+        error: 'var(--error)',
+        warning: 'var(--warning)',
         'primary-accent': 'var(--primary-accent)',
         // Color Palette - Semantic naming for easy scaling
         'neutral-light': 'var(--neutral-light)',

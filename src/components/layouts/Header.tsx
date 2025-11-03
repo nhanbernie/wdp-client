@@ -3,6 +3,8 @@
 import React, { useState, useMemo } from 'react'
 import { Search, ShoppingCart, Menu, MessageCircle, Bell } from 'lucide-react'
 import Link from 'next/link'
+import { motion } from 'framer-motion'
+import { usePathname } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
@@ -15,10 +17,12 @@ import {
   vendorNavigationItems,
 } from '@/common/constants/navigate.constant'
 import { useAuth } from '@/contexts/AuthContext'
-import { useCartApi   } from '@/features/cart/hooks'
+import { useCartApi } from '@/features/cart/hooks'
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [hoveredItem, setHoveredItem] = useState<string | null>(null)
+  const pathname = usePathname()
   const { isAuthenticated, user } = useAuth()
   const { cartCount } = useCartApi()
 
@@ -38,12 +42,17 @@ const Header = () => {
 
   const notificationCount = 0
 
+  const isActive = (href: string) => {
+    if (href === '/') return pathname === '/'
+    return pathname.startsWith(href)
+  }
+
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container mx-auto px-4">
         <div className="flex h-16 items-center justify-between">
           <Link href="/" className="flex items-center space-x-2">
-            <Logo showText={true} imageSize={32} />
+            <Logo showText={false} imageSize={32} />
           </Link>
 
           <div className="hidden md:flex flex-1 max-w-md mx-8">
@@ -58,25 +67,49 @@ const Header = () => {
 
           {isAuthenticated && (
             <nav className="hidden md:flex items-center space-x-6">
-              {currentNavigationItems.map((item) => (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className={`text-sm font-medium transition-colors ${
-                    item.active
-                      ? 'text-primary'
-                      : 'text-muted-foreground hover:text-primary'
-                  }`}
-                >
-                  {item.label}
-                </Link>
-              ))}
+              {currentNavigationItems.map((item) => {
+                const active = isActive(item.href) || item.active
+                const isHovered = hoveredItem === item.href
+
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className={`relative text-sm font-medium transition-colors ${
+                      active ? 'text-accent-primary' : 'text-muted-foreground'
+                    } hover:text-accent-primary`}
+                    onMouseEnter={() => setHoveredItem(item.href)}
+                    onMouseLeave={() => setHoveredItem(null)}
+                  >
+                    {item.label}
+                    {(active || isHovered) && (
+                      <motion.div
+                        layoutId={`underline-${item.href}`}
+                        className="absolute bottom-0 left-0 right-0 h-0.5 bg-accent-primary"
+                        initial={{ scaleX: 0 }}
+                        animate={{ scaleX: 1 }}
+                        exit={{ scaleX: 0 }}
+                        transition={{
+                          type: 'spring',
+                          stiffness: 500,
+                          damping: 30,
+                        }}
+                      />
+                    )}
+                  </Link>
+                )
+              })}
             </nav>
           )}
 
           <div className="flex items-center space-x-4">
             {isAuthenticated && (
-              <Button variant="ghost" size="sm" className="hidden md:flex" asChild>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="hidden md:flex hover:bg-accent-primary/10"
+                asChild
+              >
                 <Link href="/ai-chat">
                   <MessageCircle className="h-4 w-4 mr-2" />
                   AI Hỗ trợ
@@ -85,7 +118,12 @@ const Header = () => {
             )}
 
             {isAuthenticated && user && !user.roles.includes('admin') && (
-              <Button variant="ghost" size="icon" className="relative" asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="relative hover:bg-accent-primary/10"
+                asChild
+              >
                 <Link href="/notifications">
                   <Bell className="h-4 w-4" />
                   {notificationCount > 0 && (
@@ -98,7 +136,12 @@ const Header = () => {
             )}
 
             {isAuthenticated && user && !user.roles.includes('admin') && (
-              <Button variant="ghost" size="icon" className="relative" asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="relative hover:bg-accent-primary/10"
+                asChild
+              >
                 <Link href="/cart">
                   <ShoppingCart className="h-4 w-4" />
                   {cartCount > 0 && (

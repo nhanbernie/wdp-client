@@ -9,21 +9,21 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default:
-          'bg-[var(--accent)] text-white hover:opacity-90 focus-visible:ring-[var(--accent)]/50 shadow-sm hover:shadow-md dark:bg-[var(--accent)]',
+          'bg-accent-primary text-white hover:bg-accent-secondary focus-visible:ring-accent-primary/50 shadow-sm hover:shadow-md',
         destructive:
-          'bg-[var(--destructive)] text-[var(--destructive-foreground)] hover:opacity-90 focus-visible:ring-[var(--destructive)]/50 shadow-sm hover:shadow-md dark:bg-[var(--destructive)] dark:text-[var(--destructive-foreground)]',
+          'bg-error text-white hover:opacity-90 focus-visible:ring-error/50 shadow-sm hover:shadow-md',
         outline:
-          'border-2 border-[var(--accent)] bg-transparent text-[var(--accent)] hover:bg-[var(--accent)]/10 focus-visible:ring-[var(--accent)]/50 shadow-none dark:border-[var(--accent)] dark:text-[var(--accent)] dark:hover:bg-[var(--accent)]/20',
+          'border-2 border-accent-primary bg-transparent text-accent-primary hover:bg-accent-primary/10 focus-visible:ring-accent-primary/50 shadow-none',
         secondary:
-          'bg-[var(--secondary)] text-[var(--secondary-foreground)] hover:opacity-90 focus-visible:ring-[var(--secondary)]/50 shadow-sm hover:shadow-md dark:bg-[var(--secondary)] dark:text-[var(--secondary-foreground)]',
+          'bg-neutral-medium text-white hover:bg-neutral-medium/80 focus-visible:ring-neutral-medium/50 shadow-sm hover:shadow-md',
         ghost:
-          'bg-transparent text-[var(--foreground)] hover:bg-[var(--muted)] focus-visible:ring-[var(--muted)]/50 shadow-none dark:text-[var(--foreground)] dark:hover:bg-[var(--muted)]',
+          'bg-transparent text-foreground hover:bg-accent-primary/10 focus-visible:ring-accent-primary/50 shadow-none',
         link:
-          'text-[var(--accent)] underline-offset-4 hover:underline hover:text-[var(--accent)]/80 shadow-none dark:text-[var(--accent)]',
+          'text-accent-primary underline-offset-4 hover:underline hover:text-accent-secondary shadow-none',
         success:
-          'bg-[var(--success)] text-white hover:opacity-90 focus-visible:ring-[var(--success)]/50 shadow-sm hover:shadow-md dark:bg-[var(--success)]',
+          'bg-success text-white hover:opacity-90 focus-visible:ring-success/50 shadow-sm hover:shadow-md',
         warning:
-          'bg-[var(--warning)] text-white hover:opacity-90 focus-visible:ring-[var(--warning)]/50 shadow-sm hover:shadow-md dark:bg-[var(--warning)]',
+          'bg-accent-primary text-white hover:bg-accent-secondary focus-visible:ring-accent-primary/50 shadow-sm hover:shadow-md',
       },
       size: {
         default: 'h-10 px-5 py-2.5 has-[>svg]:px-4',
