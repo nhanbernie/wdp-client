@@ -3,6 +3,7 @@
 import React from 'react'
 import { motion } from 'motion/react'
 import { ShoppingBag, ArrowLeft, Package, Sparkles, TrendingUp } from 'lucide-react'
+import { useTheme } from '@/contexts/ThemeContext'
 import Link from 'next/link'
 
 interface CartEmptyProps {
@@ -10,6 +11,8 @@ interface CartEmptyProps {
 }
 
 const CartEmpty: React.FC<CartEmptyProps> = ({ onContinueShopping }) => {
+  const { colors } = useTheme()
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -35,12 +38,19 @@ const CartEmpty: React.FC<CartEmptyProps> = ({ onContinueShopping }) => {
             repeat: Infinity,
             ease: 'easeInOut',
           }}
-          className="absolute inset-0 rounded-full bg-gradient-to-r from-indigo-200 via-purple-200 to-pink-200 blur-3xl"
+          className="absolute inset-0 rounded-full blur-3xl"
+          style={{ backgroundColor: `${colors.accent}20` }}
         />
 
         {/* Main Shopping Bag */}
-        <div className="relative w-56 h-56 rounded-3xl flex items-center justify-center bg-white border-2 border-dashed border-slate-300 shadow-2xl">
-          <ShoppingBag className="w-24 h-24 text-slate-400" />
+        <div
+          className="relative w-56 h-56 rounded-3xl flex items-center justify-center border-2 border-dashed shadow-2xl"
+          style={{
+            backgroundColor: colors.cardBackground,
+            borderColor: colors.border,
+          }}
+        >
+          <ShoppingBag className="w-24 h-24" style={{ color: colors.textSecondary }} />
 
           {/* Floating Elements */}
           <motion.div
@@ -55,7 +65,13 @@ const CartEmpty: React.FC<CartEmptyProps> = ({ onContinueShopping }) => {
             }}
             className="absolute -top-6 -right-6"
           >
-            <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center shadow-2xl border-2 border-white">
+            <div
+              className="w-14 h-14 rounded-2xl flex items-center justify-center shadow-2xl border-2"
+              style={{
+                backgroundColor: colors.accent,
+                borderColor: colors.cardBackground,
+              }}
+            >
               <Package className="w-7 h-7 text-white" />
             </div>
           </motion.div>
@@ -73,7 +89,13 @@ const CartEmpty: React.FC<CartEmptyProps> = ({ onContinueShopping }) => {
             }}
             className="absolute -bottom-6 -left-6"
           >
-            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-orange-500 to-pink-500 flex items-center justify-center shadow-2xl border-2 border-white">
+            <div
+              className="w-12 h-12 rounded-2xl flex items-center justify-center shadow-2xl border-2"
+              style={{
+                backgroundColor: colors.accentSecondary,
+                borderColor: colors.cardBackground,
+              }}
+            >
               <Sparkles className="w-6 h-6 text-white" />
             </div>
           </motion.div>
@@ -91,7 +113,13 @@ const CartEmpty: React.FC<CartEmptyProps> = ({ onContinueShopping }) => {
             }}
             className="absolute top-12 -left-10"
           >
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-500 shadow-2xl border-2 border-white flex items-center justify-center">
+            <div
+              className="w-10 h-10 rounded-xl shadow-2xl border-2 flex items-center justify-center"
+              style={{
+                backgroundColor: colors.success,
+                borderColor: colors.cardBackground,
+              }}
+            >
               <TrendingUp className="w-5 h-5 text-white" />
             </div>
           </motion.div>
@@ -105,11 +133,17 @@ const CartEmpty: React.FC<CartEmptyProps> = ({ onContinueShopping }) => {
         transition={{ duration: 0.6, delay: 0.4 }}
         className="max-w-2xl mx-auto"
       >
-        <h2 className="text-6xl font-black mb-6 text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600">
+        <h2
+          className="text-6xl font-black mb-6"
+          style={{ color: colors.text }}
+        >
           Giỏ hàng trống
         </h2>
 
-        <p className="text-2xl mb-12 leading-relaxed text-slate-600 font-medium">
+        <p
+          className="text-2xl mb-12 leading-relaxed font-medium"
+          style={{ color: colors.textSecondary }}
+        >
           Bạn chưa có sản phẩm nào trong giỏ hàng. Hãy khám phá các sản phẩm vật liệu xây dựng chất
           lượng cao của chúng tôi!
         </p>
@@ -121,21 +155,15 @@ const CartEmpty: React.FC<CartEmptyProps> = ({ onContinueShopping }) => {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={onContinueShopping}
-              className="inline-flex items-center justify-center px-12 py-5 font-black text-xl rounded-2xl transition-all duration-300 shadow-2xl hover:shadow-purple-500/50 bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 text-white relative overflow-hidden group"
+              className="inline-flex items-center justify-center px-12 py-5 font-black text-xl rounded-2xl text-white transition-all duration-300 shadow-2xl relative overflow-hidden group"
+              style={{ backgroundColor: colors.accent }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = colors.accentSecondary
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = colors.accent
+              }}
             >
-              {/* Shine effect */}
-              <motion.div
-                className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent"
-                animate={{
-                  x: ['-100%', '100%'],
-                }}
-                transition={{
-                  duration: 2,
-                  repeat: Infinity,
-                  ease: 'linear',
-                  repeatDelay: 1,
-                }}
-              />
               <ShoppingBag className="mr-3 w-7 h-7 relative z-10" />
               <span className="relative z-10">Tiếp tục mua sắm</span>
             </motion.button>
@@ -144,21 +172,15 @@ const CartEmpty: React.FC<CartEmptyProps> = ({ onContinueShopping }) => {
               <motion.div
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="inline-flex items-center justify-center px-12 py-5 font-black text-xl rounded-2xl transition-all duration-300 shadow-2xl hover:shadow-purple-500/50 bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 text-white relative overflow-hidden group"
+                className="inline-flex items-center justify-center px-12 py-5 font-black text-xl rounded-2xl text-white transition-all duration-300 shadow-2xl relative overflow-hidden group"
+                style={{ backgroundColor: colors.accent }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = colors.accentSecondary
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = colors.accent
+                }}
               >
-                {/* Shine effect */}
-                <motion.div
-                  className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent"
-                  animate={{
-                    x: ['-100%', '100%'],
-                  }}
-                  transition={{
-                    duration: 2,
-                    repeat: Infinity,
-                    ease: 'linear',
-                    repeatDelay: 1,
-                  }}
-                />
                 <ShoppingBag className="mr-3 w-7 h-7 relative z-10" />
                 <span className="relative z-10">Tiếp tục mua sắm</span>
               </motion.div>
@@ -169,7 +191,18 @@ const CartEmpty: React.FC<CartEmptyProps> = ({ onContinueShopping }) => {
             <motion.div
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="inline-flex items-center justify-center px-12 py-5 font-black text-xl rounded-2xl transition-all duration-300 bg-white border-2 border-slate-200 text-slate-800 hover:bg-slate-50 hover:border-indigo-300 hover:shadow-xl"
+              className="inline-flex items-center justify-center px-12 py-5 font-black text-xl rounded-2xl transition-all duration-300 border-2"
+              style={{
+                backgroundColor: colors.cardBackground,
+                borderColor: colors.border,
+                color: colors.text,
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.borderColor = colors.accent
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.borderColor = colors.border
+              }}
             >
               <ArrowLeft className="mr-3 w-7 h-7" />
               Về trang chủ
