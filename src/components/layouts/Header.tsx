@@ -18,6 +18,7 @@ import {
 import { useAuth } from '@/contexts/AuthContext'
 import { useTheme } from '@/contexts/ThemeContext'
 import { useCartApi } from '@/features/cart/hooks'
+import { getNeumorphismShadow } from '@/common/constants/neumorphism'
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -26,6 +27,10 @@ const Header = () => {
   const { isAuthenticated, user } = useAuth()
   const { theme, toggleTheme } = useTheme()
   const { cartCount } = useCartApi()
+  const neumorphismShadow = getNeumorphismShadow(theme)
+  
+  // Background color cho các nút để dễ nhìn hơn trong cả light và dark mode
+  const buttonBackgroundColor = theme === 'light' ? '#ffffff' : '#2a2a2a'
 
   const currentNavigationItems = useMemo(() => {
     if (!isAuthenticated || !user) {
@@ -49,16 +54,23 @@ const Header = () => {
   }
 
   return (
-    <header className="sticky top-0 z-50 w-full  border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <header 
+      className="sticky top-0 z-50 w-full bg-transparent"
+      style={{
+        backgroundColor: 'transparent',
+        backdropFilter: 'none',
+        WebkitBackdropFilter: 'none',
+      }}
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex h-16 items-center justify-between gap-4">
+        <div className="relative flex h-16 items-center justify-between gap-4">
           <Link href="/" className="flex items-center shrink-0">
             <Logo showText={false} imageSize={32} />
           </Link>
 
           {isAuthenticated && (
-            <nav className="hidden md:flex items-center justify-center flex-1 max-w-2xl mx-8">
-              <div className="flex items-center gap-6">
+            <nav className="hidden md:flex items-center justify-center absolute left-1/2 -translate-x-1/2">
+              <div className="flex items-center gap-3">
                 {currentNavigationItems.map((item) => {
                   const active = isActive(item.href) || item.active
                   const isHovered = hoveredItem === item.href
@@ -67,27 +79,17 @@ const Header = () => {
                     <Link
                       key={item.href}
                       href={item.href}
-                      className={`relative text-sm font-medium transition-colors ${
-                        active ? 'text-accent-primary' : 'text-muted-foreground'
+                      className={`relative px-4 py-2 rounded-xl text-sm font-medium transition-all duration-300 bg-card ${
+                        active ? 'text-accent-primary' : 'text-foreground'
                       } hover:text-accent-primary`}
+                      style={{
+                        boxShadow: neumorphismShadow,
+                        backgroundColor: buttonBackgroundColor,
+                      }}
                       onMouseEnter={() => setHoveredItem(item.href)}
                       onMouseLeave={() => setHoveredItem(null)}
                     >
                       {item.label}
-                      {(active || isHovered) && (
-                        <motion.div
-                          layoutId={`underline-${item.href}`}
-                          className="absolute bottom-0 left-0 right-0 h-0.5 bg-accent-primary"
-                          initial={{ scaleX: 0 }}
-                          animate={{ scaleX: 1 }}
-                          exit={{ scaleX: 0 }}
-                          transition={{
-                            type: 'spring',
-                            stiffness: 500,
-                            damping: 30,
-                          }}
-                        />
-                      )}
                     </Link>
                   )
                 })}
@@ -99,7 +101,11 @@ const Header = () => {
             <Button
               variant="ghost"
               size="icon"
-              className="hover:bg-accent-primary/10"
+              className="bg-card text-foreground hover:text-accent-primary"
+              style={{
+                boxShadow: neumorphismShadow,
+                backgroundColor: buttonBackgroundColor,
+              }}
               onClick={toggleTheme}
               aria-label="Toggle theme"
             >
@@ -115,7 +121,11 @@ const Header = () => {
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="relative hover:bg-accent-primary/10"
+                  className="relative bg-card text-foreground hover:text-accent-primary"
+                  style={{
+                    boxShadow: neumorphismShadow,
+                    backgroundColor: buttonBackgroundColor,
+                  }}
                   asChild
                 >
                   <Link href="/notifications">
@@ -131,7 +141,11 @@ const Header = () => {
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="relative hover:bg-accent-primary/10"
+                  className="relative bg-card text-foreground hover:text-accent-primary"
+                  style={{
+                    boxShadow: neumorphismShadow,
+                    backgroundColor: buttonBackgroundColor,
+                  }}
                   asChild
                 >
                   <Link href="/cart">
@@ -151,7 +165,11 @@ const Header = () => {
             <Button
               variant="ghost"
               size="icon"
-              className="md:hidden hover:bg-accent-primary/10"
+              className="md:hidden bg-card text-foreground hover:text-accent-primary"
+              style={{
+                boxShadow: neumorphismShadow,
+                backgroundColor: buttonBackgroundColor,
+              }}
               onClick={() => setIsMenuOpen(!isMenuOpen)}
             >
               <Menu className="h-4 w-4" />

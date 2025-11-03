@@ -68,7 +68,10 @@ export const GoogleLoginButton: React.FC = () => {
     };
   }, [handleMessage]);
 
-  const handleGoogleLogin = () => {
+  const handleGoogleLogin = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
     const backendUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
     const googleAuthUrl = `${backendUrl}/auth/google`;
 
@@ -100,6 +103,7 @@ export const GoogleLoginButton: React.FC = () => {
 
   return (
     <Button
+      type="button"
       variant="secondary"
       color="primary"
       onClick={handleGoogleLogin}

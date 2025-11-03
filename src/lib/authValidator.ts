@@ -46,8 +46,10 @@ const validatorSchema = {
       .min(6, ERROR_MESSAGES.passwordTooShort)
       .required(ERROR_MESSAGES.requiredField),
     confirmPassword: Yup.string()
-      .oneOf([Yup.ref("password")], ERROR_MESSAGES.passwordsDoNotMatch)
-      .required(ERROR_MESSAGES.requiredField),
+      .required(ERROR_MESSAGES.requiredField)
+      .test("passwords-match", ERROR_MESSAGES.passwordsDoNotMatch, function (value) {
+        return this.parent.password === value;
+      }),
   }),
   changePassword: Yup.object().shape({
     oldPassword: Yup.string()

@@ -227,6 +227,68 @@ export const DARK_NEUMORPHISM_TRUST_BADGE: NeumorphismConfig = {
 }
 
 /**
+ * Cấu hình Neumorphism cho Header (Light mode)
+ * Shadow top giảm để không đổ quá nhiều ở phần trên
+ */
+export const LIGHT_NEUMORPHISM_HEADER: NeumorphismConfig = {
+  darkShadow: {
+    offsetX: 8,
+    offsetY: 8,
+    blur: 16,
+    opacity: 0.1,
+  },
+  lightShadow: {
+    offsetX: -8,
+    offsetY: -4, // Giảm offsetY từ -8 xuống -4 để shadow top không đổ quá nhiều
+    blur: 16,
+    opacity: 0.3, // Giảm opacity từ 0.7 xuống 0.3 để shadow top nhẹ hơn
+  },
+  insetDark: {
+    offsetX: 2,
+    offsetY: 2,
+    blur: 4,
+    opacity: 0.05,
+  },
+  insetLight: {
+    offsetX: -2,
+    offsetY: -1, // Giảm offsetY để inset shadow top nhẹ hơn
+    blur: 4,
+    opacity: 0.5, // Giảm opacity từ 0.9 xuống 0.5
+  },
+}
+
+/**
+ * Cấu hình Neumorphism cho Header (Dark mode)
+ * Shadow top giảm để không đổ quá nhiều ở phần trên
+ */
+export const DARK_NEUMORPHISM_HEADER: NeumorphismConfig = {
+  darkShadow: {
+    offsetX: 8,
+    offsetY: 8,
+    blur: 16,
+    opacity: 0.2,
+  },
+  lightShadow: {
+    offsetX: -8,
+    offsetY: -4, // Giảm offsetY từ -8 xuống -4 để shadow top không đổ quá nhiều
+    blur: 16,
+    opacity: 0.06, // Giảm opacity từ 0.12 xuống 0.06 để shadow top nhẹ hơn
+  },
+  insetDark: {
+    offsetX: 2,
+    offsetY: 2,
+    blur: 4,
+    opacity: 0.1,
+  },
+  insetLight: {
+    offsetX: -2,
+    offsetY: -1, // Giảm offsetY để inset shadow top nhẹ hơn
+    blur: 4,
+    opacity: 0.08, // Giảm opacity từ 0.12 xuống 0.08
+  },
+}
+
+/**
  * Lấy Neumorphism shadow cho Trust Badges theo theme
  * @param theme - 'light' hoặc 'dark'
  * @returns Box-shadow CSS string
@@ -234,6 +296,17 @@ export const DARK_NEUMORPHISM_TRUST_BADGE: NeumorphismConfig = {
 export function getNeumorphismTrustBadgeShadow(theme: Theme): string {
   const config = theme === 'dark' ? DARK_NEUMORPHISM_TRUST_BADGE : LIGHT_NEUMORPHISM_TRUST_BADGE
   return createTrustBadgeShadowString(config, theme)
+}
+
+/**
+ * Lấy Neumorphism shadow cho Header theo theme
+ * Shadow top giảm để không đổ quá nhiều ở phần trên
+ * @param theme - 'light' hoặc 'dark'
+ * @returns Box-shadow CSS string
+ */
+export function getNeumorphismHeaderShadow(theme: Theme): string {
+  const config = theme === 'dark' ? DARK_NEUMORPHISM_HEADER : LIGHT_NEUMORPHISM_HEADER
+  return createShadowString(config)
 }
 
 /**

@@ -17,7 +17,7 @@ const CategoryCard = ({ data }: Props) => {
       transition={{ type: 'spring', stiffness: 300, damping: 20 }}
       className="group relative cursor-pointer"
     >
-      <div className="w-full aspect-square rounded-3xl overflow-hidden relative bg-card shadow-xl hover:shadow-2xl transition-all duration-500 border border-border hover:border-accent-primary">
+      <div className="w-full aspect-square rounded-3xl overflow-hidden relative bg-card shadow-xl hover:shadow-2xl transition-all duration-500  hover:border-accent-primary">
         {/* Image with overlay */}
         {data.thumbnail && (
           <div className="relative w-full h-full">

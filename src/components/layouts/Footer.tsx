@@ -3,9 +3,13 @@
 import React from 'react'
 import { motion } from 'motion/react'
 import { Github, X, Linkedin, Mail, Sparkles, Heart, ArrowUp } from 'lucide-react'
-import { Logo } from '@/components/common'
+import { Logo, SectionBadge } from '@/components/common'
+import { useTheme } from '@/contexts/ThemeContext'
+import { getNeumorphismShadow } from '@/common/constants/neumorphism'
 
 const Footer = () => {
+  const { theme } = useTheme()
+  const neumorphismShadow = getNeumorphismShadow(theme)
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' })
@@ -104,13 +108,16 @@ const Footer = () => {
                     whileInView={{ opacity: 1, scale: 1 }}
                     viewport={{ once: true }}
                     transition={{ delay: index * 0.1, type: 'spring' }}
-                    whileHover={{ scale: 1.2, rotate: 5 }}
-                    whileTap={{ scale: 0.9 }}
-                    className="w-12 h-12 rounded-xl flex items-center justify-center transition-all duration-300 bg-card border border-border hover:border-accent-primary hover:shadow-xl text-muted-foreground hover:text-white relative overflow-hidden group"
+                    whileHover={{ scale: 1.15 }}
+                    whileTap={{ scale: 0.95 }}
+                    className="w-12 h-12 rounded-xl flex items-center justify-center transition-all duration-300 bg-card text-muted-foreground hover:text-accent-primary relative overflow-hidden group"
+                    style={{
+                      boxShadow: neumorphismShadow,
+                    }}
                     aria-label={social.label}
                   >
                     {/* Gradient background on hover */}
-                    <div className="absolute inset-0 bg-accent-primary opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                    <div className="absolute inset-0 bg-accent-primary/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl" />
                     <social.icon size={20} className="relative z-10" />
                   </motion.a>
                 ))}
@@ -237,7 +244,10 @@ const Footer = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6, delay: 0.5 }}
-          className="mt-16 p-8 rounded-3xl bg-card border border-border shadow-2xl relative overflow-hidden"
+          className="mt-16 p-8 rounded-3xl bg-card relative overflow-hidden"
+          style={{
+            boxShadow: neumorphismShadow,
+          }}
         >
           {/* Decorative gradient */}
           <div className="absolute inset-0 bg-accent-primary/5 opacity-50" />

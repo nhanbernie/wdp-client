@@ -45,6 +45,9 @@ const AuthForm = ({
       if (type === "verifyOTP" && email) {
         await (customOnSubmit?.({ email, otp: data.code }) ||
           defaultOnSubmit(data));
+      } else if (type === "resetPassword" && token) {
+        // For resetPassword, combine the token from props with the form data
+        await (customOnSubmit?.({ token, ...data }) || defaultOnSubmit(data));
       } else {
         // For other form types, pass data as is
         await (customOnSubmit?.(data) || defaultOnSubmit(data));
@@ -190,6 +193,23 @@ const AuthForm = ({
 
         {/* Footer text for forgot password */}
         {type === "forgotPassword" && (
+          <div className="mt-4 sm:mt-5 text-center px-2">
+            <span className="text-xs sm:text-sm" style={{ color: colors.textSecondary }}>
+              Nhớ mật khẩu?{" "}
+              <button
+                type="button"
+                onClick={() => router.push("/login")}
+                className="font-medium hover:opacity-80 transition-opacity"
+                style={{ color: colors.accent }}
+              >
+                Đăng nhập
+              </button>
+            </span>
+          </div>
+        )}
+
+        {/* Footer text for reset password */}
+        {type === "resetPassword" && (
           <div className="mt-4 sm:mt-5 text-center px-2">
             <span className="text-xs sm:text-sm" style={{ color: colors.textSecondary }}>
               Nhớ mật khẩu?{" "}

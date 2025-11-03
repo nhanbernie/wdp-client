@@ -5,6 +5,8 @@ import { User, LogOut, ChevronDown, Sparkles } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useAuth } from '@/contexts/AuthContext'
+import { useTheme } from '@/contexts/ThemeContext'
+import { getNeumorphismShadow } from '@/common/constants/neumorphism'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -24,6 +26,11 @@ export interface UserMenuProps {
 
 const UserMenu = ({ user: propUser }: UserMenuProps) => {
   const { user, logout, isAuthenticated } = useAuth()
+  const { theme } = useTheme()
+  const neumorphismShadow = getNeumorphismShadow(theme)
+  
+  // Background color cho UserMenu buttons
+  const buttonBackgroundColor = theme === 'light' ? '#ffffff' : '#2a2a2a'
 
   const currentUser = user || propUser
 
@@ -66,7 +73,14 @@ const UserMenu = ({ user: propUser }: UserMenuProps) => {
         </button>
       </DropdownMenuTrigger>
 
-      <DropdownMenuContent align="end" className="w-64 p-2 bg-card dark:bg-[#2a2a2a] shadow-lg border-0">
+      <DropdownMenuContent 
+        align="end" 
+        className="w-64 p-2 bg-card dark:bg-[#2a2a2a] border-0 rounded-3xl"
+        style={{
+          boxShadow: neumorphismShadow,
+          backgroundColor: theme === 'light' ? '#ffffff' : '#2a2a2a',
+        }}
+      >
         {currentUser && (
           <>
             <DropdownMenuLabel className="p-3">
@@ -95,7 +109,7 @@ const UserMenu = ({ user: propUser }: UserMenuProps) => {
             <DropdownMenuSeparator />
           </>
         )}
-
+        {/* stroke */}
         <Link href="/profile">
           <DropdownMenuItem className="cursor-pointer hover:bg-accent-primary/10 hover:text-accent-primary focus:bg-accent-primary/10 focus:text-accent-primary group/item">
             <User className="h-4 w-4 mr-2 text-muted-foreground group-hover/item:text-accent-primary transition-colors" />

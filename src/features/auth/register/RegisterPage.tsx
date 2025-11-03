@@ -24,10 +24,9 @@ export const RegisterPage = () => {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
-        className="w-full min-w-[420px] max-w-md rounded-2xl shadow-xl p-8 border"
+        className="w-full min-w-[420px] max-w-md rounded-2xl shadow-xl p-8 border-0"
         style={{
           backgroundColor: colors.cardBackground,
-          borderColor: colors.border,
         }}
       >
         <div className="text-center mb-8">

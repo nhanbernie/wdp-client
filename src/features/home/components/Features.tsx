@@ -39,7 +39,8 @@ const Features = () => {
     <div className="py-16 sm:py-24 px-4 sm:px-6 lg:px-8 relative overflow-visible">
       {/* Background decoration */}
       <div className="absolute inset-0 -z-10 overflow-hidden">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-accent-primary/5 rounded-3xl blur-3xl" />
+        <div className="absolute top-0 right-1/4 w-96 h-96 bg-accent-primary/10 rounded-full blur-3xl" />
+        <div className="absolute bottom-0 left-1/4 w-80 h-80 bg-accent-secondary/10 rounded-full blur-3xl" />
       </div>
 
       <div className="max-w-7xl mx-auto w-full">
@@ -62,47 +63,35 @@ const Features = () => {
         </div>
 
         {/* Features grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 p-2">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 lg:gap-10 p-2">
           {featureList.map((item, index) => (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{
-                duration: 0.5,
-                delay: index * 0.1,
-                type: 'spring',
-                stiffness: 100,
-              }}
-              whileHover={{ y: -8, scale: 1.02 }}
-              className="group relative w-full"
-            >
-              <div className="relative flex flex-col items-center justify-center gap-5 p-8 rounded-3xl bg-card border border-border shadow-xl hover:shadow-2xl hover:border-accent-primary transition-all duration-500 w-full h-full min-h-[220px]">
+            <div key={index} className="relative w-full">
+              <div
+                className={`relative flex flex-col items-center justify-center gap-5 p-8 rounded-3xl bg-card w-full h-full min-h-[220px] ${
+                  theme === 'light'
+                    ? 'border-0 shadow-2xl'
+                    : 'border border-border shadow-xl'
+                }`}
+                style={
+                  theme === 'light'
+                    ? {
+                        boxShadow:
+                          '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04), 0 -4px 6px -1px rgba(0, 0, 0, 0.02)',
+                      }
+                    : undefined
+                }
+              >
                 {/* Icon container */}
-                <div className="relative p-5 rounded-2xl bg-accent-primary shadow-lg group-hover:shadow-xl transition-all duration-300 flex-shrink-0">
+                <div className="relative p-5 rounded-2xl bg-accent-primary shadow-lg flex-shrink-0">
                   {item.icon}
-                  {/* Icon glow effect */}
-                  <div className="absolute inset-0 rounded-2xl bg-accent-primary blur-xl opacity-50 group-hover:opacity-70 transition-opacity duration-300" />
                 </div>
 
                 {/* Title */}
-                <p 
-                  className="font-black text-center text-base sm:text-lg text-foreground leading-tight min-h-[48px] flex items-center justify-center"
-                  style={{
-                    textShadow: textEmbossShadow,
-                  }}
-                >
+                <p className="font-black text-center text-base sm:text-lg text-foreground leading-tight min-h-[48px] flex items-center justify-center">
                   {item.title}
                 </p>
-
-                {/* Shine effect */}
-                <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 bg-gradient-to-r from-transparent via-white/30 to-transparent" />
-
-                {/* Bottom gradient indicator */}
-                <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-accent-primary to-accent-secondary transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500" />
               </div>
-            </motion.div>
+            </div>
           ))}
         </div>
       </div>

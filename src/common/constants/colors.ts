@@ -21,9 +21,11 @@ export type Theme = "light" | "dark";
 // Color Palette - Semantic naming for easy scaling
 export const COLOR_PALETTE = {
   // Neutral colors - Support bright accents
-  neutralLight: "#F2F2F2", // Light surface/text
+  // neutralLight: "#F2F2F2", 
+  neutralLight: "#f2f2f2",
   neutralMedium: "#909090", // Medium gray for secondary text
-  neutralDark: "#00000", // Dark text/borders
+  // neutralDark: "#121212", // Dark text/borders
+  neutralDark: "#1c1c1c", // Dark text/borders
   neutralBackgroundDark: "#161616", // Dark background
   
   // Accent colors - Bright highlights for key interactions
