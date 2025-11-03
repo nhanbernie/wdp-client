@@ -17,7 +17,7 @@ const CategoryCard = ({ data }: Props) => {
       transition={{ type: 'spring', stiffness: 300, damping: 20 }}
       className="group relative cursor-pointer"
     >
-      <div className="w-full aspect-square rounded-3xl overflow-hidden relative bg-gradient-to-br from-slate-200 via-slate-100 to-slate-200 shadow-xl hover:shadow-2xl transition-all duration-500 border-2 border-white">
+      <div className="w-full aspect-square rounded-3xl overflow-hidden relative bg-card shadow-xl hover:shadow-2xl transition-all duration-500 border border-border hover:border-accent-primary">
         {/* Image with overlay */}
         {data.thumbnail && (
           <div className="relative w-full h-full">
@@ -32,7 +32,7 @@ const CategoryCard = ({ data }: Props) => {
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent opacity-80 group-hover:opacity-90 transition-opacity duration-300" />
 
             {/* Hover glow effect */}
-            <div className="absolute inset-0 bg-gradient-to-t from-indigo-600/30 via-purple-600/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+            <div className="absolute inset-0 bg-accent-primary/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
           </div>
         )}
 
@@ -43,7 +43,7 @@ const CategoryCard = ({ data }: Props) => {
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
             transition={{ type: 'spring', delay: 0.2 }}
-            className="mb-4 p-3 rounded-2xl bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 shadow-lg group-hover:shadow-xl group-hover:shadow-indigo-500/50 transition-all duration-300"
+            className="mb-4 p-3 rounded-2xl bg-accent-primary shadow-lg group-hover:shadow-xl group-hover:shadow-accent-primary/50 transition-all duration-300"
           >
             <Package className="h-8 w-8 text-white" />
           </motion.div>
@@ -63,7 +63,7 @@ const CategoryCard = ({ data }: Props) => {
       </div>
 
       {/* Bottom gradient indicator */}
-      <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-3/4 h-1 bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+      <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-3/4 h-1 bg-gradient-to-r from-accent-primary to-accent-secondary rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
     </motion.div>
   )
 }

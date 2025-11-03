@@ -30,13 +30,14 @@ const LatestProductSection = () => {
   }, [products])
 
   return (
-    <div className="w-vw mx-[var(--header-horizontal-padding)]">
-      <div className="text-center mb-8">
-        <h1 className="text-3xl font-bold text-center">Sản phẩm mới nhất</h1>
-        <p className="text-lg text-[var(--muted-foreground)]">
-          Các sản phẩm mới nhất từ các nhà cung cấp uy tín
-        </p>
-      </div>
+    <div className="px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
+      <div className="max-w-7xl mx-auto w-full">
+        <div className="text-center mb-8">
+          <h1 className="text-3xl font-bold text-center text-foreground">Sản phẩm mới nhất</h1>
+          <p className="text-lg text-muted-foreground">
+            Các sản phẩm mới nhất từ các nhà cung cấp uy tín
+          </p>
+        </div>
 
       {/* Thay group bằng onMouseEnter / onMouseLeave */}
       <div
@@ -66,7 +67,7 @@ const LatestProductSection = () => {
         {/* Nút điều hướng */}
         <button
           ref={prevRef}
-          className={`absolute cursor-pointer top-1/2 left-3 -translate-y-1/2 bg-black/60 text-white p-3 rounded-full
+          className={`absolute cursor-pointer top-1/2 left-3 -translate-y-1/2 bg-accent-primary text-white p-3 rounded-full hover:bg-accent-secondary
                       transition-all duration-300 z-10
                       ${isHovered ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-3'}`}
         >
@@ -75,12 +76,13 @@ const LatestProductSection = () => {
 
         <button
           ref={nextRef}
-          className={`absolute cursor-pointer top-1/2 right-3 -translate-y-1/2 bg-black/60 text-white p-3 rounded-full
+          className={`absolute cursor-pointer top-1/2 right-3 -translate-y-1/2 bg-accent-primary text-white p-3 rounded-full hover:bg-accent-secondary
                       transition-all duration-300 z-10
                       ${isHovered ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-3'}`}
         >
           <ChevronRight className="w-5 h-5" />
         </button>
+      </div>
       </div>
     </div>
   )

@@ -10,24 +10,25 @@ const CategoryShowcase = () => {
   const { categories, loading } = useCategories({ productCount: true })
 
   return (
-    <div className="w-full px-4 sm:px-8 md:px-16 lg:px-[var(--header-horizontal-padding)] py-20 relative">
+    <div className="px-4 sm:px-6 lg:px-8 py-16 sm:py-24 relative overflow-visible">
       {/* Background decorative elements */}
       <div className="absolute inset-0 -z-10 overflow-hidden">
-        <div className="absolute top-0 right-1/4 w-96 h-96 bg-gradient-to-br from-indigo-100/40 via-purple-100/40 to-pink-100/40 rounded-full blur-3xl" />
-        <div className="absolute bottom-0 left-1/4 w-80 h-80 bg-gradient-to-br from-pink-100/40 via-purple-100/40 to-indigo-100/40 rounded-full blur-3xl" />
+        <div className="absolute top-0 right-1/4 w-96 h-96 bg-accent-primary/10 rounded-full blur-3xl" />
+        <div className="absolute bottom-0 left-1/4 w-80 h-80 bg-accent-secondary/10 rounded-full blur-3xl" />
       </div>
 
-      {/* Categories title */}
-      <div className="text-center mb-16 relative">
+      <div className="max-w-7xl mx-auto w-full">
+        {/* Categories title */}
+        <div className="text-center mb-16 relative">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r from-indigo-50 via-purple-50 to-pink-50 border-2 border-indigo-200/50 shadow-lg mb-6"
+          className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-accent-primary/10 border border-accent-primary/30 shadow-lg mb-6"
         >
-          <Sparkles className="h-5 w-5 text-indigo-600" />
-          <span className="text-sm font-bold bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
+          <Sparkles className="h-5 w-5 text-accent-primary" />
+          <span className="text-sm font-bold text-accent-primary">
             Danh mục sản phẩm
           </span>
         </motion.div>
@@ -37,7 +38,7 @@ const CategoryShowcase = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6, delay: 0.2 }}
-          className="text-4xl sm:text-5xl lg:text-6xl font-black mb-4 bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 bg-clip-text text-transparent"
+          className="text-4xl sm:text-5xl lg:text-6xl font-black mb-4 text-foreground"
         >
           Khám phá vật liệu xây dựng
         </motion.h2>
@@ -47,14 +48,14 @@ const CategoryShowcase = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6, delay: 0.4 }}
-          className="text-lg sm:text-xl text-slate-600 max-w-3xl mx-auto"
+          className="text-lg sm:text-xl text-muted-foreground max-w-3xl mx-auto"
         >
           Tìm kiếm trong hàng nghìn sản phẩm chất lượng cao từ các nhà cung cấp uy tín
         </motion.p>
       </div>
 
       {/* Categories list */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 sm:gap-8 lg:gap-10">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 sm:gap-8 lg:gap-10 p-2">
         {!loading
           ? categories.length > 0 &&
             categories.map((cate: CategoryDto, index: number) => (
@@ -79,10 +80,10 @@ const CategoryShowcase = () => {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.3, delay: index * 0.1 }}
-                className="w-full aspect-square rounded-3xl overflow-hidden relative bg-gradient-to-br from-slate-200 via-slate-100 to-slate-200 border-2 border-white shadow-xl"
+                className="w-full aspect-square rounded-3xl overflow-hidden relative bg-card border border-border shadow-xl"
               >
                 {/* Animated gradient background */}
-                <div className="absolute inset-0 bg-gradient-to-br from-indigo-200/20 via-purple-200/20 to-pink-200/20 animate-pulse" />
+                <div className="absolute inset-0 bg-accent-primary/10 animate-pulse" />
 
                 {/* Skeleton content */}
                 <div className="absolute inset-0 flex flex-col items-center justify-end p-6">
@@ -92,6 +93,7 @@ const CategoryShowcase = () => {
                 </div>
               </motion.div>
             ))}
+      </div>
       </div>
     </div>
   )
