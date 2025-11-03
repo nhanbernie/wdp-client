@@ -57,7 +57,7 @@ export function middleware(request: NextRequest) {
       return NextResponse.redirect(new URL(fromUrl, request.url))
     }
     // Mặc định redirect về /categories, AuthContext sẽ redirect lại nếu cần
-    return NextResponse.redirect(new URL('/categories', request.url))
+    // return NextResponse.redirect(new URL('/categories', request.url))
   }
   
   return NextResponse.next()

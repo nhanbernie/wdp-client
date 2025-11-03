@@ -26,6 +26,7 @@ export const navigateMarketItems: NavItem[] = [
 ]
 
 export const userNavigationItems: NavItem[] = [
+  { label: 'Trang chủ', href: '/' },
   { label: 'Danh mục', href: '/categories' },
   { label: 'Đơn hàng', href: '/orders' },
   { label: 'Báo giá', href: '/quote-requests' },
