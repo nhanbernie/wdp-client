@@ -50,7 +50,7 @@ export const TextField = forwardRef<HTMLInputElement, TextFieldProps>(
             )}
             style={{
               backgroundColor: colors.cardBackground,
-              borderColor: error ? '#ef4444' : colors.border,
+              borderColor: error ? '#ef4444' : '#909090',
               color: colors.text,
             }}
             onMouseEnter={(e) => {

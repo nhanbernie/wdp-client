@@ -4,12 +4,17 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
 import { StorageService } from "@/services/storage/secureStorage.service";
+import { getNeumorphismShadow } from '@/common/constants/neumorphism'
+import { useTheme } from "@/contexts/ThemeContext";
 
 export const GoogleLoginButton: React.FC = () => {
   const router = useRouter();
   const { refreshUserProfile } = useAuth();
   const popupRef = useRef<Window | null>(null);
-
+  const { theme } = useTheme();
+  const neumorphismShadow = getNeumorphismShadow(theme);
+  const buttonBackgroundColor = theme === 'light' ? '#ffffff' : '#2a2a2a';
+  
   const handleMessage = useCallback(async (event: MessageEvent) => {
     // Verify origin for security
     const backendUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
@@ -104,10 +109,14 @@ export const GoogleLoginButton: React.FC = () => {
   return (
     <Button
       type="button"
-      variant="secondary"
+      variant="ghost"
       color="primary"
       onClick={handleGoogleLogin}
-      className="w-full sm:w-auto cursor-pointer"
+      className="bg-card text-foreground hover:text-accent-primary"
+        style={{
+                boxShadow: neumorphismShadow,
+                backgroundColor: buttonBackgroundColor,
+              }}
     >
       <svg
         viewBox="-3 0 262 262"

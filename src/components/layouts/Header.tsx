@@ -3,7 +3,6 @@
 import React, { useState, useMemo } from 'react'
 import { ShoppingCart, Menu, Bell, Sun, Moon } from 'lucide-react'
 import Link from 'next/link'
-import { motion } from 'framer-motion'
 import { usePathname } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
