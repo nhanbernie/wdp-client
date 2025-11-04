@@ -85,38 +85,30 @@ export function OrdersList() {
   // Loading State
   if (isLoading) {
     return (
-      <div
-        className="min-h-screen flex items-center justify-center p-8"
-        style={{ backgroundColor: colors.background }}
-      >
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="text-center"
-        >
-          <div className="relative">
-            <div
-              className="absolute inset-0 rounded-full blur-2xl opacity-30 animate-pulse"
-              style={{
-                backgroundColor: `${colors.accent}40`,
-              }}
-            />
+      <div className="min-h-screen" style={{ backgroundColor: colors.background }}>
+        <div className="max-w-7xl mx-auto relative z-10 py-12 px-6">
+          <div className="flex items-center justify-center min-h-[400px]">
             <motion.div
-              animate={{ rotate: 360 }}
-              transition={{ duration: 2, repeat: Infinity, ease: 'linear' }}
-              className="relative p-8 rounded-full shadow-2xl"
-              style={{ backgroundColor: colors.cardBackground }}
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="text-center"
             >
-              <Loader2 className="h-16 w-16" style={{ color: colors.accent }} />
+              <motion.div
+                animate={{ rotate: 360 }}
+                transition={{ duration: 2, repeat: Infinity, ease: 'linear' }}
+                className="relative"
+              >
+                <Loader2 className="h-8 w-8" style={{ color: colors.accent }} />
+              </motion.div>
+              <p
+                className="mt-4 text-lg font-medium"
+                style={{ color: colors.text }}
+              >
+                Đang tải đơn hàng...
+              </p>
             </motion.div>
           </div>
-          <p
-            className="mt-6 text-xl font-bold"
-            style={{ color: colors.text }}
-          >
-            Đang tải đơn hàng...
-          </p>
-        </motion.div>
+        </div>
       </div>
     )
   }
@@ -124,42 +116,43 @@ export function OrdersList() {
   // Error State
   if (error) {
     return (
-      <div
-        className="min-h-screen flex items-center justify-center p-8"
-        style={{ backgroundColor: colors.background }}
-      >
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="text-center max-w-md"
-        >
-          <div
-            className="p-6 rounded-3xl shadow-2xl border-2"
-            style={{
-              backgroundColor: colors.cardBackground,
-              borderColor: colors.border,
-            }}
-          >
-            <div
-              className="p-4 rounded-full w-20 h-20 mx-auto mb-4 flex items-center justify-center"
-              style={{ backgroundColor: colors.error }}
+      <div className="min-h-screen" style={{ backgroundColor: colors.background }}>
+        <div className="max-w-7xl mx-auto relative z-10 py-12 px-6">
+          <div className="flex items-center justify-center min-h-[400px]">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="text-center max-w-md"
             >
-              <AlertCircle className="h-10 w-10 text-white" />
-            </div>
-            <h3
-              className="text-2xl font-black mb-2"
-              style={{ color: colors.text }}
-            >
-              Không thể tải đơn hàng
-            </h3>
-            <p
-              className="mb-6"
-              style={{ color: colors.textSecondary }}
-            >
-              Vui lòng thử lại sau
-            </p>
+              <div
+                className="p-6 rounded-lg border"
+                style={{
+                  backgroundColor: colors.cardBackground,
+                  borderColor: colors.border,
+                }}
+              >
+                <div
+                  className="p-3 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center"
+                  style={{ backgroundColor: `${colors.error}20` }}
+                >
+                  <AlertCircle className="h-8 w-8" style={{ color: colors.error }} />
+                </div>
+                <h3
+                  className="text-xl font-bold mb-2"
+                  style={{ color: colors.text }}
+                >
+                  Không thể tải đơn hàng
+                </h3>
+                <p
+                  className="text-sm"
+                  style={{ color: colors.textSecondary }}
+                >
+                  Vui lòng thử lại sau
+                </p>
+              </div>
+            </motion.div>
           </div>
-        </motion.div>
+        </div>
       </div>
     )
   }
@@ -168,11 +161,8 @@ export function OrdersList() {
   const firstOrder = filteredAndSortedOrders[0]
 
   return (
-    <div
-      className="min-h-screen p-8"
-      style={{ backgroundColor: colors.background }}
-    >
-      <div className="max-w-7xl mx-auto">
+    <div className="min-h-screen" style={{ backgroundColor: colors.background }}>
+      <div className="max-w-7xl mx-auto relative z-10 py-6 px-6">
         <OrderListHeader totalOrders={orders.length} />
 
         <OrderSearchAndFilter
@@ -184,36 +174,43 @@ export function OrdersList() {
           onDateSortChange={setDateSort}
         />
 
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="mb-8">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="mb-6">
           <OrderTabs activeTab={activeTab} onTabChange={setActiveTab} counts={orderCounts} />
 
           {firstOrder && <OrderProgressTracker currentStatus={firstOrder.status} />}
 
-          <TabsContent value={activeTab} className="mt-0">
+          <TabsContent value={activeTab} className="mt-6">
             {filteredAndSortedOrders.length === 0 ? (
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                className="text-center py-20"
+                className="text-center py-16"
               >
                 <div
-                  className="p-8 rounded-3xl shadow-xl inline-block"
+                  className="p-8 rounded-lg border inline-block"
                   style={{
                     backgroundColor: colors.cardBackground,
                     borderColor: colors.border,
                   }}
                 >
-                  <div className="flex items-center justify-center">
-                  <Package className="h-16 w-16 mb-4" style={{ color: colors.accent }} />
-
+                  <div className="flex items-center justify-center mb-4">
+                    <div
+                      className="p-3 rounded-full"
+                      style={{ backgroundColor: `${colors.textSecondary}10` }}
+                    >
+                      <Package className="h-12 w-12" style={{ color: colors.textSecondary }} />
+                    </div>
                   </div>
                   <p
-                    className="text-xl font-bold mb-2"
+                    className="text-lg font-bold mb-2"
                     style={{ color: colors.text }}
                   >
                     Không có đơn hàng nào
                   </p>
-                  <p style={{ color: colors.textSecondary }}>
+                  <p
+                    className="text-sm"
+                    style={{ color: colors.textSecondary }}
+                  >
                     Thử điều chỉnh bộ lọc hoặc tìm kiếm của bạn
                   </p>
                 </div>

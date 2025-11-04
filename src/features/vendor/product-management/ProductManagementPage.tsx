@@ -2,9 +2,9 @@
 
 import React, { useState } from 'react'
 import { motion } from 'framer-motion'
-import { Plus, Package, TrendingUp, DollarSign, AlertCircle } from 'lucide-react'
+import { Plus, Package, TrendingUp, AlertCircle } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { ProductTable, ProductFormDialog } from './components'
 import { useProductManagement } from './hooks/useProductManagement'
 import { ProductFormData } from './types/product.types'
@@ -76,100 +76,87 @@ export const ProductManagementPage: React.FC = () => {
     products?.filter((p: any) => p.stock?.quantity > 0 && p.stock?.quantity < 10).length || 0
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
+    <div className="container mx-auto py-8 px-4">
       <motion.div
-        initial={{ opacity: 0, y: -20 }}
+        initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        <div className="flex items-center justify-between">
+        {/* Header */}
+        <div className="mb-8 flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-foreground">Quản lý sản phẩm</h1>
-            <p className="text-muted-foreground mt-2">Quản lý danh sách sản phẩm của bạn</p>
+            <h1 className="text-3xl font-bold text-gray-900 mb-2 flex items-center gap-3">
+              <Package className="w-8 h-8 text-blue-600" />
+              Quản lý sản phẩm
+            </h1>
+            <p className="text-gray-600">Quản lý danh sách sản phẩm của bạn</p>
           </div>
           <Button onClick={handleCreate} className="gap-2">
-            <Plus className="h-4 w-4" />
+            <Plus className="h-5 w-5" />
             Thêm sản phẩm
           </Button>
         </div>
+
+        {/* Stats Cards */}
+        <div className="grid md:grid-cols-3 gap-6 mb-8">
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle className="text-sm font-medium text-gray-600">Tổng sản phẩm</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="flex items-center gap-2">
+                <Package className="w-5 h-5 text-blue-600" />
+                <span className="text-2xl font-bold">{totalProducts}</span>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle className="text-sm font-medium text-gray-600">Còn hàng</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="flex items-center gap-2">
+                <TrendingUp className="w-5 h-5 text-green-600" />
+                <span className="text-2xl font-bold text-green-600">{inStockProducts}</span>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle className="text-sm font-medium text-gray-600">Sắp hết hàng</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="flex items-center gap-2">
+                <AlertCircle className="w-5 h-5 text-orange-600" />
+                <span className="text-2xl font-bold text-orange-600">{lowStockProducts}</span>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Product Table */}
+        <ProductTable
+          products={products || []}
+          isLoading={isLoading}
+          onEdit={handleEdit}
+          onView={handleView}
+          onDelete={handleDelete}
+        />
+
+        {/* Product Form Dialog */}
+        <ProductFormDialog
+          open={dialogOpen}
+          onOpenChange={(open) => {
+            setDialogOpen(open)
+            if (!open) setSelectedProduct(null)
+          }}
+          onSubmit={handleSubmit}
+          initialData={selectedProduct}
+          mode={mode}
+        />
       </motion.div>
-
-      {/* Stats Cards */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.1 }}
-        className="grid grid-cols-1 md:grid-cols-3 gap-6"
-      >
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Tổng sản phẩm</CardTitle>
-            <Package className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{totalProducts}</div>
-            <p className="text-xs text-muted-foreground">Sản phẩm trong hệ thống</p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Còn hàng</CardTitle>
-            <TrendingUp className="h-4 w-4 text-green-500" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-green-600">{inStockProducts}</div>
-            <p className="text-xs text-muted-foreground">Sản phẩm có sẵn</p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Sắp hết hàng</CardTitle>
-            <AlertCircle className="h-4 w-4 text-orange-500" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-orange-600">{lowStockProducts}</div>
-            <p className="text-xs text-muted-foreground">Cần nhập thêm</p>
-          </CardContent>
-        </Card>
-      </motion.div>
-
-      {/* Product Table */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.2 }}
-      >
-        <Card>
-          <CardHeader>
-            <CardTitle>Danh sách sản phẩm</CardTitle>
-            <CardDescription>Quản lý thông tin và trạng thái sản phẩm</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <ProductTable
-              products={products || []}
-              isLoading={isLoading}
-              onEdit={handleEdit}
-              onView={handleView}
-              onDelete={handleDelete}
-            />
-          </CardContent>
-        </Card>
-      </motion.div>
-
-      {/* Product Form Dialog */}
-      <ProductFormDialog
-        open={dialogOpen}
-        onOpenChange={(open) => {
-          setDialogOpen(open)
-          if (!open) setSelectedProduct(null)
-        }}
-        onSubmit={handleSubmit}
-        initialData={selectedProduct}
-        mode={mode}
-      />
     </div>
   )
 }

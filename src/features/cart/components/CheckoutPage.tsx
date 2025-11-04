@@ -1,21 +1,8 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import {
-  ArrowLeft,
-  CreditCard,
-  MapPin,
-  User,
-  Banknote,
-  Wallet,
-  ShoppingCart,
-  Sparkles,
-  Shield,
-  Truck,
-  CheckCircle,
-  Package,
-} from 'lucide-react'
+import { ArrowLeft, CreditCard, MapPin, ShoppingCart, Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -26,6 +13,7 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
 import { usePayment } from '@/features/payment/hooks'
+import { useTheme } from '@/contexts/ThemeContext'
 
 interface CheckoutFormData {
   paymentMethod: 'cod' | 'bank_transfer' | 'credit_card' | 'e_wallet'
@@ -44,6 +32,7 @@ const CheckoutPage: React.FC = () => {
   const { cart, isLoadingCart, clearCart } = useCartApi()
   const { checkoutFromCart } = useOrders()
   const { createPayment } = usePayment()
+  const { colors } = useTheme()
 
   const [formData, setFormData] = useState<CheckoutFormData>({
     paymentMethod: 'cod',
@@ -59,6 +48,38 @@ const CheckoutPage: React.FC = () => {
 
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [createdOrder, setCreatedOrder] = useState<any>(null)
+
+  // Fix placeholder color for all inputs
+  useEffect(() => {
+    const styleId = 'checkout-input-placeholder-style'
+    let style = document.getElementById(styleId) as HTMLStyleElement
+
+    if (!style) {
+      style = document.createElement('style')
+      style.id = styleId
+      document.head.appendChild(style)
+    }
+
+    style.textContent = `
+      #shippingName::placeholder,
+      #shippingPhone::placeholder,
+      #shippingAddress::placeholder,
+      #shippingWard::placeholder,
+      #shippingDistrict::placeholder,
+      #shippingCity::placeholder,
+      #customerNotes::placeholder {
+        color: ${colors.textSecondary};
+        opacity: 0.6;
+      }
+    `
+
+    return () => {
+      const existingStyle = document.getElementById(styleId)
+      if (existingStyle) {
+        document.head.removeChild(existingStyle)
+      }
+    }
+  }, [colors.textSecondary])
 
   // Giữ nguyên logic xử lý
   const handleInputChange = (field: keyof CheckoutFormData, value: string) => {
@@ -117,95 +138,28 @@ const CheckoutPage: React.FC = () => {
     {
       value: 'cod',
       label: 'Thanh toán khi nhận hàng',
-      description: 'Thanh toán tiền mặt khi nhận hàng',
-      icon: <User className="h-7 w-7" />,
-      color: 'from-emerald-500 to-teal-500',
     },
     {
       value: 'bank_transfer',
-      description: 'Chuyển khoản qua ngân hàng',
-      color: 'from-blue-500 to-indigo-500',
       label: 'Chuyển khoản ngân hàng (PayOS)',
-      icon: <Banknote className="h-6 w-6 text-muted-foreground" />,
     },
     {
       value: 'credit_card',
       label: 'Thẻ tín dụng/Ghi nợ',
-      description: 'Visa, Mastercard, JCB...',
-      icon: <CreditCard className="h-7 w-7" />,
-      color: 'from-purple-500 to-pink-500',
     },
     {
       value: 'e_wallet',
       label: 'Ví điện tử',
-      description: 'MoMo, ZaloPay, VNPay...',
-      icon: <Wallet className="h-7 w-7" />,
-      color: 'from-orange-500 to-red-500',
     },
   ]
 
   // Trạng thái loading
   if (isLoadingCart) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-indigo-50">
-        <div className="container mx-auto px-4 py-12">
-          <div className="flex flex-col items-center justify-center min-h-[70vh]">
-            {/* Animated Loading Icon */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              className="relative mb-8"
-            >
-              {/* Outer rotating circle */}
-              <motion.div
-                animate={{ rotate: 360 }}
-                transition={{ duration: 2, repeat: Infinity, ease: 'linear' }}
-                className="w-24 h-24 rounded-full border-4 border-transparent border-t-indigo-500 border-r-purple-500"
-              />
-
-              {/* Inner icon */}
-              <motion.div
-                animate={{
-                  scale: [1, 1.2, 1],
-                  rotate: [0, 180, 360],
-                }}
-                transition={{ duration: 2, repeat: Infinity }}
-                className="absolute inset-0 flex items-center justify-center"
-              >
-                <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center shadow-2xl">
-                  <ShoppingCart className="w-8 h-8 text-white" />
-                </div>
-              </motion.div>
-            </motion.div>
-
-            {/* Loading text */}
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-              className="text-center"
-            >
-              <h3 className="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 mb-3">
-                Đang tải...
-              </h3>
-              <div className="flex items-center gap-2 text-slate-600">
-                <motion.div
-                  animate={{ opacity: [0.4, 1, 0.4] }}
-                  transition={{ duration: 1.5, repeat: Infinity, delay: 0 }}
-                  className="w-2 h-2 rounded-full bg-indigo-500"
-                />
-                <motion.div
-                  animate={{ opacity: [0.4, 1, 0.4] }}
-                  transition={{ duration: 1.5, repeat: Infinity, delay: 0.2 }}
-                  className="w-2 h-2 rounded-full bg-purple-500"
-                />
-                <motion.div
-                  animate={{ opacity: [0.4, 1, 0.4] }}
-                  transition={{ duration: 1.5, repeat: Infinity, delay: 0.4 }}
-                  className="w-2 h-2 rounded-full bg-pink-500"
-                />
-              </div>
-            </motion.div>
+      <div className="min-h-screen" style={{ backgroundColor: colors.background }}>
+        <div className="max-w-7xl mx-auto relative z-10 py-12 px-6">
+          <div className="flex items-center justify-center min-h-[400px]">
+            <Loader2 className="w-8 h-8 animate-spin" style={{ color: colors.accent }} />
           </div>
         </div>
       </div>
@@ -215,81 +169,20 @@ const CheckoutPage: React.FC = () => {
   // Trạng thái giỏ hàng trống
   if (!cart?.items?.length) {
     return (
-      <div className="min-h-screen pt-20 bg-gradient-to-br from-slate-50 via-white to-indigo-50">
-        <div className="container mx-auto px-4 py-12">
-          <div className="flex flex-col items-center justify-center min-h-[70vh]">
-            {/* Empty cart illustration */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.6 }}
-              className="relative mb-12"
-            >
-              {/* Background decoration */}
-              <motion.div
-                animate={{
-                  scale: [1, 1.1, 1],
-                  opacity: [0.3, 0.6, 0.3],
-                }}
-                transition={{
-                  duration: 3,
-                  repeat: Infinity,
-                  ease: 'easeInOut',
-                }}
-                className="absolute inset-0 rounded-full bg-gradient-to-r from-indigo-200/50 via-purple-200/50 to-pink-200/50 blur-3xl"
-              />
-
-              {/* Main icon */}
-              <div className="relative w-48 h-48 rounded-3xl flex items-center justify-center bg-white border-2 border-dashed border-slate-300 shadow-2xl">
-                <ShoppingCart className="w-20 h-20 text-slate-400" />
-
-                {/* Floating sparkle */}
-                <motion.div
-                  animate={{
-                    y: [0, -15, 0],
-                    rotate: [0, 10, -10, 0],
-                  }}
-                  transition={{
-                    duration: 4,
-                    repeat: Infinity,
-                    ease: 'easeInOut',
-                  }}
-                  className="absolute -top-4 -right-4"
-                >
-                  <div className="w-8 h-8 rounded-full bg-gradient-to-r from-indigo-500 to-purple-500 flex items-center justify-center shadow-lg">
-                    <Sparkles className="w-4 h-4 text-white" />
-                  </div>
-                </motion.div>
-              </div>
-            </motion.div>
-
-            {/* Text content */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.3 }}
-              className="text-center max-w-lg"
-            >
-              <h1 className="text-5xl font-black mb-6 text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600">
-                Giỏ hàng trống
-              </h1>
-              <p className="text-xl text-slate-600 mb-10 leading-relaxed">
-                Có vẻ như bạn chưa thêm sản phẩm nào. Hãy khám phá các sản phẩm tuyệt vời của chúng
-                tôi!
-              </p>
-
-              {/* Action button */}
-              <Link href="/categories">
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="inline-flex items-center gap-3 px-10 py-5 rounded-2xl font-black text-lg bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 text-white shadow-2xl shadow-purple-500/50 hover:shadow-purple-500/70 transition-all duration-300"
-                >
-                  <ShoppingCart className="w-6 h-6" />
-                  Tiếp tục mua sắm
-                </motion.button>
-              </Link>
-            </motion.div>
+      <div className="min-h-screen" style={{ backgroundColor: colors.background }}>
+        <div className="max-w-7xl mx-auto relative z-10 py-12 px-6">
+          <div className="text-center py-16">
+            <ShoppingCart className="w-16 h-16 mx-auto mb-4" style={{ color: colors.textSecondary }} />
+            <h1 className="text-3xl font-bold mb-4" style={{ color: colors.text }}>Giỏ hàng trống</h1>
+            <p className="mb-8" style={{ color: colors.textSecondary }}>
+              Có vẻ như bạn chưa thêm sản phẩm nào. Hãy khám phá các sản phẩm của chúng tôi!
+            </p>
+            <Link href="/categories">
+              <Button className="gap-2" style={{ backgroundColor: colors.accent }}>
+                <ShoppingCart className="w-5 h-5" />
+                Tiếp tục mua sắm
+              </Button>
+            </Link>
           </div>
         </div>
       </div>
@@ -298,305 +191,311 @@ const CheckoutPage: React.FC = () => {
 
   // Giao diện chính
   return (
-    <div className="min-h-screen pt-20 bg-gradient-to-br from-slate-50 via-white to-indigo-50">
-      <div className="container mx-auto px-4 py-12">
+    <div className="min-h-screen" style={{ backgroundColor: colors.background }}>
+      <div className="max-w-7xl mx-auto relative z-10 py-6 px-6">
         {/* Header */}
         <motion.div
-          initial={{ opacity: 0, y: -20 }}
+          initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="mb-12"
         >
-          <div className="flex items-center gap-6 mb-6">
+          <div className="mb-4 flex items-center gap-4">
             <Link href="/cart">
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className="p-4 rounded-2xl bg-white border-2 border-slate-200 text-slate-700 hover:border-indigo-300 hover:shadow-xl transition-all duration-300"
-              >
-                <ArrowLeft className="w-6 h-6" />
-              </motion.button>
+              <Button variant="outline" size="icon" style={{ 
+                backgroundColor: colors.cardBackground,
+                borderColor: colors.border,
+                color: colors.text 
+              }}>
+                <ArrowLeft className="w-5 h-5" />
+              </Button>
             </Link>
-
             <div>
-              <h1 className="text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 mb-2">
+              <h1 className="text-2xl font-bold flex items-center gap-3" style={{ color: colors.text }}>
+                {/* <ShoppingCart className="w-6 h-6" style={{ color: colors.textSecondary }} /> */}
                 Thanh toán
               </h1>
-              <p className="text-xl text-slate-600">Hoàn tất đơn hàng của bạn</p>
+              <p style={{ color: colors.textSecondary }}>Hoàn tất đơn hàng của bạn</p>
             </div>
           </div>
 
-          {/* Progress steps */}
-          <div className="flex items-center gap-4 p-6 rounded-2xl bg-white border-2 border-slate-200 shadow-xl">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 flex items-center justify-center shadow-lg">
-                <CheckCircle className="w-6 h-6 text-white" />
-              </div>
-              <span className="font-black text-slate-900">Giỏ hàng</span>
-            </div>
-
-            <div className="flex-1 h-1 bg-gradient-to-r from-emerald-500 to-indigo-500 rounded-full" />
-
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-500 flex items-center justify-center shadow-lg">
-                <CreditCard className="w-6 h-6 text-white" />
-              </div>
-              <span className="font-black text-slate-900">Thanh toán</span>
-            </div>
-
-            <div className="flex-1 h-1 bg-slate-200 rounded-full" />
-
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-slate-200 flex items-center justify-center">
-                <CheckCircle className="w-6 h-6 text-slate-400" />
-              </div>
-              <span className="font-bold text-slate-400">Hoàn tất</span>
-            </div>
-          </div>
-        </motion.div>
-
-        <form onSubmit={handleSubmit}>
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-            {/* Cột thông tin (trái) */}
-            <div className="lg:col-span-7">
-              <motion.div
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.5, delay: 0.2 }}
-                className="space-y-8"
-              >
+          <form onSubmit={handleSubmit}>
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              {/* Cột thông tin (trái) */}
+              <div className="lg:col-span-2 space-y-4">
                 {/* 1. Thông tin giao hàng */}
-                <div className="bg-gradient-to-br from-slate-50 to-slate-100/50 rounded-xl p-6 border border-slate-200/60">
-                  <div className="flex items-center gap-3 mb-6">
-                    <div className="p-2 bg-primary/10 rounded-lg">
-                      <MapPin className="h-6 w-6 text-primary" />
-                    </div>
-
-                    <div>
-                      <h2 className="text-xl font-semibold text-slate-800">Thông tin giao hàng</h2>
-                      <p className="text-sm text-slate-600">
-                        Vui lòng điền đầy đủ thông tin để chúng tôi có thể giao hàng
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="space-y-6">
-                    {/* Thông tin cá nhân */}
+                <Card style={{ 
+                  backgroundColor: colors.cardBackground,
+                  borderColor: colors.border 
+                }}>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2" style={{ color: colors.text }}>
+                      <MapPin className="h-5 w-5" style={{ color: colors.textSecondary }} />
+                      Thông tin giao hàng
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
                     <div className="space-y-4">
-                      <h3 className="text-sm font-medium text-slate-700 uppercase tracking-wide">
-                        Thông tin cá nhân
-                      </h3>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="space-y-2">
-                          <Label
-                            htmlFor="shippingName"
-                            className="text-sm font-medium text-slate-700"
-                          >
-                            Họ và tên <span className="text-red-500">*</span>
+                          <Label htmlFor="shippingName" style={{ color: colors.text }}>
+                            Họ và tên <span style={{ color: colors.error }}>*</span>
                           </Label>
-                          <Input
-                            id="shippingName"
-                            value={formData.shippingName}
-                            onChange={(e) => handleInputChange('shippingName', e.target.value)}
-                            required
-                            className="h-11 border-slate-300 focus:border-primary focus:ring-primary/20 transition-all duration-200"
-                            placeholder="Nhập họ và tên đầy đủ"
-                          />
+                                                     <Input
+                             id="shippingName"
+                             value={formData.shippingName}
+                             onChange={(e) => handleInputChange('shippingName', e.target.value)}
+                             required
+                             placeholder="Nhập họ và tên đầy đủ"
+                             style={{
+                               backgroundColor: colors.cardBackground,
+                               borderColor: `${colors.border}60`,
+                               color: colors.text,
+                             }}
+                             className="focus:ring-2 focus:ring-offset-1"
+                             onFocus={(e) => {
+                               e.currentTarget.style.setProperty('--tw-ring-color', `${colors.border}40`)
+                               e.currentTarget.style.setProperty('--tw-ring-offset-color', colors.cardBackground)
+                               e.currentTarget.style.borderColor = colors.accent
+                             }}
+                             onBlur={(e) => {
+                               e.currentTarget.style.borderColor = `${colors.border}60`
+                             }}
+                           />
                         </div>
                         <div className="space-y-2">
-                          <Label
-                            htmlFor="shippingPhone"
-                            className="text-sm font-medium text-slate-700"
-                          >
-                            Số điện thoại <span className="text-red-500">*</span>
+                          <Label htmlFor="shippingPhone" style={{ color: colors.text }}>
+                            Số điện thoại <span style={{ color: colors.error }}>*</span>
                           </Label>
-                          <Input
-                            id="shippingPhone"
-                            type="tel"
-                            value={formData.shippingPhone}
-                            onChange={(e) => handleInputChange('shippingPhone', e.target.value)}
-                            required
-                            className="h-11 border-slate-300 focus:border-primary focus:ring-primary/20 transition-all duration-200"
-                            placeholder="Nhập số điện thoại"
-                          />
+                                                     <Input
+                             id="shippingPhone"
+                             type="tel"
+                             value={formData.shippingPhone}
+                             onChange={(e) => handleInputChange('shippingPhone', e.target.value)}
+                             required
+                             placeholder="Nhập số điện thoại"
+                             style={{
+                               backgroundColor: colors.cardBackground,
+                               borderColor: `${colors.border}60`,
+                               color: colors.text,
+                             }}
+                             className="focus:ring-2 focus:ring-offset-1"
+                             onFocus={(e) => {
+                               e.currentTarget.style.setProperty('--tw-ring-color', `${colors.border}40`)
+                               e.currentTarget.style.setProperty('--tw-ring-offset-color', colors.cardBackground)
+                               e.currentTarget.style.borderColor = colors.accent
+                             }}
+                             onBlur={(e) => {
+                               e.currentTarget.style.borderColor = `${colors.border}60`
+                             }}
+                           />
                         </div>
                       </div>
-                    </div>
 
-                    {/* Địa chỉ giao hàng */}
-                    <div className="space-y-4">
-                      <h3 className="text-sm font-medium text-slate-700 uppercase tracking-wide">
-                        Địa chỉ giao hàng
-                      </h3>
-                      <div className="space-y-4">
-                        <div className="space-y-2">
-                          <Label
-                            htmlFor="shippingAddress"
-                            className="text-sm font-medium text-slate-700"
-                          >
-                            Địa chỉ chi tiết <span className="text-red-500">*</span>
-                          </Label>
-                          <Input
-                            id="shippingAddress"
-                            value={formData.shippingAddress}
-                            onChange={(e) => handleInputChange('shippingAddress', e.target.value)}
-                            required
-                            className="h-11 border-slate-300 focus:border-primary focus:ring-primary/20 transition-all duration-200"
-                            placeholder="Số nhà, tên đường, tên khu phố..."
-                          />
-                        </div>
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                          <div className="space-y-2">
-                            <Label
-                              htmlFor="shippingWard"
-                              className="text-sm font-medium text-slate-700"
-                            >
-                              Phường/Xã
-                            </Label>
-                            <Input
-                              id="shippingWard"
-                              value={formData.shippingWard}
-                              onChange={(e) => handleInputChange('shippingWard', e.target.value)}
-                              className="h-11 border-slate-300 focus:border-primary focus:ring-primary/20 transition-all duration-200"
-                              placeholder="Phường/Xã"
-                            />
-                          </div>
-                          <div className="space-y-2">
-                            <Label
-                              htmlFor="shippingDistrict"
-                              className="text-sm font-medium text-slate-700"
-                            >
-                              Quận/Huyện
-                            </Label>
-                            <Input
-                              id="shippingDistrict"
-                              value={formData.shippingDistrict}
-                              onChange={(e) =>
-                                handleInputChange('shippingDistrict', e.target.value)
-                              }
-                              className="h-11 border-slate-300 focus:border-primary focus:ring-primary/20 transition-all duration-200"
-                              placeholder="Quận/Huyện"
-                            />
-                          </div>
-                          <div className="space-y-2">
-                            <Label
-                              htmlFor="shippingCity"
-                              className="text-sm font-medium text-slate-700"
-                            >
-                              Tỉnh/Thành phố
-                            </Label>
-                            <Input
-                              id="shippingCity"
-                              value={formData.shippingCity}
-                              onChange={(e) => handleInputChange('shippingCity', e.target.value)}
-                              className="h-11 border-slate-300 focus:border-primary focus:ring-primary/20 transition-all duration-200"
-                              placeholder="Tỉnh/Thành phố"
-                            />
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Ghi chú */}
-                    <div className="space-y-4">
-                      <h3 className="text-sm font-medium text-slate-700 uppercase tracking-wide">
-                        Ghi chú bổ sung
-                      </h3>
                       <div className="space-y-2">
-                        <Label
-                          htmlFor="customerNotes"
-                          className="text-sm font-medium text-slate-700"
-                        >
-                          Ghi chú đơn hàng <span className="text-slate-400">(tùy chọn)</span>
+                        <Label htmlFor="shippingAddress" style={{ color: colors.text }}>
+                          Địa chỉ chi tiết <span style={{ color: colors.error }}>*</span>
                         </Label>
-                        <Textarea
-                          id="customerNotes"
-                          value={formData.customerNotes}
-                          onChange={(e) => handleInputChange('customerNotes', e.target.value)}
-                          placeholder="Ghi chú thêm cho người giao hàng (ví dụ: giao vào giờ hành chính, để ở cổng...)"
-                          className="min-h-[100px] border-slate-300 focus:border-primary focus:ring-primary/20 transition-all duration-200 resize-none"
-                        />
+                                                 <Input
+                           id="shippingAddress"
+                           value={formData.shippingAddress}
+                           onChange={(e) => handleInputChange('shippingAddress', e.target.value)}
+                           required
+                           placeholder="Số nhà, tên đường..."
+                           style={{
+                             backgroundColor: colors.cardBackground,
+                             borderColor: `${colors.border}60`,
+                             color: colors.text,
+                           }}
+                           className="focus:ring-2 focus:ring-offset-1"
+                           onFocus={(e) => {
+                             e.currentTarget.style.setProperty('--tw-ring-color', `${colors.border}40`)
+                             e.currentTarget.style.setProperty('--tw-ring-offset-color', colors.cardBackground)
+                             e.currentTarget.style.borderColor = colors.accent
+                           }}
+                           onBlur={(e) => {
+                             e.currentTarget.style.borderColor = `${colors.border}60`
+                           }}
+                         />
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="shippingWard" style={{ color: colors.text }}>Phường/Xã</Label>
+                                                     <Input
+                             id="shippingWard"
+                             value={formData.shippingWard}
+                             onChange={(e) => handleInputChange('shippingWard', e.target.value)}
+                             placeholder="Phường/Xã"
+                             style={{
+                               backgroundColor: colors.cardBackground,
+                               borderColor: `${colors.border}60`,
+                               color: colors.text,
+                             }}
+                             className="focus:ring-2 focus:ring-offset-1"
+                             onFocus={(e) => {
+                               e.currentTarget.style.setProperty('--tw-ring-color', `${colors.border}40`)
+                               e.currentTarget.style.setProperty('--tw-ring-offset-color', colors.cardBackground)
+                               e.currentTarget.style.borderColor = colors.accent
+                             }}
+                             onBlur={(e) => {
+                               e.currentTarget.style.borderColor = `${colors.border}60`
+                             }}
+                           />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="shippingDistrict" style={{ color: colors.text }}>Quận/Huyện</Label>
+                                                     <Input
+                             id="shippingDistrict"
+                             value={formData.shippingDistrict}
+                             onChange={(e) => handleInputChange('shippingDistrict', e.target.value)}
+                             placeholder="Quận/Huyện"
+                             style={{
+                               backgroundColor: colors.cardBackground,
+                               borderColor: `${colors.border}60`,
+                               color: colors.text,
+                             }}
+                             className="focus:ring-2 focus:ring-offset-1"
+                             onFocus={(e) => {
+                               e.currentTarget.style.setProperty('--tw-ring-color', `${colors.border}40`)
+                               e.currentTarget.style.setProperty('--tw-ring-offset-color', colors.cardBackground)
+                               e.currentTarget.style.borderColor = colors.accent
+                             }}
+                             onBlur={(e) => {
+                               e.currentTarget.style.borderColor = `${colors.border}60`
+                             }}
+                           />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="shippingCity" style={{ color: colors.text }}>Tỉnh/Thành phố</Label>
+                                                     <Input
+                             id="shippingCity"
+                             value={formData.shippingCity}
+                             onChange={(e) => handleInputChange('shippingCity', e.target.value)}
+                             placeholder="Tỉnh/Thành phố"
+                             style={{
+                               backgroundColor: colors.cardBackground,
+                               borderColor: `${colors.border}60`,
+                               color: colors.text,
+                             }}
+                             className="focus:ring-2 focus:ring-offset-1"
+                             onFocus={(e) => {
+                               e.currentTarget.style.setProperty('--tw-ring-color', `${colors.border}40`)
+                               e.currentTarget.style.setProperty('--tw-ring-offset-color', colors.cardBackground)
+                               e.currentTarget.style.borderColor = colors.accent
+                             }}
+                             onBlur={(e) => {
+                               e.currentTarget.style.borderColor = `${colors.border}60`
+                             }}
+                           />
+                        </div>
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label htmlFor="customerNotes" style={{ color: colors.text }}>Ghi chú đơn hàng (tùy chọn)</Label>
+                                                 <Textarea
+                           id="customerNotes"
+                           value={formData.customerNotes}
+                           onChange={(e) => handleInputChange('customerNotes', e.target.value)}
+                           placeholder="Ghi chú thêm cho người giao hàng..."
+                           className="min-h-[100px] resize-none focus:ring-2 focus:ring-offset-1"
+                           style={{
+                             backgroundColor: colors.cardBackground,
+                             borderColor: `${colors.border}60`,
+                             color: colors.text,
+                           }}
+                           onFocus={(e) => {
+                             e.currentTarget.style.setProperty('--tw-ring-color', `${colors.border}40`)
+                             e.currentTarget.style.setProperty('--tw-ring-offset-color', colors.cardBackground)
+                             e.currentTarget.style.borderColor = colors.accent
+                           }}
+                           onBlur={(e) => {
+                             e.currentTarget.style.borderColor = `${colors.border}60`
+                           }}
+                         />
                       </div>
                     </div>
-                  </div>
-                </div>
+                  </CardContent>
+                </Card>
 
                 {/* 2. Phương thức thanh toán */}
-                <div className="rounded-3xl border-2 border-slate-200 bg-white p-8 shadow-2xl">
-                  {/* Header */}
-                  <div className="flex items-center gap-4 mb-8">
-                    <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center shadow-xl">
-                      <CreditCard className="h-7 w-7 text-white" />
+                <Card style={{ 
+                  backgroundColor: colors.cardBackground,
+                  borderColor: colors.border 
+                }}>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2" style={{ color: colors.text }}>
+                      <CreditCard className="h-5 w-5" style={{ color: colors.textSecondary }} />
+                      Phương thức thanh toán
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="grid grid-cols-1 gap-3">
+                      {paymentMethods.map((method) => (
+                        <label key={method.value} className="relative cursor-pointer">
+                          <input
+                            type="radio"
+                            name="paymentMethod"
+                            value={method.value}
+                            checked={formData.paymentMethod === method.value}
+                            onChange={(e) =>
+                              handleInputChange('paymentMethod', e.target.value as any)
+                            }
+                            className="peer absolute opacity-0"
+                          />
+                          <div 
+                            className="p-4 rounded-lg border cursor-pointer transition-all duration-200 peer-checked:bg-card-secondary"
+                            style={{
+                              borderColor: formData.paymentMethod === method.value ? colors.accent : colors.border,
+                              backgroundColor: formData.paymentMethod === method.value 
+                                ? `${colors.accent}10` 
+                                : colors.cardBackground,
+                            }}
+                            onMouseEnter={(e) => {
+                              if (formData.paymentMethod !== method.value) {
+                                e.currentTarget.style.backgroundColor = colors.hoverBackground
+                              }
+                            }}
+                            onMouseLeave={(e) => {
+                              if (formData.paymentMethod !== method.value) {
+                                e.currentTarget.style.backgroundColor = colors.cardBackground
+                              }
+                            }}
+                          >
+                            <span className="font-medium" style={{ color: colors.text }}>{method.label}</span>
+                          </div>
+                        </label>
+                      ))}
                     </div>
-                    <div>
-                      <h2 className="text-3xl font-black text-slate-900">Phương thức thanh toán</h2>
-                      <p className="text-slate-600">Chọn cách thanh toán phù hợp</p>
-                    </div>
-                  </div>
+                  </CardContent>
+                </Card>
+              </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                    {paymentMethods.map((method, index) => (
-                      <motion.label
-                        key={method.value}
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.3, delay: index * 0.1 }}
-                        className="relative group cursor-pointer"
-                      >
-                        <input
-                          type="radio"
-                          name="paymentMethod"
-                          value={method.value}
-                          checked={formData.paymentMethod === method.value}
-                          onChange={(e) =>
-                            handleInputChange('paymentMethod', e.target.value as any)
-                          }
-                          className="peer absolute opacity-0"
-                        />
-                        <div className="flex items-center gap-4 p-4 rounded-lg border cursor-pointer transition-all duration-200 peer-checked:border-orange-400 peer-checked:bg-orange-50 hover:bg-muted/50">
-                          {method.icon}
-                          <span className="font-medium">{method.label}</span>
-                        </div>
-                      </motion.label>
-                    ))}
-                  </div>
-                </div>
-              </motion.div>
-            </div>
-
-            {/* Cột tóm tắt đơn hàng (phải) */}
-            <div className="lg:col-span-5">
-              <motion.div
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.5, delay: 0.4 }}
-                className="sticky top-24"
-              >
-                <div className="rounded-3xl border-2 border-slate-200 bg-white p-8 shadow-2xl">
-                  {/* Header */}
-                  <div className="flex items-center gap-4 mb-8">
-                    <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-orange-500 to-pink-500 flex items-center justify-center shadow-xl">
-                      <ShoppingCart className="h-7 w-7 text-white" />
-                    </div>
-                    <div>
-                      <h2 className="text-3xl font-black text-slate-900">Đơn hàng</h2>
-                      <p className="text-slate-600">{cart.items.length} sản phẩm</p>
-                    </div>
-                  </div>
-
-                  {/* Danh sách sản phẩm */}
-                  <div className="mb-8">
-                    <div className="max-h-80 space-y-4 overflow-y-auto pr-2 custom-scrollbar">
-                      {cart.items.map((item, index) => (
-                        <motion.div
+              {/* Cột tóm tắt đơn hàng (phải) */}
+              <div className="lg:col-span-1">
+                <Card 
+                  className="sticky top-24"
+                  style={{ 
+                    backgroundColor: colors.cardBackground,
+                    borderColor: colors.border 
+                  }}
+                >
+                  <CardHeader>
+                    <CardTitle style={{ color: colors.text }}>
+                      Đơn hàng ({cart.items.length} sản phẩm)
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    {/* Danh sách sản phẩm */}
+                    <div className="max-h-80 space-y-3 overflow-y-auto">
+                      {cart.items.map((item) => (
+                        <div
                           key={item.id}
-                          initial={{ opacity: 0, y: 20 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          transition={{ duration: 0.3, delay: index * 0.1 }}
-                          className="flex items-center gap-4 p-4 rounded-2xl bg-slate-50 border-2 border-slate-100 hover:border-indigo-200 hover:shadow-lg transition-all duration-300"
+                          className="flex items-center gap-3 p-3 rounded-lg"
+                          style={{
+                            backgroundColor: colors.cardBackgroundSecondary,
+                          }}
                         >
-                          {/* Product Image */}
-                          <div className="relative h-20 w-20 rounded-xl overflow-hidden border-2 border-white shadow-lg flex-shrink-0">
+                          <div className="relative h-16 w-16 rounded-lg overflow-hidden flex-shrink-0">
                             <Image
                               src={item.product.images?.[0] || '/placeholder.svg'}
                               alt={item.product.name}
@@ -604,141 +503,88 @@ const CheckoutPage: React.FC = () => {
                               className="object-cover"
                               unoptimized
                             />
-
-                            {/* Quantity badge */}
-                            <div className="absolute -top-2 -right-2 w-7 h-7 rounded-full bg-gradient-to-r from-indigo-500 to-purple-500 flex items-center justify-center text-xs font-black text-white shadow-lg border-2 border-white">
+                            <div 
+                              className="absolute -top-1 -right-1 w-5 h-5 rounded-full flex items-center justify-center text-xs font-bold text-white"
+                              style={{ backgroundColor: colors.accent }}
+                            >
                               {item.quantity}
                             </div>
                           </div>
-
-                          {/* Product Info */}
                           <div className="flex-1 min-w-0">
-                            <h3 className="font-black text-slate-900 mb-1 line-clamp-2 leading-tight">
+                            <h3 className="font-medium text-sm line-clamp-2 mb-1" style={{ color: colors.text }}>
                               {item.product.name}
                             </h3>
-                            <p className="text-lg font-black text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600">
+                            <p className="text-sm font-bold" style={{ color: colors.text }}>
                               {formatPrice(item.totalPrice)}
                             </p>
                           </div>
-                        </motion.div>
+                        </div>
                       ))}
                     </div>
-                  </div>
 
-                  {/* Divider */}
-                  <div className="h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent mb-8" />
+                    <div style={{ borderTop: `1px solid ${colors.border}`, paddingTop: '1rem' }} />
 
-                  {/* Chi tiết giá */}
-                  <div className="space-y-4 mb-8">
-                    <div className="flex justify-between items-center text-slate-600">
-                      <span className="font-bold">Tạm tính</span>
-                      <span className="text-xl font-black text-slate-900">
-                        {formatPrice(cart.subtotal)}
-                      </span>
-                    </div>
-
-                    <div className="flex justify-between items-center">
-                      <div className="flex items-center gap-2">
-                        <Truck className="w-5 h-5 text-emerald-600" />
-                        <span className="font-bold text-slate-600">Phí vận chuyển</span>
+                    {/* Chi tiết giá */}
+                    <div className="space-y-3">
+                      <div className="flex justify-between items-center">
+                        <span style={{ color: colors.textSecondary }}>Tạm tính</span>
+                        <span className="font-bold" style={{ color: colors.text }}>{formatPrice(cart.subtotal)}</span>
                       </div>
-                      <span className="text-xl font-black text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-teal-600">
-                        Miễn phí
-                      </span>
-                    </div>
 
-                    {/* Divider */}
-                    <div className="h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent" />
+                      <div className="flex justify-between items-center">
+                        <span style={{ color: colors.textSecondary }}>Phí vận chuyển</span>
+                        <span className="font-bold" style={{ color: colors.success }}>Miễn phí</span>
+                      </div>
 
-                    {/* Total */}
-                    <div className="flex justify-between items-center p-6 rounded-2xl bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 border-2 border-indigo-200">
-                      <div>
-                        <p className="text-sm font-bold text-slate-600 mb-1">Tổng cộng</p>
-                        <p className="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600">
+                      <div style={{ borderTop: `1px solid ${colors.border}`, paddingTop: '0.75rem' }} />
+
+                      <div className="flex justify-between items-center">
+                        <span className="text-lg font-bold" style={{ color: colors.text }}>Tổng cộng</span>
+                        <span className="text-2xl font-bold" style={{ color: colors.text }}>
                           {formatPrice(cart.total)}
-                        </p>
+                        </span>
                       </div>
-                      <Sparkles className="w-10 h-10 text-purple-500" />
                     </div>
-                  </div>
 
-                  {/* Trust badges */}
-                  <div className="grid grid-cols-2 gap-4 mb-8">
-                    <div className="flex items-center gap-2 p-3 rounded-xl bg-emerald-50 border-2 border-emerald-200">
-                      <Shield className="w-5 h-5 text-emerald-600 flex-shrink-0" />
-                      <span className="text-xs font-black text-emerald-900">
-                        Thanh toán an toàn
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-2 p-3 rounded-xl bg-blue-50 border-2 border-blue-200">
-                      <Package className="w-5 h-5 text-blue-600 flex-shrink-0" />
-                      <span className="text-xs font-black text-blue-900">Giao hàng nhanh</span>
-                    </div>
-                  </div>
-
-                  {/* Checkout Button */}
-                  <motion.button
-                    type="submit"
-                    disabled={isSubmitting}
-                    whileHover={{ scale: isSubmitting ? 1 : 1.02 }}
-                    whileTap={{ scale: isSubmitting ? 1 : 0.98 }}
-                    className="w-full h-16 rounded-2xl font-black text-xl bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 text-white shadow-2xl shadow-purple-500/50 hover:shadow-purple-500/70 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 relative overflow-hidden group"
-                  >
-                    {/* Shine effect */}
-                    <motion.div
-                      className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent"
-                      animate={{
-                        x: ['-100%', '100%'],
+                    {/* Checkout Button */}
+                    <Button
+                      type="submit"
+                      disabled={isSubmitting}
+                      className="w-full h-12 text-base gap-2"
+                      style={{ 
+                        backgroundColor: colors.textSecondary,
+                        color: 'white'
                       }}
-                      transition={{
-                        duration: 2,
-                        repeat: Infinity,
-                        ease: 'linear',
+                      onMouseEnter={(e) => {
+                        if (!isSubmitting) {
+                          e.currentTarget.style.backgroundColor = colors.text
+                        }
                       }}
-                    />
-
-                    <div className="relative flex items-center justify-center gap-3">
+                      onMouseLeave={(e) => {
+                        if (!isSubmitting) {
+                          e.currentTarget.style.backgroundColor = colors.textSecondary
+                        }
+                      }}
+                    >
                       {isSubmitting ? (
                         <>
-                          <motion.div
-                            animate={{ rotate: 360 }}
-                            transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
-                            className="w-6 h-6 border-3 border-white border-t-transparent rounded-full"
-                          />
+                          <Loader2 className="w-5 h-5 animate-spin" />
                           Đang xử lý...
                         </>
                       ) : (
                         <>
-                          <CreditCard className="w-6 h-6" />
+                          <CreditCard className="w-5 h-5" />
                           Xác nhận đặt hàng
                         </>
                       )}
-                    </div>
-                  </motion.button>
-                </div>
-              </motion.div>
+                    </Button>
+                  </CardContent>
+                </Card>
+              </div>
             </div>
-          </div>
-        </form>
+          </form>
+        </motion.div>
       </div>
-
-      {/* Custom scrollbar styles */}
-      <style jsx global>{`
-        .custom-scrollbar::-webkit-scrollbar {
-          width: 6px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-track {
-          background: #f1f5f9;
-          border-radius: 10px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-          background: linear-gradient(to bottom, #6366f1, #a855f7);
-          border-radius: 10px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-          background: linear-gradient(to bottom, #4f46e5, #9333ea);
-        }
-      `}</style>
     </div>
   )
 }

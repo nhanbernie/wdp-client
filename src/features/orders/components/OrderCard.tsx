@@ -26,17 +26,16 @@ export function OrderCard({ order, index }: OrderCardProps) {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay: index * 0.1 }}
-      whileHover={{ y: -8, transition: { duration: 0.3 } }}
     >
       <Card
-        className="overflow-hidden border-2 shadow-xl hover:shadow-2xl transition-all duration-300 rounded-3xl"
+        className="overflow-hidden border rounded-lg"
         style={{
           backgroundColor: colors.cardBackground,
           borderColor: colors.border,
         }}
       >
         <CardHeader
-          className="p-6 border-b-2"
+          className="p-4 border-b"
           style={{
             borderColor: colors.border,
             backgroundColor: colors.cardBackground,
@@ -45,67 +44,59 @@ export function OrderCard({ order, index }: OrderCardProps) {
           <div className="flex justify-between items-start">
             <div className="flex-1">
               <div className="flex items-center gap-3 mb-2">
-                <motion.div
-                  whileHover={{ rotate: 360 }}
-                  transition={{ duration: 0.6 }}
-                  className="relative"
+                <div
+                  className="p-2 rounded-lg"
+                  style={{ backgroundColor: `${colors.accent}15` }}
                 >
-                  <div
-                    className="absolute inset-0 rounded-xl blur-md opacity-40"
-                    style={{ backgroundColor: `${colors.accent}40` }}
-                  />
-                  <div
-                    className="relative p-2 rounded-xl shadow-lg"
-                    style={{ backgroundColor: colors.accent }}
-                  >
-                    <StatusIcon className="h-5 w-5 text-white" />
-                  </div>
-                </motion.div>
+                  <StatusIcon className="h-4 w-4" style={{ color: colors.accent }} />
+                </div>
                 <div>
                   <p
-                    className="text-xs font-bold uppercase tracking-wider"
-                    style={{ color: colors.textSecondary }}
-                  >
-                    Mã đơn hàng
-                  </p>
-                  <p
-                    className="text-lg font-black"
+                    className="text-sm font-medium"
                     style={{ color: colors.text }}
                   >
-                    #{order.orderNumber}
+                    Đơn hàng #{order.orderNumber}
+                  </p>
+                  <p
+                    className="text-xs"
+                    style={{ color: colors.textSecondary }}
+                  >
+                    {new Date(order.createdAt).toLocaleDateString('vi-VN')}
                   </p>
                 </div>
               </div>
             </div>
 
-            <Badge
-              className="text-sm font-bold px-4 py-2 rounded-xl shadow-lg"
+            <div
+              className="px-3 py-1 rounded-lg"
               style={{
-                backgroundColor: colors.accent,
-                color: 'white',
+                backgroundColor: `${colors.accent}15`,
               }}
             >
-              {config.label}
-            </Badge>
+              <span
+                className="text-xs font-medium"
+                style={{ color: colors.accent }}
+              >
+                {config.label}
+              </span>
+            </div>
           </div>
         </CardHeader>
 
-        <CardContent className="p-6" style={{ backgroundColor: colors.cardBackground }}>
+        <CardContent className="p-4" style={{ backgroundColor: colors.cardBackground }}>
           {/* Order Items Preview */}
-          <div className="space-y-3 mb-6">
+          <div className="space-y-2 mb-4">
             {order.items?.slice(0, 2).map((item, idx) => (
-              <motion.div
+              <div
                 key={idx}
-                whileHover={{ scale: 1.02 }}
-                className="flex items-center gap-4 p-4 rounded-2xl shadow-md border-2"
+                className="flex items-center gap-3 p-3 rounded-lg"
                 style={{
                   backgroundColor: colors.cardBackgroundSecondary,
-                  borderColor: colors.border,
                 }}
               >
                 <div
-                  className="relative w-16 h-16 rounded-xl overflow-hidden ring-2 shadow-md"
-                  style={{ ringColor: colors.border }}
+                  className="relative w-12 h-12 rounded-lg overflow-hidden"
+                  style={{ backgroundColor: colors.border }}
                 >
                   <Image
                     src={item.thumbnail || '/placeholder.png'}
@@ -116,23 +107,23 @@ export function OrderCard({ order, index }: OrderCardProps) {
                 </div>
                 <div className="flex-1 min-w-0">
                   <p
-                    className="font-bold truncate text-base"
+                    className="font-medium truncate text-sm"
                     style={{ color: colors.text }}
                   >
                     {item.productName}
                   </p>
                   <p
-                    className="text-sm font-medium"
+                    className="text-xs"
                     style={{ color: colors.textSecondary }}
                   >
                     SL: {item.quantity} × {item.unitPrice.toLocaleString('vi-VN')} VNĐ
                   </p>
                 </div>
-              </motion.div>
+              </div>
             ))}
             {(order.items?.length ?? 0) > 2 && (
               <p
-                className="text-sm text-center font-medium py-2 rounded-xl"
+                className="text-xs text-center py-2 rounded-lg"
                 style={{
                   color: colors.textSecondary,
                   backgroundColor: colors.cardBackgroundSecondary,
@@ -143,7 +134,7 @@ export function OrderCard({ order, index }: OrderCardProps) {
             )}
           </div>
 
-          {/* Order Info */}
+          {/* Order Info - Footer content will be here */}
           <div className="space-y-3">
             <div
               className="flex items-center justify-between p-4 rounded-2xl shadow-sm border"

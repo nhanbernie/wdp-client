@@ -12,7 +12,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui'
-import { Eye, MoreVertical, Edit, Trash2, Package } from 'lucide-react'
+import { Eye, MoreVertical, Edit, Trash2, Package, Loader2 } from 'lucide-react'
 import { Product } from '@/services/vendor/vendor.types'
 
 interface ProductTableProps {
@@ -24,23 +24,6 @@ interface ProductTableProps {
 }
 
 export function ProductTable({ products, onView, onEdit, onDelete, isLoading }: ProductTableProps) {
-  if (isLoading) {
-    return (
-      <div className="flex justify-center items-center py-12">
-        <div className="text-muted-foreground">Đang tải...</div>
-      </div>
-    )
-  }
-
-  if (products.length === 0) {
-    return (
-      <div className="flex flex-col justify-center items-center py-12 text-center">
-        <Package className="h-12 w-12 text-muted-foreground mb-4" />
-        <p className="text-muted-foreground">Chưa có sản phẩm nào</p>
-      </div>
-    )
-  }
-
   const formatPrice = (price: number, currency: string) => {
     return new Intl.NumberFormat('vi-VN', {
       style: 'currency',
@@ -70,15 +53,38 @@ export function ProductTable({ products, onView, onEdit, onDelete, isLoading }: 
     )
   }
 
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
+      </div>
+    )
+  }
+
+  if (products.length === 0) {
+    return (
+      <div className="text-center py-16">
+        <Package className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+        <p className="text-gray-500">Chưa có sản phẩm nào</p>
+      </div>
+    )
+  }
+
   return (
     <div className="overflow-x-auto">
       <table className="w-full border-collapse">
         <thead className="bg-muted/50">
           <tr>
-            <th className="px-4 py-3 text-left text-sm font-semibold text-foreground">Sản phẩm</th>
-            <th className="px-4 py-3 text-left text-sm font-semibold text-foreground">Danh mục</th>
+            <th className="px-4 py-3 text-left text-sm font-semibold text-foreground">
+              Sản phẩm
+            </th>
+            <th className="px-4 py-3 text-left text-sm font-semibold text-foreground">
+              Danh mục
+            </th>
             <th className="px-4 py-3 text-left text-sm font-semibold text-foreground">Giá</th>
-            <th className="px-4 py-3 text-left text-sm font-semibold text-foreground">Tồn kho</th>
+            <th className="px-4 py-3 text-left text-sm font-semibold text-foreground">
+              Tồn kho
+            </th>
             <th className="px-4 py-3 text-left text-sm font-semibold text-foreground">
               Trạng thái
             </th>

@@ -87,7 +87,7 @@ export function OrderSearchAndFilter({
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay: 0.2 }}
-      className="mb-8 p-6 rounded-2xl shadow-xl"
+      className="mb-6 p-4 rounded-lg border"
       style={{
         backgroundColor: colors.cardBackground,
         borderColor: colors.border,
