@@ -100,6 +100,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       // Handle redirects based on role (only once per profile load)
       if (typeof window !== 'undefined' && !hasRedirected.current) {
         const currentPath = window.location.pathname
+        const isPaymentRoute = currentPath.startsWith('/payment')
 
         // Don't redirect if user is already on an appropriate page for their role
         const isOnCorrectRolePage =
@@ -107,7 +108,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           (updatedUser.role === 'vendor' && currentPath.startsWith('/vendor')) ||
           (updatedUser.role === 'user' &&
             !currentPath.startsWith('/admin') &&
-            !currentPath.startsWith('/vendor'))
+            !currentPath.startsWith('/vendor')) ||
+          isPaymentRoute
 
         if (isOnCorrectRolePage) {
           hasRedirected.current = true // Mark as handled
@@ -119,8 +121,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           currentPath === '/login' ||
           currentPath === '/register' ||
           currentPath === '/' ||
-          (updatedUser.role === 'admin' && !currentPath.startsWith('/admin')) ||
-          (updatedUser.role === 'vendor' && !currentPath.startsWith('/vendor'))
+          (!isPaymentRoute && (
+            (updatedUser.role === 'admin' && !currentPath.startsWith('/admin')) ||
+            (updatedUser.role === 'vendor' && !currentPath.startsWith('/vendor'))
+          ))
 
         if (shouldRedirect) {
           hasRedirected.current = true // Mark as redirected
@@ -162,8 +166,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       // Handle redirects for vendor
       if (typeof window !== 'undefined' && !hasRedirected.current) {
         const currentPath = window.location.pathname
+        const isPaymentRoute = currentPath.startsWith('/payment')
 
-        if (currentPath.startsWith('/vendor')) {
+        if (currentPath.startsWith('/vendor') || isPaymentRoute) {
           hasRedirected.current = true
           return
         }
@@ -172,7 +177,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           currentPath === '/login' ||
           currentPath === '/register' ||
           currentPath === '/' ||
-          !currentPath.startsWith('/vendor')
+          (!isPaymentRoute && !currentPath.startsWith('/vendor'))
 
         if (shouldRedirect) {
           hasRedirected.current = true
