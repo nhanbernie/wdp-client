@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react'
 import { ordersService } from '@/services/admin'
+import { useAdminConfirmOrderMutation, useCompleteOrderMutation } from '@/services/orders/orders.service'
+import { useToast } from '@/hooks/useToast'
 import type { OrderListItem, OrderListParams, OrderDetails } from '../../types'
 
 export const useOrders = (params?: OrderListParams) => {
@@ -75,15 +77,33 @@ export const useOrderDetails = (orderId: string) => {
 export const useOrderActions = () => {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const toast = useToast()
+  const [adminConfirmOrder] = useAdminConfirmOrderMutation()
+  const [completeOrder] = useCompleteOrderMutation()
 
   const updateStatus = async (orderId: string, status: string) => {
     try {
       setLoading(true)
       setError(null)
+
+      if (status === 'admin_confirm') {
+        await adminConfirmOrder(orderId).unwrap()
+        toast.success('Xác nhận đơn hàng thành công')
+        return true
+      }
+
+      if (status === 'complete') {
+        await completeOrder(orderId).unwrap()
+        toast.success('Hoàn thành đơn hàng thành công')
+        return true
+      }
+
       await ordersService.updateOrderStatus(orderId, { status })
       return true
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to update order status')
+    } catch (err: any) {
+      const errorMessage = err?.data?.message || err?.message || 'Failed to update order status'
+      setError(errorMessage)
+      toast.error(errorMessage)
       return false
     } finally {
       setLoading(false)
