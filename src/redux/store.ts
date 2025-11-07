@@ -13,6 +13,7 @@ import { cartApi } from '@/services/cart'
 import { ordersApi } from '@/services/orders/orders.service'
 import { paymentApi } from '@/services/payments'
 import { quoteRequestsApi } from '@/services/quote-requests'
+import { vendorWalletApi } from '@/services/vendor/vendor-wallet.service'
 // import { apiErrorHandler } from "@/services/api/apiErrorHandler";
 
 export const store = configureStore({
@@ -32,6 +33,7 @@ export const store = configureStore({
     [ordersApi.reducerPath]: ordersApi.reducer,
     [paymentApi.reducerPath]: paymentApi.reducer,
     [quoteRequestsApi.reducerPath]: quoteRequestsApi.reducer,
+    [vendorWalletApi.reducerPath]: vendorWalletApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
@@ -51,6 +53,7 @@ export const store = configureStore({
       ordersApi.middleware,
       paymentApi.middleware,
       quoteRequestsApi.middleware,
+      vendorWalletApi.middleware,
     ),
   devTools: process.env.NODE_ENV !== 'production',
 })
