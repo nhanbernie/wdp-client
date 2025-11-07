@@ -70,6 +70,8 @@ export const API_ENDPOINTS = {
     CANCEL: '/orders/:id/cancel',
     HISTORY: '/orders/history',
     STATISTICS: '/orders/statistics',
+    ADMIN_CONFIRM: (id: string) => `/orders/${id}/admin-confirm`, // PATCH admin confirm order
+    COMPLETE: (id: string) => `/orders/${id}/complete`, // PATCH admin complete order
   },
 
   // Quotes endpoints
@@ -164,9 +166,17 @@ export const API_ENDPOINTS = {
     // Orders
     ORDERS: '/vendors/orders', // GET vendor's orders (orders containing vendor's products)
     ORDER_DETAIL: (id: string) => `/vendors/orders/${id}`, // GET specific order details
+    ORDER_UPDATE_STATUS: (id: string) => `/vendors/orders/${id}/status`, // PATCH update order status
 
     // Statistics
     STATISTICS: '/vendors/statistics', // GET vendor statistics (orders, revenue, products)
+
+    // Wallet
+    WALLET: {
+      BALANCE: '/vendors/wallet/balance', // GET wallet balance
+      DEPOSIT: '/vendors/wallet/deposit', // POST deposit money
+      TRANSACTIONS: '/vendors/wallet/transactions', // GET transaction history
+    },
   },
 }
 
