@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button'
 import { useGetMyVendorProfileQuery } from '@/services/vendor/vendor.service'
 import { useVendorOrders } from '@/features/vendor/orders'
 import { useGetVendorProductsQuery } from '@/services/vendor/vendor.service'
+import { WalletBalanceCard } from '@/features/vendor/wallet'
 import {
   LayoutDashboard,
   Package,
@@ -96,6 +97,13 @@ export const VendorDashboardPage: React.FC = () => {
               </div>
             </CardContent>
           </Card>
+        )}
+
+        {/* Wallet Balance Card - Hiển thị balance và banner cảnh báo */}
+        {profile && profile.status === 'approved' && (
+          <div className="mb-6">
+            <WalletBalanceCard />
+          </div>
         )}
 
         {/* Statistics Cards */}

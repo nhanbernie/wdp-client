@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react'
+import React, { useState } from 'react'
 import { Order } from '@/services/vendor/vendor.types'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -20,18 +20,33 @@ import {
 import { format } from 'date-fns'
 import { vi } from 'date-fns/locale'
 import { useRouter } from 'next/navigation'
+import { useUpdateVendorOrderStatusMutation } from '@/services/vendor/vendor.service'
+import { useToast } from '@/hooks/useToast'
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from '@/components/ui/dialog'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Textarea } from '@/components/ui/textarea'
 
 interface OrderCardProps {
   order: Order
+  onStatusUpdated?: () => void
 }
 
 const statusConfig: Record<string, { label: string; icon: any; className: string }> = {
-  pending: { label: 'Chờ xác nhận', icon: Clock, className: 'bg-yellow-100 text-yellow-800' },
+  pending: { label: 'Chờ admin xác nhận', icon: Clock, className: 'bg-yellow-100 text-yellow-800' },
+  admin_confirmed: { label: 'Đã xác nhận', icon: CheckCircle, className: 'bg-blue-100 text-blue-800' },
+  shipping: { label: 'Bắt đầu giao hàng', icon: Truck, className: 'bg-purple-100 text-purple-800' },
+  delivered: { label: 'Đã giao hàng', icon: CheckCircle, className: 'bg-green-100 text-green-800' },
+  completed: { label: 'Hoàn thành', icon: CheckCircle, className: 'bg-green-100 text-green-800' },
   processing: { label: 'Đang xử lý', icon: Package, className: 'bg-blue-100 text-blue-800' },
-  confirmed: { label: 'Đã xác nhận', icon: CheckCircle, className: 'bg-blue-100 text-blue-800' },
-  shipping: { label: 'Đang giao', icon: Truck, className: 'bg-purple-100 text-purple-800' },
-  delivered: { label: 'Đã giao', icon: CheckCircle, className: 'bg-green-100 text-green-800' },
   cancelled: { label: 'Đã hủy', icon: XCircle, className: 'bg-red-100 text-red-800' },
+  refunded: { label: 'Đã hoàn tiền', icon: XCircle, className: 'bg-orange-100 text-orange-800' },
 }
 
 const paymentStatusConfig: Record<string, { label: string; className: string }> = {
@@ -41,11 +56,46 @@ const paymentStatusConfig: Record<string, { label: string; className: string }> 
   refunded: { label: 'Đã hoàn tiền', className: 'bg-orange-100 text-orange-800' },
 }
 
-export const OrderCard: React.FC<OrderCardProps> = ({ order }) => {
+export const OrderCard: React.FC<OrderCardProps> = ({ order, onStatusUpdated }) => {
   const router = useRouter()
+  const toast = useToast()
+  const [updateStatus, { isLoading: isUpdating }] = useUpdateVendorOrderStatusMutation()
+
+  const [isDialogOpen, setIsDialogOpen] = useState(false)
+  const [newStatus, setNewStatus] = useState<'shipping' | 'delivered' | null>(null)
+  const [trackingNumber, setTrackingNumber] = useState('')
+  const [notes, setNotes] = useState('')
+
   const status = statusConfig[order.status] || statusConfig.pending
   const paymentStatus = paymentStatusConfig[order.paymentStatus] || paymentStatusConfig.pending
   const StatusIcon = status.icon
+
+  const canUpdateToShippingStarted = order.status === 'admin_confirmed'
+  const canUpdateToDelivered = order.status === 'shipping'
+
+  const handleUpdateStatus = async () => {
+    if (!newStatus) return
+
+    try {
+      await updateStatus({
+        orderId: order.id,
+        body: {
+          status: newStatus,
+          trackingNumber: trackingNumber || undefined,
+          notes: notes || undefined,
+        },
+      }).unwrap()
+
+      toast.success('Cập nhật trạng thái đơn hàng thành công')
+      setIsDialogOpen(false)
+      setTrackingNumber('')
+      setNotes('')
+      setNewStatus(null)
+      onStatusUpdated?.()
+    } catch (error: any) {
+      toast.error(error?.data?.message || 'Cập nhật trạng thái thất bại')
+    }
+  }
 
   return (
     <Card className="hover:shadow-md transition-shadow">
@@ -100,17 +150,110 @@ export const OrderCard: React.FC<OrderCardProps> = ({ order }) => {
             <span className="text-sm text-gray-600">{order.items.length} sản phẩm</span>
           </div>
 
-          {/* View Details Button */}
-          <Button
-            variant="outline"
-            className="w-full mt-4"
-            onClick={() => router.push(`/vendor/orders/${order.id}`)}
-          >
-            <Eye className="w-4 h-4 mr-2" />
-            Xem chi tiết
-          </Button>
+          {/* Action Buttons */}
+          <div className="flex flex-col gap-2 mt-4">
+            {/* Quick Action Buttons */}
+            {canUpdateToShippingStarted && (
+              <Button
+                onClick={() => {
+                  setNewStatus('shipping')
+                  setIsDialogOpen(true)
+                }}
+                className="w-full"
+                style={{ backgroundColor: '#8b5cf6', color: 'white' }}
+              >
+                <Truck className="w-4 h-4 mr-2" />
+                Bắt đầu giao hàng
+              </Button>
+            )}
+
+            {canUpdateToDelivered && (
+              <Button
+                onClick={() => {
+                  setNewStatus('delivered')
+                  setIsDialogOpen(true)
+                }}
+                className="w-full"
+                style={{ backgroundColor: '#10b981', color: 'white' }}
+              >
+                <CheckCircle className="w-4 h-4 mr-2" />
+                Đã giao hàng thành công
+              </Button>
+            )}
+
+            {/* View Details Button */}
+            <Button
+              variant="outline"
+              className="w-full"
+              onClick={() => router.push(`/vendor/orders/${order.id}`)}
+            >
+              <Eye className="w-4 h-4 mr-2" />
+              Xem chi tiết
+            </Button>
+          </div>
         </div>
       </CardContent>
+
+      {/* Update Status Dialog */}
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>
+              {newStatus === 'shipping' ? 'Bắt đầu giao hàng' : 'Đánh dấu đã giao hàng'}
+            </DialogTitle>
+            <DialogDescription>
+              {newStatus === 'shipping'
+                ? 'Cập nhật trạng thái đơn hàng sang "Bắt đầu giao hàng"'
+                : 'Cập nhật trạng thái đơn hàng sang "Đã giao hàng"'}
+            </DialogDescription>
+          </DialogHeader>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault()
+              handleUpdateStatus()
+            }}
+            className="space-y-4"
+          >
+            <div>
+              <Label htmlFor="trackingNumber">Mã vận đơn (tùy chọn)</Label>
+              <Input
+                id="trackingNumber"
+                value={trackingNumber}
+                onChange={(e) => setTrackingNumber(e.target.value)}
+                placeholder="Nhập mã vận đơn"
+              />
+            </div>
+            <div>
+              <Label htmlFor="notes">Ghi chú (tùy chọn)</Label>
+              <Textarea
+                id="notes"
+                value={notes}
+                onChange={(e) => setNotes(e.target.value)}
+                placeholder="Ghi chú thêm..."
+                rows={3}
+              />
+            </div>
+            <div className="flex gap-3">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => {
+                  setIsDialogOpen(false)
+                  setTrackingNumber('')
+                  setNotes('')
+                  setNewStatus(null)
+                }}
+                className="flex-1"
+              >
+                Hủy
+              </Button>
+              <Button type="submit" disabled={isUpdating} className="flex-1">
+                {isUpdating ? 'Đang xử lý...' : 'Xác nhận'}
+              </Button>
+            </div>
+          </form>
+        </DialogContent>
+      </Dialog>
     </Card>
   )
 }

@@ -9,22 +9,31 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Loader2, ShoppingBag, DollarSign, Package, TrendingUp } from 'lucide-react'
 import type { OrderFilters } from '@/services/vendor/vendor.types'
 
-type OrderStatus = 'pending' | 'processing' | 'confirmed' | 'shipping' | 'delivered' | 'cancelled'
+type OrderStatus =
+  | 'pending'
+  | 'admin_confirmed'
+  | 'shipping'
+  | 'delivered'
+  | 'completed'
+  | 'processing'
+  | 'cancelled'
+  | 'refunded'
 
 export const OrdersListPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<OrderStatus | 'all'>('all')
   const [filters, setFilters] = useState<OrderFilters>({})
 
-  const { orders, statistics, isLoading, statsLoading } = useVendorOrders(
+  const { orders, statistics, isLoading, statsLoading, refetch } = useVendorOrders(
     activeTab === 'all' ? {} : { ...filters, status: activeTab },
   )
 
   const tabs = [
     { value: 'all', label: 'Tất cả' },
     { value: 'pending', label: 'Chờ xác nhận' },
-    { value: 'processing', label: 'Đang xử lý' },
-    { value: 'shipping', label: 'Đang giao' },
-    { value: 'delivered', label: 'Đã giao' },
+    { value: 'admin_confirmed', label: 'Đã xác nhận' },
+    { value: 'shipping', label: 'Bắt đầu giao' },
+    { value: 'delivered', label: 'Đã giao hàng' },
+    { value: 'completed', label: 'Hoàn thành' },
     { value: 'cancelled', label: 'Đã hủy' },
   ]
 
@@ -137,7 +146,7 @@ export const OrdersListPage: React.FC = () => {
             ) : (
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {orders.map((order) => (
-                  <OrderCard key={order.id} order={order} />
+                  <OrderCard key={order.id} order={order} onStatusUpdated={refetch} />
                 ))}
               </div>
             )}
