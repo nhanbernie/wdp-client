@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { ArrowLeft, CreditCard, MapPin, ShoppingCart, Loader2 } from 'lucide-react'
+import { ArrowLeft, CreditCard, ShoppingCart, Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -14,16 +14,14 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { usePayment } from '@/features/payment/hooks'
 import { useTheme } from '@/contexts/ThemeContext'
+import { useGetAddressesQuery } from '@/services/addresses'
+import type { Address } from '@/services/addresses/types'
+import { AddressDisplay } from './AddressDisplay'
+import { AddressSelectionDialog } from './AddressSelectionDialog'
 
 interface CheckoutFormData {
   paymentMethod: 'cod' | 'bank_transfer' | 'credit_card' | 'e_wallet'
-  shippingName: string
-  shippingPhone: string
-  shippingAddress: string
-  shippingCity: string
-  shippingDistrict: string
-  shippingWard: string
-  shippingPostalCode: string
+  addressId?: string
   customerNotes: string
 }
 
@@ -33,25 +31,48 @@ const CheckoutPage: React.FC = () => {
   const { checkoutFromCart } = useOrders()
   const { createPayment } = usePayment()
   const { colors } = useTheme()
+  const { data: addressesData, isLoading: isLoadingAddresses, refetch: refetchAddresses } = useGetAddressesQuery()
+
+  const addresses = addressesData?.data || []
+  const defaultAddress = addresses.find(addr => addr.isDefault) || addresses[0]
+  const [selectedAddress, setSelectedAddress] = useState<Address | null>(null)
+  const [isAddressDialogOpen, setIsAddressDialogOpen] = useState(false)
 
   const [formData, setFormData] = useState<CheckoutFormData>({
     paymentMethod: 'cod',
-    shippingName: '',
-    shippingPhone: '',
-    shippingAddress: '',
-    shippingCity: '',
-    shippingDistrict: '',
-    shippingWard: '',
-    shippingPostalCode: '',
+    addressId: undefined,
     customerNotes: '',
   })
 
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [createdOrder, setCreatedOrder] = useState<any>(null)
 
-  // Fix placeholder color for all inputs
+  // Load default address when addresses are loaded
   useEffect(() => {
-    const styleId = 'checkout-input-placeholder-style'
+    if (!isLoadingAddresses) {
+      if (defaultAddress && !selectedAddress) {
+        setSelectedAddress(defaultAddress)
+        setFormData(prev => ({
+          ...prev,
+          addressId: defaultAddress.id,
+        }))
+      }
+    }
+  }, [defaultAddress, selectedAddress, isLoadingAddresses])
+
+  // Update form data when selected address changes
+  useEffect(() => {
+    if (selectedAddress) {
+      setFormData(prev => ({
+        ...prev,
+        addressId: selectedAddress.id,
+      }))
+    }
+  }, [selectedAddress])
+
+  // Fix placeholder color for textarea
+  useEffect(() => {
+    const styleId = 'checkout-textarea-placeholder-style'
     let style = document.getElementById(styleId) as HTMLStyleElement
 
     if (!style) {
@@ -61,12 +82,6 @@ const CheckoutPage: React.FC = () => {
     }
 
     style.textContent = `
-      #shippingName::placeholder,
-      #shippingPhone::placeholder,
-      #shippingAddress::placeholder,
-      #shippingWard::placeholder,
-      #shippingDistrict::placeholder,
-      #shippingCity::placeholder,
       #customerNotes::placeholder {
         color: ${colors.textSecondary};
         opacity: 0.6;
@@ -91,9 +106,22 @@ const CheckoutPage: React.FC = () => {
     if (!cart?.items?.length) {
       return
     }
+
+    // Validate: must have selected address
+    if (!selectedAddress) {
+      alert('Vui lòng chọn địa chỉ giao hàng')
+      return
+    }
+
     setIsSubmitting(true)
     try {
-      const order = await checkoutFromCart(formData)
+      const checkoutPayload: any = {
+        paymentMethod: formData.paymentMethod,
+        addressId: selectedAddress.id,
+        customerNotes: formData.customerNotes,
+      }
+
+      const order = await checkoutFromCart(checkoutPayload)
       if (order) {
         setCreatedOrder(order)
 
@@ -125,6 +153,19 @@ const CheckoutPage: React.FC = () => {
     } finally {
       setIsSubmitting(false)
     }
+  }
+
+  const handleSelectAddress = (address: Address) => {
+    setSelectedAddress(address)
+    setIsAddressDialogOpen(false)
+  }
+
+  const handleAddressChange = () => {
+    setIsAddressDialogOpen(true)
+  }
+
+  const handleAddressFormSuccess = () => {
+    refetchAddresses()
   }
 
   const formatPrice = (price: number) => {
@@ -228,190 +269,44 @@ const CheckoutPage: React.FC = () => {
                   borderColor: colors.border 
                 }}>
                   <CardHeader>
-                    <CardTitle className="flex items-center gap-2" style={{ color: colors.text }}>
-                      <MapPin className="h-5 w-5" style={{ color: colors.textSecondary }} />
+                    <CardTitle style={{ color: colors.text }}>
                       Thông tin giao hàng
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-4">
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div className="space-y-2">
-                          <Label htmlFor="shippingName" style={{ color: colors.text }}>
-                            Họ và tên <span style={{ color: colors.error }}>*</span>
-                          </Label>
-                                                     <Input
-                             id="shippingName"
-                             value={formData.shippingName}
-                             onChange={(e) => handleInputChange('shippingName', e.target.value)}
-                             required
-                             placeholder="Nhập họ và tên đầy đủ"
-                             style={{
-                               backgroundColor: colors.cardBackground,
-                               borderColor: `${colors.border}60`,
-                               color: colors.text,
-                             }}
-                             className="focus:ring-2 focus:ring-offset-1"
-                             onFocus={(e) => {
-                               e.currentTarget.style.setProperty('--tw-ring-color', `${colors.border}40`)
-                               e.currentTarget.style.setProperty('--tw-ring-offset-color', colors.cardBackground)
-                               e.currentTarget.style.borderColor = colors.accent
-                             }}
-                             onBlur={(e) => {
-                               e.currentTarget.style.borderColor = `${colors.border}60`
-                             }}
-                           />
-                        </div>
-                        <div className="space-y-2">
-                          <Label htmlFor="shippingPhone" style={{ color: colors.text }}>
-                            Số điện thoại <span style={{ color: colors.error }}>*</span>
-                          </Label>
-                                                     <Input
-                             id="shippingPhone"
-                             type="tel"
-                             value={formData.shippingPhone}
-                             onChange={(e) => handleInputChange('shippingPhone', e.target.value)}
-                             required
-                             placeholder="Nhập số điện thoại"
-                             style={{
-                               backgroundColor: colors.cardBackground,
-                               borderColor: `${colors.border}60`,
-                               color: colors.text,
-                             }}
-                             className="focus:ring-2 focus:ring-offset-1"
-                             onFocus={(e) => {
-                               e.currentTarget.style.setProperty('--tw-ring-color', `${colors.border}40`)
-                               e.currentTarget.style.setProperty('--tw-ring-offset-color', colors.cardBackground)
-                               e.currentTarget.style.borderColor = colors.accent
-                             }}
-                             onBlur={(e) => {
-                               e.currentTarget.style.borderColor = `${colors.border}60`
-                             }}
-                           />
-                        </div>
-                      </div>
+                      {/* Address Display */}
+                      <AddressDisplay
+                        address={selectedAddress}
+                        onChange={handleAddressChange}
+                        onManage={() => router.push("/addresses")}
+                      />
 
+                      {/* Customer Notes */}
                       <div className="space-y-2">
-                        <Label htmlFor="shippingAddress" style={{ color: colors.text }}>
-                          Địa chỉ chi tiết <span style={{ color: colors.error }}>*</span>
+                        <Label htmlFor="customerNotes" style={{ color: colors.text }}>
+                          Ghi chú đơn hàng (tùy chọn)
                         </Label>
-                                                 <Input
-                           id="shippingAddress"
-                           value={formData.shippingAddress}
-                           onChange={(e) => handleInputChange('shippingAddress', e.target.value)}
-                           required
-                           placeholder="Số nhà, tên đường..."
-                           style={{
-                             backgroundColor: colors.cardBackground,
-                             borderColor: `${colors.border}60`,
-                             color: colors.text,
-                           }}
-                           className="focus:ring-2 focus:ring-offset-1"
-                           onFocus={(e) => {
-                             e.currentTarget.style.setProperty('--tw-ring-color', `${colors.border}40`)
-                             e.currentTarget.style.setProperty('--tw-ring-offset-color', colors.cardBackground)
-                             e.currentTarget.style.borderColor = colors.accent
-                           }}
-                           onBlur={(e) => {
-                             e.currentTarget.style.borderColor = `${colors.border}60`
-                           }}
-                         />
-                      </div>
-
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div className="space-y-2">
-                          <Label htmlFor="shippingWard" style={{ color: colors.text }}>Phường/Xã</Label>
-                                                     <Input
-                             id="shippingWard"
-                             value={formData.shippingWard}
-                             onChange={(e) => handleInputChange('shippingWard', e.target.value)}
-                             placeholder="Phường/Xã"
-                             style={{
-                               backgroundColor: colors.cardBackground,
-                               borderColor: `${colors.border}60`,
-                               color: colors.text,
-                             }}
-                             className="focus:ring-2 focus:ring-offset-1"
-                             onFocus={(e) => {
-                               e.currentTarget.style.setProperty('--tw-ring-color', `${colors.border}40`)
-                               e.currentTarget.style.setProperty('--tw-ring-offset-color', colors.cardBackground)
-                               e.currentTarget.style.borderColor = colors.accent
-                             }}
-                             onBlur={(e) => {
-                               e.currentTarget.style.borderColor = `${colors.border}60`
-                             }}
-                           />
-                        </div>
-                        <div className="space-y-2">
-                          <Label htmlFor="shippingDistrict" style={{ color: colors.text }}>Quận/Huyện</Label>
-                                                     <Input
-                             id="shippingDistrict"
-                             value={formData.shippingDistrict}
-                             onChange={(e) => handleInputChange('shippingDistrict', e.target.value)}
-                             placeholder="Quận/Huyện"
-                             style={{
-                               backgroundColor: colors.cardBackground,
-                               borderColor: `${colors.border}60`,
-                               color: colors.text,
-                             }}
-                             className="focus:ring-2 focus:ring-offset-1"
-                             onFocus={(e) => {
-                               e.currentTarget.style.setProperty('--tw-ring-color', `${colors.border}40`)
-                               e.currentTarget.style.setProperty('--tw-ring-offset-color', colors.cardBackground)
-                               e.currentTarget.style.borderColor = colors.accent
-                             }}
-                             onBlur={(e) => {
-                               e.currentTarget.style.borderColor = `${colors.border}60`
-                             }}
-                           />
-                        </div>
-                        <div className="space-y-2">
-                          <Label htmlFor="shippingCity" style={{ color: colors.text }}>Tỉnh/Thành phố</Label>
-                                                     <Input
-                             id="shippingCity"
-                             value={formData.shippingCity}
-                             onChange={(e) => handleInputChange('shippingCity', e.target.value)}
-                             placeholder="Tỉnh/Thành phố"
-                             style={{
-                               backgroundColor: colors.cardBackground,
-                               borderColor: `${colors.border}60`,
-                               color: colors.text,
-                             }}
-                             className="focus:ring-2 focus:ring-offset-1"
-                             onFocus={(e) => {
-                               e.currentTarget.style.setProperty('--tw-ring-color', `${colors.border}40`)
-                               e.currentTarget.style.setProperty('--tw-ring-offset-color', colors.cardBackground)
-                               e.currentTarget.style.borderColor = colors.accent
-                             }}
-                             onBlur={(e) => {
-                               e.currentTarget.style.borderColor = `${colors.border}60`
-                             }}
-                           />
-                        </div>
-                      </div>
-
-                      <div className="space-y-2">
-                        <Label htmlFor="customerNotes" style={{ color: colors.text }}>Ghi chú đơn hàng (tùy chọn)</Label>
-                                                 <Textarea
-                           id="customerNotes"
-                           value={formData.customerNotes}
-                           onChange={(e) => handleInputChange('customerNotes', e.target.value)}
-                           placeholder="Ghi chú thêm cho người giao hàng..."
-                           className="min-h-[100px] resize-none focus:ring-2 focus:ring-offset-1"
-                           style={{
-                             backgroundColor: colors.cardBackground,
-                             borderColor: `${colors.border}60`,
-                             color: colors.text,
-                           }}
-                           onFocus={(e) => {
-                             e.currentTarget.style.setProperty('--tw-ring-color', `${colors.border}40`)
-                             e.currentTarget.style.setProperty('--tw-ring-offset-color', colors.cardBackground)
-                             e.currentTarget.style.borderColor = colors.accent
-                           }}
-                           onBlur={(e) => {
-                             e.currentTarget.style.borderColor = `${colors.border}60`
-                           }}
-                         />
+                        <Textarea
+                          id="customerNotes"
+                          value={formData.customerNotes}
+                          onChange={(e) => handleInputChange("customerNotes", e.target.value)}
+                          placeholder="Ghi chú thêm cho người giao hàng..."
+                          className="min-h-[100px] resize-none focus:ring-2 focus:ring-offset-1"
+                          style={{
+                            backgroundColor: colors.cardBackgroundSecondary,
+                            borderColor: `${colors.border}60`,
+                            color: colors.text,
+                          }}
+                          onFocus={(e) => {
+                            e.currentTarget.style.setProperty("--tw-ring-color", `${colors.border}40`);
+                            e.currentTarget.style.setProperty("--tw-ring-offset-color", colors.cardBackground);
+                            e.currentTarget.style.borderColor = colors.accent;
+                          }}
+                          onBlur={(e) => {
+                            e.currentTarget.style.borderColor = `${colors.border}60`;
+                          }}
+                        />
                       </div>
                     </div>
                   </CardContent>
@@ -585,8 +480,18 @@ const CheckoutPage: React.FC = () => {
           </form>
         </motion.div>
       </div>
-    </div>
-  )
-}
 
-export default CheckoutPage
+      {/* Address Selection Dialog */}
+      <AddressSelectionDialog
+        open={isAddressDialogOpen}
+        onClose={() => setIsAddressDialogOpen(false)}
+        addresses={addresses}
+        selectedAddressId={selectedAddress?.id}
+        onSelect={handleSelectAddress}
+        onAddNew={handleAddressFormSuccess}
+      />
+    </div>
+  );
+};
+
+export default CheckoutPage;

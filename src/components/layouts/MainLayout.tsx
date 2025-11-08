@@ -4,6 +4,7 @@ import React from "react";
 import Header from "./Header";
 import Footer from "./Footer";
 import { useTheme } from "@/contexts/ThemeContext";
+import { Chatbot } from "@/components/chatbot";
 
 interface MainLayoutProps {
   children: React.ReactNode;
@@ -21,6 +22,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, footer = true }) => {
       <Header />
       <main className="flex-1 pt-[var(--header-height)]">{children}</main>
       {footer && <Footer />}
+      <Chatbot />
     </div>
   );
 };
