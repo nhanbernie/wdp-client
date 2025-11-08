@@ -5,6 +5,7 @@ import { userApi } from '@/services/user'
 import { materialsApi } from '@/services/materials'
 import { authReducer } from './slices/auth.slice'
 import { productReducer } from './slices/product.slice'
+import { addressReducer } from './slices/address.slice'
 import { productsApi } from '@/services/products'
 import { vendorApi } from '@/services/vendor/vendor.service'
 import { adminApi } from '@/services/admin'
@@ -13,6 +14,7 @@ import { cartApi } from '@/services/cart'
 import { ordersApi } from '@/services/orders/orders.service'
 import { paymentApi } from '@/services/payments'
 import { quoteRequestsApi } from '@/services/quote-requests'
+import { addressesApi } from '@/services/addresses'
 // import { apiErrorHandler } from "@/services/api/apiErrorHandler";
 
 export const store = configureStore({
@@ -20,6 +22,7 @@ export const store = configureStore({
     // Local state slices
     auth: authReducer,
     product: productReducer,
+    address: addressReducer,
     // RTK Query APIs
     [authApi.reducerPath]: authApi.reducer,
     [userApi.reducerPath]: userApi.reducer,
@@ -32,6 +35,7 @@ export const store = configureStore({
     [ordersApi.reducerPath]: ordersApi.reducer,
     [paymentApi.reducerPath]: paymentApi.reducer,
     [quoteRequestsApi.reducerPath]: quoteRequestsApi.reducer,
+    [addressesApi.reducerPath]: addressesApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
@@ -51,6 +55,7 @@ export const store = configureStore({
       ordersApi.middleware,
       paymentApi.middleware,
       quoteRequestsApi.middleware,
+      addressesApi.middleware,
     ),
   devTools: process.env.NODE_ENV !== 'production',
 })
