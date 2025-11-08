@@ -1,24 +1,20 @@
-"use client";
+'use client'
 
-import React from "react";
-import { MapPin } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import type { Address } from "@/services/addresses/types";
-import { useTheme } from "@/contexts/ThemeContext";
+import React from 'react'
+import { MapPin } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import type { Address } from '@/services/addresses/types'
+import { useTheme } from '@/contexts/ThemeContext'
+import { DefaultBadge } from './DefaultBadge'
 
 interface AddressDisplayProps {
-  address: Address | null;
-  onChange: () => void;
-  onManage?: () => void;
+  address: Address | null
+  onChange: () => void
+  onManage?: () => void
 }
 
-export const AddressDisplay: React.FC<AddressDisplayProps> = ({
-  address,
-  onChange,
-  onManage,
-}) => {
-  const { colors } = useTheme();
+export const AddressDisplay: React.FC<AddressDisplayProps> = ({ address, onChange, onManage }) => {
+  const { colors } = useTheme()
 
   if (!address) {
     return (
@@ -32,10 +28,7 @@ export const AddressDisplay: React.FC<AddressDisplayProps> = ({
       >
         <div className="flex items-center justify-center py-10">
           <div className="text-center">
-            <MapPin
-              className="w-14 h-14 mx-auto mb-4"
-              style={{ color: colors.textSecondary }}
-            />
+            <MapPin className="w-14 h-14 mx-auto mb-4" style={{ color: colors.textSecondary }} />
             <p className="font-medium text-base mb-2" style={{ color: colors.text }}>
               Chưa có địa chỉ giao hàng
             </p>
@@ -45,55 +38,25 @@ export const AddressDisplay: React.FC<AddressDisplayProps> = ({
           </div>
         </div>
       </div>
-    );
+    )
   }
 
   return (
     <div
-      className="p-6 rounded-xl transition-all"
+      className="p-6 rounded-xl transition-all relative"
       style={{
-        backgroundColor: colors.cardBackground,
-        boxShadow: `0 2px 8px ${colors.border}20`,
+        backgroundColor: colors.cardBackgroundSecondary,
+        border: `1px solid ${colors.border}30`,
+        boxShadow: `0 4px 12px ${colors.border}20`,
       }}
     >
       {/* Header */}
-      <div className="flex items-center gap-2 mb-4">
-        <MapPin className="w-5 h-5" style={{ color: colors.accent }} />
-        <h3 className="font-semibold text-base" style={{ color: colors.text }}>
-          Địa Chỉ Nhận Hàng
-        </h3>
-      </div>
-
-      {/* Recipient Info */}
-      <div className="mb-4">
-        <p className="font-semibold text-base mb-1" style={{ color: colors.text }}>
-          {address.recipientName}
-        </p>
-        <p className="font-semibold text-base mb-2" style={{ color: colors.text }}>
-          {address.recipientPhone}
-        </p>
-        <p className="text-sm leading-relaxed" style={{ color: colors.textSecondary }}>
-          {address.addressLine}
-          {address.ward && `, ${address.ward}`}
-          {address.district && `, ${address.district}`}
-          {address.city && `, ${address.city}`}
-        </p>
-      </div>
-
-      {/* Actions */}
-      <div className="flex items-center justify-between pt-4 border-t" style={{ borderColor: colors.border }}>
+      <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
-          {address.isDefault && (
-            <Badge
-              className="px-3 py-1 text-xs"
-              style={{
-                backgroundColor: colors.accent,
-                color: "#fff",
-              }}
-            >
-              Mặc Định
-            </Badge>
-          )}
+          <MapPin className="w-5 h-5" style={{ color: colors.textSecondary }} />
+          <h3 className="font-semibold text-base" style={{ color: colors.text }}>
+            Địa Chỉ Nhận Hàng
+          </h3>
         </div>
         <Button
           type="button"
@@ -102,14 +65,37 @@ export const AddressDisplay: React.FC<AddressDisplayProps> = ({
           onClick={onChange}
           style={{
             color: colors.accent,
-            padding: 0,
+            padding: '0.25rem 0.5rem',
           }}
           className="hover:bg-transparent hover:underline"
         >
           Thay Đổi
         </Button>
       </div>
-    </div>
-  );
-};
 
+      {/* Recipient Info */}
+      <div className="mb-3">
+        <div className="flex items-center gap-2 mb-2 flex-wrap">
+          <p className="font-semibold text-base" style={{ color: colors.text }}>
+            {address.recipientName}
+          </p>
+          <span style={{ color: colors.textSecondary }}>|</span>
+          <p className="font-semibold text-base" style={{ color: colors.text }}>
+            {address.recipientPhone}
+          </p>
+          {address.isDefault && (
+            <span className="ml-1">
+              <DefaultBadge />
+            </span>
+          )}
+        </div>
+        <p className="text-sm leading-relaxed" style={{ color: colors.text }}>
+          {address.addressLine}
+          {address.ward && `, ${address.ward}`}
+          {address.district && `, ${address.district}`}
+          {address.city && `, ${address.city}`}
+        </p>
+      </div>
+    </div>
+  )
+}

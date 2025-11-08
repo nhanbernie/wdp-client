@@ -1,27 +1,27 @@
-"use client";
+'use client'
 
-import React, { useState, useEffect } from "react";
-import { MapPin, Plus } from "lucide-react";
+import React, { useState, useEffect } from 'react'
+import { MapPin, Plus } from 'lucide-react'
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogFooter,
-} from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import type { Address } from "@/services/addresses/types";
-import { useTheme } from "@/contexts/ThemeContext";
-import { AddressFormDialog } from "@/features/addresses/components";
-import { useRouter } from "next/navigation";
+} from '@/components/ui/dialog'
+import { Button } from '@/components/ui/button'
+import type { Address } from '@/services/addresses/types'
+import { useTheme } from '@/contexts/ThemeContext'
+import { AddressFormDialog } from '@/features/addresses/components'
+import { useRouter } from 'next/navigation'
+import { DefaultBadge } from './DefaultBadge'
 interface AddressSelectionDialogProps {
-  open: boolean;
-  onClose: () => void;
-  addresses: Address[];
-  selectedAddressId?: string;
-  onSelect: (address: Address) => void;
-  onAddNew?: () => void;
+  open: boolean
+  onClose: () => void
+  addresses: Address[]
+  selectedAddressId?: string
+  onSelect: (address: Address) => void
+  onAddNew?: () => void
 }
 
 export const AddressSelectionDialog: React.FC<AddressSelectionDialogProps> = ({
@@ -32,39 +32,37 @@ export const AddressSelectionDialog: React.FC<AddressSelectionDialogProps> = ({
   onSelect,
   onAddNew,
 }) => {
-  const router = useRouter();
-  const { colors } = useTheme();
-  const [editingAddress, setEditingAddress] = useState<Address | null>(null);
-  const [isFormOpen, setIsFormOpen] = useState(false);
-  const [tempSelectedId, setTempSelectedId] = useState<string | undefined>(
-    selectedAddressId
-  );
+  const router = useRouter()
+  const { colors } = useTheme()
+  const [editingAddress, setEditingAddress] = useState<Address | null>(null)
+  const [isFormOpen, setIsFormOpen] = useState(false)
+  const [tempSelectedId, setTempSelectedId] = useState<string | undefined>(selectedAddressId)
 
   // Sync tempSelectedId when dialog opens or selectedAddressId changes
   useEffect(() => {
     if (open) {
-      setTempSelectedId(selectedAddressId);
+      setTempSelectedId(selectedAddressId)
     }
-  }, [open, selectedAddressId]);
+  }, [open, selectedAddressId])
 
   const handleConfirm = () => {
-    const selected = addresses.find((addr) => addr.id === tempSelectedId);
+    const selected = addresses.find((addr) => addr.id === tempSelectedId)
     if (selected) {
-      onSelect(selected);
-      onClose();
+      onSelect(selected)
+      onClose()
     }
-  };
+  }
 
   const handleEdit = (address: Address, e: React.MouseEvent) => {
-    e.stopPropagation();
-    setEditingAddress(address);
-    setIsFormOpen(true);
-  };
+    e.stopPropagation()
+    setEditingAddress(address)
+    setIsFormOpen(true)
+  }
 
   const handleAddNewClick = () => {
-    setEditingAddress(null);
-    setIsFormOpen(true);
-  };
+    setEditingAddress(null)
+    setIsFormOpen(true)
+  }
 
   return (
     <>
@@ -96,7 +94,7 @@ export const AddressSelectionDialog: React.FC<AddressSelectionDialogProps> = ({
                     onClick={handleAddNewClick}
                     style={{
                       backgroundColor: colors.accent,
-                      color: "#fff",
+                      color: '#fff',
                     }}
                     className="gap-2"
                   >
@@ -118,7 +116,7 @@ export const AddressSelectionDialog: React.FC<AddressSelectionDialogProps> = ({
                         name="address"
                         checked={tempSelectedId === address.id}
                         onChange={() => setTempSelectedId(address.id)}
-                        className="w-5 h-5 cursor-pointer"
+                        className="w-5 h-5 cursor-pointer border-0"
                         style={{
                           accentColor: colors.accent,
                         }}
@@ -134,10 +132,11 @@ export const AddressSelectionDialog: React.FC<AddressSelectionDialogProps> = ({
                           tempSelectedId === address.id
                             ? colors.cardBackgroundSecondary
                             : colors.cardBackground,
+                        border: `1px solid ${colors.border}30`,
                         boxShadow:
                           tempSelectedId === address.id
-                            ? `0 2px 8px ${colors.accent}20`
-                            : "none",
+                            ? `0 2px 8px ${colors.border}30`
+                            : `0 1px 3px ${colors.border}15`,
                       }}
                     >
                       <div className="flex items-start justify-between">
@@ -151,21 +150,12 @@ export const AddressSelectionDialog: React.FC<AddressSelectionDialogProps> = ({
                               {address.recipientPhone}
                             </p>
                             {address.isDefault && (
-                              <Badge
-                                className="ml-2 px-2 py-0.5 text-xs"
-                                style={{
-                                  backgroundColor: colors.accent,
-                                  color: "#fff",
-                                }}
-                              >
-                                Mặc định
-                              </Badge>
+                              <span className="ml-2">
+                                <DefaultBadge />
+                              </span>
                             )}
                           </div>
-                          <p
-                            className="text-sm leading-relaxed"
-                            style={{ color: colors.textSecondary }}
-                          >
+                          <p className="text-sm leading-relaxed" style={{ color: colors.text }}>
                             {address.addressLine}
                             {address.ward && `, ${address.ward}`}
                             {address.district && `, ${address.district}`}
@@ -177,10 +167,10 @@ export const AddressSelectionDialog: React.FC<AddressSelectionDialogProps> = ({
                           variant="ghost"
                           size="sm"
                           onClick={(e) => handleEdit(address, e)}
-                          className="opacity-0 group-hover:opacity-100 transition-opacity hover:bg-transparent"
+                          className="hover:bg-transparent"
                           style={{
                             color: colors.accent,
-                            padding: "0.25rem 0.5rem",
+                            padding: '0.25rem 0.5rem',
                           }}
                         >
                           Cập nhật
@@ -193,14 +183,15 @@ export const AddressSelectionDialog: React.FC<AddressSelectionDialogProps> = ({
             </div>
 
             {addresses.length > 0 && (
-              <div className="flex items-center justify-between pt-6 mt-6 border-t" style={{ borderColor: colors.border }}>
+              <div className="flex items-center justify-between pt-6 mt-6">
                 <Button
                   variant="ghost"
-                  onClick={() => router.push("/addresses")}
+                  onClick={() => router.push('/addresses')}
                   style={{
-                    color: colors.textSecondary,
+                    color: colors.text,
+                    backgroundColor: `${colors.textSecondary}15`,
                   }}
-                  className="hover:text-foreground"
+                  className="hover:opacity-80"
                 >
                   Quản lý địa chỉ
                 </Button>
@@ -220,10 +211,9 @@ export const AddressSelectionDialog: React.FC<AddressSelectionDialogProps> = ({
           </div>
 
           <DialogFooter
-            className="px-6 py-4 border-t gap-2"
+            className="px-6 py-4 gap-2"
             style={{
-              borderColor: colors.border,
-              backgroundColor: colors.cardBackgroundSecondary,
+              backgroundColor: colors.cardBackground,
             }}
           >
             <Button
@@ -242,7 +232,7 @@ export const AddressSelectionDialog: React.FC<AddressSelectionDialogProps> = ({
               disabled={!tempSelectedId}
               style={{
                 backgroundColor: tempSelectedId ? colors.accent : colors.textSecondary,
-                color: "#fff",
+                color: '#fff',
               }}
             >
               Xác nhận
@@ -255,19 +245,18 @@ export const AddressSelectionDialog: React.FC<AddressSelectionDialogProps> = ({
       <AddressFormDialog
         open={isFormOpen}
         onClose={() => {
-          setIsFormOpen(false);
-          setEditingAddress(null);
+          setIsFormOpen(false)
+          setEditingAddress(null)
         }}
         address={editingAddress}
         onSuccess={() => {
-          setIsFormOpen(false);
-          setEditingAddress(null);
+          setIsFormOpen(false)
+          setEditingAddress(null)
           if (onAddNew) {
-            onAddNew();
+            onAddNew()
           }
         }}
       />
     </>
-  );
-};
-
+  )
+}

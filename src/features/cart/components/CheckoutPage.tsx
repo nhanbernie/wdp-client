@@ -417,7 +417,7 @@ const CheckoutPage: React.FC = () => {
                       ))}
                     </div>
 
-                    <div style={{ borderTop: `1px solid ${colors.border}`, paddingTop: '1rem' }} />
+                    <div style={{  paddingTop: '1rem' }} />
 
                     {/* Chi tiết giá */}
                     <div className="space-y-3">
@@ -431,7 +431,7 @@ const CheckoutPage: React.FC = () => {
                         <span className="font-bold" style={{ color: colors.success }}>Miễn phí</span>
                       </div>
 
-                      <div style={{ borderTop: `1px solid ${colors.border}`, paddingTop: '0.75rem' }} />
+                      <div style={{  paddingTop: '0.75rem' }} />
 
                       <div className="flex justify-between items-center">
                         <span className="text-lg font-bold" style={{ color: colors.text }}>Tổng cộng</span>
@@ -466,7 +466,7 @@ const CheckoutPage: React.FC = () => {
                           <Loader2 className="w-5 h-5 animate-spin" />
                           Đang xử lý...
                         </>
-                      ) : (
+                      ) : ( 
                         <>
                           <CreditCard className="w-5 h-5" />
                           Xác nhận đặt hàng
