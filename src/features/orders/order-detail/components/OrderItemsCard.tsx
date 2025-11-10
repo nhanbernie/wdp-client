@@ -1,171 +1,193 @@
 'use client'
 
-import { motion } from 'framer-motion'
 import Image from 'next/image'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
-import { Package, Sparkles, Truck } from 'lucide-react'
+import { Package, Truck, Tag } from 'lucide-react'
 import type { Order } from '@/services/orders/types'
+import { useTheme } from '@/contexts/ThemeContext'
 
 interface OrderItemsCardProps {
   order: Order
 }
 
 export function OrderItemsCard({ order }: OrderItemsCardProps) {
+  const { colors } = useTheme()
+
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6, delay: 0.2 }}
-      whileHover={{ y: -4 }}
+    <Card
+      className="rounded-lg border overflow-hidden"
+      style={{
+        backgroundColor: colors.cardBackground,
+        borderColor: colors.border,
+      }}
     >
-      <Card className="border-2 border-white shadow-2xl hover:shadow-3xl transition-all duration-500 rounded-3xl overflow-hidden">
-        <CardHeader className="p-8 border-b-2 border-slate-200 bg-gradient-to-r from-indigo-50 via-purple-50 to-indigo-50">
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.5 }}
-          >
-            <CardTitle className="flex items-center text-2xl font-black">
-              <div className="relative mr-4">
-                <div className="absolute inset-0 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl blur-lg opacity-40" />
-                <div className="relative p-3 bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-600 rounded-2xl shadow-lg">
-                  <Package className="h-7 w-7 text-white" />
+      <CardHeader
+        className="p-4 border-b"
+        style={{
+          borderColor: colors.border,
+          backgroundColor: colors.cardBackground,
+        }}
+      >
+        <CardTitle className="flex items-center text-lg font-bold">
+          <div className="p-2 rounded-lg mr-3" style={{ backgroundColor: `${colors.accent}15` }}>
+            <Package className="h-5 w-5" style={{ color: colors.accent }} />
+          </div>
+          <span style={{ color: colors.text }}>Sản phẩm đã đặt</span>
+        </CardTitle>
+      </CardHeader>
+
+      <CardContent className="p-4" style={{ backgroundColor: colors.cardBackground }}>
+        <div className="space-y-4">
+          {/* Product Items */}
+          {order.items?.map((item, index) => (
+            <div
+              key={index}
+              className="p-4 rounded-lg border transition-colors hover:border-opacity-50"
+              style={{
+                backgroundColor: colors.cardBackgroundSecondary,
+                borderColor: colors.border,
+              }}
+            >
+              <div className="flex items-center gap-4">
+                {/* Product Image */}
+                <div
+                  className="relative w-20 h-20 rounded-lg overflow-hidden border"
+                  style={{ borderColor: colors.border }}
+                >
+                  <Image
+                    src={item.thumbnail || '/placeholder.png'}
+                    alt={item.productName}
+                    fill
+                    className="object-cover"
+                  />
+                  <div
+                    className="absolute top-1 right-1 px-2 py-1 rounded-lg text-xs font-bold"
+                    style={{
+                      backgroundColor: colors.accent,
+                      color: colors.background,
+                    }}
+                  >
+                    ×{item.quantity}
+                  </div>
+                </div>
+
+                {/* Product Info */}
+                <div className="flex-1 min-w-0">
+                  <h4
+                    className="text-base font-bold mb-2 line-clamp-2"
+                    style={{ color: colors.text }}
+                  >
+                    {item.productName}
+                  </h4>
+
+                  <div className="flex items-center gap-3">
+                    <div
+                      className="flex items-center gap-2 px-3 py-1 rounded-lg text-xs"
+                      style={{
+                        backgroundColor: `${colors.textSecondary}10`,
+                        color: colors.textSecondary,
+                      }}
+                    >
+                      <Package className="h-3 w-3" />
+                      <span className="font-medium">SL: {item.quantity}</span>
+                    </div>
+
+                    <div
+                      className="px-3 py-1 rounded-lg"
+                      style={{
+                        backgroundColor: `${colors.accent}15`,
+                      }}
+                    >
+                      <span className="text-base font-bold" style={{ color: colors.accent }}>
+                        {item.totalPrice.toLocaleString('vi-VN')}₫
+                      </span>
+                    </div>
+                  </div>
                 </div>
               </div>
-              <span className="bg-gradient-to-r from-slate-700 to-slate-900 bg-clip-text text-transparent">
-                Sản phẩm đã đặt
+            </div>
+          ))}
+
+          <Separator style={{ backgroundColor: colors.border }} />
+
+          {/* Order Summary */}
+          <div
+            className="space-y-3 p-4 rounded-lg border"
+            style={{
+              backgroundColor: colors.cardBackgroundSecondary,
+              borderColor: colors.border,
+            }}
+          >
+            {/* Subtotal */}
+            <div className="flex justify-between items-center">
+              <span
+                className="flex items-center gap-2 text-sm font-medium"
+                style={{ color: colors.textSecondary }}
+              >
+                <Package className="h-4 w-4" />
+                Tạm tính:
               </span>
-            </CardTitle>
-          </motion.div>
-        </CardHeader>
+              <span className="text-base font-bold" style={{ color: colors.text }}>
+                {order.subtotal.toLocaleString('vi-VN')}₫
+              </span>
+            </div>
 
-        <CardContent className="p-8">
-          <div className="space-y-4">
-            {/* Product Items */}
-            {order.items?.map((item, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                whileHover={{ scale: 1.02 }}
-                className="group p-6 bg-white hover:bg-gradient-to-r hover:from-indigo-50/50 hover:to-purple-50/50 rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 border-2 border-slate-200"
+            {/* Shipping */}
+            <div className="flex justify-between items-center">
+              <span
+                className="flex items-center gap-2 text-sm font-medium"
+                style={{ color: colors.textSecondary }}
               >
-                <div className="flex items-center gap-6">
-                  {/* Product Image */}
-                  <div className="relative w-24 h-24 rounded-2xl overflow-hidden ring-2 ring-slate-300 group-hover:ring-indigo-400 shadow-lg transition-all">
-                    <Image
-                      src={item.thumbnail || '/placeholder.png'}
-                      alt={item.productName}
-                      fill
-                      className="object-cover group-hover:scale-110 transition-transform duration-300"
-                    />
-                    <div className="absolute top-2 right-2 p-2 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-xl shadow-xl">
-                      <span className="text-white font-black text-sm">×{item.quantity}</span>
-                    </div>
-                  </div>
+                <Truck className="h-4 w-4" />
+                Phí vận chuyển:
+              </span>
+              <span className="text-base font-bold" style={{ color: colors.text }}>
+                {order.shippingFee.toLocaleString('vi-VN')}₫
+              </span>
+            </div>
 
-                  {/* Product Info */}
-                  <div className="flex-1 min-w-0">
-                    <h4 className="text-xl font-black text-slate-900 group-hover:text-indigo-600 transition-colors mb-2 line-clamp-2">
-                      {item.productName}
-                    </h4>
-
-                    <div className="flex items-center gap-4">
-                      <div className="flex items-center gap-2 px-4 py-2 bg-slate-100 rounded-xl">
-                        <Package className="h-4 w-4 text-slate-600" />
-                        <span className="text-sm font-bold text-slate-700">
-                          Số lượng: {item.quantity}
-                        </span>
-                      </div>
-
-                      <div className="px-4 py-2 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-xl shadow-lg">
-                        <span className="text-xl font-black text-white">
-                          {item.totalPrice.toLocaleString('vi-VN')}₫
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-
-            <Separator className="my-6" />
-
-            {/* Order Summary */}
-            <div className="space-y-3 p-6 bg-gradient-to-br from-slate-50 to-indigo-50/30 rounded-3xl border-2 border-slate-200 shadow-inner">
-              {/* Subtotal */}
-              <motion.div
-                initial={{ opacity: 0, x: -10 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.3 }}
-                className="flex justify-between items-center p-4 bg-white rounded-2xl shadow-sm"
+            {/* Discount */}
+            {order.discountAmount && order.discountAmount > 0 && (
+              <div
+                className="flex justify-between items-center p-3 rounded-lg border"
+                style={{
+                  backgroundColor: `${colors.success}10`,
+                  borderColor: `${colors.success}30`,
+                }}
               >
-                <span className="text-slate-700 font-bold flex items-center gap-2">
-                  <Package className="h-5 w-5 text-slate-600" />
-                  Tạm tính:
-                </span>
-                <span className="text-xl font-black text-slate-900">
-                  {order.subtotal.toLocaleString('vi-VN')}₫
-                </span>
-              </motion.div>
-
-              {/* Shipping */}
-              <motion.div
-                initial={{ opacity: 0, x: -10 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.4 }}
-                className="flex justify-between items-center p-4 bg-white rounded-2xl shadow-sm"
-              >
-                <span className="text-slate-700 font-bold flex items-center gap-2">
-                  <Truck className="h-5 w-5 text-blue-600" />
-                  Phí vận chuyển:
-                </span>
-                <span className="text-xl font-black text-blue-600">
-                  {order.shippingFee.toLocaleString('vi-VN')}₫
-                </span>
-              </motion.div>
-
-              {/* Discount */}
-              {order.discountAmount && order.discountAmount > 0 && (
-                <motion.div
-                  initial={{ opacity: 0, x: -10 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.5 }}
-                  className="flex justify-between items-center p-4 bg-gradient-to-r from-emerald-50 to-green-50 rounded-2xl shadow-sm border-2 border-emerald-200"
+                <span
+                  className="flex items-center gap-2 text-sm font-medium"
+                  style={{ color: colors.success }}
                 >
-                  <span className="text-emerald-700 font-bold flex items-center gap-2">
-                    <Sparkles className="h-5 w-5 text-emerald-600" />
-                    Giảm giá:
-                  </span>
-                  <span className="text-xl font-black text-emerald-600">
-                    -{order.discountAmount.toLocaleString('vi-VN')}₫
-                  </span>
-                </motion.div>
-              )}
-
-              <Separator className="my-4" />
-
-              {/* Total */}
-              <motion.div
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.6 }}
-                className="flex justify-between items-center p-6 bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 rounded-2xl shadow-2xl"
-              >
-                <span className="text-white font-black text-xl flex items-center gap-2">
-                  <Sparkles className="h-6 w-6" />
-                  Tổng cộng:
+                  <Tag className="h-4 w-4" />
+                  Giảm giá:
                 </span>
-                <span className="text-3xl font-black text-white">
-                  {order.totalAmount.toLocaleString('vi-VN')}₫
+                <span className="text-base font-bold" style={{ color: colors.success }}>
+                  -{order.discountAmount.toLocaleString('vi-VN')}₫
                 </span>
-              </motion.div>
+              </div>
+            )}
+
+            <Separator style={{ backgroundColor: colors.border }} />
+
+            {/* Total */}
+            <div
+              className="flex justify-between items-center p-4 rounded-lg"
+              style={{
+                backgroundColor: colors.accent,
+              }}
+            >
+              <span className="font-bold text-base" style={{ color: colors.background }}>
+                Tổng cộng:
+              </span>
+              <span className="text-xl font-bold" style={{ color: colors.background }}>
+                {order.totalAmount.toLocaleString('vi-VN')}₫
+              </span>
             </div>
           </div>
-        </CardContent>
-      </Card>
-    </motion.div>
+        </div>
+      </CardContent>
+    </Card>
   )
 }
