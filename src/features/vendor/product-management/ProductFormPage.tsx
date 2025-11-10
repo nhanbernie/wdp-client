@@ -1,7 +1,6 @@
 'use client'
 
 import React from 'react'
-import { motion } from 'framer-motion'
 import { ArrowLeft } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -11,6 +10,7 @@ import { ProductFormData } from './types/product.types'
 import { productFormSchema } from './schemas/product.schema'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/contexts/AuthContext'
+import { useTheme } from '@/contexts/ThemeContext'
 
 interface ProductFormPageProps {
   mode: 'create' | 'edit'
@@ -29,6 +29,7 @@ export const ProductFormPage: React.FC<ProductFormPageProps> = ({
 }) => {
   const router = useRouter()
   const { user } = useAuth()
+  const { colors } = useTheme()
 
   const handleCancel = () => {
     router.push('/vendor/product-management')
@@ -59,32 +60,34 @@ export const ProductFormPage: React.FC<ProductFormPageProps> = ({
   return (
     <div className="space-y-6">
       {/* Header */}
-      <motion.div
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="flex items-center gap-4"
-      >
-        <Button variant="outline" size="icon" onClick={handleCancel}>
+      <div className="flex items-center gap-4">
+        <Button
+          variant="outline"
+          size="icon"
+          onClick={handleCancel}
+          style={{
+            backgroundColor: colors.cardBackground,
+            borderColor: colors.border,
+            color: colors.text,
+          }}
+        >
           <ArrowLeft className="h-5 w-5" />
         </Button>
         <div>
-          <h1 className="text-3xl font-bold text-foreground">{title}</h1>
-          <p className="text-muted-foreground mt-2">
+          <h1 className="text-3xl font-bold" style={{ color: colors.text }}>
+            {title}
+          </h1>
+          <p className="mt-2" style={{ color: colors.textSecondary }}>
             {mode === 'create' ? 'Thêm sản phẩm mới vào danh sách' : 'Cập nhật thông tin sản phẩm'}
           </p>
         </div>
-      </motion.div>
+      </div>
 
       {/* Form Card */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.1 }}
-      >
-        <Card>
+      <div>
+        <Card style={{ backgroundColor: colors.cardBackground, borderColor: colors.border }}>
           <CardHeader>
-            <CardTitle>Thông tin sản phẩm</CardTitle>
+            <CardTitle style={{ color: colors.text }}>Thông tin sản phẩm</CardTitle>
           </CardHeader>
           <CardContent>
             <FormProvider<ProductFormData>
@@ -119,7 +122,7 @@ export const ProductFormPage: React.FC<ProductFormPageProps> = ({
             </FormProvider>
           </CardContent>
         </Card>
-      </motion.div>
+      </div>
     </div>
   )
 }

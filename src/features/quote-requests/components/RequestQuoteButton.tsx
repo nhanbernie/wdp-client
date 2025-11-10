@@ -49,10 +49,18 @@ export const RequestQuoteButton: React.FC<Props> = ({ productId }) => {
           Yêu cầu báo giá
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-w-2xl">
+      <DialogContent
+        className="max-w-2xl"
+        style={{
+          backgroundColor: colors.cardBackground,
+          borderColor: colors.border,
+        }}
+      >
         <DialogHeader>
-          <DialogTitle className="text-2xl font-bold">Yêu cầu báo giá</DialogTitle>
-          <DialogDescription>
+          <DialogTitle className="text-2xl font-bold" style={{ color: colors.text }}>
+            Yêu cầu báo giá
+          </DialogTitle>
+          <DialogDescription style={{ color: colors.textSecondary }}>
             Điền thông tin dưới đây để gửi yêu cầu báo giá đến vendor. Vendor sẽ phản hồi trong thời
             gian sớm nhất.
           </DialogDescription>

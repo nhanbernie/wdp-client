@@ -1,16 +1,17 @@
 'use client'
 
 import React from 'react'
-import { motion } from 'framer-motion'
 import { Plus, Package, TrendingUp, AlertCircle } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { ProductTable } from './components'
 import { useProductManagement } from './hooks/useProductManagement'
 import { useRouter } from 'next/navigation'
+import { useTheme } from '@/contexts/ThemeContext'
 
 export const ProductListPage: React.FC = () => {
   const router = useRouter()
+  const { colors } = useTheme()
   const { products, isLoading, deleteProduct } = useProductManagement()
 
   const handleCreate = () => {
@@ -40,21 +41,24 @@ export const ProductListPage: React.FC = () => {
 
   return (
     <div className="container mx-auto py-8 px-4">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-      >
+      <div>
         {/* Header */}
         <div className="mb-8 flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900 mb-2 flex items-center gap-3">
-              <Package className="w-8 h-8 text-blue-600" />
-              Quản lý sản phẩm
+            <h1
+              className="text-3xl font-bold mb-2 flex items-center gap-3"
+              style={{ color: colors.text }}
+            >
+              <Package className="w-8 h-8" style={{ color: colors.accent }} />
+              Quản lý danh sách sản phẩm
             </h1>
-            <p className="text-gray-600">Quản lý danh sách sản phẩm của bạn</p>
+            <p style={{ color: colors.textSecondary }}>Quản lý và theo dõi sản phẩm của bạn</p>
           </div>
-          <Button onClick={handleCreate} className="gap-2">
+          <Button
+            onClick={handleCreate}
+            className="gap-2"
+            style={{ backgroundColor: colors.accent, color: colors.background }}
+          >
             <Plus className="h-5 w-5" />
             Thêm sản phẩm
           </Button>
@@ -62,48 +66,62 @@ export const ProductListPage: React.FC = () => {
 
         {/* Stats Cards */}
         <div className="grid md:grid-cols-3 gap-6 mb-8">
-          <Card>
+          <Card style={{ backgroundColor: colors.cardBackground, borderColor: colors.border }}>
             <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-medium text-gray-600">Tổng sản phẩm</CardTitle>
+              <CardTitle className="text-sm font-medium" style={{ color: colors.textSecondary }}>
+                Tổng sản phẩm
+              </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="flex items-center gap-2">
-                <Package className="w-5 h-5 text-blue-600" />
-                <span className="text-2xl font-bold">{totalProducts}</span>
+                <Package className="w-5 h-5" style={{ color: colors.accent }} />
+                <span className="text-2xl font-bold" style={{ color: colors.text }}>
+                  {totalProducts}
+                </span>
               </div>
             </CardContent>
           </Card>
 
-          <Card>
+          <Card style={{ backgroundColor: colors.cardBackground, borderColor: colors.border }}>
             <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-medium text-gray-600">Còn hàng</CardTitle>
+              <CardTitle className="text-sm font-medium" style={{ color: colors.textSecondary }}>
+                Còn hàng
+              </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="flex items-center gap-2">
-                <TrendingUp className="w-5 h-5 text-green-600" />
-                <span className="text-2xl font-bold text-green-600">{inStockProducts}</span>
+                <TrendingUp className="w-5 h-5" style={{ color: colors.success }} />
+                <span className="text-2xl font-bold" style={{ color: colors.success }}>
+                  {inStockProducts}
+                </span>
               </div>
             </CardContent>
           </Card>
 
-          <Card>
+          <Card style={{ backgroundColor: colors.cardBackground, borderColor: colors.border }}>
             <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-medium text-gray-600">Sắp hết hàng</CardTitle>
+              <CardTitle className="text-sm font-medium" style={{ color: colors.textSecondary }}>
+                Sắp hết hàng
+              </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="flex items-center gap-2">
-                <AlertCircle className="w-5 h-5 text-orange-600" />
-                <span className="text-2xl font-bold text-orange-600">{lowStockProducts}</span>
+                <AlertCircle className="w-5 h-5" style={{ color: colors.warning }} />
+                <span className="text-2xl font-bold" style={{ color: colors.warning }}>
+                  {lowStockProducts}
+                </span>
               </div>
             </CardContent>
           </Card>
         </div>
 
         {/* Product Table */}
-        <Card>
+        <Card style={{ backgroundColor: colors.cardBackground, borderColor: colors.border }}>
           <CardHeader>
-            <CardTitle>Danh sách sản phẩm</CardTitle>
-            <CardDescription>Quản lý và theo dõi sản phẩm của bạn</CardDescription>
+            <CardTitle style={{ color: colors.text }}>Danh sách sản phẩm</CardTitle>
+            <CardDescription style={{ color: colors.textSecondary }}>
+              Quản lý và theo dõi sản phẩm của bạn
+            </CardDescription>
           </CardHeader>
           <CardContent>
             <ProductTable
@@ -115,7 +133,7 @@ export const ProductListPage: React.FC = () => {
             />
           </CardContent>
         </Card>
-      </motion.div>
+      </div>
     </div>
   )
 }

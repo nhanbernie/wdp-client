@@ -11,6 +11,7 @@ import { useCreateQuoteRequest } from '@/features/quote-requests/hooks/useCreate
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
+import { useTheme } from '@/contexts/ThemeContext'
 
 interface Props {
   productId: string
@@ -19,6 +20,7 @@ interface Props {
 
 export const QuoteRequestForm: React.FC<Props> = ({ productId, onSuccess }) => {
   const { handleCreate, isLoading } = useCreateQuoteRequest()
+  const { colors } = useTheme()
 
   const { register, handleSubmit, formState } = useForm<CreateQuoteRequestFormData>({
     resolver: zodResolver(createQuoteRequestSchema),
@@ -39,39 +41,93 @@ export const QuoteRequestForm: React.FC<Props> = ({ productId, onSuccess }) => {
       <input type="hidden" {...register('productId')} />
 
       <div>
-        <label className="block text-sm mb-1">Số lượng</label>
-        <Input type="number" {...register('quantity', { valueAsNumber: true })} />
+        <label className="block text-sm mb-1" style={{ color: colors.text }}>
+          Số lượng
+        </label>
+        <Input
+          type="number"
+          {...register('quantity', { valueAsNumber: true })}
+          style={{
+            backgroundColor: colors.cardBackgroundSecondary,
+            borderColor: colors.border,
+            color: colors.text,
+          }}
+        />
         {formState.errors.quantity && (
-          <p className="text-xs text-red-500">{formState.errors.quantity.message}</p>
+          <p className="text-xs mt-1" style={{ color: colors.error }}>
+            {formState.errors.quantity.message}
+          </p>
         )}
       </div>
 
       <div>
-        <label className="block text-sm mb-1">Yêu cầu kỹ thuật</label>
-        <Textarea {...register('specifications')} rows={4} />
+        <label className="block text-sm mb-1" style={{ color: colors.text }}>
+          Yêu cầu kỹ thuật
+        </label>
+        <Textarea
+          {...register('specifications')}
+          rows={4}
+          style={{
+            backgroundColor: colors.cardBackgroundSecondary,
+            borderColor: colors.border,
+            color: colors.text,
+          }}
+        />
         {formState.errors.specifications && (
-          <p className="text-xs text-red-500">{formState.errors.specifications.message}</p>
+          <p className="text-xs mt-1" style={{ color: colors.error }}>
+            {formState.errors.specifications.message}
+          </p>
         )}
       </div>
 
       <div>
-        <label className="block text-sm mb-1">Địa chỉ giao</label>
-        <Input {...register('deliveryAddress')} />
+        <label className="block text-sm mb-1" style={{ color: colors.text }}>
+          Địa chỉ giao
+        </label>
+        <Input
+          {...register('deliveryAddress')}
+          style={{
+            backgroundColor: colors.cardBackgroundSecondary,
+            borderColor: colors.border,
+            color: colors.text,
+          }}
+        />
         {formState.errors.deliveryAddress && (
-          <p className="text-xs text-red-500">{formState.errors.deliveryAddress.message}</p>
+          <p className="text-xs mt-1" style={{ color: colors.error }}>
+            {formState.errors.deliveryAddress.message}
+          </p>
         )}
       </div>
 
       <div>
-        <label className="block text-sm mb-1">Ghi chú</label>
-        <Textarea {...register('requestNotes')} rows={3} />
+        <label className="block text-sm mb-1" style={{ color: colors.text }}>
+          Ghi chú
+        </label>
+        <Textarea
+          {...register('requestNotes')}
+          rows={3}
+          style={{
+            backgroundColor: colors.cardBackgroundSecondary,
+            borderColor: colors.border,
+            color: colors.text,
+          }}
+        />
         {formState.errors.requestNotes && (
-          <p className="text-xs text-red-500">{formState.errors.requestNotes.message}</p>
+          <p className="text-xs mt-1" style={{ color: colors.error }}>
+            {formState.errors.requestNotes.message}
+          </p>
         )}
       </div>
 
       <div className="flex justify-end">
-        <Button type="submit" disabled={isLoading}>
+        <Button
+          type="submit"
+          disabled={isLoading}
+          style={{
+            backgroundColor: colors.accent,
+            color: colors.background,
+          }}
+        >
           Gửi yêu cầu
         </Button>
       </div>

@@ -10,6 +10,7 @@ import { Separator } from '@/components/ui/separator'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { useRouter } from 'next/navigation'
 import { Product } from '@/services/vendor/vendor.types'
+import { useTheme } from '@/contexts/ThemeContext'
 
 interface ProductDetailPageProps {
   product: Product
@@ -25,7 +26,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
   isLoading,
 }) => {
   const router = useRouter()
-
+  const { colors } = useTheme()
   const handleBack = () => {
     router.push('/vendor/product-management')
   }
@@ -79,7 +80,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
             <Edit className="h-4 w-4" />
             Chỉnh sửa
           </Button>
-          <Button variant="destructive" onClick={handleDelete} className="gap-2">
+          <Button variant="warning" onClick={handleDelete} className="gap-2">
             <Trash2 className="h-4 w-4" />
             Xóa
           </Button>
@@ -262,7 +263,17 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                         <h3 className="font-semibold mb-2">Nhãn</h3>
                         <div className="flex flex-wrap gap-2">
                           {product.badges.map((badge, index) => (
-                            <Badge key={index} variant="secondary">
+                            <Badge
+                              key={index}
+                              variant="secondary"
+                              className="text-xs"
+                              style={{
+                                backgroundImage: 'none',
+                                backgroundColor: colors.accent + '20',
+                                color: colors.accent,
+                                borderColor: 'transparent',
+                              }}
+                            >
                               {badge}
                             </Badge>
                           ))}
@@ -334,7 +345,17 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                           <h4 className="font-semibold mb-2">{option.name}</h4>
                           <div className="flex flex-wrap gap-2">
                             {option.values.map((value, vIndex) => (
-                              <Badge key={vIndex} variant="outline">
+                              <Badge
+                                key={vIndex}
+                                variant="secondary"
+                                className="text-xs"
+                                style={{
+                                  backgroundImage: 'none',
+                                  backgroundColor: colors.accent + '20',
+                                  color: colors.accent,
+                                  borderColor: 'transparent',
+                                }}
+                              >
                                 {typeof value === 'string' ? value : value.value}
                               </Badge>
                             ))}
@@ -364,7 +385,17 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                           <div className="flex items-center justify-between mb-3">
                             <div className="flex flex-wrap gap-2">
                               {Object.entries(variant.options || {}).map(([key, value]) => (
-                                <Badge key={key} variant="secondary">
+                                <Badge
+                                  key={key}
+                                  variant="secondary"
+                                  className="text-xs"
+                                  style={{
+                                    backgroundImage: 'none',
+                                    backgroundColor: colors.accent + '20',
+                                    color: colors.accent,
+                                    borderColor: 'transparent',
+                                  }}
+                                >
                                   {key}: {value}
                                 </Badge>
                               ))}

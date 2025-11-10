@@ -1,7 +1,6 @@
 'use client'
 
 import React from 'react'
-import { motion } from 'framer-motion'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -20,9 +19,11 @@ import {
   Loader2,
 } from 'lucide-react'
 import { useRouter } from 'next/navigation'
+import { useTheme } from '@/contexts/ThemeContext'
 
 export const VendorDashboardPage: React.FC = () => {
   const router = useRouter()
+  const { colors } = useTheme()
   const { data: profileData, isLoading: profileLoading } = useGetMyVendorProfileQuery()
   const { statistics, isLoading: ordersLoading } = useVendorOrders()
   const { data: productsData, isLoading: productsLoading } = useGetVendorProductsQuery()
@@ -33,7 +34,7 @@ export const VendorDashboardPage: React.FC = () => {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
-        <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
+        <Loader2 className="w-8 h-8 animate-spin" style={{ color: colors.accent }} />
       </div>
     )
   }
@@ -42,18 +43,26 @@ export const VendorDashboardPage: React.FC = () => {
     pending: {
       label: 'Chờ phê duyệt',
       icon: AlertCircle,
-      className: 'bg-yellow-100 text-yellow-800',
+      color: colors.warning,
+      bgColor: `${colors.warning}20`,
     },
     approved: {
       label: 'Đã phê duyệt',
       icon: CheckCircle,
-      className: 'bg-green-100 text-green-800',
+      color: colors.success,
+      bgColor: `${colors.success}20`,
     },
-    rejected: { label: 'Bị từ chối', icon: AlertCircle, className: 'bg-red-100 text-red-800' },
+    rejected: {
+      label: 'Bị từ chối',
+      icon: AlertCircle,
+      color: colors.error,
+      bgColor: `${colors.error}20`,
+    },
     suspended: {
       label: 'Tạm ngưng',
       icon: AlertCircle,
-      className: 'bg-orange-100 text-orange-800',
+      color: colors.warning,
+      bgColor: `${colors.warning}20`,
     },
   }
 
@@ -61,30 +70,36 @@ export const VendorDashboardPage: React.FC = () => {
 
   return (
     <div className="container mx-auto py-8 px-4">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-      >
+      <div>
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2 flex items-center gap-3">
-            <LayoutDashboard className="w-8 h-8 text-blue-600" />
+          <h1
+            className="text-3xl font-bold mb-2 flex items-center gap-3"
+            style={{ color: colors.text }}
+          >
+            <LayoutDashboard className="w-8 h-8" style={{ color: colors.accent }} />
             Dashboard Vendor
           </h1>
-          <p className="text-gray-600">Chào mừng trở lại, {profile?.businessName}</p>
+          <p style={{ color: colors.textSecondary }}>Chào mừng trở lại, {profile?.businessName}</p>
         </div>
 
         {/* Profile Status Alert */}
         {profile && profile.status !== 'approved' && status && (
-          <Card className="mb-6 border-l-4 border-l-yellow-500">
+          <Card
+            className="mb-6"
+            style={{
+              backgroundColor: colors.cardBackground,
+              borderLeft: `4px solid ${status.color}`,
+              borderColor: colors.border,
+            }}
+          >
             <CardContent className="pt-6">
               <div className="flex items-start gap-3">
-                <status.icon className="w-6 h-6 text-yellow-600 mt-1" />
+                <status.icon className="w-6 h-6 mt-1" style={{ color: status.color }} />
                 <div className="flex-1">
-                  <h3 className="font-semibold text-gray-900 mb-1">
+                  <h3 className="font-semibold mb-1" style={{ color: colors.text }}>
                     Trạng thái tài khoản: {status.label}
                   </h3>
-                  <p className="text-gray-600 text-sm">
+                  <p className="text-sm" style={{ color: colors.textSecondary }}>
                     {profile.status === 'pending' &&
                       'Tài khoản của bạn đang chờ được phê duyệt. Vui lòng đợi quản trị viên xem xét.'}
                     {profile.status === 'rejected' &&
@@ -103,19 +118,22 @@ export const VendorDashboardPage: React.FC = () => {
           <Card
             className="hover:shadow-lg transition-shadow cursor-pointer"
             onClick={() => router.push('/vendor/product-management')}
+            style={{ backgroundColor: colors.cardBackground, borderColor: colors.border }}
           >
             <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-medium text-gray-600">Sản phẩm</CardTitle>
+              <CardTitle className="text-sm font-medium" style={{ color: colors.textSecondary }}>
+                Sản phẩm
+              </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <Package className="w-5 h-5 text-blue-600" />
-                  <span className="text-2xl font-bold">
+                  <Package className="w-5 h-5" style={{ color: colors.accent }} />
+                  <span className="text-2xl font-bold" style={{ color: colors.text }}>
                     {productsData?.data?.items?.length || 0}
                   </span>
                 </div>
-                <ArrowRight className="w-5 h-5 text-gray-400" />
+                <ArrowRight className="w-5 h-5" style={{ color: colors.textSecondary }} />
               </div>
             </CardContent>
           </Card>
@@ -123,29 +141,36 @@ export const VendorDashboardPage: React.FC = () => {
           <Card
             className="hover:shadow-lg transition-shadow cursor-pointer"
             onClick={() => router.push('/vendor/orders')}
+            style={{ backgroundColor: colors.cardBackground, borderColor: colors.border }}
           >
             <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-medium text-gray-600">Đơn hàng</CardTitle>
+              <CardTitle className="text-sm font-medium" style={{ color: colors.textSecondary }}>
+                Đơn hàng
+              </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <ShoppingBag className="w-5 h-5 text-green-600" />
-                  <span className="text-2xl font-bold">{statistics?.totalOrders || 0}</span>
+                  <ShoppingBag className="w-5 h-5" style={{ color: colors.success }} />
+                  <span className="text-2xl font-bold" style={{ color: colors.text }}>
+                    {statistics?.totalOrders || 0}
+                  </span>
                 </div>
-                <ArrowRight className="w-5 h-5 text-gray-400" />
+                <ArrowRight className="w-5 h-5" style={{ color: colors.textSecondary }} />
               </div>
             </CardContent>
           </Card>
 
-          <Card>
+          <Card style={{ backgroundColor: colors.cardBackground, borderColor: colors.border }}>
             <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-medium text-gray-600">Doanh thu</CardTitle>
+              <CardTitle className="text-sm font-medium" style={{ color: colors.textSecondary }}>
+                Doanh thu
+              </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="flex items-center gap-2">
-                <DollarSign className="w-5 h-5 text-purple-600" />
-                <span className="text-2xl font-bold text-purple-600">
+                <DollarSign className="w-5 h-5" style={{ color: colors.accent }} />
+                <span className="text-2xl font-bold" style={{ color: colors.text }}>
                   {statistics?.totalRevenue ? statistics.totalRevenue.toLocaleString('vi-VN') : '0'}{' '}
                   VND
                 </span>
@@ -153,14 +178,18 @@ export const VendorDashboardPage: React.FC = () => {
             </CardContent>
           </Card>
 
-          <Card>
+          <Card style={{ backgroundColor: colors.cardBackground, borderColor: colors.border }}>
             <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-medium text-gray-600">Khách hàng</CardTitle>
+              <CardTitle className="text-sm font-medium" style={{ color: colors.textSecondary }}>
+                Khách hàng
+              </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="flex items-center gap-2">
-                <TrendingUp className="w-5 h-5 text-orange-600" />
-                <span className="text-2xl font-bold">{statistics?.totalCustomers || 0}</span>
+                <TrendingUp className="w-5 h-5" style={{ color: colors.warning }} />
+                <span className="text-2xl font-bold" style={{ color: colors.text }}>
+                  {statistics?.totalCustomers || 0}
+                </span>
               </div>
             </CardContent>
           </Card>
@@ -168,33 +197,45 @@ export const VendorDashboardPage: React.FC = () => {
 
         {/* Order Status Overview */}
         {statistics && statistics.ordersByStatus && (
-          <Card className="mb-6">
+          <Card
+            className="mb-6"
+            style={{ backgroundColor: colors.cardBackground, borderColor: colors.border }}
+          >
             <CardHeader>
-              <CardTitle>Tình trạng đơn hàng</CardTitle>
+              <CardTitle style={{ color: colors.text }}>Tình trạng đơn hàng</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="grid md:grid-cols-5 gap-4">
                 <StatCard
                   label="Chờ xác nhận"
                   value={statistics.ordersByStatus.pending}
-                  color="yellow"
+                  color="warning"
+                  colors={colors}
                 />
                 <StatCard
                   label="Đang xử lý"
                   value={statistics.ordersByStatus.processing}
-                  color="blue"
+                  color="accent"
+                  colors={colors}
                 />
                 <StatCard
                   label="Đang giao"
                   value={statistics.ordersByStatus.shipping}
-                  color="purple"
+                  color="success"
+                  colors={colors}
                 />
                 <StatCard
                   label="Đã giao"
                   value={statistics.ordersByStatus.delivered}
-                  color="green"
+                  color="success"
+                  colors={colors}
                 />
-                <StatCard label="Đã hủy" value={statistics.ordersByStatus.cancelled} color="red" />
+                <StatCard
+                  label="Đã hủy"
+                  value={statistics.ordersByStatus.cancelled}
+                  color="error"
+                  colors={colors}
+                />
               </div>
             </CardContent>
           </Card>
@@ -205,15 +246,18 @@ export const VendorDashboardPage: React.FC = () => {
           <div className="grid md:grid-cols-2 gap-6 mb-6">
             {/* Top Products */}
             {statistics.topProducts && statistics.topProducts.length > 0 && (
-              <Card>
+              <Card style={{ backgroundColor: colors.cardBackground, borderColor: colors.border }}>
                 <CardHeader>
-                  <CardTitle>Sản phẩm bán chạy</CardTitle>
+                  <CardTitle style={{ color: colors.text }}>Sản phẩm bán chạy</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
                     {statistics.topProducts.map((product, index) => (
                       <div key={product.productId} className="flex items-center gap-3">
-                        <div className="flex-shrink-0 w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold">
+                        <div
+                          className="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center font-bold"
+                          style={{ backgroundColor: `${colors.accent}20`, color: colors.accent }}
+                        >
                           {index + 1}
                         </div>
                         <img
@@ -222,10 +266,10 @@ export const VendorDashboardPage: React.FC = () => {
                           className="w-12 h-12 rounded-lg object-cover"
                         />
                         <div className="flex-1 min-w-0">
-                          <p className="font-medium text-gray-900 truncate">
+                          <p className="font-medium truncate" style={{ color: colors.text }}>
                             {product.productName}
                           </p>
-                          <p className="text-sm text-gray-500">
+                          <p className="text-sm" style={{ color: colors.textSecondary }}>
                             Đã bán: {product.totalQuantity} | Doanh thu:{' '}
                             {product.totalRevenue.toLocaleString('vi-VN')} VND
                           </p>
@@ -239,25 +283,36 @@ export const VendorDashboardPage: React.FC = () => {
 
             {/* Customers */}
             {statistics.customers && statistics.customers.length > 0 && (
-              <Card>
+              <Card style={{ backgroundColor: colors.cardBackground, borderColor: colors.border }}>
                 <CardHeader>
-                  <CardTitle>Khách hàng ({statistics.totalCustomers})</CardTitle>
+                  <CardTitle style={{ color: colors.text }}>
+                    Khách hàng ({statistics.totalCustomers})
+                  </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-3">
                     {statistics.customers.map((customer) => (
                       <div
                         key={customer.userId}
-                        className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg"
+                        className="flex items-center gap-3 p-3 rounded-lg"
+                        style={{ backgroundColor: colors.cardBackgroundSecondary }}
                       >
-                        <div className="flex-shrink-0 w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center text-white font-bold">
+                        <div
+                          className="flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center font-bold"
+                          style={{
+                            backgroundColor: colors.accent,
+                            color: colors.background,
+                          }}
+                        >
                           {customer.name ? customer.name.charAt(0).toUpperCase() : 'U'}
                         </div>
                         <div className="flex-1 min-w-0">
-                          <p className="font-medium text-gray-900">
+                          <p className="font-medium" style={{ color: colors.text }}>
                             {customer.name || 'Chưa cập nhật'}
                           </p>
-                          <p className="text-sm text-gray-500 truncate">{customer.email}</p>
+                          <p className="text-sm truncate" style={{ color: colors.textSecondary }}>
+                            {customer.email}
+                          </p>
                         </div>
                       </div>
                     ))}
@@ -269,9 +324,9 @@ export const VendorDashboardPage: React.FC = () => {
         )}
 
         {/* Quick Actions */}
-        <Card>
+        <Card style={{ backgroundColor: colors.cardBackground, borderColor: colors.border }}>
           <CardHeader>
-            <CardTitle>Thao tác nhanh</CardTitle>
+            <CardTitle style={{ color: colors.text }}>Thao tác nhanh</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="grid md:grid-cols-3 gap-4">
@@ -279,6 +334,11 @@ export const VendorDashboardPage: React.FC = () => {
                 variant="outline"
                 className="h-auto py-4 flex-col gap-2"
                 onClick={() => router.push('/vendor/product-management')}
+                style={{
+                  backgroundColor: colors.cardBackgroundSecondary,
+                  borderColor: colors.border,
+                  color: colors.text,
+                }}
               >
                 <Package className="w-6 h-6" />
                 <span>Quản lý sản phẩm</span>
@@ -287,6 +347,11 @@ export const VendorDashboardPage: React.FC = () => {
                 variant="outline"
                 className="h-auto py-4 flex-col gap-2"
                 onClick={() => router.push('/vendor/quotes')}
+                style={{
+                  backgroundColor: colors.cardBackgroundSecondary,
+                  borderColor: colors.border,
+                  color: colors.text,
+                }}
               >
                 <TrendingUp className="w-6 h-6" />
                 <span>Yêu cầu báo giá</span>
@@ -295,6 +360,11 @@ export const VendorDashboardPage: React.FC = () => {
                 variant="outline"
                 className="h-auto py-4 flex-col gap-2"
                 onClick={() => router.push('/vendor/profile')}
+                style={{
+                  backgroundColor: colors.cardBackgroundSecondary,
+                  borderColor: colors.border,
+                  color: colors.text,
+                }}
               >
                 <CheckCircle className="w-6 h-6" />
                 <span>Cập nhật thông tin</span>
@@ -302,7 +372,7 @@ export const VendorDashboardPage: React.FC = () => {
             </div>
           </CardContent>
         </Card>
-      </motion.div>
+      </div>
     </div>
   )
 }
@@ -310,20 +380,30 @@ export const VendorDashboardPage: React.FC = () => {
 interface StatCardProps {
   label: string
   value: number
-  color: 'yellow' | 'blue' | 'purple' | 'green' | 'red'
+  color: 'warning' | 'accent' | 'info' | 'success' | 'error'
+  colors: any
 }
 
-const StatCard: React.FC<StatCardProps> = ({ label, value, color }) => {
-  const colorClasses = {
-    yellow: 'bg-yellow-50 text-yellow-700 border-yellow-200',
-    blue: 'bg-blue-50 text-blue-700 border-blue-200',
-    purple: 'bg-purple-50 text-purple-700 border-purple-200',
-    green: 'bg-green-50 text-green-700 border-green-200',
-    red: 'bg-red-50 text-red-700 border-red-200',
+const StatCard: React.FC<StatCardProps> = ({ label, value, color, colors: themeColors }) => {
+  const colorMap = {
+    warning: themeColors.warning,
+    accent: themeColors.accent,
+    info: themeColors.info,
+    success: themeColors.success,
+    error: themeColors.error,
   }
 
+  const selectedColor = colorMap[color]
+
   return (
-    <div className={`p-4 rounded-lg border-2 ${colorClasses[color]}`}>
+    <div
+      className="p-4 rounded-lg border-2"
+      style={{
+        backgroundColor: `${selectedColor}20`,
+        borderColor: selectedColor,
+        color: selectedColor,
+      }}
+    >
       <p className="text-sm font-medium mb-1">{label}</p>
       <p className="text-3xl font-bold">{value}</p>
     </div>
