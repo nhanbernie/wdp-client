@@ -3,7 +3,7 @@
 import { userNavigationItems } from '@/common/constants/navigate.constant'
 import Header from '../Header'
 import Footer from '../Footer'
-import { Chatbot } from '@/components/chatbot'
+import { Chatbot } from '@/features/chat-bot'
 
 interface AICMainLayoutProps {
   children: React.ReactNode
