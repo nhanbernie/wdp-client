@@ -16,6 +16,7 @@ import { QuoteRequest } from '@/services/vendor/vendor.types'
 import { respondQuoteSchema } from '../schemas/respondQuote.schema'
 import { RespondQuoteFormData } from '../types'
 import { useQuoteRequests } from '../hooks/useQuoteRequests'
+import { useTheme } from '@/contexts/ThemeContext'
 
 interface RespondQuoteDialogProps {
   open: boolean
@@ -31,6 +32,7 @@ export const RespondQuoteDialog: React.FC<RespondQuoteDialogProps> = ({
   onSuccess,
 }) => {
   const { handleRespond, isResponding } = useQuoteRequests()
+  const { colors } = useTheme()
 
   const defaultValues: RespondQuoteFormData = {
     responsePrice: quote.product?.price ? Number(quote.product.price) : 1,
@@ -64,10 +66,10 @@ export const RespondQuoteDialog: React.FC<RespondQuoteDialogProps> = ({
 
   return (
     <Dialog open={open} onOpenChange={(isOpen) => !isOpen && onClose()}>
-      <DialogContent>
+      <DialogContent style={{ backgroundColor: colors.cardBackground, borderColor: colors.border }}>
         <DialogHeader>
-          <DialogTitle>Báo giá cho khách hàng</DialogTitle>
-          <DialogDescription>
+          <DialogTitle style={{ color: colors.text }}>Báo giá cho khách hàng</DialogTitle>
+          <DialogDescription style={{ color: colors.textSecondary }}>
             Khách hàng yêu cầu báo giá cho {quote.quantity} {quote.product?.stockUnit || 'sản phẩm'}
           </DialogDescription>
         </DialogHeader>
@@ -81,9 +83,18 @@ export const RespondQuoteDialog: React.FC<RespondQuoteDialogProps> = ({
           <div className="space-y-4">
             {/* Product Summary */}
             {quote.product && (
-              <div className="p-4 bg-gray-50 rounded-lg space-y-2">
-                <h4 className="font-semibold text-gray-900">{quote.product.name}</h4>
-                <div className="text-sm text-gray-600">
+              <div
+                className="p-4 rounded-lg space-y-2"
+                style={{
+                  backgroundColor: colors.cardBackgroundSecondary,
+                  borderColor: colors.border,
+                  borderWidth: '1px',
+                }}
+              >
+                <h4 className="font-semibold" style={{ color: colors.text }}>
+                  {quote.product.name}
+                </h4>
+                <div className="text-sm" style={{ color: colors.textSecondary }}>
                   <p>
                     Số lượng: {quote.quantity} {quote.product.stockUnit}
                   </p>
@@ -115,10 +126,27 @@ export const RespondQuoteDialog: React.FC<RespondQuoteDialogProps> = ({
             />
 
             <div className="flex justify-end gap-3 pt-4">
-              <Button type="button" variant="outline" onClick={onClose} disabled={isResponding}>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={onClose}
+                disabled={isResponding}
+                style={{
+                  backgroundColor: colors.cardBackground,
+                  borderColor: colors.border,
+                  color: colors.text,
+                }}
+              >
                 Hủy
               </Button>
-              <Button type="submit" disabled={isResponding}>
+              <Button
+                type="submit"
+                disabled={isResponding}
+                style={{
+                  backgroundColor: colors.accent,
+                  color: colors.background,
+                }}
+              >
                 {isResponding ? 'Đang gửi...' : 'Gửi báo giá'}
               </Button>
             </div>

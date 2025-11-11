@@ -20,23 +20,56 @@ import {
 import { format } from 'date-fns'
 import { vi } from 'date-fns/locale'
 import { RespondQuoteDialog } from './RespondQuoteDialog'
+import { useTheme } from '@/contexts/ThemeContext'
 
 interface QuoteRequestCardProps {
   quote: QuoteRequest
   onRespond?: () => void
 }
 
-const statusConfig = {
-  pending: { label: 'Chờ phản hồi', icon: Clock, className: 'bg-yellow-100 text-yellow-800' },
-  quoted: { label: 'Đã báo giá', icon: DollarSign, className: 'bg-blue-100 text-blue-800' },
-  accepted: { label: 'Đã chấp nhận', icon: CheckCircle, className: 'bg-green-100 text-green-800' },
-  rejected: { label: 'Đã từ chối', icon: XCircle, className: 'bg-red-100 text-red-800' },
-  expired: { label: 'Đã hết hạn', icon: AlertCircle, className: 'bg-gray-100 text-gray-800' },
-  cancelled: { label: 'Đã hủy', icon: XCircle, className: 'bg-gray-100 text-gray-800' },
-}
-
 export const QuoteRequestCard: React.FC<QuoteRequestCardProps> = ({ quote, onRespond }) => {
   const [dialogOpen, setDialogOpen] = useState(false)
+  const { colors } = useTheme()
+
+  const statusConfig = {
+    pending: {
+      label: 'Chờ phản hồi',
+      icon: Clock,
+      bgColor: colors.warning + '20',
+      textColor: colors.warning,
+    },
+    quoted: {
+      label: 'Đã báo giá',
+      icon: DollarSign,
+      bgColor: colors.accent + '20',
+      textColor: colors.accent,
+    },
+    accepted: {
+      label: 'Đã chấp nhận',
+      icon: CheckCircle,
+      bgColor: colors.success + '20',
+      textColor: colors.success,
+    },
+    rejected: {
+      label: 'Đã từ chối',
+      icon: XCircle,
+      bgColor: colors.error + '20',
+      textColor: colors.error,
+    },
+    expired: {
+      label: 'Đã hết hạn',
+      icon: AlertCircle,
+      bgColor: colors.border + '20',
+      textColor: colors.textSecondary,
+    },
+    cancelled: {
+      label: 'Đã hủy',
+      icon: XCircle,
+      bgColor: colors.border + '20',
+      textColor: colors.textSecondary,
+    },
+  }
+
   const status = statusConfig[quote.status]
   const StatusIcon = status.icon
 
@@ -47,14 +80,24 @@ export const QuoteRequestCard: React.FC<QuoteRequestCardProps> = ({ quote, onRes
 
   return (
     <>
-      <Card className="hover:shadow-md transition-shadow">
+      <Card
+        className="hover:shadow-md transition-shadow"
+        style={{ backgroundColor: colors.cardBackground, borderColor: colors.border }}
+      >
         <CardContent className="pt-6">
           <div className="flex items-start justify-between mb-4">
-            <Badge className={status.className}>
+            <Badge
+              style={{
+                backgroundImage: 'none',
+                backgroundColor: status.bgColor,
+                color: status.textColor,
+                borderColor: 'transparent',
+              }}
+            >
               <StatusIcon className="w-3 h-3 mr-1" />
               {status.label}
             </Badge>
-            <span className="text-sm text-gray-500">
+            <span className="text-sm" style={{ color: colors.textSecondary }}>
               {format(new Date(quote.createdAt), 'dd/MM/yyyy HH:mm', { locale: vi })}
             </span>
           </div>
@@ -62,15 +105,23 @@ export const QuoteRequestCard: React.FC<QuoteRequestCardProps> = ({ quote, onRes
           <div className="space-y-4">
             {/* Product Info */}
             {quote.product && (
-              <div className="flex items-start gap-3 p-3 bg-gray-50 rounded-lg">
+              <div
+                className="flex items-start gap-3 p-3 rounded-lg"
+                style={{ backgroundColor: colors.cardBackgroundSecondary }}
+              >
                 <img
                   src={quote.product.thumbnail}
                   alt={quote.product.name}
                   className="w-16 h-16 object-cover rounded"
                 />
                 <div className="flex-1">
-                  <h3 className="font-semibold text-gray-900">{quote.product.name}</h3>
-                  <div className="flex items-center gap-4 mt-1 text-sm text-gray-600">
+                  <h3 className="font-semibold" style={{ color: colors.text }}>
+                    {quote.product.name}
+                  </h3>
+                  <div
+                    className="flex items-center gap-4 mt-1 text-sm"
+                    style={{ color: colors.textSecondary }}
+                  >
                     <span>
                       Số lượng: {quote.quantity} {quote.product.stockUnit}
                     </span>
@@ -83,53 +134,76 @@ export const QuoteRequestCard: React.FC<QuoteRequestCardProps> = ({ quote, onRes
             {/* Customer Info */}
             {quote.user && (
               <div className="flex items-start gap-2">
-                <User className="w-4 h-4 text-gray-400 mt-1" />
+                <User className="w-4 h-4 mt-1" style={{ color: colors.textSecondary }} />
                 <div>
-                  <p className="text-sm font-medium text-gray-900">{quote.user.name}</p>
-                  <p className="text-sm text-gray-500">{quote.user.email}</p>
-                  <p className="text-sm text-gray-500">{quote.user.phone}</p>
+                  <p className="text-sm font-medium" style={{ color: colors.text }}>
+                    {quote.user.name}
+                  </p>
+                  <p className="text-sm" style={{ color: colors.textSecondary }}>
+                    {quote.user.email}
+                  </p>
+                  <p className="text-sm" style={{ color: colors.textSecondary }}>
+                    {quote.user.phone}
+                  </p>
                 </div>
               </div>
             )}
 
             {/* Delivery Address */}
             <div className="flex items-start gap-2">
-              <MapPin className="w-4 h-4 text-gray-400 mt-1" />
-              <p className="text-sm text-gray-600">{quote.deliveryAddress}</p>
+              <MapPin className="w-4 h-4 mt-1" style={{ color: colors.textSecondary }} />
+              <p className="text-sm" style={{ color: colors.textSecondary }}>
+                {quote.deliveryAddress}
+              </p>
             </div>
 
             {/* Specifications */}
             {quote.specifications && (
               <div className="flex items-start gap-2">
-                <FileText className="w-4 h-4 text-gray-400 mt-1" />
-                <p className="text-sm text-gray-600">{quote.specifications}</p>
+                <FileText className="w-4 h-4 mt-1" style={{ color: colors.textSecondary }} />
+                <p className="text-sm" style={{ color: colors.textSecondary }}>
+                  {quote.specifications}
+                </p>
               </div>
             )}
 
             {/* Request Notes */}
             {quote.requestNotes && (
               <div className="flex items-start gap-2">
-                <MessageSquare className="w-4 h-4 text-gray-400 mt-1" />
-                <p className="text-sm text-gray-600 italic">{quote.requestNotes}</p>
+                <MessageSquare className="w-4 h-4 mt-1" style={{ color: colors.textSecondary }} />
+                <p className="text-sm italic" style={{ color: colors.textSecondary }}>
+                  {quote.requestNotes}
+                </p>
               </div>
             )}
 
             {/* Response Info */}
             {quote.responsePrice && (
-              <div className="border-t pt-4 space-y-2">
+              <div
+                className="pt-4 space-y-2"
+                style={{ borderTopWidth: '1px', borderColor: colors.border }}
+              >
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-500">Giá báo:</span>
-                  <span className="text-lg font-bold text-green-600">
+                  <span className="text-sm" style={{ color: colors.textSecondary }}>
+                    Giá báo:
+                  </span>
+                  <span className="text-lg font-bold" style={{ color: colors.success }}>
                     {parseInt(quote.responsePrice).toLocaleString('vi-VN')} VND
                   </span>
                 </div>
                 {quote.responseNotes && (
-                  <p className="text-sm text-gray-600 bg-blue-50 p-2 rounded">
+                  <p
+                    className="text-sm p-2 rounded"
+                    style={{
+                      color: colors.text,
+                      backgroundColor: colors.accent + '20',
+                    }}
+                  >
                     {quote.responseNotes}
                   </p>
                 )}
                 {quote.validUntil && (
-                  <p className="text-sm text-gray-500">
+                  <p className="text-sm" style={{ color: colors.textSecondary }}>
                     Hạn báo giá:{' '}
                     {format(new Date(quote.validUntil), 'dd/MM/yyyy HH:mm', { locale: vi })}
                   </p>
@@ -139,7 +213,14 @@ export const QuoteRequestCard: React.FC<QuoteRequestCardProps> = ({ quote, onRes
 
             {/* Actions */}
             {quote.status === 'pending' && (
-              <Button onClick={() => setDialogOpen(true)} className="w-full">
+              <Button
+                onClick={() => setDialogOpen(true)}
+                className="w-full"
+                style={{
+                  backgroundColor: colors.accent,
+                  color: colors.background,
+                }}
+              >
                 <DollarSign className="w-4 h-4 mr-2" />
                 Báo giá
               </Button>

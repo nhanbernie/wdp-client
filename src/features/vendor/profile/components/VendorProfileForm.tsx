@@ -6,6 +6,7 @@ import { TextField } from '@/components/common/TextField'
 import { TextAreaField } from '@/components/common/TextAreaField'
 import { Button } from '@/components/ui/button'
 import { Save, X } from 'lucide-react'
+import { useTheme } from '@/contexts/ThemeContext'
 
 interface VendorProfileFormProps {
   onCancel: () => void
@@ -13,12 +14,16 @@ interface VendorProfileFormProps {
 }
 
 export const VendorProfileForm: React.FC<VendorProfileFormProps> = ({ onCancel, isLoading }) => {
+  const { colors } = useTheme()
+
   return (
     <div className="space-y-6">
-      <Card>
+      <Card style={{ backgroundColor: colors.cardBackground, borderColor: colors.border }}>
         <CardHeader>
-          <CardTitle>Thông tin doanh nghiệp</CardTitle>
-          <CardDescription>Cập nhật thông tin cơ bản của doanh nghiệp</CardDescription>
+          <CardTitle style={{ color: colors.text }}>Thông tin doanh nghiệp</CardTitle>
+          <CardDescription style={{ color: colors.textSecondary }}>
+            Cập nhật thông tin cơ bản của doanh nghiệp
+          </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <TextField
@@ -74,11 +79,28 @@ export const VendorProfileForm: React.FC<VendorProfileFormProps> = ({ onCancel, 
       </Card>
 
       <div className="flex justify-end gap-3">
-        <Button type="button" variant="outline" onClick={onCancel} disabled={isLoading}>
+        <Button
+          type="button"
+          variant="outline"
+          onClick={onCancel}
+          disabled={isLoading}
+          style={{
+            backgroundColor: colors.cardBackground,
+            borderColor: colors.border,
+            color: colors.text,
+          }}
+        >
           <X className="w-4 h-4 mr-2" />
           Hủy
         </Button>
-        <Button type="submit" disabled={isLoading}>
+        <Button
+          type="submit"
+          disabled={isLoading}
+          style={{
+            backgroundColor: colors.accent,
+            color: colors.background,
+          }}
+        >
           <Save className="w-4 h-4 mr-2" />
           {isLoading ? 'Đang lưu...' : 'Lưu thay đổi'}
         </Button>
