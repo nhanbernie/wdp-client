@@ -1,6 +1,8 @@
 import React, { useState } from 'react'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/common/Dialog'
 import { Button } from '@/components/ui/button'
+import { RefreshCw, ListChecks } from 'lucide-react'
+import { useTheme } from '@/contexts/ThemeContext'
 
 interface UpdateStatusDialogProps {
   isOpen: boolean
@@ -15,6 +17,7 @@ export const UpdateStatusDialog: React.FC<UpdateStatusDialogProps> = ({
   onConfirm,
   currentStatus,
 }) => {
+  const { colors } = useTheme()
   const [selectedStatus, setSelectedStatus] = useState(currentStatus)
 
   const statusOptions = [
@@ -32,24 +35,34 @@ export const UpdateStatusDialog: React.FC<UpdateStatusDialogProps> = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-lg">
-        <DialogHeader className="border-b border-primary/10 pb-4">
-          <DialogTitle className="flex items-center gap-3 text-2xl">
-            <div className="p-2 rounded-xl bg-gradient-to-br from-blue-400 to-indigo-500 shadow-md">
-              <span className="text-2xl">🔄</span>
+      <DialogContent className="max-w-lg" style={{ background: colors.cardBackground }}>
+        <DialogHeader className="pb-4" style={{ borderBottomColor: colors.border }}>
+          <DialogTitle className="flex items-center gap-3 text-2xl" style={{ color: colors.text }}>
+            <div className="p-2 rounded-xl shadow-md" style={{ background: colors.accent }}>
+              <RefreshCw className="w-6 h-6 text-white" />
             </div>
             Cập nhật trạng thái đơn hàng
           </DialogTitle>
         </DialogHeader>
         <div className="space-y-6 pt-4">
           <div className="space-y-3">
-            <label className="flex text-sm font-bold text-gray-700 items-center gap-2">
-              📊 Chọn trạng thái mới
+            <label
+              className="flex text-sm font-bold items-center gap-2"
+              style={{ color: colors.text }}
+            >
+              <ListChecks className="w-4 h-4" />
+              Chọn trạng thái mới
             </label>
             <select
               value={selectedStatus}
               onChange={(e) => setSelectedStatus(e.target.value)}
-              className="w-full p-4 border-2 border-gray-200 rounded-xl focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all font-medium shadow-sm"
+              className="w-full p-4 rounded-xl font-medium shadow-sm transition-all"
+              style={{
+                background: colors.cardBackgroundSecondary,
+                color: colors.text,
+                borderWidth: '2px',
+                borderColor: colors.border,
+              }}
             >
               {statusOptions.map((option) => (
                 <option key={option.value} value={option.value}>
@@ -59,18 +72,15 @@ export const UpdateStatusDialog: React.FC<UpdateStatusDialogProps> = ({
             </select>
           </div>
           <div className="flex gap-3 justify-end pt-2">
-            <Button
-              variant="outline"
-              onClick={onClose}
-              className="border-gray-300 hover:bg-gray-50 transition-all shadow-sm"
-            >
+            <Button variant="outline" onClick={onClose} className="shadow-sm">
               Hủy bỏ
             </Button>
             <Button
               onClick={handleConfirm}
-              className="bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary text-white shadow-lg hover:shadow-xl transition-all"
+              className="text-white shadow-lg"
+              style={{ background: colors.accent }}
             >
-              ✓ Xác nhận
+              Xác nhận
             </Button>
           </div>
         </div>

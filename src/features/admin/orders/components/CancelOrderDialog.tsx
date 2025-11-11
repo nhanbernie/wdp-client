@@ -2,6 +2,8 @@ import React, { useState } from 'react'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/common/Dialog'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
+import { XCircle, FileText, DollarSign } from 'lucide-react'
+import { useTheme } from '@/contexts/ThemeContext'
 
 interface CancelOrderDialogProps {
   isOpen: boolean
@@ -14,6 +16,7 @@ export const CancelOrderDialog: React.FC<CancelOrderDialogProps> = ({
   onClose,
   onConfirm,
 }) => {
+  const { colors } = useTheme()
   const [reason, setReason] = useState('')
   const [refund, setRefund] = useState(false)
 
@@ -30,28 +33,41 @@ export const CancelOrderDialog: React.FC<CancelOrderDialogProps> = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-lg">
-        <DialogHeader className="border-b border-red-100 pb-4">
-          <DialogTitle className="flex items-center gap-3 text-2xl">
-            <div className="p-2 rounded-xl bg-gradient-to-br from-red-400 to-rose-500 shadow-md">
-              <span className="text-2xl">❌</span>
+      <DialogContent className="max-w-lg" style={{ background: colors.cardBackground }}>
+        <DialogHeader className="pb-4" style={{ borderBottomColor: colors.border }}>
+          <DialogTitle className="flex items-center gap-3 text-2xl" style={{ color: colors.text }}>
+            <div className="p-2 rounded-xl shadow-md" style={{ background: colors.error }}>
+              <XCircle className="w-6 h-6 text-white" />
             </div>
             Hủy đơn hàng
           </DialogTitle>
         </DialogHeader>
         <div className="space-y-6 pt-4">
           <div className="space-y-2">
-            <label className="flex text-sm font-bold text-gray-700 items-center gap-2">
-              📝 Lý do hủy đơn <span className="text-red-500">*</span>
+            <label
+              className="flex text-sm font-bold items-center gap-2"
+              style={{ color: colors.text }}
+            >
+              <FileText className="w-4 h-4" />
+              Lý do hủy đơn <span style={{ color: colors.error }}>*</span>
             </label>
             <textarea
               value={reason}
               onChange={(e) => setReason(e.target.value)}
-              className="w-full p-4 border-2 border-gray-200 rounded-xl min-h-[120px] focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
+              className="w-full p-4 rounded-xl min-h-[120px] transition-all"
+              style={{
+                background: colors.cardBackgroundSecondary,
+                color: colors.text,
+                borderWidth: '2px',
+                borderColor: colors.border,
+              }}
               placeholder="Nhập lý do hủy đơn hàng..."
             />
           </div>
-          <div className="flex items-center gap-3 p-4 bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl border border-purple-200">
+          <div
+            className="flex items-center gap-3 p-4 rounded-xl"
+            style={{ background: colors.cardBackgroundSecondary, borderColor: colors.border }}
+          >
             <Checkbox
               id="refund"
               checked={refund}
@@ -60,24 +76,23 @@ export const CancelOrderDialog: React.FC<CancelOrderDialogProps> = ({
             />
             <label
               htmlFor="refund"
-              className="text-sm font-medium text-gray-700 flex items-center gap-2"
+              className="text-sm font-medium flex items-center gap-2"
+              style={{ color: colors.text }}
             >
-              💰 Hoàn tiền cho khách hàng
+              <DollarSign className="w-4 h-4" />
+              Hoàn tiền cho khách hàng
             </label>
           </div>
           <div className="flex gap-3 justify-end pt-2">
-            <Button
-              variant="outline"
-              onClick={onClose}
-              className="border-gray-300 hover:bg-gray-50 transition-all shadow-sm"
-            >
+            <Button variant="outline" onClick={onClose} className="shadow-sm">
               Hủy bỏ
             </Button>
             <Button
               onClick={handleConfirm}
-              className="bg-gradient-to-r from-red-500 to-rose-600 hover:from-red-600 hover:to-rose-700 text-white shadow-lg hover:shadow-xl transition-all"
+              className="text-white shadow-lg"
+              style={{ background: colors.error }}
             >
-              ✓ Xác nhận hủy đơn
+              Xác nhận hủy đơn
             </Button>
           </div>
         </div>

@@ -2,7 +2,7 @@ import React from 'react'
 import type { OrderListItem } from '../../types'
 import { StatusBadge } from './StatusBadge'
 import { Button } from '@/components/ui/button'
-import { Eye, ShoppingBag, Calendar, DollarSign } from 'lucide-react'
+import { Eye, ShoppingBag, DollarSign } from 'lucide-react'
 import {
   Table,
   TableBody,
@@ -11,7 +11,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import { motion } from 'framer-motion'
+import { useTheme } from '@/contexts/ThemeContext'
 
 interface OrdersTableProps {
   orders: OrderListItem[]
@@ -19,11 +19,16 @@ interface OrdersTableProps {
 }
 
 export const OrdersTable: React.FC<OrdersTableProps> = ({ orders, onViewDetails }) => {
+  const { colors } = useTheme()
+
   return (
-    <div className="rounded-2xl border-2 border-purple-200 shadow-xl overflow-hidden bg-white">
+    <div
+      className="rounded-2xl shadow-xl overflow-hidden"
+      style={{ background: colors.cardBackground, borderColor: colors.border }}
+    >
       <Table>
         <TableHeader>
-          <TableRow className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700">
+          <TableRow style={{ background: colors.accent }}>
             <TableHead className="font-bold text-sm text-white">ID</TableHead>
             <TableHead className="font-bold text-sm text-white">Email</TableHead>
             <TableHead className="font-bold text-sm text-white">Tổng tiền</TableHead>
@@ -35,20 +40,20 @@ export const OrdersTable: React.FC<OrdersTableProps> = ({ orders, onViewDetails 
         </TableHeader>
 
         <TableBody>
-          {orders.map((order, index) => (
-            <motion.tr
+          {orders.map((order) => (
+            <tr
               key={order.id}
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: index * 0.05 }}
-              className="border-b border-purple-100 hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 transition-all duration-200 group"
+              className="hover:opacity-80 transition-colors"
+              style={{ borderBottomWidth: '1px', borderBottomColor: colors.border }}
             >
-              <TableCell className="text-sm font-mono text-gray-600 group-hover:text-blue-600 transition-colors">
+              <TableCell className="text-sm font-mono" style={{ color: colors.textSecondary }}>
                 {order.id.slice(0, 8)}...
               </TableCell>
-              <TableCell className="text-sm text-gray-700 font-medium">{order.userEmail}</TableCell>
+              <TableCell className="text-sm font-medium" style={{ color: colors.text }}>
+                {order.userEmail}
+              </TableCell>
               <TableCell className="text-sm font-bold">
-                <span className="flex items-center gap-1 text-blue-600">
+                <span className="flex items-center gap-1" style={{ color: colors.text }}>
                   <DollarSign className="h-4 w-4" />
                   {parseFloat(order.totalAmount).toLocaleString('vi-VN')} VND
                 </span>
@@ -60,7 +65,10 @@ export const OrdersTable: React.FC<OrdersTableProps> = ({ orders, onViewDetails 
                 <StatusBadge status={order.paymentStatus} type="payment" />
               </TableCell>
               <TableCell>
-                <span className="flex items-center justify-center gap-1 text-sm font-semibold text-purple-600">
+                <span
+                  className="flex items-center justify-center gap-1 text-sm font-semibold"
+                  style={{ color: colors.accent }}
+                >
                   <ShoppingBag className="h-4 w-4" />
                   {order.itemsCount}
                 </span>
@@ -70,12 +78,13 @@ export const OrdersTable: React.FC<OrdersTableProps> = ({ orders, onViewDetails 
                   variant="ghost"
                   size="sm"
                   onClick={() => onViewDetails(order.id)}
-                  className="bg-gradient-to-r from-blue-500 to-purple-600 text-white hover:from-blue-600 hover:to-purple-700 hover:scale-110 transition-all duration-200 shadow-md"
+                  className="shadow-md"
+                  style={{ background: colors.accent, color: '#fff' }}
                 >
                   <Eye className="w-4 h-4" />
                 </Button>
               </TableCell>
-            </motion.tr>
+            </tr>
           ))}
         </TableBody>
       </Table>

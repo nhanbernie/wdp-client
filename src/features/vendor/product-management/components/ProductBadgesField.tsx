@@ -8,6 +8,7 @@ import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Plus, X, Tag } from 'lucide-react'
 import { Badge as BadgeUI } from '@/components/ui/badge'
+import { useTheme } from '@/contexts/ThemeContext'
 
 interface ProductBadgesFieldProps {
   name?: string
@@ -22,6 +23,7 @@ const PRESET_BADGES = [
 ]
 
 export const ProductBadgesField: React.FC<ProductBadgesFieldProps> = ({ name = 'badges' }) => {
+  const { colors } = useTheme()
   const { watch, setValue } = useFormContext()
   const badges: string[] = watch(name) || []
 
@@ -62,22 +64,23 @@ export const ProductBadgesField: React.FC<ProductBadgesFieldProps> = ({ name = '
       handleAddCustomBadge()
     }
   }
-
   return (
-    <Card>
+    <Card style={{ backgroundColor: colors.cardBackground, borderColor: colors.border }}>
       <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Tag className="h-5 w-5" />
+        <CardTitle className="flex items-center gap-2" style={{ color: colors.text }}>
+          <Tag className="h-5 w-5" style={{ color: colors.accent }} />
           Nhãn sản phẩm (Badges)
         </CardTitle>
-        <CardDescription>
+        <CardDescription style={{ color: colors.textSecondary }}>
           Thêm các nhãn để làm nổi bật sản phẩm (VD: Mới, Bán chạy, Giảm giá...)
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         {/* Preset badges */}
         <div>
-          <Label className="mb-2 block">Nhãn có sẵn</Label>
+          <Label className="mb-2 block" style={{ color: colors.text }}>
+            Nhãn có sẵn
+          </Label>
           <div className="flex flex-wrap gap-2">
             {PRESET_BADGES.map((preset) => (
               <Button
@@ -87,6 +90,11 @@ export const ProductBadgesField: React.FC<ProductBadgesFieldProps> = ({ name = '
                 size="sm"
                 onClick={() => handleToggleBadge(preset.value)}
                 className="gap-2"
+                style={
+                  badges.includes(preset.value)
+                    ? { backgroundColor: colors.accent, color: colors.background }
+                    : { borderColor: colors.border, color: colors.text }
+                }
               >
                 {badges.includes(preset.value) && <X className="h-3 w-3" />}
                 {preset.label}
@@ -97,7 +105,9 @@ export const ProductBadgesField: React.FC<ProductBadgesFieldProps> = ({ name = '
 
         {/* Custom badge */}
         <div className="space-y-2">
-          <Label htmlFor="custom-badge">Nhãn tùy chỉnh</Label>
+          <Label htmlFor="custom-badge" style={{ color: colors.text }}>
+            Nhãn tùy chỉnh
+          </Label>
           <div className="flex gap-2">
             <Input
               id="custom-badge"
@@ -105,12 +115,22 @@ export const ProductBadgesField: React.FC<ProductBadgesFieldProps> = ({ name = '
               value={customBadge}
               onChange={(e) => setCustomBadge(e.target.value)}
               onKeyDown={handleKeyDown}
+              style={{
+                backgroundColor: colors.background,
+                borderColor: colors.border,
+                color: colors.text,
+              }}
             />
             <Button
               type="button"
               variant="outline"
               onClick={handleAddCustomBadge}
               disabled={!customBadge.trim()}
+              style={{
+                backgroundColor: colors.background,
+                borderColor: colors.border,
+                color: colors.text,
+              }}
             >
               <Plus className="h-4 w-4" />
             </Button>
@@ -120,7 +140,9 @@ export const ProductBadgesField: React.FC<ProductBadgesFieldProps> = ({ name = '
         {/* Selected badges */}
         {badges.length > 0 && (
           <div>
-            <Label className="mb-2 block">Nhãn đã chọn ({badges.length})</Label>
+            <Label className="mb-2 block" style={{ color: colors.text }}>
+              Nhãn đã chọn ({badges.length})
+            </Label>
             <div className="flex flex-wrap gap-2">
               {badges.map((badge) => {
                 const preset = PRESET_BADGES.find((p) => p.value === badge)
@@ -128,8 +150,14 @@ export const ProductBadgesField: React.FC<ProductBadgesFieldProps> = ({ name = '
                   <BadgeUI
                     key={badge}
                     variant="secondary"
-                    className="gap-2 cursor-pointer hover:bg-destructive hover:text-destructive-foreground"
+                    className="gap-2 cursor-pointer"
                     onClick={() => handleRemoveBadge(badge)}
+                    style={{
+                      backgroundImage: 'none',
+                      backgroundColor: colors.accent + '20',
+                      color: colors.accent,
+                      borderColor: 'transparent',
+                    }}
                   >
                     {preset?.label || badge}
                     <X className="h-3 w-3" />
@@ -139,9 +167,8 @@ export const ProductBadgesField: React.FC<ProductBadgesFieldProps> = ({ name = '
             </div>
           </div>
         )}
-
         {badges.length === 0 && (
-          <div className="text-center py-8 text-muted-foreground">
+          <div className="text-center py-8" style={{ color: colors.textSecondary }}>
             <Tag className="h-12 w-12 mx-auto mb-2 opacity-20" />
             <p className="text-sm">Chưa có nhãn nào được chọn</p>
           </div>

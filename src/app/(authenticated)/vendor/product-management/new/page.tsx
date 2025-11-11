@@ -89,7 +89,7 @@ export default function NewProductPageRoute() {
             const formattedVariant: any = {
               options: variant.options || {},
               price: parseFloat(variant.price?.toString() || '0'),
-              stockQty: parseInt((variant.stockQty || variant.stock)?.toString() || '0'),
+              stockQty: parseInt(variant.stockQty?.toString() || '0'),
             }
             if (variant.sku) formattedVariant.sku = variant.sku
             if (variant.specs) formattedVariant.specs = variant.specs

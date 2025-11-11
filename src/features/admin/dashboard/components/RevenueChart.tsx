@@ -1,5 +1,7 @@
 import React from 'react'
 import { Card } from '@/components/ui/card'
+import { TrendingUp } from 'lucide-react'
+import { useTheme } from '@/contexts/ThemeContext'
 import type { RevenueReportItem } from '../../types'
 
 interface RevenueChartProps {
@@ -7,12 +9,15 @@ interface RevenueChartProps {
 }
 
 export const RevenueChart: React.FC<RevenueChartProps> = ({ data }) => {
-  // Calculate max revenue for scaling
+  const { colors } = useTheme()
   const maxRevenue = Math.max(...data.map((item) => item.revenue))
 
   return (
-    <Card className="p-6">
-      <h3 className="text-xl font-bold mb-6">Doanh thu</h3>
+    <Card className="p-6" style={{ background: colors.cardBackground, borderColor: colors.border }}>
+      <h3 className="text-xl font-bold mb-6 flex items-center gap-2" style={{ color: colors.text }}>
+        <TrendingUp className="w-5 h-5" style={{ color: colors.accent }} />
+        Doanh thu
+      </h3>
       <div className="space-y-4">
         {data.map((item, index) => {
           const date = new Date(item.date).toLocaleDateString('vi-VN')
@@ -21,18 +26,21 @@ export const RevenueChart: React.FC<RevenueChartProps> = ({ data }) => {
           return (
             <div key={index}>
               <div className="flex justify-between text-sm mb-2">
-                <span className="text-gray-600">{date}</span>
-                <span className="font-semibold">
+                <span style={{ color: colors.textSecondary }}>{date}</span>
+                <span className="font-semibold" style={{ color: colors.text }}>
                   {item.revenue.toLocaleString('vi-VN')} VND
                 </span>
               </div>
-              <div className="w-full bg-gray-200 rounded-full h-2">
+              <div
+                className="w-full rounded-full h-2"
+                style={{ background: colors.cardBackgroundSecondary }}
+              >
                 <div
-                  className="bg-blue-500 h-2 rounded-full transition-all"
-                  style={{ width: `${percentage}%` }}
+                  className="h-2 rounded-full transition-all"
+                  style={{ width: `${percentage}%`, background: colors.accent }}
                 />
               </div>
-              <div className="text-xs text-gray-500 mt-1">
+              <div className="text-xs mt-1" style={{ color: colors.textSecondary }}>
                 {item.orderCount} đơn hàng
               </div>
             </div>

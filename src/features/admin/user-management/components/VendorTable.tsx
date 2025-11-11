@@ -1,7 +1,6 @@
 'use client'
 
 import React from 'react'
-import { motion } from 'framer-motion'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import {
@@ -15,6 +14,7 @@ import {
 import { Eye, MoreVertical, CheckCircle, XCircle, Ban, Trash2 } from 'lucide-react'
 import { Vendor } from '@/services/vendor/vendor.types'
 import { useRouter } from 'next/navigation'
+import { useTheme } from '@/contexts/ThemeContext'
 
 interface VendorTableProps {
   vendors: Vendor[]
@@ -34,6 +34,7 @@ export function VendorTable({
   isLoading,
 }: VendorTableProps) {
   const router = useRouter()
+  const { colors } = useTheme()
 
   const getStatusBadge = (status: string) => {
     switch (status) {
@@ -61,7 +62,7 @@ export function VendorTable({
   if (isLoading) {
     return (
       <div className="flex justify-center items-center py-12">
-        <p className="text-muted-foreground">Đang tải dữ liệu...</p>
+        <p style={{ color: colors.textSecondary }}>Đang tải dữ liệu...</p>
       </div>
     )
   }
@@ -69,51 +70,84 @@ export function VendorTable({
   if (vendors.length === 0) {
     return (
       <div className="flex justify-center items-center py-12">
-        <p className="text-muted-foreground">Không có vendor nào</p>
+        <p style={{ color: colors.textSecondary }}>Không có vendor nào</p>
       </div>
     )
   }
 
   return (
-    <div className="overflow-x-auto rounded-lg border border-border bg-card">
+    <div
+      className="overflow-x-auto rounded-lg"
+      style={{ background: colors.cardBackground, borderWidth: '1px', borderColor: colors.border }}
+    >
       <table className="w-full">
-        <thead className="bg-muted/50 border-b border-border">
+        <thead
+          style={{ background: colors.cardBackgroundSecondary, borderBottomColor: colors.border }}
+        >
           <tr>
-            <th className="px-4 py-3 text-left text-sm font-semibold text-foreground">
+            <th
+              className="px-4 py-3 text-left text-sm font-semibold"
+              style={{ color: colors.text }}
+            >
               Tên doanh nghiệp
             </th>
-            <th className="px-4 py-3 text-left text-sm font-semibold text-foreground">Email</th>
-            <th className="px-4 py-3 text-left text-sm font-semibold text-foreground">
+            <th
+              className="px-4 py-3 text-left text-sm font-semibold"
+              style={{ color: colors.text }}
+            >
+              Email
+            </th>
+            <th
+              className="px-4 py-3 text-left text-sm font-semibold"
+              style={{ color: colors.text }}
+            >
               Số điện thoại
             </th>
-            <th className="px-4 py-3 text-left text-sm font-semibold text-foreground">
+            <th
+              className="px-4 py-3 text-left text-sm font-semibold"
+              style={{ color: colors.text }}
+            >
               Trạng thái
             </th>
-            <th className="px-4 py-3 text-left text-sm font-semibold text-foreground">Ngày tạo</th>
-            <th className="px-4 py-3 text-center text-sm font-semibold text-foreground">
+            <th
+              className="px-4 py-3 text-left text-sm font-semibold"
+              style={{ color: colors.text }}
+            >
+              Ngày tạo
+            </th>
+            <th
+              className="px-4 py-3 text-center text-sm font-semibold"
+              style={{ color: colors.text }}
+            >
               Thao tác
             </th>
           </tr>
         </thead>
-        <tbody className="divide-y divide-border">
-          {vendors.map((vendor, index) => (
-            <motion.tr
+        <tbody>
+          {vendors.map((vendor) => (
+            <tr
               key={vendor.id}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.05 }}
-              className="hover:bg-muted/50 transition-colors duration-150"
+              className="hover:opacity-80 transition-colors"
+              style={{ borderBottomWidth: '1px', borderBottomColor: colors.border }}
             >
               <td className="px-4 py-3">
                 <div>
-                  <p className="font-medium text-foreground">{vendor.businessName}</p>
-                  <p className="text-xs text-muted-foreground mt-0.5">Mã số thuế: {vendor.taxId}</p>
+                  <p className="font-medium" style={{ color: colors.text }}>
+                    {vendor.businessName}
+                  </p>
+                  <p className="text-xs mt-0.5" style={{ color: colors.textSecondary }}>
+                    Mã số thuế: {vendor.taxId}
+                  </p>
                 </div>
               </td>
-              <td className="px-4 py-3 text-sm text-muted-foreground">{vendor.businessEmail}</td>
-              <td className="px-4 py-3 text-sm text-muted-foreground">{vendor.businessPhone}</td>
+              <td className="px-4 py-3 text-sm" style={{ color: colors.textSecondary }}>
+                {vendor.businessEmail}
+              </td>
+              <td className="px-4 py-3 text-sm" style={{ color: colors.textSecondary }}>
+                {vendor.businessPhone}
+              </td>
               <td className="px-4 py-3">{getStatusBadge(vendor.status)}</td>
-              <td className="px-4 py-3 text-sm text-muted-foreground">
+              <td className="px-4 py-3 text-sm" style={{ color: colors.textSecondary }}>
                 {formatDate(vendor.createdAt)}
               </td>
               <td className="px-4 py-3 text-center">
@@ -162,7 +196,7 @@ export function VendorTable({
                   </DropdownMenuContent>
                 </DropdownMenu>
               </td>
-            </motion.tr>
+            </tr>
           ))}
         </tbody>
       </table>
