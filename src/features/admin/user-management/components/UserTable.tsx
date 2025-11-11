@@ -1,7 +1,6 @@
 'use client'
 
 import React, { useState } from 'react'
-import { motion } from 'framer-motion'
 import {
   Table,
   TableBody,
@@ -43,6 +42,7 @@ import {
 import { UserListItem } from '@/services/admin/users.service'
 import { formatCurrency } from '@/lib/utils'
 import { format } from 'date-fns'
+import { useTheme } from '@/contexts/ThemeContext'
 
 // Helper function to safely format date
 const formatDate = (dateString: string | null | undefined): string => {
@@ -74,6 +74,7 @@ export const UserTable: React.FC<UserTableProps> = ({
   onUnbanUser,
   onChangeRole,
 }) => {
+  const { colors } = useTheme()
   const [selectedUser, setSelectedUser] = useState<UserListItem | null>(null)
   const [banDialogOpen, setBanDialogOpen] = useState(false)
   const [roleDialogOpen, setRoleDialogOpen] = useState(false)
@@ -129,22 +130,26 @@ export const UserTable: React.FC<UserTableProps> = ({
 
   if (!users || users.length === 0) {
     return (
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        className="text-center py-12 bg-white rounded-2xl shadow-lg border border-purple-200"
+      <div
+        className="text-center py-12 rounded-2xl shadow-lg border-2"
+        style={{ background: colors.cardBackground, borderColor: colors.border }}
       >
-        <p className="text-gray-500 text-lg">Không có người dùng nào</p>
-      </motion.div>
+        <p className="text-lg" style={{ color: colors.textSecondary }}>
+          Không có người dùng nào
+        </p>
+      </div>
     )
   }
 
   return (
     <>
-      <div className="rounded-2xl border-2 border-purple-200 shadow-xl overflow-hidden bg-white">
+      <div
+        className="rounded-2xl border-2 shadow-xl overflow-hidden"
+        style={{ background: colors.cardBackground, borderColor: colors.border }}
+      >
         <Table>
           <TableHeader>
-            <TableRow className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700">
+            <TableRow style={{ background: colors.accent }}>
               <TableHead className="text-white font-bold">Người dùng</TableHead>
               <TableHead className="text-white font-bold">Liên hệ</TableHead>
               <TableHead className="text-white font-bold">Vai trò</TableHead>
@@ -155,24 +160,31 @@ export const UserTable: React.FC<UserTableProps> = ({
           </TableHeader>
           <TableBody>
             {users.map((user, index) => (
-              <motion.tr
+              <tr
                 key={user.id}
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.2, delay: index * 0.05 }}
-                className="border-b border-purple-100 transition-all duration-200 hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 group"
+                className="border-b transition-all duration-200 group"
+                style={{ borderColor: colors.border }}
               >
                 <TableCell>
-                  <div className="font-bold text-gray-900 group-hover:text-blue-600 transition-colors">
+                  <div
+                    className="font-bold group-hover:text-opacity-80 transition-colors"
+                    style={{ color: colors.text }}
+                  >
                     {user.firstName} {user.lastName}
                   </div>
-                  <div className="text-sm text-gray-600 flex items-center gap-1 mt-1">
+                  <div
+                    className="text-sm flex items-center gap-1 mt-1"
+                    style={{ color: colors.textSecondary }}
+                  >
                     <Mail className="h-3 w-3" />
                     {user.email}
                   </div>
                 </TableCell>
                 <TableCell>
-                  <div className="text-sm flex items-center gap-1 text-gray-700">
+                  <div
+                    className="text-sm flex items-center gap-1"
+                    style={{ color: colors.textSecondary }}
+                  >
                     <Phone className="h-3 w-3" />
                     {user.phoneNumber || 'N/A'}
                   </div>
@@ -183,7 +195,12 @@ export const UserTable: React.FC<UserTableProps> = ({
                       <Badge
                         key={role}
                         variant="outline"
-                        className="bg-gradient-to-r from-blue-100 to-purple-100 border-purple-300 text-purple-700 font-semibold"
+                        className="font-semibold"
+                        style={{
+                          background: colors.accentSecondary + '20',
+                          borderColor: colors.accentSecondary,
+                          color: colors.accentSecondary,
+                        }}
                       >
                         {role}
                       </Badge>
@@ -193,22 +210,25 @@ export const UserTable: React.FC<UserTableProps> = ({
                 <TableCell>
                   <Badge
                     variant={user.isActive ? 'default' : 'destructive'}
-                    className={
-                      user.isActive
-                        ? 'bg-gradient-to-r from-green-500 to-emerald-600 text-white shadow-md'
-                        : 'bg-gradient-to-r from-red-500 to-red-700 text-white shadow-md'
-                    }
+                    className="text-white shadow-md"
+                    style={{ background: user.isActive ? colors.success : colors.error }}
                   >
                     {user.isActive ? 'Hoạt động' : 'Bị cấm'}
                   </Badge>
                 </TableCell>
                 <TableCell>
                   <div className="space-y-1 text-sm">
-                    <div className="flex items-center gap-1 font-semibold text-blue-600">
+                    <div
+                      className="flex items-center gap-1 font-semibold"
+                      style={{ color: colors.accentSecondary }}
+                    >
                       <ShoppingBag className="h-4 w-4" />
                       {user.totalOrders} đơn
                     </div>
-                    <div className="flex items-center gap-1 font-semibold text-green-600">
+                    <div
+                      className="flex items-center gap-1 font-semibold"
+                      style={{ color: colors.success }}
+                    >
                       <DollarSign className="h-4 w-4" />
                       {formatCurrency(user.totalSpent, 'VND')}
                     </div>
@@ -220,18 +240,20 @@ export const UserTable: React.FC<UserTableProps> = ({
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="bg-gradient-to-r from-blue-500 to-purple-600 text-white hover:from-blue-600 hover:to-purple-700 hover:scale-110 transition-all duration-200 shadow-md"
+                        className="text-white hover:scale-110 transition-all duration-200 shadow-md"
+                        style={{ background: colors.accent }}
                       >
                         <MoreVertical className="h-4 w-4" />
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent
                       align="end"
-                      className="bg-white border-2 border-purple-200 shadow-xl"
+                      className="border-2 shadow-xl"
+                      style={{ background: colors.cardBackground, borderColor: colors.border }}
                     >
                       <DropdownMenuItem
                         onClick={() => onViewActivity(user.id)}
-                        className="hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 cursor-pointer"
+                        className="cursor-pointer"
                       >
                         <Eye className="mr-2 h-4 w-4" />
                         Xem hoạt động
@@ -239,7 +261,8 @@ export const UserTable: React.FC<UserTableProps> = ({
                       {user.isActive ? (
                         <DropdownMenuItem
                           onClick={() => handleBanClick(user)}
-                          className="text-red-600 hover:bg-red-50 cursor-pointer"
+                          className="cursor-pointer"
+                          style={{ color: colors.error }}
                         >
                           <Ban className="mr-2 h-4 w-4" />
                           Cấm người dùng
@@ -247,14 +270,15 @@ export const UserTable: React.FC<UserTableProps> = ({
                       ) : (
                         <DropdownMenuItem
                           onClick={() => handleUnban(user)}
-                          className="text-green-600 hover:bg-green-50 cursor-pointer"
+                          className="cursor-pointer"
+                          style={{ color: colors.success }}
                         >
                           <Check className="mr-2 h-4 w-4" /> Bỏ cấm
                         </DropdownMenuItem>
                       )}
                       <DropdownMenuItem
                         onClick={() => handleRoleClick(user)}
-                        className="hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 cursor-pointer"
+                        className="cursor-pointer"
                       >
                         <UserCog className="mr-2 h-4 w-4" />
                         Thay đổi vai trò
@@ -262,7 +286,7 @@ export const UserTable: React.FC<UserTableProps> = ({
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </TableCell>
-              </motion.tr>
+              </tr>
             ))}
           </TableBody>
         </Table>
@@ -270,17 +294,20 @@ export const UserTable: React.FC<UserTableProps> = ({
 
       {/* Ban User Dialog - Modern Style */}
       <Dialog open={banDialogOpen} onOpenChange={setBanDialogOpen}>
-        <DialogContent className="bg-white border-2 border-red-200 shadow-2xl rounded-2xl">
+        <DialogContent
+          className="border-2 shadow-2xl rounded-2xl"
+          style={{ background: colors.cardBackground, borderColor: colors.error }}
+        >
           <DialogHeader>
             <div className="flex items-center gap-3 mb-2">
-              <div className="p-3 bg-gradient-to-br from-red-500 to-red-700 rounded-xl shadow-lg">
+              <div className="p-3 rounded-xl shadow-lg" style={{ background: colors.error }}>
                 <Ban className="h-6 w-6 text-white" />
               </div>
               <div>
-                <DialogTitle className="text-2xl font-bold bg-gradient-to-r from-red-600 to-red-800 bg-clip-text text-transparent">
+                <DialogTitle className="text-2xl font-bold" style={{ color: colors.text }}>
                   Cấm người dùng
                 </DialogTitle>
-                <DialogDescription className="text-gray-600 mt-1">
+                <DialogDescription className="mt-1" style={{ color: colors.textSecondary }}>
                   Vui lòng nhập lý do cấm người dùng{' '}
                   <span className="font-semibold">{selectedUser?.email}</span>
                 </DialogDescription>
@@ -291,9 +318,10 @@ export const UserTable: React.FC<UserTableProps> = ({
             <div className="space-y-2">
               <Label
                 htmlFor="ban-reason"
-                className="text-sm font-semibold text-gray-700 flex items-center gap-2"
+                className="text-sm font-semibold flex items-center gap-2"
+                style={{ color: colors.text }}
               >
-                Lý do <span className="text-red-500">*</span>
+                Lý do <span style={{ color: colors.error }}>*</span>
               </Label>
               <Textarea
                 id="ban-reason"
@@ -301,7 +329,12 @@ export const UserTable: React.FC<UserTableProps> = ({
                 value={banReason}
                 onChange={(e) => setBanReason(e.target.value)}
                 rows={4}
-                className="border-2 border-red-200 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all duration-200"
+                className="border-2 rounded-xl focus:ring-2 transition-all duration-200"
+                style={{
+                  borderColor: colors.border,
+                  background: colors.background,
+                  color: colors.text,
+                }}
               />
             </div>
           </div>
@@ -309,16 +342,18 @@ export const UserTable: React.FC<UserTableProps> = ({
             <Button
               variant="outline"
               onClick={() => setBanDialogOpen(false)}
-              className="border-2 border-gray-300 hover:bg-gray-100 transition-all duration-200 font-semibold"
+              className="border-2 transition-all duration-200 font-semibold"
+              style={{ borderColor: colors.border }}
             >
               Hủy
             </Button>
             <Button
               onClick={handleBanSubmit}
               disabled={!banReason.trim()}
-              className="bg-gradient-to-r from-red-500 to-red-700 hover:from-red-600 hover:to-red-800 text-white border-0 shadow-lg hover:shadow-xl transition-all duration-200 font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+              className="text-white border-0 shadow-lg hover:shadow-xl transition-all duration-200 font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+              style={{ background: colors.error }}
             >
-              ✓ Xác nhận cấm
+              <Check className="mr-2 h-4 w-4" /> Xác nhận cấm
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -326,17 +361,20 @@ export const UserTable: React.FC<UserTableProps> = ({
 
       {/* Change Role Dialog - Modern Style */}
       <Dialog open={roleDialogOpen} onOpenChange={setRoleDialogOpen}>
-        <DialogContent className="bg-white border-2 border-purple-200 shadow-2xl rounded-2xl">
+        <DialogContent
+          className="border-2 shadow-2xl rounded-2xl"
+          style={{ background: colors.cardBackground, borderColor: colors.border }}
+        >
           <DialogHeader>
             <div className="flex items-center gap-3 mb-2">
-              <div className="p-3 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl shadow-lg">
+              <div className="p-3 rounded-xl shadow-lg" style={{ background: colors.accent }}>
                 <UserCog className="h-6 w-6 text-white" />
               </div>
               <div>
-                <DialogTitle className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                <DialogTitle className="text-2xl font-bold" style={{ color: colors.text }}>
                   Thay đổi vai trò
                 </DialogTitle>
-                <DialogDescription className="text-gray-600 mt-1">
+                <DialogDescription className="mt-1" style={{ color: colors.textSecondary }}>
                   Thay đổi vai trò của người dùng{' '}
                   <span className="font-semibold">{selectedUser?.email}</span>
                 </DialogDescription>
@@ -347,7 +385,8 @@ export const UserTable: React.FC<UserTableProps> = ({
             <div className="space-y-2">
               <Label
                 htmlFor="role"
-                className="text-sm font-semibold text-gray-700 flex items-center gap-2"
+                className="text-sm font-semibold flex items-center gap-2"
+                style={{ color: colors.text }}
               >
                 Vai trò mới
               </Label>
@@ -355,7 +394,12 @@ export const UserTable: React.FC<UserTableProps> = ({
                 id="role"
                 value={selectedRole}
                 onChange={(e) => setSelectedRole(e.target.value)}
-                className="w-full rounded-xl border-2 border-purple-200 bg-white px-4 py-3 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 font-medium"
+                className="w-full rounded-xl border-2 px-4 py-3 focus:outline-none focus:ring-2 transition-all duration-200 font-medium"
+                style={{
+                  borderColor: colors.border,
+                  background: colors.background,
+                  color: colors.text,
+                }}
               >
                 <option value="user">User</option>
                 <option value="vendor">Vendor</option>
@@ -365,9 +409,10 @@ export const UserTable: React.FC<UserTableProps> = ({
             <div className="space-y-2">
               <Label
                 htmlFor="role-reason"
-                className="text-sm font-semibold text-gray-700 flex items-center gap-2"
+                className="text-sm font-semibold flex items-center gap-2"
+                style={{ color: colors.text }}
               >
-                Lý do <span className="text-red-500">*</span>
+                Lý do <span style={{ color: colors.error }}>*</span>
               </Label>
               <Textarea
                 id="role-reason"
@@ -375,7 +420,12 @@ export const UserTable: React.FC<UserTableProps> = ({
                 value={roleReason}
                 onChange={(e) => setRoleReason(e.target.value)}
                 rows={4}
-                className="border-2 border-purple-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200"
+                className="border-2 rounded-xl focus:ring-2 transition-all duration-200"
+                style={{
+                  borderColor: colors.border,
+                  background: colors.background,
+                  color: colors.text,
+                }}
               />
             </div>
           </div>
@@ -383,14 +433,16 @@ export const UserTable: React.FC<UserTableProps> = ({
             <Button
               variant="outline"
               onClick={() => setRoleDialogOpen(false)}
-              className="border-2 border-gray-300 hover:bg-gray-100 transition-all duration-200 font-semibold"
+              className="border-2 transition-all duration-200 font-semibold"
+              style={{ borderColor: colors.border }}
             >
               Hủy
             </Button>
             <Button
               onClick={handleRoleSubmit}
               disabled={!roleReason.trim()}
-              className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white border-0 shadow-lg hover:shadow-xl transition-all duration-200 font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+              className="text-white border-0 shadow-lg hover:shadow-xl transition-all duration-200 font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+              style={{ background: colors.accent }}
             >
               Xác nhận
             </Button>
