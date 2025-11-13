@@ -1,22 +1,23 @@
 'use client'
 
 import React from 'react'
-import { motion } from 'framer-motion'
 import FormProvider from '@/components/form/FormProvider'
 import { VendorProfileForm, VendorProfileView } from './components'
 import { useVendorProfile } from './hooks/useVendorProfile'
 import { vendorProfileSchema } from './schemas/vendorProfile.schema'
 import { VendorProfileFormData } from './types'
 import { Loader2 } from 'lucide-react'
+import { useTheme } from '@/contexts/ThemeContext'
 
 export const VendorProfilePage: React.FC = () => {
+  const { colors } = useTheme()
   const { profile, isLoading, isEditing, setIsEditing, handleUpdate, isUpdating } =
     useVendorProfile()
 
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
-        <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
+        <Loader2 className="w-8 h-8 animate-spin" style={{ color: colors.accent }} />
       </div>
     )
   }
@@ -24,7 +25,7 @@ export const VendorProfilePage: React.FC = () => {
   if (!profile) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
-        <p className="text-gray-500">Không tìm thấy thông tin vendor</p>
+        <p style={{ color: colors.textSecondary }}>Không tìm thấy thông tin vendor</p>
       </div>
     )
   }
@@ -47,14 +48,12 @@ export const VendorProfilePage: React.FC = () => {
 
   return (
     <div className="container mx-auto py-8 px-4 max-w-5xl">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-      >
+      <div>
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Thông tin Vendor</h1>
-          <p className="text-gray-600">Quản lý thông tin doanh nghiệp của bạn</p>
+          <h1 className="text-3xl font-bold mb-2" style={{ color: colors.text }}>
+            Thông tin Vendor
+          </h1>
+          <p style={{ color: colors.textSecondary }}>Quản lý thông tin doanh nghiệp của bạn</p>
         </div>
 
         {isEditing ? (
@@ -74,7 +73,7 @@ export const VendorProfilePage: React.FC = () => {
             onEdit={() => setIsEditing(true)}
           />
         )}
-      </motion.div>
+      </div>
     </div>
   )
 }

@@ -141,6 +141,14 @@ export const API_ENDPOINTS = {
   PAYMENTS: {
     CREATE: '/payments',
   },
+  
+  // Addresses endpoints
+  ADDRESSES: {
+    LIST: '/addresses',
+    CREATE: '/addresses',
+    DETAILS: (id: string) => `/addresses/${id}`,
+  },
+  
   // Vendor endpoints
   VENDOR: {
     // Profile

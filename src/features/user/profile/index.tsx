@@ -1,7 +1,6 @@
 'use client'
 
 import React from 'react'
-import { motion } from 'framer-motion'
 import { useUserProfile } from './hooks/useUserProfile'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -15,10 +14,12 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { updateProfileSchema, UpdateProfileFormData } from './schemas/profile.schema'
 import { BecomeVendorCard } from './components/BecomeVendorCard'
+import { useTheme } from '@/contexts/ThemeContext'
 
 export const UserProfilePage: React.FC = () => {
   const { profile, isLoading, handleUpdateProfile, isUpdating } = useUserProfile()
   const [isEditing, setIsEditing] = React.useState(false)
+  const { colors } = useTheme()
 
   const {
     register,
@@ -47,18 +48,21 @@ export const UserProfilePage: React.FC = () => {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
+      <div
+        className="flex items-center justify-center min-h-screen"
+        style={{ backgroundColor: colors.background }}
+      >
+        <Loader2 className="w-8 h-8 animate-spin" style={{ color: colors.accent }} />
       </div>
     )
   }
 
   if (!profile) {
     return (
-      <div className="container mx-auto py-8 px-4">
-        <Card>
+      <div className="container mx-auto py-8 px-4" style={{ backgroundColor: colors.background }}>
+        <Card style={{ backgroundColor: colors.cardBackground, borderColor: colors.border }}>
           <CardContent className="py-16 text-center">
-            <p className="text-gray-500">Không tìm thấy thông tin người dùng</p>
+            <p style={{ color: colors.textSecondary }}>Không tìm thấy thông tin người dùng</p>
           </CardContent>
         </Card>
       </div>
@@ -66,26 +70,28 @@ export const UserProfilePage: React.FC = () => {
   }
 
   return (
-    <div className="container mx-auto py-8 px-4 max-w-4xl">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-      >
+    <div
+      className="container mx-auto py-8 px-4 max-w-4xl"
+      style={{ backgroundColor: colors.background }}
+    >
+      <div>
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2 flex items-center gap-3">
-            <User className="w-8 h-8 text-blue-600" />
+          <h1
+            className="text-3xl font-bold mb-2 flex items-center gap-3"
+            style={{ color: colors.text }}
+          >
+            <User className="w-8 h-8" style={{ color: colors.accent }} />
             Thông tin cá nhân
           </h1>
-          <p className="text-gray-600">Quản lý thông tin tài khoản của bạn</p>
+          <p style={{ color: colors.textSecondary }}>Quản lý thông tin tài khoản của bạn</p>
         </div>
 
         <div className="grid gap-6">
           {/* Account Info Card */}
-          <Card>
-            <CardHeader>
+          <Card style={{ backgroundColor: colors.cardBackground, borderColor: colors.border }}>
+            <CardHeader style={{ borderColor: colors.border }}>
               <div className="flex items-center justify-between">
-                <CardTitle>Thông tin tài khoản</CardTitle>
+                <CardTitle style={{ color: colors.text }}>Thông tin tài khoản</CardTitle>
                 <Button
                   variant={isEditing ? 'outline' : 'default'}
                   onClick={() => {
@@ -94,58 +100,94 @@ export const UserProfilePage: React.FC = () => {
                     }
                     setIsEditing(!isEditing)
                   }}
+                  style={
+                    isEditing
+                      ? {
+                          backgroundColor: colors.cardBackground,
+                          borderColor: colors.border,
+                          color: colors.text,
+                        }
+                      : {
+                          backgroundColor: colors.accent,
+                          color: colors.background,
+                        }
+                  }
                 >
                   <Edit className="w-4 h-4 mr-2" />
                   {isEditing ? 'Hủy' : 'Chỉnh sửa'}
                 </Button>
               </div>
             </CardHeader>
-            <CardContent>
+            <CardContent style={{ backgroundColor: colors.cardBackground }}>
               {!isEditing ? (
                 <div className="space-y-4">
                   <div className="grid md:grid-cols-2 gap-4">
                     <div>
                       <div className="flex items-center gap-2 mb-2">
-                        <User className="w-4 h-4 text-gray-400" />
-                        <span className="text-sm text-gray-500">Họ</span>
+                        <User className="w-4 h-4" style={{ color: colors.textSecondary }} />
+                        <span className="text-sm" style={{ color: colors.textSecondary }}>
+                          Họ
+                        </span>
                       </div>
-                      <p className="text-lg font-semibold text-gray-900">{profile.lastName}</p>
+                      <p className="text-lg font-semibold" style={{ color: colors.text }}>
+                        {profile.lastName}
+                      </p>
                     </div>
                     <div>
                       <div className="flex items-center gap-2 mb-2">
-                        <User className="w-4 h-4 text-gray-400" />
-                        <span className="text-sm text-gray-500">Tên</span>
+                        <User className="w-4 h-4" style={{ color: colors.textSecondary }} />
+                        <span className="text-sm" style={{ color: colors.textSecondary }}>
+                          Tên
+                        </span>
                       </div>
-                      <p className="text-lg font-semibold text-gray-900">{profile.firstName}</p>
+                      <p className="text-lg font-semibold" style={{ color: colors.text }}>
+                        {profile.firstName}
+                      </p>
                     </div>
                   </div>
 
                   <div>
                     <div className="flex items-center gap-2 mb-2">
-                      <Mail className="w-4 h-4 text-gray-400" />
-                      <span className="text-sm text-gray-500">Email</span>
+                      <Mail className="w-4 h-4" style={{ color: colors.textSecondary }} />
+                      <span className="text-sm" style={{ color: colors.textSecondary }}>
+                        Email
+                      </span>
                     </div>
-                    <p className="text-lg font-semibold text-gray-900">{profile.email}</p>
+                    <p className="text-lg font-semibold" style={{ color: colors.text }}>
+                      {profile.email}
+                    </p>
                   </div>
 
                   <div>
                     <div className="flex items-center gap-2 mb-2">
-                      <Phone className="w-4 h-4 text-gray-400" />
-                      <span className="text-sm text-gray-500">Số điện thoại</span>
+                      <Phone className="w-4 h-4" style={{ color: colors.textSecondary }} />
+                      <span className="text-sm" style={{ color: colors.textSecondary }}>
+                        Số điện thoại
+                      </span>
                     </div>
-                    <p className="text-lg font-semibold text-gray-900">
+                    <p className="text-lg font-semibold" style={{ color: colors.text }}>
                       {profile.phoneNumber || 'Chưa cập nhật'}
                     </p>
                   </div>
 
                   <div>
                     <div className="flex items-center gap-2 mb-2">
-                      <Shield className="w-4 h-4 text-gray-400" />
-                      <span className="text-sm text-gray-500">Vai trò</span>
+                      <Shield className="w-4 h-4" style={{ color: colors.textSecondary }} />
+                      <span className="text-sm" style={{ color: colors.textSecondary }}>
+                        Vai trò
+                      </span>
                     </div>
                     <div className="flex gap-2">
                       {profile.roles.map((role) => (
-                        <Badge key={role} variant="secondary">
+                        <Badge
+                          key={role}
+                          style={{
+                            backgroundColor: `${colors.accent}20`,
+                            color: colors.accent,
+                            backgroundImage: 'none',
+                            borderColor: 'transparent',
+                          }}
+                        >
                           {role}
                         </Badge>
                       ))}
@@ -154,10 +196,12 @@ export const UserProfilePage: React.FC = () => {
 
                   <div>
                     <div className="flex items-center gap-2 mb-2">
-                      <Calendar className="w-4 h-4 text-gray-400" />
-                      <span className="text-sm text-gray-500">Ngày tham gia</span>
+                      <Calendar className="w-4 h-4" style={{ color: colors.textSecondary }} />
+                      <span className="text-sm" style={{ color: colors.textSecondary }}>
+                        Ngày tham gia
+                      </span>
                     </div>
-                    <p className="text-lg font-semibold text-gray-900">
+                    <p className="text-lg font-semibold" style={{ color: colors.text }}>
                       {format(new Date(profile.createdAt), 'dd/MM/yyyy', { locale: vi })}
                     </p>
                   </div>
@@ -166,26 +210,62 @@ export const UserProfilePage: React.FC = () => {
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
                   <div className="grid md:grid-cols-2 gap-4">
                     <div>
-                      <Label htmlFor="lastName">Họ</Label>
-                      <Input id="lastName" {...register('lastName')} />
+                      <Label htmlFor="lastName" style={{ color: colors.text }}>
+                        Họ
+                      </Label>
+                      <Input
+                        id="lastName"
+                        {...register('lastName')}
+                        style={{
+                          backgroundColor: colors.cardBackgroundSecondary,
+                          borderColor: colors.border,
+                          color: colors.text,
+                        }}
+                      />
                       {errors.lastName && (
-                        <p className="text-sm text-red-600 mt-1">{errors.lastName.message}</p>
+                        <p className="text-sm mt-1" style={{ color: colors.error }}>
+                          {errors.lastName.message}
+                        </p>
                       )}
                     </div>
                     <div>
-                      <Label htmlFor="firstName">Tên</Label>
-                      <Input id="firstName" {...register('firstName')} />
+                      <Label htmlFor="firstName" style={{ color: colors.text }}>
+                        Tên
+                      </Label>
+                      <Input
+                        id="firstName"
+                        {...register('firstName')}
+                        style={{
+                          backgroundColor: colors.cardBackgroundSecondary,
+                          borderColor: colors.border,
+                          color: colors.text,
+                        }}
+                      />
                       {errors.firstName && (
-                        <p className="text-sm text-red-600 mt-1">{errors.firstName.message}</p>
+                        <p className="text-sm mt-1" style={{ color: colors.error }}>
+                          {errors.firstName.message}
+                        </p>
                       )}
                     </div>
                   </div>
 
                   <div>
-                    <Label htmlFor="phoneNumber">Số điện thoại</Label>
-                    <Input id="phoneNumber" {...register('phoneNumber')} />
+                    <Label htmlFor="phoneNumber" style={{ color: colors.text }}>
+                      Số điện thoại
+                    </Label>
+                    <Input
+                      id="phoneNumber"
+                      {...register('phoneNumber')}
+                      style={{
+                        backgroundColor: colors.cardBackgroundSecondary,
+                        borderColor: colors.border,
+                        color: colors.text,
+                      }}
+                    />
                     {errors.phoneNumber && (
-                      <p className="text-sm text-red-600 mt-1">{errors.phoneNumber.message}</p>
+                      <p className="text-sm mt-1" style={{ color: colors.error }}>
+                        {errors.phoneNumber.message}
+                      </p>
                     )}
                   </div>
 
@@ -197,10 +277,22 @@ export const UserProfilePage: React.FC = () => {
                         reset()
                         setIsEditing(false)
                       }}
+                      style={{
+                        backgroundColor: colors.cardBackground,
+                        borderColor: colors.border,
+                        color: colors.text,
+                      }}
                     >
                       Hủy
                     </Button>
-                    <Button type="submit" disabled={isUpdating}>
+                    <Button
+                      type="submit"
+                      disabled={isUpdating}
+                      style={{
+                        backgroundColor: colors.accent,
+                        color: colors.background,
+                      }}
+                    >
                       {isUpdating ? (
                         <>
                           <Loader2 className="w-4 h-4 mr-2 animate-spin" />
@@ -217,14 +309,30 @@ export const UserProfilePage: React.FC = () => {
           </Card>
 
           {/* Account Status Card */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Trạng thái tài khoản</CardTitle>
+          <Card style={{ backgroundColor: colors.cardBackground, borderColor: colors.border }}>
+            <CardHeader style={{ borderColor: colors.border }}>
+              <CardTitle style={{ color: colors.text }}>Trạng thái tài khoản</CardTitle>
             </CardHeader>
-            <CardContent>
+            <CardContent style={{ backgroundColor: colors.cardBackground }}>
               <div className="flex items-center justify-between">
-                <span className="text-gray-600">Trạng thái</span>
-                <Badge variant={profile.isActive ? 'default' : 'destructive'}>
+                <span style={{ color: colors.textSecondary }}>Trạng thái</span>
+                <Badge
+                  style={
+                    profile.isActive
+                      ? {
+                          backgroundColor: `${colors.success}20`,
+                          color: colors.success,
+                          backgroundImage: 'none',
+                          borderColor: 'transparent',
+                        }
+                      : {
+                          backgroundColor: `${colors.error}20`,
+                          color: colors.error,
+                          backgroundImage: 'none',
+                          borderColor: 'transparent',
+                        }
+                  }
+                >
                   {profile.isActive ? 'Đang hoạt động' : 'Tạm khóa'}
                 </Badge>
               </div>
@@ -234,7 +342,7 @@ export const UserProfilePage: React.FC = () => {
           {/* Become Vendor Card */}
           <BecomeVendorCard />
         </div>
-      </motion.div>
+      </div>
     </div>
   )
 }

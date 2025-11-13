@@ -1,7 +1,6 @@
 'use client'
 
 import React from 'react'
-import { motion } from 'framer-motion'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import {
@@ -14,6 +13,7 @@ import {
 } from '@/components/ui'
 import { Eye, MoreVertical, Edit, Trash2, Package, Loader2 } from 'lucide-react'
 import { Product } from '@/services/vendor/vendor.types'
+import { useTheme } from '@/contexts/ThemeContext'
 
 interface ProductTableProps {
   products: Product[]
@@ -24,6 +24,8 @@ interface ProductTableProps {
 }
 
 export function ProductTable({ products, onView, onEdit, onDelete, isLoading }: ProductTableProps) {
+  const { colors } = useTheme()
+
   const formatPrice = (price: number, currency: string) => {
     return new Intl.NumberFormat('vi-VN', {
       style: 'currency',
@@ -34,20 +36,47 @@ export function ProductTable({ products, onView, onEdit, onDelete, isLoading }: 
   const getStockBadge = (quantity: number) => {
     if (quantity === 0) {
       return (
-        <Badge variant="destructive" className="text-xs">
+        <Badge
+          variant="destructive"
+          className="text-xs"
+          style={{
+            backgroundImage: 'none',
+            backgroundColor: colors.error + '20',
+            color: colors.error,
+            borderColor: 'transparent',
+          }}
+        >
           Hết hàng
         </Badge>
       )
     }
     if (quantity < 10) {
       return (
-        <Badge variant="outline" className="text-xs text-orange-600 border-orange-600">
+        <Badge
+          variant="outline"
+          className="text-xs"
+          style={{
+            backgroundImage: 'none',
+            backgroundColor: colors.warning + '20',
+            color: colors.warning,
+            borderColor: 'transparent',
+          }}
+        >
           Sắp hết
         </Badge>
       )
     }
     return (
-      <Badge variant="outline" className="text-xs text-green-600 border-green-600">
+      <Badge
+        variant="outline"
+        className="text-xs"
+        style={{
+          backgroundImage: 'none',
+          backgroundColor: colors.success + '20',
+          color: colors.success,
+          borderColor: 'transparent',
+        }}
+      >
         Còn hàng
       </Badge>
     )
@@ -56,7 +85,7 @@ export function ProductTable({ products, onView, onEdit, onDelete, isLoading }: 
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
-        <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
+        <Loader2 className="w-8 h-8 animate-spin" style={{ color: colors.accent }} />
       </div>
     )
   }
@@ -64,8 +93,8 @@ export function ProductTable({ products, onView, onEdit, onDelete, isLoading }: 
   if (products.length === 0) {
     return (
       <div className="text-center py-16">
-        <Package className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-        <p className="text-gray-500">Chưa có sản phẩm nào</p>
+        <Package className="w-16 h-16 mx-auto mb-4" style={{ color: colors.border }} />
+        <p style={{ color: colors.textSecondary }}>Chưa có sản phẩm nào</p>
       </div>
     )
   }
@@ -73,34 +102,61 @@ export function ProductTable({ products, onView, onEdit, onDelete, isLoading }: 
   return (
     <div className="overflow-x-auto">
       <table className="w-full border-collapse">
-        <thead className="bg-muted/50">
+        <thead style={{ backgroundColor: colors.cardBackgroundSecondary }}>
           <tr>
-            <th className="px-4 py-3 text-left text-sm font-semibold text-foreground">
+            <th
+              className="px-4 py-3 text-left text-sm font-semibold"
+              style={{ color: colors.text }}
+            >
               Sản phẩm
             </th>
-            <th className="px-4 py-3 text-left text-sm font-semibold text-foreground">
+            <th
+              className="px-4 py-3 text-left text-sm font-semibold"
+              style={{ color: colors.text }}
+            >
               Danh mục
             </th>
-            <th className="px-4 py-3 text-left text-sm font-semibold text-foreground">Giá</th>
-            <th className="px-4 py-3 text-left text-sm font-semibold text-foreground">
+            <th
+              className="px-4 py-3 text-left text-sm font-semibold"
+              style={{ color: colors.text }}
+            >
+              Giá
+            </th>
+            <th
+              className="px-4 py-3 text-left text-sm font-semibold"
+              style={{ color: colors.text }}
+            >
               Tồn kho
             </th>
-            <th className="px-4 py-3 text-left text-sm font-semibold text-foreground">
+            <th
+              className="px-4 py-3 text-left text-sm font-semibold"
+              style={{ color: colors.text }}
+            >
               Trạng thái
             </th>
-            <th className="px-4 py-3 text-center text-sm font-semibold text-foreground">
+            <th
+              className="px-4 py-3 text-center text-sm font-semibold"
+              style={{ color: colors.text }}
+            >
               Thao tác
             </th>
           </tr>
         </thead>
-        <tbody className="divide-y divide-border">
+        <tbody style={{ borderColor: colors.border }}>
           {products.map((product, index) => (
-            <motion.tr
+            <tr
               key={product.id}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.05 }}
-              className="hover:bg-muted/50 transition-colors duration-150"
+              className="transition-colors duration-150"
+              style={{
+                borderBottomWidth: '1px',
+                borderColor: colors.border,
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = colors.cardBackgroundSecondary
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = 'transparent'
+              }}
             >
               <td className="px-4 py-3">
                 <div className="flex items-center gap-3">
@@ -110,27 +166,31 @@ export function ProductTable({ products, onView, onEdit, onDelete, isLoading }: 
                     className="w-12 h-12 rounded-md object-cover"
                   />
                   <div>
-                    <p className="font-medium text-foreground">{product.name}</p>
-                    <p className="text-xs text-muted-foreground">SKU: {product.slug}</p>
+                    <p className="font-medium" style={{ color: colors.text }}>
+                      {product.name}
+                    </p>
+                    <p className="text-xs" style={{ color: colors.textSecondary }}>
+                      SKU: {product.slug}
+                    </p>
                   </div>
                 </div>
               </td>
-              <td className="px-4 py-3 text-sm text-muted-foreground">
+              <td className="px-4 py-3 text-sm" style={{ color: colors.textSecondary }}>
                 {product.category?.name || 'N/A'}
               </td>
               <td className="px-4 py-3">
                 <div>
                   {product.salePrice && Number(product.salePrice) < Number(product.price) ? (
                     <>
-                      <p className="text-sm font-semibold text-foreground">
+                      <p className="text-sm font-semibold" style={{ color: colors.text }}>
                         {formatPrice(Number(product.salePrice), product.currency)}
                       </p>
-                      <p className="text-xs text-muted-foreground line-through">
+                      <p className="text-xs line-through" style={{ color: colors.textSecondary }}>
                         {formatPrice(Number(product.price), product.currency)}
                       </p>
                     </>
                   ) : (
-                    <p className="text-sm font-semibold text-foreground">
+                    <p className="text-sm font-semibold" style={{ color: colors.text }}>
                       {formatPrice(Number(product.price), product.currency)}
                     </p>
                   )}
@@ -138,7 +198,7 @@ export function ProductTable({ products, onView, onEdit, onDelete, isLoading }: 
               </td>
               <td className="px-4 py-3">
                 <div>
-                  <p className="text-sm text-foreground">
+                  <p className="text-sm" style={{ color: colors.text }}>
                     {product.stockQty} {product.stockUnit}
                   </p>
                   {getStockBadge(product.stockQty)}
@@ -147,7 +207,17 @@ export function ProductTable({ products, onView, onEdit, onDelete, isLoading }: 
               <td className="px-4 py-3">
                 <div className="flex flex-wrap gap-1">
                   {product.badges?.map((badge) => (
-                    <Badge key={badge} variant="secondary" className="text-xs">
+                    <Badge
+                      key={badge}
+                      variant="secondary"
+                      className="text-xs"
+                      style={{
+                        backgroundImage: 'none',
+                        backgroundColor: colors.accent + '20',
+                        color: colors.accent,
+                        borderColor: 'transparent',
+                      }}
+                    >
                       {badge}
                     </Badge>
                   ))}
@@ -182,7 +252,7 @@ export function ProductTable({ products, onView, onEdit, onDelete, isLoading }: 
                   </DropdownMenuContent>
                 </DropdownMenu>
               </td>
-            </motion.tr>
+            </tr>
           ))}
         </tbody>
       </table>

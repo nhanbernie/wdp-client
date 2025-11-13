@@ -1,17 +1,18 @@
-"use client";
+'use client'
 
-import React from "react";
-import Header from "./Header";
-import Footer from "./Footer";
-import { useTheme } from "@/contexts/ThemeContext";
+import React from 'react'
+import Header from './Header'
+import Footer from './Footer'
+import { useTheme } from '@/contexts/ThemeContext'
+import { Chatbot } from '@/features/chat-bot'
 
 interface MainLayoutProps {
-  children: React.ReactNode;
-  footer?: boolean;
+  children: React.ReactNode
+  footer?: boolean
 }
 
 const MainLayout: React.FC<MainLayoutProps> = ({ children, footer = true }) => {
-  const { colors } = useTheme();
+  const { colors } = useTheme()
 
   return (
     <div
@@ -21,8 +22,9 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, footer = true }) => {
       <Header />
       <main className="flex-1 pt-[var(--header-height)]">{children}</main>
       {footer && <Footer />}
+      <Chatbot />
     </div>
-  );
-};
+  )
+}
 
-export default MainLayout;
+export default MainLayout

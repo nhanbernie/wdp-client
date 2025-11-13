@@ -17,14 +17,22 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Plus, Trash2, X } from 'lucide-react'
-import { ProductFormProps } from '../types'
 import { ProductFormData } from '../types/product.types'
 import { useGetCategoriesQuery } from '@/services/categories/categories.service'
 import { ImageUpload, MultipleImageUpload } from '@/components/common'
+import { useTheme } from '@/contexts/ThemeContext'
 
 const CURRENCY_OPTIONS = ['VND', 'USD']
 const UNIT_OPTIONS = ['cái', 'bộ', 'hộp', 'kg', 'mét', 'thùng']
 const BADGE_OPTIONS = ['bestseller', 'sale', 'new', 'hot', 'featured']
+
+interface ProductFormProps {
+  mode: 'create' | 'edit' | 'view'
+  initialData?: Partial<ProductFormData>
+  onSubmit: (data: ProductFormData) => Promise<void>
+  onCancel: () => void
+  isLoading?: boolean
+}
 
 export function ProductForm({
   mode,
@@ -35,6 +43,7 @@ export function ProductForm({
 }: ProductFormProps) {
   const { data: categoriesData } = useGetCategoriesQuery({})
   const categories = categoriesData?.data?.items || []
+  const { colors } = useTheme()
 
   const {
     register,
@@ -156,47 +165,61 @@ export function ProductForm({
 
         {/* Tab 1: Basic Information */}
         <TabsContent value="basic" className="space-y-4">
-          <Card>
+          <Card style={{ backgroundColor: colors.cardBackground, borderColor: colors.border }}>
             <CardHeader>
-              <CardTitle>Thông tin cơ bản</CardTitle>
+              <CardTitle style={{ color: colors.text }}>Thông tin cơ bản</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               {/* Name */}
               <div>
-                <Label htmlFor="name">
-                  Tên sản phẩm <span className="text-destructive">*</span>
+                <Label htmlFor="name" style={{ color: colors.text }}>
+                  Tên sản phẩm <span style={{ color: colors.error }}>*</span>
                 </Label>
                 <Input
                   id="name"
                   {...register('name', { required: 'Tên sản phẩm là bắt buộc' })}
                   placeholder="Bu lông inox M8"
                   disabled={isReadOnly}
+                  style={{
+                    backgroundColor: colors.cardBackgroundSecondary,
+                    borderColor: colors.border,
+                    color: colors.text,
+                  }}
                 />
                 {errors.name && (
-                  <p className="text-sm text-destructive mt-1">{errors.name.message}</p>
+                  <p className="text-sm mt-1" style={{ color: colors.error }}>
+                    {errors.name.message}
+                  </p>
                 )}
               </div>
 
               {/* Slug */}
               <div>
-                <Label htmlFor="slug">
-                  Slug <span className="text-destructive">*</span>
+                <Label htmlFor="slug" style={{ color: colors.text }}>
+                  Slug <span style={{ color: colors.error }}>*</span>
                 </Label>
                 <Input
                   id="slug"
                   {...register('slug', { required: 'Slug là bắt buộc' })}
                   placeholder="bu-long-inox-m8"
                   disabled={isReadOnly}
+                  style={{
+                    backgroundColor: colors.cardBackgroundSecondary,
+                    borderColor: colors.border,
+                    color: colors.text,
+                  }}
                 />
                 {errors.slug && (
-                  <p className="text-sm text-destructive mt-1">{errors.slug.message}</p>
+                  <p className="text-sm mt-1" style={{ color: colors.error }}>
+                    {errors.slug.message}
+                  </p>
                 )}
               </div>
 
               {/* Category */}
               <div>
-                <Label htmlFor="categoryId">
-                  Danh mục <span className="text-destructive">*</span>
+                <Label htmlFor="categoryId" style={{ color: colors.accent }}>
+                  Danh mục <span style={{ color: colors.error }}>*</span>
                 </Label>
                 <Controller
                   name="categoryId"
@@ -208,7 +231,13 @@ export function ProductForm({
                       value={field.value}
                       disabled={isReadOnly}
                     >
-                      <SelectTrigger>
+                      <SelectTrigger
+                        style={{
+                          backgroundColor: colors.cardBackgroundSecondary,
+                          borderColor: colors.border,
+                          color: colors.text,
+                        }}
+                      >
                         <SelectValue placeholder="Chọn danh mục" />
                       </SelectTrigger>
                       <SelectContent>
@@ -222,54 +251,85 @@ export function ProductForm({
                   )}
                 />
                 {errors.categoryId && (
-                  <p className="text-sm text-destructive mt-1">{errors.categoryId.message}</p>
+                  <p className="text-sm mt-1" style={{ color: colors.error }}>
+                    {errors.categoryId.message}
+                  </p>
                 )}
               </div>
 
               {/* Brand */}
               <div>
-                <Label htmlFor="brand">Thương hiệu</Label>
+                <Label htmlFor="brand" style={{ color: colors.text }}>
+                  Thương hiệu
+                </Label>
                 <Input
                   id="brand"
                   {...register('brand')}
                   placeholder="Inox Việt"
                   disabled={isReadOnly}
+                  style={{
+                    backgroundColor: colors.cardBackgroundSecondary,
+                    borderColor: colors.border,
+                    color: colors.text,
+                  }}
                 />
               </div>
 
               {/* Short Description */}
               <div>
-                <Label htmlFor="shortDescription">Mô tả ngắn</Label>
+                <Label htmlFor="shortDescription" style={{ color: colors.text }}>
+                  Mô tả ngắn
+                </Label>
                 <Textarea
                   id="shortDescription"
                   {...register('shortDescription')}
                   placeholder="Mô tả ngắn gọn về sản phẩm"
                   rows={3}
                   disabled={isReadOnly}
+                  style={{
+                    backgroundColor: colors.cardBackgroundSecondary,
+                    borderColor: colors.border,
+                    color: colors.text,
+                  }}
                 />
               </div>
 
               {/* Description */}
               <div>
-                <Label htmlFor="description">Mô tả chi tiết</Label>
+                <Label htmlFor="description" style={{ color: colors.text }}>
+                  Mô tả chi tiết
+                </Label>
                 <Textarea
                   id="description"
                   {...register('description')}
                   placeholder="Mô tả chi tiết về sản phẩm (hỗ trợ HTML)"
                   rows={6}
                   disabled={isReadOnly}
+                  style={{
+                    backgroundColor: colors.cardBackgroundSecondary,
+                    borderColor: colors.border,
+                    color: colors.text,
+                  }}
                 />
               </div>
 
               {/* Badges */}
               <div>
-                <Label>Badges</Label>
+                <Label style={{ color: colors.text }}>Badges</Label>
                 <div className="flex flex-wrap gap-2 mt-2">
                   {BADGE_OPTIONS.map((badge) => (
                     <Badge
                       key={badge}
                       variant={selectedBadges.includes(badge) ? 'default' : 'outline'}
                       className="cursor-pointer"
+                      style={{
+                        backgroundImage: 'none',
+                        backgroundColor: selectedBadges.includes(badge)
+                          ? colors.accent
+                          : colors.cardBackgroundSecondary,
+                        color: selectedBadges.includes(badge) ? colors.background : colors.text,
+                        borderColor: selectedBadges.includes(badge) ? 'transparent' : colors.border,
+                      }}
                       onClick={() => !isReadOnly && toggleBadge(badge)}
                     >
                       {badge}
@@ -280,12 +340,30 @@ export function ProductForm({
 
               {/* Custom Specs */}
               <div>
-                <Label>Thông số kỹ thuật</Label>
+                <Label style={{ color: colors.text }}>Thông số kỹ thuật</Label>
                 <div className="space-y-2 mt-2">
                   {Object.entries(customSpecs).map(([key, value]) => (
                     <div key={key} className="flex items-center gap-2">
-                      <Input value={key} disabled className="flex-1" />
-                      <Input value={value} disabled className="flex-1" />
+                      <Input
+                        value={key}
+                        disabled
+                        className="flex-1"
+                        style={{
+                          backgroundColor: colors.cardBackgroundSecondary,
+                          borderColor: colors.border,
+                          color: colors.text,
+                        }}
+                      />
+                      <Input
+                        value={value}
+                        disabled
+                        className="flex-1"
+                        style={{
+                          backgroundColor: colors.cardBackgroundSecondary,
+                          borderColor: colors.border,
+                          color: colors.text,
+                        }}
+                      />
                       {!isReadOnly && (
                         <Button
                           type="button"
@@ -304,13 +382,31 @@ export function ProductForm({
                         placeholder="Tên thông số"
                         value={newSpecKey}
                         onChange={(e) => setNewSpecKey(e.target.value)}
+                        style={{
+                          backgroundColor: colors.cardBackgroundSecondary,
+                          borderColor: colors.border,
+                          color: colors.text,
+                        }}
                       />
                       <Input
                         placeholder="Giá trị"
                         value={newSpecValue}
                         onChange={(e) => setNewSpecValue(e.target.value)}
+                        style={{
+                          backgroundColor: colors.cardBackgroundSecondary,
+                          borderColor: colors.border,
+                          color: colors.text,
+                        }}
                       />
-                      <Button type="button" onClick={addSpec} size="icon">
+                      <Button
+                        type="button"
+                        onClick={addSpec}
+                        size="icon"
+                        style={{
+                          backgroundColor: colors.accent,
+                          color: colors.background,
+                        }}
+                      >
                         <Plus className="h-4 w-4" />
                       </Button>
                     </div>
@@ -323,14 +419,16 @@ export function ProductForm({
 
         {/* Tab 2: Pricing & Stock */}
         <TabsContent value="pricing" className="space-y-4">
-          <Card>
+          <Card style={{ backgroundColor: colors.cardBackground, borderColor: colors.border }}>
             <CardHeader>
-              <CardTitle>Giá & Kho hàng</CardTitle>
+              <CardTitle style={{ color: colors.text }}>Giá & Kho hàng</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               {/* Currency */}
               <div>
-                <Label htmlFor="currency">Đơn vị tiền tệ</Label>
+                <Label htmlFor="currency" style={{ color: colors.text }}>
+                  Đơn vị tiền tệ
+                </Label>
                 <Controller
                   name="currency"
                   control={control}
@@ -340,7 +438,13 @@ export function ProductForm({
                       value={field.value}
                       disabled={isReadOnly}
                     >
-                      <SelectTrigger>
+                      <SelectTrigger
+                        style={{
+                          backgroundColor: colors.cardBackgroundSecondary,
+                          borderColor: colors.border,
+                          color: colors.text,
+                        }}
+                      >
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
@@ -357,8 +461,8 @@ export function ProductForm({
 
               {/* Price */}
               <div>
-                <Label htmlFor="price">
-                  Giá gốc <span className="text-destructive">*</span>
+                <Label htmlFor="price" style={{ color: colors.text }}>
+                  Giá gốc <span style={{ color: colors.error }}>*</span>
                 </Label>
                 <Input
                   id="price"
@@ -370,25 +474,37 @@ export function ProductForm({
                   })}
                   placeholder="0"
                   disabled={isReadOnly}
+                  style={{
+                    backgroundColor: colors.cardBackgroundSecondary,
+                    borderColor: colors.border,
+                    color: colors.text,
+                  }}
                 />
               </div>
 
               {/* Sale Price */}
               <div>
-                <Label htmlFor="salePrice">Giá khuyến mãi</Label>
+                <Label htmlFor="salePrice" style={{ color: colors.text }}>
+                  Giá khuyến mãi
+                </Label>
                 <Input
                   id="salePrice"
                   type="number"
                   {...register('salePrice', { valueAsNumber: true, min: 0 })}
                   placeholder="0"
                   disabled={isReadOnly}
+                  style={{
+                    backgroundColor: colors.cardBackgroundSecondary,
+                    borderColor: colors.border,
+                    color: colors.text,
+                  }}
                 />
               </div>
 
               {/* Stock Quantity */}
               <div>
-                <Label htmlFor="stock.quantity">
-                  Số lượng tồn kho <span className="text-destructive">*</span>
+                <Label htmlFor="stock.quantity" style={{ color: colors.text }}>
+                  Số lượng tồn kho <span style={{ color: colors.error }}>*</span>
                 </Label>
                 <Input
                   id="stock.quantity"
@@ -400,12 +516,19 @@ export function ProductForm({
                   })}
                   placeholder="0"
                   disabled={isReadOnly}
+                  style={{
+                    backgroundColor: colors.cardBackgroundSecondary,
+                    borderColor: colors.border,
+                    color: colors.text,
+                  }}
                 />
               </div>
 
               {/* Stock Unit */}
               <div>
-                <Label htmlFor="stock.unit">Đơn vị tính</Label>
+                <Label htmlFor="stock.unit" style={{ color: colors.text }}>
+                  Đơn vị tính
+                </Label>
                 <Controller
                   name="stock.unit"
                   control={control}
@@ -415,7 +538,13 @@ export function ProductForm({
                       value={field.value}
                       disabled={isReadOnly}
                     >
-                      <SelectTrigger>
+                      <SelectTrigger
+                        style={{
+                          backgroundColor: colors.cardBackgroundSecondary,
+                          borderColor: colors.border,
+                          color: colors.text,
+                        }}
+                      >
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
@@ -435,15 +564,26 @@ export function ProductForm({
 
         {/* Tab 3: Options & Variants */}
         <TabsContent value="options" className="space-y-4">
-          <Card>
+          <Card style={{ backgroundColor: colors.cardBackground, borderColor: colors.border }}>
             <CardHeader>
-              <CardTitle>Options (Kích thước, Màu sắc, ...)</CardTitle>
+              <CardTitle style={{ color: colors.text }}>
+                Options (Kích thước, Màu sắc, ...)
+              </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               {optionFields.map((field, index) => (
-                <div key={field.id} className="border rounded-lg p-4 space-y-3">
+                <div
+                  key={field.id}
+                  className="rounded-lg p-4 space-y-3"
+                  style={{
+                    border: `1px solid ${colors.border}`,
+                    backgroundColor: colors.cardBackgroundSecondary,
+                  }}
+                >
                   <div className="flex justify-between items-center">
-                    <h4 className="font-medium">Option {index + 1}</h4>
+                    <h4 className="font-medium" style={{ color: colors.text }}>
+                      Option {index + 1}
+                    </h4>
                     {!isReadOnly && (
                       <Button
                         type="button"
@@ -457,24 +597,34 @@ export function ProductForm({
                   </div>
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <Label>Tên (key)</Label>
+                      <Label style={{ color: colors.text }}>Tên (key)</Label>
                       <Input
                         {...register(`options.${index}.name` as const)}
                         placeholder="size"
                         disabled={isReadOnly}
+                        style={{
+                          backgroundColor: colors.cardBackground,
+                          borderColor: colors.border,
+                          color: colors.text,
+                        }}
                       />
                     </div>
                     <div>
-                      <Label>Tên hiển thị</Label>
+                      <Label style={{ color: colors.text }}>Tên hiển thị</Label>
                       <Input
                         {...register(`options.${index}.displayName` as const)}
                         placeholder="Kích thước"
                         disabled={isReadOnly}
+                        style={{
+                          backgroundColor: colors.cardBackground,
+                          borderColor: colors.border,
+                          color: colors.text,
+                        }}
                       />
                     </div>
                   </div>
                   <div>
-                    <Label>Giá trị (cách nhau bởi dấu phẩy)</Label>
+                    <Label style={{ color: colors.text }}>Giá trị (cách nhau bởi dấu phẩy)</Label>
                     <Input
                       placeholder="M8, M10, M12"
                       onChange={(e) => {
@@ -482,6 +632,11 @@ export function ProductForm({
                         setValue(`options.${index}.values`, values)
                       }}
                       disabled={isReadOnly}
+                      style={{
+                        backgroundColor: colors.cardBackground,
+                        borderColor: colors.border,
+                        color: colors.text,
+                      }}
                     />
                   </div>
                 </div>
@@ -492,6 +647,11 @@ export function ProductForm({
                   variant="outline"
                   onClick={() => appendOption({ name: '', displayName: '', values: [] })}
                   className="w-full"
+                  style={{
+                    backgroundColor: colors.cardBackgroundSecondary,
+                    borderColor: colors.border,
+                    color: colors.text,
+                  }}
                 >
                   <Plus className="h-4 w-4 mr-2" />
                   Thêm Option
@@ -500,15 +660,24 @@ export function ProductForm({
             </CardContent>
           </Card>
 
-          <Card>
+          <Card style={{ backgroundColor: colors.cardBackground, borderColor: colors.border }}>
             <CardHeader>
-              <CardTitle>Variants (Biến thể)</CardTitle>
+              <CardTitle style={{ color: colors.text }}>Variants (Biến thể)</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               {variantFields.map((field, index) => (
-                <div key={field.id} className="border rounded-lg p-4 space-y-3">
+                <div
+                  key={field.id}
+                  className="rounded-lg p-4 space-y-3"
+                  style={{
+                    border: `1px solid ${colors.border}`,
+                    backgroundColor: colors.cardBackgroundSecondary,
+                  }}
+                >
                   <div className="flex justify-between items-center">
-                    <h4 className="font-medium">Variant {index + 1}</h4>
+                    <h4 className="font-medium" style={{ color: colors.text }}>
+                      Variant {index + 1}
+                    </h4>
                     {!isReadOnly && (
                       <Button
                         type="button"
@@ -522,30 +691,45 @@ export function ProductForm({
                   </div>
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <Label>SKU</Label>
+                      <Label style={{ color: colors.text }}>SKU</Label>
                       <Input
                         {...register(`variants.${index}.sku` as const)}
                         placeholder="BOLT-M8-50"
                         disabled={isReadOnly}
+                        style={{
+                          backgroundColor: colors.cardBackground,
+                          borderColor: colors.border,
+                          color: colors.text,
+                        }}
                       />
                     </div>
                     <div>
-                      <Label>Giá</Label>
+                      <Label style={{ color: colors.text }}>Giá</Label>
                       <Input
                         type="number"
                         {...register(`variants.${index}.price` as const, { valueAsNumber: true })}
                         placeholder="0"
                         disabled={isReadOnly}
+                        style={{
+                          backgroundColor: colors.cardBackground,
+                          borderColor: colors.border,
+                          color: colors.text,
+                        }}
                       />
                     </div>
                   </div>
                   <div>
-                    <Label>Số lượng</Label>
+                    <Label style={{ color: colors.text }}>Số lượng</Label>
                     <Input
                       type="number"
                       {...register(`variants.${index}.stockQty` as const, { valueAsNumber: true })}
                       placeholder="0"
                       disabled={isReadOnly}
+                      style={{
+                        backgroundColor: colors.cardBackground,
+                        borderColor: colors.border,
+                        color: colors.text,
+                      }}
                     />
                   </div>
                 </div>
@@ -558,6 +742,11 @@ export function ProductForm({
                     appendVariant({ sku: '', options: {}, price: 0, stockQty: 0, specs: {} })
                   }
                   className="w-full"
+                  style={{
+                    backgroundColor: colors.cardBackgroundSecondary,
+                    borderColor: colors.border,
+                    color: colors.text,
+                  }}
                 >
                   <Plus className="h-4 w-4 mr-2" />
                   Thêm Variant
@@ -569,9 +758,9 @@ export function ProductForm({
 
         {/* Tab 4: Media & Documents */}
         <TabsContent value="media" className="space-y-4">
-          <Card>
+          <Card style={{ backgroundColor: colors.cardBackground, borderColor: colors.border }}>
             <CardHeader>
-              <CardTitle>Hình ảnh & Tài liệu</CardTitle>
+              <CardTitle style={{ color: colors.text }}>Hình ảnh & Tài liệu</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               {/* Thumbnail */}
@@ -639,12 +828,19 @@ export function ProductForm({
 
               {/* Datasheet */}
               <div>
-                <Label htmlFor="datasheetUrl">URL Datasheet</Label>
+                <Label htmlFor="datasheetUrl" style={{ color: colors.text }}>
+                  URL Datasheet
+                </Label>
                 <Input
                   id="datasheetUrl"
                   {...register('datasheetUrl')}
                   placeholder="https://cdn.example.com/datasheet.pdf"
                   disabled={isReadOnly}
+                  style={{
+                    backgroundColor: colors.cardBackgroundSecondary,
+                    borderColor: colors.border,
+                    color: colors.text,
+                  }}
                 />
               </div>
             </CardContent>
@@ -655,10 +851,27 @@ export function ProductForm({
       {/* Form Actions */}
       {!isReadOnly && (
         <div className="flex justify-end gap-3">
-          <Button type="button" variant="outline" onClick={onCancel} disabled={isLoading}>
+          <Button
+            type="button"
+            variant="outline"
+            onClick={onCancel}
+            disabled={isLoading}
+            style={{
+              backgroundColor: colors.cardBackground,
+              borderColor: colors.border,
+              color: colors.text,
+            }}
+          >
             Hủy
           </Button>
-          <Button type="submit" disabled={isLoading}>
+          <Button
+            type="submit"
+            disabled={isLoading}
+            style={{
+              backgroundColor: colors.accent,
+              color: colors.background,
+            }}
+          >
             {isLoading ? 'Đang xử lý...' : mode === 'create' ? 'Tạo sản phẩm' : 'Cập nhật'}
           </Button>
         </div>

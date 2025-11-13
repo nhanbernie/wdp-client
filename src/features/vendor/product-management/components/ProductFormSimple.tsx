@@ -17,6 +17,7 @@ import { ProductOptionsField } from './ProductOptionsField'
 import { ProductVariantsField } from './ProductVariantsField'
 import { ProductSpecsField } from './ProductSpecsField'
 import { ProductBadgesField } from './ProductBadgesField'
+import { useTheme } from '@/contexts/ThemeContext'
 
 interface ProductFormPropsNew {
   onCancel: () => void
@@ -24,6 +25,7 @@ interface ProductFormPropsNew {
 }
 
 export const ProductForm: React.FC<ProductFormPropsNew> = ({ onCancel, mode = 'create' }) => {
+  const { colors } = useTheme()
   const {
     control,
     watch,
@@ -84,9 +86,9 @@ export const ProductForm: React.FC<ProductFormPropsNew> = ({ onCancel, mode = 'c
 
         {/* Basic Information Tab */}
         <TabsContent value="basic" className="space-y-4 mt-6">
-          <Card>
+          <Card style={{ backgroundColor: colors.cardBackground, borderColor: colors.border }}>
             <CardHeader>
-              <CardTitle>Thông tin cơ bản</CardTitle>
+              <CardTitle style={{ color: colors.text }}>Thông tin cơ bản</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <TextField
@@ -107,9 +109,9 @@ export const ProductForm: React.FC<ProductFormPropsNew> = ({ onCancel, mode = 'c
 
         {/* Pricing & Stock Tab */}
         <TabsContent value="pricing" className="space-y-4 mt-6">
-          <Card>
+          <Card style={{ backgroundColor: colors.cardBackground, borderColor: colors.border }}>
             <CardHeader>
-              <CardTitle>Giá bán</CardTitle>
+              <CardTitle style={{ color: colors.text }}>Giá bán</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
@@ -135,9 +137,9 @@ export const ProductForm: React.FC<ProductFormPropsNew> = ({ onCancel, mode = 'c
             </CardContent>
           </Card>
 
-          <Card>
+          <Card style={{ backgroundColor: colors.cardBackground, borderColor: colors.border }}>
             <CardHeader>
-              <CardTitle>Kho hàng</CardTitle>
+              <CardTitle style={{ color: colors.text }}>Kho hàng</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
@@ -169,9 +171,9 @@ export const ProductForm: React.FC<ProductFormPropsNew> = ({ onCancel, mode = 'c
 
         {/* Media Tab */}
         <TabsContent value="media" className="space-y-4 mt-6">
-          <Card>
+          <Card style={{ backgroundColor: colors.cardBackground, borderColor: colors.border }}>
             <CardHeader>
-              <CardTitle>Ảnh đại diện</CardTitle>
+              <CardTitle style={{ color: colors.text }}>Ảnh đại diện</CardTitle>
             </CardHeader>
             <CardContent>
               <Controller
@@ -209,9 +211,9 @@ export const ProductForm: React.FC<ProductFormPropsNew> = ({ onCancel, mode = 'c
             </CardContent>
           </Card>
 
-          <Card>
+          <Card style={{ backgroundColor: colors.cardBackground, borderColor: colors.border }}>
             <CardHeader>
-              <CardTitle>Thư viện ảnh</CardTitle>
+              <CardTitle style={{ color: colors.text }}>Thư viện ảnh</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <Controller
@@ -276,13 +278,13 @@ export const ProductForm: React.FC<ProductFormPropsNew> = ({ onCancel, mode = 'c
         {/* Options & Variants Tab - Only in create mode */}
         {mode === 'create' && (
           <TabsContent value="options" className="space-y-6 mt-6">
-            <Card>
+            <Card style={{ backgroundColor: colors.cardBackground, borderColor: colors.border }}>
               <CardContent className="pt-6">
                 <ProductOptionsField name="options" />
               </CardContent>
             </Card>
 
-            <Card>
+            <Card style={{ backgroundColor: colors.cardBackground, borderColor: colors.border }}>
               <CardContent className="pt-6">
                 <ProductVariantsField name="variants" />
               </CardContent>
@@ -292,9 +294,9 @@ export const ProductForm: React.FC<ProductFormPropsNew> = ({ onCancel, mode = 'c
 
         {/* Description Tab */}
         <TabsContent value="description" className="space-y-4 mt-6">
-          <Card>
+          <Card style={{ backgroundColor: colors.cardBackground, borderColor: colors.border }}>
             <CardHeader>
-              <CardTitle>Mô tả sản phẩm</CardTitle>
+              <CardTitle style={{ color: colors.text }}>Mô tả sản phẩm</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <TextAreaField
@@ -324,14 +326,21 @@ export const ProductForm: React.FC<ProductFormPropsNew> = ({ onCancel, mode = 'c
       </Tabs>
 
       {/* Form Actions */}
-      <div className="flex justify-end gap-3 pt-6 border-t">
-        <Button type="button" variant="outline" onClick={onCancel} disabled={isSubmitting}>
+      <div className="flex justify-end gap-3 pt-6 border-t" style={{ borderColor: colors.border }}>
+        <Button
+          type="button"
+          variant="outline"
+          onClick={onCancel}
+          disabled={isSubmitting}
+          style={{ borderColor: colors.border, color: colors.text }}
+        >
           Hủy
         </Button>
         <Button
           type="submit"
           disabled={isSubmitting}
           onClick={() => console.log('Submit button clicked!')}
+          style={{ backgroundColor: colors.accent, color: colors.background }}
         >
           {isSubmitting ? 'Đang lưu...' : 'Lưu sản phẩm'}
         </Button>
