@@ -137,18 +137,30 @@ export const API_ENDPOINTS = {
     LIST: '/categories',
   },
 
+  // Reviews endpoints
+  REVIEWS: {
+    CREATE: '/reviews',
+    LIST_BY_PRODUCT: (productId: string) => `/reviews/product/${productId}`,
+    PRODUCT_STATS: (productId: string) => `/reviews/product/${productId}/stats`,
+    DETAILS: (id: string) => `/reviews/${id}`,
+    UPDATE: (id: string) => `/reviews/${id}`,
+    VENDOR_REPLY: (id: string) => `/reviews/${id}/reply`,
+    VENDOR_OVERVIEW: (vendorId: string) => `/reviews/vendor/${vendorId}/overview`,
+    HISTORY: (id: string) => `/reviews/${id}/history`,
+  },
+
   // Payments endpoints
   PAYMENTS: {
     CREATE: '/payments',
   },
-  
+
   // Addresses endpoints
   ADDRESSES: {
     LIST: '/addresses',
     CREATE: '/addresses',
     DETAILS: (id: string) => `/addresses/${id}`,
   },
-  
+
   // Vendor endpoints
   VENDOR: {
     // Profile

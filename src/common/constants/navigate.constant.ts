@@ -38,9 +38,9 @@ import {
   ShoppingBag,
   BarChart3,
   User,
-  Settings,
   Users,
   MessageSquareQuote,
+  MessagesSquare,
 } from 'lucide-react'
 
 export const adminNavigationItems: NavItem[] = [
@@ -57,4 +57,5 @@ export const vendorNavigationItems: NavItem[] = [
   { label: 'Quản lý sản phẩm', href: '/vendor/product-management', icon: Package },
   { label: 'Yêu cầu báo giá', href: '/vendor/quotes', icon: MessageSquareQuote },
   { label: 'Đơn hàng', href: '/vendor/orders', icon: ShoppingBag },
+  { label: 'Đánh giá', href: '/vendor/review', icon: MessagesSquare },
 ]
