@@ -71,7 +71,11 @@ export function ProductReviewList({ productId }: ProductReviewListProps) {
       {stats && (
         <div
           className="p-6 rounded-xl border"
-          style={{ backgroundColor: colors.cardBackground, borderColor: colors.border }}
+          style={{
+            backgroundColor: colors.cardBackgroundSecondary,
+            border: `1px solid ${colors.border}30`,
+            boxShadow: `0 4px 12px ${colors.border}20`,
+          }}
         >
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Average Rating */}
@@ -182,7 +186,11 @@ export function ProductReviewList({ productId }: ProductReviewListProps) {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               className="p-6 rounded-xl border"
-              style={{ backgroundColor: colors.cardBackground, borderColor: colors.border }}
+              style={{
+                backgroundColor: colors.cardBackgroundSecondary,
+                border: `1px solid ${colors.border}30`,
+                boxShadow: `0 4px 12px ${colors.border}20`,
+              }}
             >
               {/* User Info */}
               <div className="flex items-start gap-4">

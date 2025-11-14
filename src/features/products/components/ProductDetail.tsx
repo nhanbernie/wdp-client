@@ -225,6 +225,7 @@ const ProductDetail: React.FC<ProductDetailProps> = ({ id }) => {
         )}
 
         <ProductTabs
+          productId={id}
           description={productData.description}
           specs={productData.specs}
           colors={colors}
