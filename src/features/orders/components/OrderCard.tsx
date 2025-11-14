@@ -112,8 +112,35 @@ export function OrderCard({ order, index }: OrderCardProps) {
                   >
                     {item.productName}
                   </p>
+                  {/* Variant Name & SKU */}
+                  {(item.variantName || item.sku) && (
+                    <div className="flex flex-wrap items-center gap-1.5 mt-1">
+                      {item.variantName && (
+                        <span 
+                          className="px-2 py-0.5 rounded text-xs font-medium"
+                          style={{ 
+                            backgroundColor: `${colors.accent}20`,
+                            color: colors.accent
+                          }}
+                        >
+                          {item.variantName}
+                        </span>
+                      )}
+                      {item.sku && (
+                        <span 
+                          className="px-2 py-0.5 rounded text-xs font-bold"
+                          style={{ 
+                            backgroundColor: colors.cardBackgroundSecondary,
+                            color: colors.textSecondary
+                          }}
+                        >
+                          SKU: {item.sku}
+                        </span>
+                      )}
+                    </div>
+                  )}
                   <p
-                    className="text-xs"
+                    className="text-xs mt-1"
                     style={{ color: colors.textSecondary }}
                   >
                     SL: {item.quantity} × {item.unitPrice.toLocaleString('vi-VN')} VNĐ

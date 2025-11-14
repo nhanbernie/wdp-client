@@ -84,8 +84,8 @@ export default function NewProductPageRoute() {
       // Variants
       if (data.variants && Array.isArray(data.variants) && data.variants.length > 0) {
         const formattedVariants = data.variants
-          .filter((v) => v.price && v.options)
-          .map((variant) => {
+          .filter((v: any) => v.price && v.options)
+          .map((variant: any) => {
             const formattedVariant: any = {
               options: variant.options || {},
               price: parseFloat(variant.price?.toString() || '0'),

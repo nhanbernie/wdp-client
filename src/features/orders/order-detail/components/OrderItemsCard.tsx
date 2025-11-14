@@ -148,6 +148,23 @@ export function OrderItemsCard({ order }: OrderItemsCardProps) {
                     {item.productName}
                   </h4>
 
+                    {/* Variant Name & SKU */}
+                    {(item.variantName || item.sku) && (
+                      <div className="flex flex-wrap items-center gap-2 mb-3">
+                        {item.variantName && (
+                          <span className="px-3 py-1 bg-indigo-100 text-indigo-700 text-xs font-semibold rounded-lg">
+                            {item.variantName}
+                          </span>
+                        )}
+                        {item.sku && (
+                          <span className="px-3 py-1 bg-slate-100 text-slate-700 text-xs font-bold rounded-lg flex items-center gap-1">
+                            <span className="text-slate-500">SKU:</span>
+                            <span>{item.sku}</span>
+                          </span>
+                        )}
+                      </div>
+                    )}
+
                   <div className="flex items-center justify-between gap-3">
                     <div className="flex items-center gap-3">
                       <div

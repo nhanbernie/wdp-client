@@ -166,12 +166,15 @@ export function ProductTable({ products, onView, onEdit, onDelete, isLoading }: 
                     className="w-12 h-12 rounded-md object-cover"
                   />
                   <div>
-                    <p className="font-medium" style={{ color: colors.text }}>
-                      {product.name}
-                    </p>
-                    <p className="text-xs" style={{ color: colors.textSecondary }}>
-                      SKU: {product.slug}
-                    </p>
+                    <p className="font-medium text-foreground">{product.name}</p>
+                    {product.variants && product.variants.length > 0 ? (
+                      <p className="text-xs text-muted-foreground">
+                        SKU: {product.variants[0].sku}
+                        {product.variants.length > 1 && ` (+${product.variants.length - 1} variants)`}
+                      </p>
+                    ) : (
+                      <p className="text-xs text-muted-foreground">Không có SKU</p>
+                    )}
                   </div>
                 </div>
               </td>

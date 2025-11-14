@@ -16,6 +16,12 @@ interface ProductInfoProps {
   salePrice?: number
   colors: any
   brandColors: any
+  sku?: string
+  selectedVariant?: {
+    sku: string
+    price?: number
+    stockQty: number
+  }
 }
 
 export const ProductInfo: React.FC<ProductInfoProps> = ({
@@ -27,8 +33,18 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({
   salePrice,
   colors,
   brandColors,
+  sku,
+  selectedVariant,
 }) => {
-  const discountPercentage = salePrice ? Math.round(((price - salePrice) / price) * 100) : 0
+  // Only calculate discount when no variant is selected (variants have their own pricing)
+  const discountPercentage = !selectedVariant && salePrice && price 
+    ? Math.round(((price - salePrice) / price) * 100) 
+    : 0
+  const displaySku = selectedVariant?.sku || sku
+  // If variant is selected, use variant price; otherwise use product salePrice or price
+  const displayPrice = selectedVariant?.price || (salePrice || price)
+  // Only show sale price if no variant is selected (variants have their own pricing)
+  const displaySalePrice = selectedVariant ? undefined : salePrice
   const [reviewStats, setReviewStats] = useState<ReviewStats | null>(null)
   const [loadingStats, setLoadingStats] = useState(true)
 
@@ -55,8 +71,8 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({
       className="space-y-4"
     >
       {/* Category & Badges */}
-      {salePrice && (
-        <Badge
+      {displaySalePrice && discountPercentage > 0 && (
+        <Badge 
           className="px-3 py-1 text-xs font-bold text-white shadow-sm inline-block"
           style={{
             backgroundImage: 'none',
@@ -82,17 +98,33 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({
         >
           {name}
         </h1>
-        {brand && (
-          <div
-            className="flex items-center gap-1.5 text-sm"
+        <div className="flex flex-wrap items-center gap-3 text-sm">
+          {brand && (
+            <div
+            className="flex items-center gap-1.5"
             style={{ color: colors.textSecondary }}
           >
-            <span>Thương hiệu:</span>
-            <span className="font-semibold" style={{ color: colors.text }}>
-              {brand}
-            </span>
-          </div>
-        )}
+              <span>Thương hiệu:</span>
+              <span className="font-semibold" style={{ color: colors.text }}>
+                {brand}
+              </span>
+            </div>
+          )}
+          {displaySku && (
+            <div className="flex items-center gap-1.5" style={{ color: colors.textSecondary }}>
+              <span>SKU:</span>
+              <span 
+                className="font-bold px-2 py-1 rounded text-xs"
+                style={{ 
+                  backgroundColor: colors.cardBackgroundSecondary,
+                  color: colors.text 
+                }}
+              >
+                {displaySku}
+              </span>
+            </div>
+          )}
+        </div>
       </motion.div>
 
       {/* Rating & Price Combined */}
@@ -142,10 +174,13 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({
               </span>
             )}
           </div>
-          {salePrice ? (
+          {displaySalePrice ? (
             <div className="flex items-baseline gap-2">
-              <span className="text-3xl font-black" style={{ color: colors.accent }}>
-                {salePrice.toLocaleString('vi-VN')}
+              <span 
+                className="text-3xl font-black"
+                style={{ color: colors.accent }}
+              >
+                {displaySalePrice.toLocaleString('vi-VN')}
               </span>
               <span className="text-sm font-medium" style={{ color: colors.textSecondary }}>
                 VND
@@ -156,8 +191,11 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({
             </div>
           ) : (
             <div className="flex items-baseline gap-2">
-              <span className="text-3xl font-black" style={{ color: colors.accent }}>
-                {price.toLocaleString('vi-VN')}
+              <span 
+                className="text-3xl font-black"
+                style={{ color: colors.accent }}
+              >
+                {displayPrice.toLocaleString('vi-VN')}
               </span>
               <span className="text-sm font-medium" style={{ color: colors.textSecondary }}>
                 VND

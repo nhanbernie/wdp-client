@@ -6,11 +6,14 @@ import { MessageCircle, Zap, FileText } from 'lucide-react'
 import React from 'react'
 import { ProductReviewList } from '@/features/orders/components'
 
+import { ProductVariant } from '../types/products.types'
+
 interface ProductTabsProps {
   productId: string
   description?: string
   specs?: Record<string, any>
   colors: any
+  variants?: ProductVariant[]
 }
 
 export const ProductTabs: React.FC<ProductTabsProps> = ({
@@ -18,6 +21,7 @@ export const ProductTabs: React.FC<ProductTabsProps> = ({
   description,
   specs,
   colors,
+  variants,
 }) => {
   React.useEffect(() => {
     // Override ALL default tab styles with theme colors
