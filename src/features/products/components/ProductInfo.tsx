@@ -1,10 +1,14 @@
 'use client'
 
+import { useState, useEffect } from 'react'
 import { Badge } from '@/components/ui/badge'
 import { Star, Award, TrendingUp, Sparkles, Shield, Zap, Crown } from 'lucide-react'
 import { motion } from 'framer-motion'
+import { reviewService } from '@/services/reviews'
+import type { ReviewStats } from '@/services/reviews'
 
 interface ProductInfoProps {
+  productId: string
   category?: string
   name: string
   brand?: string
@@ -15,6 +19,7 @@ interface ProductInfoProps {
 }
 
 export const ProductInfo: React.FC<ProductInfoProps> = ({
+  productId,
   category,
   name,
   brand,
@@ -24,6 +29,23 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({
   brandColors,
 }) => {
   const discountPercentage = salePrice ? Math.round(((price - salePrice) / price) * 100) : 0
+  const [reviewStats, setReviewStats] = useState<ReviewStats | null>(null)
+  const [loadingStats, setLoadingStats] = useState(true)
+
+  useEffect(() => {
+    const fetchReviewStats = async () => {
+      try {
+        const stats = await reviewService.getProductReviewStats(productId)
+        setReviewStats(stats)
+      } catch (error) {
+        console.error('Failed to load review stats:', error)
+      } finally {
+        setLoadingStats(false)
+      }
+    }
+
+    fetchReviewStats()
+  }, [productId])
 
   return (
     <motion.div
@@ -85,24 +107,40 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({
       >
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-3">
-            <div className="flex gap-0.5">
-              {[...Array(5)].map((_, i) => (
-                <Star
-                  key={i}
-                  className="h-4 w-4"
-                  style={{
-                    fill: i < 4 ? colors.textSecondary : 'none',
-                    color: i < 4 ? colors.textSecondary : colors.border,
-                  }}
+            {loadingStats ? (
+              <div className="flex items-center gap-2">
+                <div
+                  className="animate-pulse h-4 w-24 rounded"
+                  style={{ backgroundColor: colors.border }}
                 />
-              ))}
-            </div>
-            <span className="text-sm font-semibold" style={{ color: colors.text }}>
-              4.0
-            </span>
-            <span className="text-xs" style={{ color: colors.textSecondary }}>
-              (12 đánh giá)
-            </span>
+              </div>
+            ) : reviewStats && reviewStats.totalReviews > 0 ? (
+              <>
+                <div className="flex gap-0.5">
+                  {[...Array(5)].map((_, i) => (
+                    <Star
+                      key={i}
+                      className="h-4 w-4"
+                      style={{
+                        fill: i < Math.round(reviewStats.averageRating) ? colors.accent : 'none',
+                        color:
+                          i < Math.round(reviewStats.averageRating) ? colors.accent : colors.border,
+                      }}
+                    />
+                  ))}
+                </div>
+                <span className="text-sm font-semibold" style={{ color: colors.text }}>
+                  {reviewStats.averageRating.toFixed(1)}
+                </span>
+                <span className="text-xs" style={{ color: colors.textSecondary }}>
+                  ({reviewStats.totalReviews} đánh giá)
+                </span>
+              </>
+            ) : (
+              <span className="text-xs" style={{ color: colors.textSecondary }}>
+                Chưa có đánh giá
+              </span>
+            )}
           </div>
           {salePrice ? (
             <div className="flex items-baseline gap-2">

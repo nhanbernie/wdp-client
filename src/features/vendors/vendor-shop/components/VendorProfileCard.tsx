@@ -1,10 +1,13 @@
 'use client'
 
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { Store, Shield, Star, Package, TrendingUp, MessageCircle, Mail } from 'lucide-react'
 import { useTheme } from '@/contexts/ThemeContext'
+import { reviewService } from '@/services/reviews'
+import type { VendorReviewOverview } from '@/services/reviews'
 
 interface VendorProfile {
+  id: string
   businessName: string
   businessEmail?: string
 }
@@ -23,6 +26,23 @@ export const VendorProfileCard: React.FC<Props> = ({
   onChatNow,
 }) => {
   const { colors } = useTheme()
+  const [vendorStats, setVendorStats] = useState<VendorReviewOverview | null>(null)
+  const [loadingStats, setLoadingStats] = useState(true)
+
+  useEffect(() => {
+    const fetchVendorStats = async () => {
+      try {
+        const stats = await reviewService.getVendorReviewOverview(profile.id)
+        setVendorStats(stats)
+      } catch (error) {
+        console.error('Failed to load vendor stats:', error)
+      } finally {
+        setLoadingStats(false)
+      }
+    }
+
+    fetchVendorStats()
+  }, [profile.id])
 
   return (
     <div
@@ -72,9 +92,25 @@ export const VendorProfileCard: React.FC<Props> = ({
                 </span>
               </div>
               <div className="flex items-baseline gap-1">
-                <span className="text-2xl font-bold" style={{ color: colors.text }}>
-                  N/A
-                </span>
+                {loadingStats ? (
+                  <div
+                    className="animate-pulse h-8 w-16 rounded"
+                    style={{ backgroundColor: colors.border }}
+                  />
+                ) : vendorStats && vendorStats.totalReviews > 0 ? (
+                  <>
+                    <span className="text-2xl font-bold" style={{ color: colors.text }}>
+                      {vendorStats.averageRating.toFixed(1)}
+                    </span>
+                    <span className="text-sm" style={{ color: colors.textSecondary }}>
+                      ({vendorStats.totalReviews})
+                    </span>
+                  </>
+                ) : (
+                  <span className="text-sm" style={{ color: colors.textSecondary }}>
+                    Chưa có
+                  </span>
+                )}
               </div>
             </div>
 

@@ -199,6 +199,7 @@ const ProductDetail: React.FC<ProductDetailProps> = ({ id }) => {
 
           <div className="space-y-6">
             <ProductInfo
+              productId={productData.id}
               category={productData.category?.name}
               name={productData.name}
               brand={productData.brand}

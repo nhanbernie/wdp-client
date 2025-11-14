@@ -1,10 +1,12 @@
 'use client'
 
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import Image from 'next/image'
 import { Store, Star, Package, TrendingUp, Clock, Shield } from 'lucide-react'
 import { useTheme } from '@/contexts/ThemeContext'
 import { VendorProfileDto } from '../types/vendors.types'
+import { reviewService } from '@/services/reviews'
+import type { VendorReviewOverview } from '@/services/reviews'
 
 interface Props {
   profile: VendorProfileDto
@@ -14,6 +16,23 @@ interface Props {
 
 export const VendorCard: React.FC<Props> = ({ profile, onViewShop, onChat }) => {
   const { colors } = useTheme()
+  const [vendorStats, setVendorStats] = useState<VendorReviewOverview | null>(null)
+  const [loadingStats, setLoadingStats] = useState(true)
+
+  useEffect(() => {
+    const fetchVendorStats = async () => {
+      try {
+        const stats = await reviewService.getVendorReviewOverview(profile.id)
+        setVendorStats(stats)
+      } catch (error) {
+        console.error('Failed to load vendor stats:', error)
+      } finally {
+        setLoadingStats(false)
+      }
+    }
+
+    fetchVendorStats()
+  }, [profile.id])
 
   return (
     <div
@@ -58,7 +77,15 @@ export const VendorCard: React.FC<Props> = ({ profile, onViewShop, onChat }) => 
           >
             <div className="flex items-center gap-1">
               <Star size={14} style={{ color: colors.accent }} />
-              <span>{profile.rating?.toFixed(1) || 'N/A'}</span>
+              {loadingStats ? (
+                <span>...</span>
+              ) : vendorStats && vendorStats.totalReviews > 0 ? (
+                <span>
+                  {vendorStats.averageRating.toFixed(1)} ({vendorStats.totalReviews})
+                </span>
+              ) : (
+                <span>Chưa có</span>
+              )}
             </div>
             <div className="flex items-center gap-1">
               <Package size={14} style={{ color: colors.accent }} />
