@@ -24,7 +24,11 @@ export const OrdersTable: React.FC<OrdersTableProps> = ({ orders, onViewDetails 
   return (
     <div
       className="rounded-2xl shadow-xl overflow-hidden"
-      style={{ background: colors.cardBackground, borderColor: colors.border }}
+      style={{
+        backgroundColor: colors.cardBackgroundSecondary,
+        border: `1px solid ${colors.border}30`,
+        boxShadow: `0 4px 12px ${colors.border}20`,
+      }}
     >
       <Table>
         <TableHeader>

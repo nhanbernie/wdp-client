@@ -74,7 +74,11 @@ export function VendorReviewList({ vendorId }: VendorReviewListProps) {
         {/* Total Reviews */}
         <div
           className="p-6 rounded-xl border"
-          style={{ backgroundColor: colors.cardBackground, borderColor: colors.border }}
+          style={{
+            backgroundColor: colors.cardBackgroundSecondary,
+            border: `1px solid ${colors.border}30`,
+            boxShadow: `0 4px 12px ${colors.border}20`,
+          }}
         >
           <div className="flex items-center justify-between">
             <div>
@@ -94,7 +98,11 @@ export function VendorReviewList({ vendorId }: VendorReviewListProps) {
         {/* Average Rating */}
         <div
           className="p-6 rounded-xl border"
-          style={{ backgroundColor: colors.cardBackground, borderColor: colors.border }}
+          style={{
+            backgroundColor: colors.cardBackgroundSecondary,
+            border: `1px solid ${colors.border}30`,
+            boxShadow: `0 4px 12px ${colors.border}20`,
+          }}
         >
           <div className="flex items-center justify-between">
             <div>
@@ -130,7 +138,11 @@ export function VendorReviewList({ vendorId }: VendorReviewListProps) {
         {/* 5 Star Reviews */}
         <div
           className="p-6 rounded-xl border"
-          style={{ backgroundColor: colors.cardBackground, borderColor: colors.border }}
+          style={{
+            backgroundColor: colors.cardBackgroundSecondary,
+            border: `1px solid ${colors.border}30`,
+            boxShadow: `0 4px 12px ${colors.border}20`,
+          }}
         >
           <div className="flex items-center justify-between">
             <div>
@@ -157,7 +169,11 @@ export function VendorReviewList({ vendorId }: VendorReviewListProps) {
       {/* Rating Distribution */}
       <div
         className="p-6 rounded-xl border"
-        style={{ backgroundColor: colors.cardBackground, borderColor: colors.border }}
+        style={{
+          backgroundColor: colors.cardBackgroundSecondary,
+          border: `1px solid ${colors.border}30`,
+          boxShadow: `0 4px 12px ${colors.border}20`,
+        }}
       >
         <h3 className="text-lg font-bold mb-4" style={{ color: colors.text }}>
           Phân bổ đánh giá
@@ -202,7 +218,11 @@ export function VendorReviewList({ vendorId }: VendorReviewListProps) {
       {/* Recent Reviews */}
       <div
         className="rounded-xl border"
-        style={{ backgroundColor: colors.cardBackground, borderColor: colors.border }}
+        style={{
+          backgroundColor: colors.cardBackgroundSecondary,
+          border: `1px solid ${colors.border}30`,
+          boxShadow: `0 4px 12px ${colors.border}20`,
+        }}
       >
         <div className="p-6 border-b" style={{ borderColor: colors.border }}>
           <h3 className="text-lg font-bold" style={{ color: colors.text }}>
@@ -228,7 +248,11 @@ export function VendorReviewList({ vendorId }: VendorReviewListProps) {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 className="p-6 hover:bg-opacity-50 transition-colors"
-                style={{ backgroundColor: colors.cardBackground }}
+                style={{
+                  backgroundColor: colors.cardBackgroundSecondary,
+                  border: `1px solid ${colors.border}30`,
+                  boxShadow: `0 4px 12px ${colors.border}20`,
+                }}
               >
                 <div className="flex gap-4">
                   {/* Product Image */}

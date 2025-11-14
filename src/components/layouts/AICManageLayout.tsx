@@ -77,8 +77,9 @@ const AICManageLayout: React.FC<AICManageLayoutProps> = ({
             sidebarExpanded ? 'w-64' : 'w-20'
           }`}
           style={{
-            backgroundColor: colors.cardBackground,
-            borderRight: `1px solid ${colors.border}`,
+            backgroundColor: colors.cardBackgroundSecondary,
+            border: `1px solid ${colors.border}30`,
+            boxShadow: `0 4px 12px ${colors.border}20`,
           }}
         >
           {/* Logo */}
@@ -116,9 +117,8 @@ const AICManageLayout: React.FC<AICManageLayoutProps> = ({
               onClick={() => setSidebarExpanded(!sidebarExpanded)}
               className="w-9 h-9 rounded-xl transition-all duration-200"
               style={{
-                backgroundColor: `${colors.accent}20`,
-                borderColor: colors.border,
-                border: `1px solid ${colors.border}`,
+                backgroundColor: colors.cardBackgroundSecondary,
+                border: `1px solid ${colors.border}30`,
               }}
               title={sidebarExpanded ? 'Thu gọn' : 'Mở rộng'}
             >
@@ -206,9 +206,9 @@ const AICManageLayout: React.FC<AICManageLayoutProps> = ({
                 size="icon"
                 className="w-12 h-12 rounded-xl transition-all duration-200"
                 style={{
-                  backgroundColor: `${colors.accent}20`,
-                  borderColor: colors.border,
-                  border: `1px solid ${colors.border}`,
+                  backgroundColor: colors.cardBackgroundSecondary,
+                  border: `1px solid ${colors.border}30`,
+                  boxShadow: `0 4px 12px ${colors.border}20`,
                 }}
                 onClick={toggleTheme}
                 aria-label="Toggle theme"
@@ -228,9 +228,9 @@ const AICManageLayout: React.FC<AICManageLayoutProps> = ({
                     size="icon"
                     className="relative w-12 h-12 rounded-xl transition-all duration-200"
                     style={{
-                      backgroundColor: `${colors.accent}20`,
-                      borderColor: colors.border,
-                      border: `1px solid ${colors.border}`,
+                      backgroundColor: colors.cardBackgroundSecondary,
+                      border: `1px solid ${colors.border}30`,
+                      boxShadow: `0 4px 12px ${colors.border}20`,
                     }}
                   >
                     <Bell className="h-5 w-5" style={{ color: colors.accent }} />

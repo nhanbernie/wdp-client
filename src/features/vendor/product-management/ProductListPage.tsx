@@ -35,9 +35,9 @@ export const ProductListPage: React.FC = () => {
   // Calculate stats
   const productsList = Array.isArray(products) ? products : []
   const totalProducts = productsList.length || 0
-  const inStockProducts = productsList.filter((p: any) => p.stockQty > 0).length || 0
+  const inStockProducts = productsList.filter((p: any) => p.stock?.quantity > 0).length || 0
   const lowStockProducts =
-    productsList.filter((p: any) => p.stockQty > 0 && p.stockQty < 10).length || 0
+    productsList.filter((p: any) => p.stock?.quantity > 0 && p.stock?.quantity < 10).length || 0
 
   return (
     <div className="container mx-auto py-8 px-4">
