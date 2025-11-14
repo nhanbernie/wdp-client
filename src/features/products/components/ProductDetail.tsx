@@ -1,5 +1,6 @@
 'use client'
 
+import Link from 'next/link'
 import { useTheme } from '@/contexts/ThemeContext'
 import { useProductDetail } from '../hooks/useProductDetail'
 import { ProductDetailDto } from '../types/products.types'
@@ -156,7 +157,7 @@ const ProductDetail: React.FC<ProductDetailProps> = ({ id }) => {
             >
               Xem danh mục
             </a>
-            <a
+            <Link
               href="/"
               className="flex-1 px-6 py-3 font-bold rounded-xl transition-all duration-300"
               style={{ 
@@ -171,7 +172,7 @@ const ProductDetail: React.FC<ProductDetailProps> = ({ id }) => {
               }}
             >
               Về trang chủ
-            </a>
+            </Link>
           </div>
         </div>
       </div>

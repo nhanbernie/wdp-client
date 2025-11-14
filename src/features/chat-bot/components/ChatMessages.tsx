@@ -20,7 +20,7 @@ export interface ChatMessagesRef {
 }
 
 export const ChatMessages = forwardRef<ChatMessagesRef, ChatMessagesProps>(
-  ({ messages, isLoading, isDragOver, onDragOver, onDragLeave, onDrop }, ref) => {
+  function ChatMessages({ messages, isLoading, isDragOver, onDragOver, onDragLeave, onDrop }, ref) {
     const { colors } = useTheme()
     const chatAreaRef = useRef<HTMLDivElement>(null)
     const messagesEndRef = useRef<HTMLDivElement>(null)

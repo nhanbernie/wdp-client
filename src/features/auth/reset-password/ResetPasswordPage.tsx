@@ -3,6 +3,7 @@
 import React from "react";
 import { motion } from "motion/react";
 import { useTheme } from "@/contexts/ThemeContext";
+import { Button } from "@/components/ui/button";
 import AuthForm from "@/components/form/auth/AuthForm";
 import { useResetPasswordSubmit, useVerifyResetToken } from "./hooks";
 import { Lock } from "lucide-react";

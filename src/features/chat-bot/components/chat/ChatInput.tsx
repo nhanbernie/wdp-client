@@ -19,7 +19,7 @@ export interface ChatInputRef {
 }
 
 export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(
-  ({ value, onChange, onSend, onKeyPress, isLoading, isOpen }, ref) => {
+  function ChatInput({ value, onChange, onSend, onKeyPress, isLoading, isOpen }, ref) {
     const { theme, colors } = useTheme()
     const inputRef = useRef<HTMLInputElement>(null)
 

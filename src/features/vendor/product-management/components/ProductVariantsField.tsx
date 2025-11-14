@@ -335,11 +335,19 @@ export const ProductVariantsField: React.FC<ProductVariantsFieldProps> = ({
                                   handleOptionValueChange(variantIndex, option.name, e.target.value)
                                 }
                               >
-                                {option.values.map((value) => (
-                                  <option key={value} value={value}>
-                                    {value}
-                                  </option>
-                                ))}
+                                {option.values.map((value, idx) => {
+                                  // Handle both string and object formats
+                                  const displayValue =
+                                    typeof value === 'string' ? value : value?.value || ''
+                                  const keyValue =
+                                    typeof value === 'string' ? value : value?.id || idx
+
+                                  return (
+                                    <option key={keyValue} value={displayValue}>
+                                      {displayValue}
+                                    </option>
+                                  )
+                                })}
                               </select>
                             </div>
                           ),

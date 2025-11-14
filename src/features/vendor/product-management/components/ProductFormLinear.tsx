@@ -91,7 +91,7 @@ export const ProductFormLinear: React.FC<ProductFormLinearProps> = ({
   const images = watch('images') || []
 
   return (
-    <div className="space-y-6 pb-24">
+    <div className="space-y-6">
       {/* Section 1: Basic Information */}
       <Card
         data-field="name"
@@ -101,7 +101,7 @@ export const ProductFormLinear: React.FC<ProductFormLinearProps> = ({
           boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
         }}
       >
-        <CardHeader className="border-b pb-4" style={{ borderColor: colors.border }}>
+        <CardHeader className="border-b" style={{ borderColor: colors.border }}>
           <div className="flex items-center gap-3">
             <div
               className="p-2.5 rounded-xl"
@@ -116,14 +116,14 @@ export const ProductFormLinear: React.FC<ProductFormLinearProps> = ({
               <CardTitle className="text-lg font-semibold" style={{ color: colors.text }}>
                 Thông tin cơ bản
               </CardTitle>
-              <p className="text-sm mt-0.5" style={{ color: colors.textSecondary }}>
+              <p className="text-sm mt-1" style={{ color: colors.textSecondary }}>
                 Thông tin chính về sản phẩm của bạn
               </p>
             </div>
           </div>
         </CardHeader>
-        <CardContent className="space-y-5 pt-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <CardContent className="space-y-4 pt-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <TextField name="name" label="Tên sản phẩm" placeholder="Nhập tên sản phẩm" required />
 
             <TextField
@@ -187,7 +187,7 @@ export const ProductFormLinear: React.FC<ProductFormLinearProps> = ({
           boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
         }}
       >
-        <CardHeader className="border-b pb-4" style={{ borderColor: colors.border }}>
+        <CardHeader className="border-b" style={{ borderColor: colors.border }}>
           <div className="flex items-center gap-3">
             <div
               className="p-2.5 rounded-xl"
@@ -202,14 +202,14 @@ export const ProductFormLinear: React.FC<ProductFormLinearProps> = ({
               <CardTitle className="text-lg font-semibold" style={{ color: colors.text }}>
                 Giá & Tồn kho
               </CardTitle>
-              <p className="text-sm mt-0.5" style={{ color: colors.textSecondary }}>
+              <p className="text-sm mt-1" style={{ color: colors.textSecondary }}>
                 Thông tin về giá bán và số lượng tồn kho
               </p>
             </div>
           </div>
         </CardHeader>
-        <CardContent className="space-y-5 pt-6">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+        <CardContent className="space-y-4 pt-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <TextField
               name="price"
               label="Giá gốc"
@@ -239,9 +239,9 @@ export const ProductFormLinear: React.FC<ProductFormLinearProps> = ({
             />
           </div>
 
-          <Separator style={{ backgroundColor: colors.border + '50' }} />
+          <Separator className="my-4" style={{ backgroundColor: colors.border + '50' }} />
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5" data-field="stock">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4" data-field="stock">
             <TextField
               name="stock.quantity"
               label="Số lượng tồn kho"
@@ -284,7 +284,7 @@ export const ProductFormLinear: React.FC<ProductFormLinearProps> = ({
           boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
         }}
       >
-        <CardHeader className="border-b pb-4" style={{ borderColor: colors.border }}>
+        <CardHeader className="border-b" style={{ borderColor: colors.border }}>
           <div className="flex items-center gap-3">
             <div
               className="p-2.5 rounded-xl"
@@ -299,65 +299,44 @@ export const ProductFormLinear: React.FC<ProductFormLinearProps> = ({
               <CardTitle className="text-lg font-semibold" style={{ color: colors.text }}>
                 Hình ảnh sản phẩm
               </CardTitle>
-              <p className="text-sm mt-0.5" style={{ color: colors.textSecondary }}>
+              <p className="text-sm mt-1" style={{ color: colors.textSecondary }}>
                 Ảnh đại diện và ảnh chi tiết sản phẩm
               </p>
             </div>
           </div>
         </CardHeader>
-        <CardContent className="space-y-6 pt-6">
-          <div>
-            <label
-              className="text-sm font-medium mb-3 flex items-center gap-2"
-              style={{ color: colors.text }}
-            >
-              <span>Ảnh đại diện</span>
-              <span style={{ color: colors.error }}>*</span>
-            </label>
-            <Controller
-              name="thumbnail"
-              control={control}
-              render={({ field }) => (
-                <ImageUpload
-                  value={field.value}
-                  onChange={field.onChange}
-                  error={errors.thumbnail?.message}
-                />
-              )}
-            />
-          </div>
-
-          <Separator style={{ backgroundColor: colors.border + '50' }} />
-
-          <div>
-            <label
-              className="text-sm font-medium mb-3 flex items-center gap-2"
-              style={{ color: colors.text }}
-            >
-              <span>Ảnh sản phẩm</span>
-              <span style={{ color: colors.error }}>*</span>
-              <span className="text-xs font-normal" style={{ color: colors.textSecondary }}>
-                (Tối đa 10 ảnh)
-              </span>
-            </label>
-            <Controller
-              name="images"
-              control={control}
-              render={({ field }) => (
-                <MultipleImageUpload
-                  values={field.value || []}
-                  onChange={field.onChange}
-                  maxFiles={10}
-                />
-              )}
-            />
-            {errors.images && (
-              <p className="text-sm mt-2 flex items-center gap-1" style={{ color: colors.error }}>
-                <AlertCircle className="h-4 w-4" />
-                {errors.images.message}
-              </p>
+        <CardContent className="pt-6">
+          <Controller
+            name="thumbnail"
+            control={control}
+            render={({ field }) => (
+              <ImageUpload
+                value={field.value}
+                onChange={field.onChange}
+                error={errors.thumbnail?.message}
+              />
             )}
-          </div>
+          />
+
+          <Separator className="my-6" style={{ backgroundColor: colors.border + '50' }} />
+
+          <Controller
+            name="images"
+            control={control}
+            render={({ field }) => (
+              <MultipleImageUpload
+                values={field.value || []}
+                onChange={field.onChange}
+                maxFiles={10}
+              />
+            )}
+          />
+          {errors.images && (
+            <p className="text-sm mt-2 flex items-center gap-1" style={{ color: colors.error }}>
+              <AlertCircle className="h-4 w-4" />
+              {errors.images.message}
+            </p>
+          )}
         </CardContent>
       </Card>
 
@@ -370,7 +349,7 @@ export const ProductFormLinear: React.FC<ProductFormLinearProps> = ({
           boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
         }}
       >
-        <CardHeader className="border-b pb-4" style={{ borderColor: colors.border }}>
+        <CardHeader className="border-b" style={{ borderColor: colors.border }}>
           <div className="flex items-center gap-3">
             <div
               className="p-2.5 rounded-xl"
@@ -385,13 +364,13 @@ export const ProductFormLinear: React.FC<ProductFormLinearProps> = ({
               <CardTitle className="text-lg font-semibold" style={{ color: colors.text }}>
                 Mô tả chi tiết
               </CardTitle>
-              <p className="text-sm mt-0.5" style={{ color: colors.textSecondary }}>
+              <p className="text-sm mt-1" style={{ color: colors.textSecondary }}>
                 Thông tin chi tiết về sản phẩm của bạn
               </p>
             </div>
           </div>
         </CardHeader>
-        <CardContent className="space-y-5 pt-6">
+        <CardContent className="space-y-4 pt-6">
           <TextAreaField
             name="description"
             label="Mô tả sản phẩm"
@@ -416,7 +395,7 @@ export const ProductFormLinear: React.FC<ProductFormLinearProps> = ({
           boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
         }}
       >
-        <CardHeader className="border-b pb-4" style={{ borderColor: colors.border }}>
+        <CardHeader className="border-b" style={{ borderColor: colors.border }}>
           <div className="flex items-center gap-3">
             <div
               className="p-2.5 rounded-xl"
@@ -431,7 +410,7 @@ export const ProductFormLinear: React.FC<ProductFormLinearProps> = ({
               <CardTitle className="text-lg font-semibold" style={{ color: colors.text }}>
                 Thông số kỹ thuật
               </CardTitle>
-              <p className="text-sm mt-0.5" style={{ color: colors.textSecondary }}>
+              <p className="text-sm mt-1" style={{ color: colors.textSecondary }}>
                 Các thông số kỹ thuật của sản phẩm
               </p>
             </div>
@@ -450,7 +429,7 @@ export const ProductFormLinear: React.FC<ProductFormLinearProps> = ({
           boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
         }}
       >
-        <CardHeader className="border-b pb-4" style={{ borderColor: colors.border }}>
+        <CardHeader className="border-b" style={{ borderColor: colors.border }}>
           <div className="flex items-center gap-3">
             <div
               className="p-2.5 rounded-xl"
@@ -465,8 +444,8 @@ export const ProductFormLinear: React.FC<ProductFormLinearProps> = ({
               <CardTitle className="text-lg font-semibold" style={{ color: colors.text }}>
                 Nhãn sản phẩm
               </CardTitle>
-              <p className="text-sm mt-0.5" style={{ color: colors.textSecondary }}>
-                Thêm các nhãn đặc biệt như "Mới", "Hot", "Sale"...
+              <p className="text-sm mt-1" style={{ color: colors.textSecondary }}>
+                Thêm các nhãn đặc biệt như &quot;Mới&quot;, &quot;Hot&quot;, &quot;Sale&quot;...
               </p>
             </div>
           </div>
@@ -485,7 +464,7 @@ export const ProductFormLinear: React.FC<ProductFormLinearProps> = ({
           boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
         }}
       >
-        <CardHeader className="border-b pb-4" style={{ borderColor: colors.border }}>
+        <CardHeader className="border-b" style={{ borderColor: colors.border }}>
           <div className="flex items-center gap-3">
             <div
               className="p-2.5 rounded-xl"
@@ -500,66 +479,45 @@ export const ProductFormLinear: React.FC<ProductFormLinearProps> = ({
               <CardTitle className="text-lg font-semibold" style={{ color: colors.text }}>
                 Tùy chọn & Biến thể
               </CardTitle>
-              <p className="text-sm mt-0.5" style={{ color: colors.textSecondary }}>
+              <p className="text-sm mt-1" style={{ color: colors.textSecondary }}>
                 Quản lý các tùy chọn và biến thể sản phẩm
               </p>
             </div>
           </div>
         </CardHeader>
-        <CardContent className="space-y-8 pt-6">
-          <div>
-            <div className="flex items-center gap-2 mb-4">
-              <Layers className="h-4 w-4" style={{ color: colors.accent }} />
-              <h4 className="text-sm font-semibold" style={{ color: colors.text }}>
-                Tùy chọn sản phẩm <span style={{ color: colors.error }}>*</span>
-              </h4>
+        <CardContent className="pt-6">
+          <ProductOptionsField name="options" />
+          {errors.options && typeof (errors.options as any).message === 'string' && (
+            <div
+              className="mt-3 p-3 rounded-lg flex items-center gap-2 text-sm"
+              style={{
+                backgroundColor: colors.error + '10',
+                border: `1px solid ${colors.error}30`,
+                color: colors.error,
+              }}
+            >
+              <AlertCircle className="h-4 w-4 flex-shrink-0" />
+              <span>{(errors.options as any).message}</span>
             </div>
-            <p className="text-sm mb-5" style={{ color: colors.textSecondary }}>
-              Thêm các tùy chọn như màu sắc, kích thước... để tạo biến thể sản phẩm
-            </p>
-            <ProductOptionsField name="options" />
-            {errors.options && typeof (errors.options as any).message === 'string' && (
-              <div
-                className="mt-3 p-3 rounded-lg flex items-center gap-2 text-sm"
-                style={{
-                  backgroundColor: colors.error + '10',
-                  border: `1px solid ${colors.error}30`,
-                  color: colors.error,
-                }}
-              >
-                <AlertCircle className="h-4 w-4 flex-shrink-0" />
-                <span>{(errors.options as any).message}</span>
-              </div>
-            )}
-          </div>
+          )}
 
-          <Separator style={{ backgroundColor: colors.border + '50' }} />
+          <Separator className="my-8" style={{ backgroundColor: colors.border + '50' }} />
 
           <div data-field="variants">
-            <div className="flex items-center gap-2 mb-4">
-              <Grid3x3 className="h-4 w-4" style={{ color: colors.accent }} />
-              <h4 className="text-sm font-semibold" style={{ color: colors.text }}>
-                Biến thể sản phẩm <span style={{ color: colors.error }}>*</span>
-              </h4>
-            </div>
-            <p className="text-sm mb-5" style={{ color: colors.textSecondary }}>
-              Quản lý các biến thể với SKU, giá và tồn kho riêng biệt
-            </p>
             <ProductVariantsField name="variants" />
           </div>
         </CardContent>
       </Card>
 
-      {/* Form Actions */}
+      {/* Form Actions - At bottom of form */}
       <div
-        className="fixed bottom-0 left-0 right-0 p-4 border-t backdrop-blur-lg z-50"
+        className="mt-8 p-4 border-t"
         style={{
-          backgroundColor: colors.cardBackground + 'F5',
+          backgroundColor: colors.cardBackground,
           borderColor: colors.border,
-          boxShadow: '0 -4px 12px rgba(0,0,0,0.08)',
         }}
       >
-        <div className="max-w-5xl mx-auto flex justify-end gap-3">
+        <div className="flex justify-end gap-3">
           <Button
             type="button"
             variant="outline"
