@@ -1,4 +1,5 @@
 import { PaymentSuccessPage } from '@/features/payment/components'
+import { Suspense } from 'react'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
@@ -7,5 +8,10 @@ export const metadata: Metadata = {
 }
 
 export default function Page() {
-  return <PaymentSuccessPage />
+  return (
+    <Suspense fallback={null}>
+      <PaymentSuccessPage />
+    </Suspense>
+  )
 }
+

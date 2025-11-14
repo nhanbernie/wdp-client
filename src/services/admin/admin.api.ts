@@ -11,7 +11,7 @@ import type {
 export const adminApi = createApi({
   reducerPath: 'adminApi',
   baseQuery: baseQueryWithReauth,
-  tagTypes: ['Dashboard', 'Analytics', 'Orders', 'Users', 'Products'],
+  tagTypes: ['Dashboard', 'Analytics', 'Orders', 'Users', 'Products', 'Withdrawals'],
   endpoints: (builder) => ({
     // Dashboard
     getDashboardStats: builder.query<DashboardStats, void>({
@@ -151,6 +151,46 @@ export const adminApi = createApi({
       }),
       invalidatesTags: ['Products', 'Dashboard'],
     }),
+
+    // Vendor Withdrawals
+    getWithdrawalRequests: builder.query<any, { page?: number; limit?: number; status?: string; vendorId?: string }>({
+      query: (params) => {
+        const queryParams = new URLSearchParams()
+        if (params?.page) queryParams.append('page', params.page.toString())
+        if (params?.limit) queryParams.append('limit', params.limit.toString())
+        if (params?.status) queryParams.append('status', params.status)
+        if (params?.vendorId) queryParams.append('vendorId', params.vendorId)
+        return `/admin/vendor-withdrawals?${queryParams}`
+      },
+      providesTags: ['Withdrawals'],
+    }),
+
+    approveWithdrawalRequest: builder.mutation<any, { id: string; adminNotes?: string }>({
+      query: ({ id, adminNotes }) => ({
+        url: `/admin/vendor-withdrawals/${id}/approve`,
+        method: 'PATCH',
+        body: { adminNotes },
+      }),
+      invalidatesTags: ['Withdrawals'],
+    }),
+
+    rejectWithdrawalRequest: builder.mutation<any, { id: string; adminNotes?: string }>({
+      query: ({ id, adminNotes }) => ({
+        url: `/admin/vendor-withdrawals/${id}/reject`,
+        method: 'PATCH',
+        body: { adminNotes },
+      }),
+      invalidatesTags: ['Withdrawals'],
+    }),
+
+    markWithdrawalRequestAsPaid: builder.mutation<any, { id: string; adminNotes?: string }>({
+      query: ({ id, adminNotes }) => ({
+        url: `/admin/vendor-withdrawals/${id}/mark-paid`,
+        method: 'PATCH',
+        body: { adminNotes },
+      }),
+      invalidatesTags: ['Withdrawals'],
+    }),
   }),
 })
 
@@ -169,4 +209,8 @@ export const {
   useChangeUserRoleMutation,
   useGetProductsQuery,
   useUpdateProductStockMutation,
+  useGetWithdrawalRequestsQuery,
+  useApproveWithdrawalRequestMutation,
+  useRejectWithdrawalRequestMutation,
+  useMarkWithdrawalRequestAsPaidMutation,
 } = adminApi

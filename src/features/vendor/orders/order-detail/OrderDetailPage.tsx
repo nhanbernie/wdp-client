@@ -29,13 +29,14 @@ interface OrderDetailPageProps {
   orderId: string
 }
 
-const statusConfig: Record<string, { label: string; icon: any }> = {
-  pending: { label: 'Chờ xác nhận', icon: Clock },
-  processing: { label: 'Đang xử lý', icon: Package },
-  confirmed: { label: 'Đã xác nhận', icon: CheckCircle },
-  shipping: { label: 'Đang giao', icon: Truck },
-  delivered: { label: 'Đã giao', icon: CheckCircle },
-  cancelled: { label: 'Đã hủy', icon: XCircle },
+const statusConfig: Record<string, { label: string; icon: any; className: string }> = {
+  pending: { label: 'Chờ xác nhận', icon: Clock, className: 'bg-yellow-100 text-yellow-800' },
+  processing: { label: 'Đang xử lý', icon: Package, className: 'bg-blue-100 text-blue-800' },
+  admin_confirmed: { label: 'Đã xác nhận', icon: CheckCircle, className: 'bg-blue-100 text-blue-800' },
+  shipping: { label: 'Đang giao', icon: Truck, className: 'bg-purple-100 text-purple-800' },
+  delivered: { label: 'Đã giao', icon: CheckCircle, className: 'bg-green-100 text-green-800' },
+  cancelled: { label: 'Đã hủy', icon: XCircle, className: 'bg-red-100 text-red-800' },
+  completed: { label: 'Hoàn thành', icon: CheckCircle, className: 'bg-green-100 text-green-800'},
 }
 
 const paymentStatusConfig: Record<string, { label: string }> = {

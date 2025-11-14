@@ -225,9 +225,8 @@ export const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({
             {order.status === 'pending' && (
               <>
                 <Button
-                  onClick={() => onUpdateStatus('processing')}
-                  className="shadow-lg hover:shadow-xl transition-all"
-                  style={{ background: colors.success, color: 'white' }}
+                  onClick={() => onUpdateStatus('admin_confirm')}
+                  className="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white shadow-lg hover:shadow-xl transition-all"
                 >
                   Xác nhận đơn
                 </Button>
@@ -240,22 +239,12 @@ export const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({
                 </Button>
               </>
             )}
-            {order.status === 'processing' && (
+            {order.status === 'delivered' && (
               <Button
-                onClick={() => onUpdateStatus('shipping')}
-                className="shadow-lg hover:shadow-xl transition-all"
-                style={{ background: colors.accent, color: 'white' }}
+                onClick={() => onUpdateStatus('complete')}
+                className="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white shadow-lg hover:shadow-xl transition-all"
               >
-                Bắt đầu giao hàng
-              </Button>
-            )}
-            {order.status === 'shipping' && (
-              <Button
-                onClick={() => onUpdateStatus('delivered')}
-                className="shadow-lg hover:shadow-xl transition-all"
-                style={{ background: colors.success, color: 'white' }}
-              >
-                Đã giao hàng
+                Hoàn thành đơn hàng
               </Button>
             )}
           </div>

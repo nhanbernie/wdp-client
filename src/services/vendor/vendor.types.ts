@@ -24,6 +24,10 @@ export interface VendorProfile {
   businessEmail: string
   businessLicense: string
   taxId: string
+  bankName?: string
+  bankAccountNumber?: string
+  accountHolderName?: string
+  bankBranch?: string
   status: 'pending' | 'approved' | 'rejected' | 'suspended'
   createdAt: string
   updatedAt: string
@@ -37,6 +41,10 @@ export interface UpdateVendorProfileRequest {
   businessEmail?: string
   businessLicense?: string
   taxId?: string
+  bankName?: string
+  bankAccountNumber?: string
+  accountHolderName?: string
+  bankBranch?: string
 }
 
 // Product Types
@@ -216,7 +224,15 @@ export interface Order {
   id: string
   orderNumber: string
   userId: string
-  status: 'pending' | 'processing' | 'confirmed' | 'shipping' | 'delivered' | 'cancelled'
+  status:
+    | 'pending'
+    | 'admin_confirmed'
+    | 'shipping'
+    | 'delivered'
+    | 'completed'
+    | 'processing'
+    | 'cancelled'
+    | 'refunded'
   paymentStatus: 'pending' | 'paid' | 'failed' | 'refunded'
   paymentMethod: string
   paymentTransactionId?: string | null
@@ -226,6 +242,9 @@ export interface Order {
   discountAmount: string
   totalAmount: string
   total?: string // alias for totalAmount
+  projectedFees?: string
+  platformFee?: string
+  vendorPayoutAmount?: string
   currency: string
   shippingName: string
   shippingPhone: string
@@ -246,6 +265,10 @@ export interface Order {
   shippedAt?: string | null
   deliveredAt?: string | null
   cancelledAt?: string | null
+  adminConfirmedAt?: string | null
+  shippingStartedAt?: string | null
+  deliveredByVendorAt?: string | null
+  completedAt?: string | null
   items: OrderItem[]
   user?: {
     id: string
@@ -259,7 +282,15 @@ export interface Order {
 }
 
 export interface OrderFilters {
-  status?: 'pending' | 'processing' | 'confirmed' | 'shipping' | 'delivered' | 'cancelled'
+  status?:
+    | 'pending'
+    | 'admin_confirmed'
+    | 'shipping'
+    | 'delivered'
+    | 'completed'
+    | 'processing'
+    | 'cancelled'
+    | 'refunded'
   paymentStatus?: 'pending' | 'paid' | 'failed' | 'refunded'
   fromDate?: string
   toDate?: string
@@ -286,11 +317,14 @@ export interface OrderStatistics {
   totalCustomers: number
   totalRevenue: number
   ordersByStatus: {
-    pending: number
-    processing: number
-    shipping: number
-    delivered: number
-    cancelled: number
+    pending?: number
+    processing?: number
+    admin_confirmed?: number
+    shipping?: number
+    delivered?: number
+    completed?: number
+    cancelled?: number
+    refunded?: number
   }
   topProducts: TopProduct[]
   customers: Customer[]

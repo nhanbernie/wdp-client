@@ -1,7 +1,18 @@
 import { Clock, Package, Truck, CheckCircle, XCircle, RotateCcw } from 'lucide-react'
 import { OrderStatus } from '@/services/orders/types'
+import { LucideIcon } from 'lucide-react'
 
-export const statusConfig = {
+type StatusConfig = {
+  label: string
+  className: string
+  icon: LucideIcon
+  step: number
+  bgColor: string
+  progressColor: string
+  ringColor: string
+}
+
+export const statusConfig: Record<OrderStatus, StatusConfig> = {
   [OrderStatus.PENDING]: {
     label: 'Chờ xử lý',
     className:
@@ -22,6 +33,16 @@ export const statusConfig = {
     progressColor: 'bg-gradient-to-r from-blue-500 to-indigo-600',
     ringColor: 'ring-blue-500/30',
   },
+  [OrderStatus.ADMIN_CONFIRMED]: {
+    label: 'Đã xác nhận',
+    className:
+      'bg-gradient-to-r from-blue-500 via-blue-600 to-indigo-600 hover:shadow-xl border-2 border-white/50',
+    icon: Package,
+    step: 2,
+    bgColor: 'bg-gradient-to-br from-blue-50 via-indigo-50 to-blue-50',
+    progressColor: 'bg-gradient-to-r from-blue-500 to-indigo-600',
+    ringColor: 'ring-blue-500/30',
+  },
   [OrderStatus.SHIPPING]: {
     label: 'Đang giao',
     className:
@@ -34,6 +55,16 @@ export const statusConfig = {
   },
   [OrderStatus.DELIVERED]: {
     label: 'Đã giao',
+    className:
+      'bg-gradient-to-r from-emerald-500 via-green-500 to-emerald-600 hover:shadow-xl border-2 border-white/50',
+    icon: CheckCircle,
+    step: 4,
+    bgColor: 'bg-gradient-to-br from-emerald-50 via-green-50 to-emerald-50',
+    progressColor: 'bg-gradient-to-r from-emerald-500 to-green-600',
+    ringColor: 'ring-emerald-500/30',
+  },
+  [OrderStatus.COMPLETED]: {
+    label: 'Hoàn thành',
     className:
       'bg-gradient-to-r from-emerald-500 via-green-500 to-emerald-600 hover:shadow-xl border-2 border-white/50',
     icon: CheckCircle,
