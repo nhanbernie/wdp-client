@@ -42,6 +42,25 @@ const CheckoutPage: React.FC = () => {
   const [selectedAddress, setSelectedAddress] = useState<Address | null>(null)
   const [isAddressDialogOpen, setIsAddressDialogOpen] = useState(false)
 
+  // Get selected items from sessionStorage
+  const [selectedCartItemIds, setSelectedCartItemIds] = useState<string[]>(() => {
+    if (typeof window !== 'undefined') {
+      const stored = sessionStorage.getItem('selectedCartItems')
+      return stored ? JSON.parse(stored) : []
+    }
+    return []
+  })
+
+  // Filter cart items to only show selected items
+  const itemsToCheckout = selectedCartItemIds.length > 0
+    ? (cart?.items || []).filter((item) => selectedCartItemIds.includes(item.id))
+    : (cart?.items || [])
+
+  // Calculate summary for selected items only
+  const selectedSubtotal = itemsToCheckout.reduce((sum, item) => sum + item.totalPrice, 0)
+  const selectedTotal = selectedSubtotal + (selectedSubtotal >= 1000000 ? 0 : 30000) // Total equals subtotal for now (shipping is free)
+  const selectedItemCount = itemsToCheckout.reduce((sum, item) => sum + item.quantity, 0)
+
   const [formData, setFormData] = useState<CheckoutFormData>({
     paymentMethod: 'cod',
     addressId: undefined,
@@ -107,7 +126,8 @@ const CheckoutPage: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!cart?.items?.length) {
+    if (!itemsToCheckout.length) {
+      alert('Vui lòng chọn ít nhất một sản phẩm để thanh toán')
       return
     }
 
@@ -125,7 +145,17 @@ const CheckoutPage: React.FC = () => {
         customerNotes: formData.customerNotes,
       }
 
+      // Only include cartItemIds if there are selected items
+      if (selectedCartItemIds.length > 0) {
+        checkoutPayload.cartItemIds = selectedCartItemIds
+      }
+
       const order = await checkoutFromCart(checkoutPayload)
+      
+      // Clear selected items from sessionStorage after successful checkout
+      if (typeof window !== 'undefined') {
+        sessionStorage.removeItem('selectedCartItems')
+      }
       if (order) {
         setCreatedOrder(order)
 
@@ -237,6 +267,16 @@ const CheckoutPage: React.FC = () => {
         </div>
       </div>
     )
+  }
+
+  // Nếu có selectedCartItemIds nhưng không có item nào match, redirect về cart
+  if (selectedCartItemIds.length > 0 && itemsToCheckout.length === 0) {
+    // Clear invalid selection and redirect
+    if (typeof window !== 'undefined') {
+      sessionStorage.removeItem('selectedCartItems')
+    }
+    router.push('/cart')
+    return null
   }
 
   // Giao diện chính
@@ -406,13 +446,13 @@ const CheckoutPage: React.FC = () => {
                 >
                   <CardHeader>
                     <CardTitle style={{ color: colors.text }}>
-                      Đơn hàng ({cart.items.length} sản phẩm)
+                      Đơn hàng ({selectedItemCount} sản phẩm)
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-4">
                     {/* Danh sách sản phẩm */}
                     <div className="max-h-80 space-y-3 overflow-y-auto">
-                      {cart.items.map((item) => (
+                      {itemsToCheckout.map((item) => (
                         <div
                           key={item.id}
                           className="flex items-center gap-3 p-3 rounded-lg"
@@ -442,6 +482,33 @@ const CheckoutPage: React.FC = () => {
                             >
                               {item.product.name}
                             </h3>
+                            {/* Variant Info & SKU */}
+                            {item.variant && (
+                              <div className="flex items-center gap-2 mb-1 flex-wrap">
+                                {item.variant.optionValues && item.variant.optionValues.length > 0 && (
+                                  <span 
+                                    className="text-xs px-2 py-0.5 rounded"
+                                    style={{ 
+                                      backgroundColor: colors.cardBackgroundSecondary,
+                                      color: colors.textSecondary
+                                    }}
+                                  >
+                                    {item.variant.optionValues.map(ov => `${ov.optionName}: ${ov.value}`).join(', ')}
+                                  </span>
+                                )}
+                                {item.variant.sku && (
+                                  <span 
+                                    className="text-xs font-bold px-2 py-0.5 rounded"
+                                    style={{ 
+                                      backgroundColor: colors.cardBackgroundSecondary,
+                                      color: colors.textSecondary
+                                    }}
+                                  >
+                                    SKU: {item.variant.sku}
+                                  </span>
+                                )}
+                              </div>
+                            )}
                             <p className="text-sm font-bold" style={{ color: colors.text }}>
                               {formatPrice(item.totalPrice)}
                             </p>
@@ -456,15 +523,13 @@ const CheckoutPage: React.FC = () => {
                     <div className="space-y-3">
                       <div className="flex justify-between items-center">
                         <span style={{ color: colors.textSecondary }}>Tạm tính</span>
-                        <span className="font-bold" style={{ color: colors.text }}>
-                          {formatPrice(cart.subtotal)}
-                        </span>
+                        <span className="font-bold" style={{ color: colors.text }}>{formatPrice(selectedSubtotal)}</span>
                       </div>
 
                       <div className="flex justify-between items-center">
                         <span style={{ color: colors.textSecondary }}>Phí vận chuyển</span>
                         <span className="font-bold" style={{ color: colors.success }}>
-                          30.000 VND
+                          {formatPrice(selectedSubtotal >= 1000000 ? 0 : 30000)}
                         </span>
                       </div>
 
@@ -475,7 +540,7 @@ const CheckoutPage: React.FC = () => {
                           Tổng cộng
                         </span>
                         <span className="text-2xl font-bold" style={{ color: colors.text }}>
-                          {formatPrice(cart.total)}
+                          {formatPrice(selectedTotal)}
                         </span>
                       </div>
                     </div>
