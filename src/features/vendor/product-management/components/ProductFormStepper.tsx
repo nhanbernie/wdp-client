@@ -152,8 +152,6 @@ export const ProductFormStepper: React.FC<ProductFormStepperProps> = ({
     { value: 'USD', label: 'USD' },
   ]
 
-  const progress = (currentStep / STEPS.length) * 100
-
   // Count errors for each step
   const getStepErrors = (stepId: number): number => {
     let count = 0
@@ -500,7 +498,6 @@ export const ProductFormStepper: React.FC<ProductFormStepperProps> = ({
 
         <div className="flex items-center justify-between relative">
           {STEPS.map((step, index) => {
-            const Icon = step.icon
             const isActive = currentStep === step.id
             const isCompleted = currentStep > step.id
             const errorCount = getStepErrors(step.id)

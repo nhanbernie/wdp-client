@@ -17,7 +17,6 @@ import {
   FileText,
   Grid3x3,
   AlertCircle,
-  Layers,
   Info,
 } from 'lucide-react'
 import { useGetCategoriesQuery } from '@/services/categories/categories.service'

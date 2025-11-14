@@ -22,27 +22,27 @@ const ProductDetail: React.FC<ProductDetailProps> = ({ id }) => {
 
   if (loading)
     return (
-      <div 
+      <div
         className="flex flex-col justify-center items-center min-h-screen"
         style={{ backgroundColor: colors.background }}
       >
         <div className="relative">
           {/* Animated circles */}
           <div className="absolute inset-0 flex items-center justify-center">
-            <div 
+            <div
               className="w-24 h-24 border-4 rounded-full animate-ping"
               style={{ borderColor: `${colors.accent}40` }}
             ></div>
           </div>
           <div className="absolute inset-0 flex items-center justify-center">
-            <div 
+            <div
               className="w-20 h-20 border-4 rounded-full animate-spin"
               style={{ borderColor: `${colors.accent}40` }}
             ></div>
           </div>
 
           {/* Icon container */}
-          <div 
+          <div
             className="relative w-24 h-24 rounded-full flex items-center justify-center shadow-2xl"
             style={{ backgroundColor: colors.accent }}
           >
@@ -74,22 +74,22 @@ const ProductDetail: React.FC<ProductDetailProps> = ({ id }) => {
 
         {/* Animated dots */}
         <div className="flex gap-2 mt-6">
-          <div 
+          <div
             className="w-3 h-3 rounded-full animate-bounce"
             style={{ backgroundColor: colors.accent }}
           ></div>
           <div
             className="w-3 h-3 rounded-full animate-bounce"
-            style={{ 
+            style={{
               backgroundColor: colors.accentSecondary,
-              animationDelay: '0.1s' 
+              animationDelay: '0.1s',
             }}
           ></div>
           <div
             className="w-3 h-3 rounded-full animate-bounce"
-            style={{ 
+            style={{
               backgroundColor: colors.accent,
-              animationDelay: '0.2s' 
+              animationDelay: '0.2s',
             }}
           ></div>
         </div>
@@ -97,19 +97,19 @@ const ProductDetail: React.FC<ProductDetailProps> = ({ id }) => {
     )
   if (error || !product?.data)
     return (
-      <div 
+      <div
         className="flex flex-col justify-center items-center min-h-screen px-4"
         style={{ backgroundColor: colors.background }}
       >
-        <div 
+        <div
           className="max-w-md w-full rounded-3xl shadow-2xl border p-8 text-center"
-          style={{ 
+          style={{
             backgroundColor: colors.cardBackground,
             borderColor: colors.border,
           }}
         >
           {/* Error icon */}
-          <div 
+          <div
             className="mx-auto w-24 h-24 rounded-full flex items-center justify-center shadow-xl mb-6"
             style={{ backgroundColor: colors.error }}
           >
@@ -129,16 +129,10 @@ const ProductDetail: React.FC<ProductDetailProps> = ({ id }) => {
           </div>
 
           {/* Error message */}
-          <h3 
-            className="text-2xl font-bold mb-3"
-            style={{ color: colors.text }}
-          >
+          <h3 className="text-2xl font-bold mb-3" style={{ color: colors.text }}>
             Không tìm thấy sản phẩm
           </h3>
-          <p 
-            className="text-sm mb-8 leading-relaxed"
-            style={{ color: colors.textSecondary }}
-          >
+          <p className="text-sm mb-8 leading-relaxed" style={{ color: colors.textSecondary }}>
             Sản phẩm bạn đang tìm kiếm không tồn tại hoặc đã bị xóa khỏi hệ thống.
           </p>
 
@@ -160,7 +154,7 @@ const ProductDetail: React.FC<ProductDetailProps> = ({ id }) => {
             <Link
               href="/"
               className="flex-1 px-6 py-3 font-bold rounded-xl transition-all duration-300"
-              style={{ 
+              style={{
                 backgroundColor: colors.cardBackgroundSecondary,
                 color: colors.text,
               }}
@@ -181,7 +175,7 @@ const ProductDetail: React.FC<ProductDetailProps> = ({ id }) => {
   const productData = product.data as unknown as ProductDetailDto
 
   return (
-    <div 
+    <div
       className="min-h-screen transition-colors px-[var(--header-horizontal-padding)]"
       style={{ backgroundColor: colors.background }}
     >
