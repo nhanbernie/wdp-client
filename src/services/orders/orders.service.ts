@@ -5,13 +5,14 @@ import { API_ENDPOINTS } from '@/common/constants/endpoint.constant'
 // Types for Orders API
 export interface CheckoutFromCartRequest {
   paymentMethod: 'cod' | 'bank_transfer' | 'credit_card' | 'e_wallet'
-  shippingName: string
-  shippingPhone: string
-  shippingAddress: string
-  shippingCity: string
-  shippingDistrict: string
-  shippingWard: string
-  shippingPostalCode: string
+  addressId?: string // Optional: use saved address
+  shippingName?: string // Required if addressId is not provided
+  shippingPhone?: string // Required if addressId is not provided
+  shippingAddress?: string // Required if addressId is not provided
+  shippingCity?: string
+  shippingDistrict?: string
+  shippingWard?: string
+  shippingPostalCode?: string
   customerNotes?: string
 }
 

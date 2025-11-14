@@ -8,6 +8,7 @@ import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Plus, X, Layers } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
+import { useTheme } from '@/contexts/ThemeContext'
 
 interface ProductOption {
   name: string
@@ -19,6 +20,7 @@ interface ProductOptionsFieldProps {
 }
 
 export const ProductOptionsField: React.FC<ProductOptionsFieldProps> = ({ name = 'options' }) => {
+  const { colors } = useTheme()
   const { control, watch } = useFormContext()
   const { fields, append, remove, update } = useFieldArray({
     control,
@@ -82,67 +84,64 @@ export const ProductOptionsField: React.FC<ProductOptionsFieldProps> = ({ name =
       handleAddValue(optionIndex)
     }
   }
-
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <div>
-          <h3 className="text-lg font-semibold flex items-center gap-2">
-            <Layers className="h-5 w-5" />
-            Tùy chọn sản phẩm
-          </h3>
-          <p className="text-sm text-muted-foreground">
-            Thêm các tùy chọn như Màu sắc, Kích thước, v.v.
-          </p>
-        </div>
-        <Button
-          type="button"
-          onClick={handleAddOption}
-          variant="outline"
-          size="sm"
-          className="gap-2"
-        >
-          <Plus className="h-4 w-4" />
-          Thêm tùy chọn
-        </Button>
-      </div>
-
       {fields.length === 0 ? (
-        <Card className="border-dashed">
-          <CardContent className="flex flex-col items-center justify-center py-8 text-center">
-            <Layers className="h-12 w-12 text-muted-foreground mb-3" />
-            <p className="text-muted-foreground">Chưa có tùy chọn nào</p>
-            <p className="text-sm text-muted-foreground mb-4">
-              Thêm tùy chọn để tạo các biến thể sản phẩm
-            </p>
-            <Button
-              type="button"
-              onClick={handleAddOption}
-              variant="outline"
-              size="sm"
-              className="gap-2"
-            >
-              <Plus className="h-4 w-4" />
-              Thêm tùy chọn đầu tiên
-            </Button>
-          </CardContent>
-        </Card>
+        <div
+          className="border-2 border-dashed rounded-xl p-10 text-center"
+          style={{
+            borderColor: colors.border,
+            backgroundColor: colors.background,
+          }}
+        >
+          <div
+            className="mx-auto w-16 h-16 rounded-full flex items-center justify-center mb-4"
+            style={{ backgroundColor: colors.accent + '10' }}
+          >
+            <Layers className="h-8 w-8" style={{ color: colors.accent }} />
+          </div>
+          <h4 className="font-semibold text-base mb-2" style={{ color: colors.text }}>
+            Chưa có tùy chọn nào
+          </h4>
+          <p className="text-sm mb-5" style={{ color: colors.textSecondary }}>
+            Thêm tùy chọn như màu sắc, kích thước để tạo các biến thể sản phẩm
+          </p>
+          <Button
+            type="button"
+            onClick={handleAddOption}
+            className="gap-2"
+            style={{ backgroundColor: colors.accent, color: '#ffffff' }}
+          >
+            <Plus className="h-4 w-4" />
+            Thêm tùy chọn đầu tiên
+          </Button>
+        </div>
       ) : (
         <div className="space-y-4">
           {fields.map((field, optionIndex) => {
             const option = field as unknown as ProductOption
             return (
-              <Card key={field.id}>
+              <Card
+                key={field.id}
+                style={{ backgroundColor: colors.cardBackground, borderColor: colors.border }}
+              >
                 <CardHeader className="pb-4">
                   <div className="flex items-start justify-between">
                     <div className="flex-1 mr-4">
-                      <Label htmlFor={`option-name-${optionIndex}`}>Tên tùy chọn</Label>
+                      <Label htmlFor={`option-name-${optionIndex}`} style={{ color: colors.text }}>
+                        Tên tùy chọn
+                      </Label>
                       <Input
                         id={`option-name-${optionIndex}`}
                         placeholder="VD: Màu sắc, Kích thước, Chất liệu..."
                         defaultValue={option.name}
                         onBlur={(e) => handleOptionNameChange(optionIndex, e.target.value)}
                         className="mt-2"
+                        style={{
+                          backgroundColor: colors.background,
+                          borderColor: colors.border,
+                          color: colors.text,
+                        }}
                       />
                     </div>
                     <Button
@@ -158,7 +157,9 @@ export const ProductOptionsField: React.FC<ProductOptionsFieldProps> = ({ name =
                 </CardHeader>
                 <CardContent className="space-y-3">
                   <div>
-                    <Label htmlFor={`option-value-${optionIndex}`}>Giá trị</Label>
+                    <Label htmlFor={`option-value-${optionIndex}`} style={{ color: colors.text }}>
+                      Giá trị
+                    </Label>
                     <div className="flex gap-2 mt-2">
                       <Input
                         id={`option-value-${optionIndex}`}
@@ -166,6 +167,11 @@ export const ProductOptionsField: React.FC<ProductOptionsFieldProps> = ({ name =
                         value={newValueInputs[optionIndex] || ''}
                         onChange={(e) => handleValueInputChange(optionIndex, e.target.value)}
                         onKeyPress={(e) => handleValueInputKeyPress(optionIndex, e)}
+                        style={{
+                          backgroundColor: colors.background,
+                          borderColor: colors.border,
+                          color: colors.text,
+                        }}
                       />
                       <Button
                         type="button"
@@ -188,6 +194,12 @@ export const ProductOptionsField: React.FC<ProductOptionsFieldProps> = ({ name =
                             key={valueIndex}
                             variant="secondary"
                             className="gap-2 pr-1 text-sm group"
+                            style={{
+                              backgroundImage: 'none',
+                              backgroundColor: colors.accent + '20',
+                              color: colors.accent,
+                              borderColor: 'transparent',
+                            }}
                           >
                             {value}
                             <button
@@ -204,7 +216,7 @@ export const ProductOptionsField: React.FC<ProductOptionsFieldProps> = ({ name =
                   )}
 
                   {(!option.values || option.values.length === 0) && (
-                    <p className="text-sm text-muted-foreground italic">
+                    <p className="text-sm italic" style={{ color: colors.textSecondary }}>
                       Nhấn Enter hoặc click "Thêm" để thêm giá trị
                     </p>
                   )}

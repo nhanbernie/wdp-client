@@ -34,9 +34,14 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({
     >
       {/* Category & Badges */}
       {salePrice && (
-        <Badge 
+        <Badge
           className="px-3 py-1 text-xs font-bold text-white shadow-sm inline-block"
-          style={{ backgroundColor: colors.error }}
+          style={{
+            backgroundImage: 'none',
+            backgroundColor: colors.accent + '20',
+            color: colors.accent,
+            borderColor: 'transparent',
+          }}
         >
           GIẢM {discountPercentage}%
         </Badge>
@@ -49,14 +54,17 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({
         animate={{ opacity: 1, x: 0 }}
         transition={{ delay: 0.4 }}
       >
-        <h1 
+        <h1
           className="text-2xl lg:text-4xl font-black leading-tight"
           style={{ color: colors.text }}
         >
           {name}
         </h1>
         {brand && (
-          <div className="flex items-center gap-1.5 text-sm" style={{ color: colors.textSecondary }}>
+          <div
+            className="flex items-center gap-1.5 text-sm"
+            style={{ color: colors.textSecondary }}
+          >
             <span>Thương hiệu:</span>
             <span className="font-semibold" style={{ color: colors.text }}>
               {brand}
@@ -98,10 +106,7 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({
           </div>
           {salePrice ? (
             <div className="flex items-baseline gap-2">
-              <span 
-                className="text-3xl font-black"
-                style={{ color: colors.accent }}
-              >
+              <span className="text-3xl font-black" style={{ color: colors.accent }}>
                 {salePrice.toLocaleString('vi-VN')}
               </span>
               <span className="text-sm font-medium" style={{ color: colors.textSecondary }}>
@@ -113,10 +118,7 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({
             </div>
           ) : (
             <div className="flex items-baseline gap-2">
-              <span 
-                className="text-3xl font-black"
-                style={{ color: colors.accent }}
-              >
+              <span className="text-3xl font-black" style={{ color: colors.accent }}>
                 {price.toLocaleString('vi-VN')}
               </span>
               <span className="text-sm font-medium" style={{ color: colors.textSecondary }}>

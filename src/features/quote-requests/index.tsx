@@ -1,13 +1,20 @@
 'use client'
 
 import React, { useState, useEffect, useMemo } from 'react'
-import { motion } from 'framer-motion'
 import { useMyQuoteRequests } from './hooks/useMyQuoteRequests'
 import { useGetMyQuoteRequestsQuery } from '@/services/quote-requests'
 import { QuoteRequestCard } from './components/QuoteRequestCard'
 import { QuoteRequestsStats } from './components/QuoteRequestsStats'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
-import { Loader2, MessageSquareQuote, ClipboardList, Clock, DollarSign, CheckCircle, XCircle } from 'lucide-react'
+import {
+  Loader2,
+  MessageSquareQuote,
+  ClipboardList,
+  Clock,
+  DollarSign,
+  CheckCircle,
+  XCircle,
+} from 'lucide-react'
 import { useTheme } from '@/contexts/ThemeContext'
 
 export const MyQuoteRequestsPage: React.FC = () => {
@@ -93,15 +100,8 @@ export const MyQuoteRequestsPage: React.FC = () => {
   }, [colors])
 
   return (
-    <div
-      className="max-w-7xl mx-auto py-8 px-4"
-      style={{ backgroundColor: colors.background }}
-    >
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-      >
+    <div className="max-w-7xl mx-auto py-8 px-4" style={{ backgroundColor: colors.background }}>
+      <div>
         <div className="mb-8">
           <h1
             className="text-3xl font-bold mb-2 flex items-center gap-3"
@@ -110,9 +110,7 @@ export const MyQuoteRequestsPage: React.FC = () => {
             <MessageSquareQuote className="w-8 h-8" style={{ color: colors.accent }} />
             Yêu cầu báo giá của tôi
           </h1>
-          <p style={{ color: colors.textSecondary }}>
-            Quản lý các yêu cầu báo giá bạn đã gửi
-          </p>
+          <p style={{ color: colors.textSecondary }}>Quản lý các yêu cầu báo giá bạn đã gửi</p>
         </div>
 
         {/* Stats Section */}
@@ -170,7 +168,7 @@ export const MyQuoteRequestsPage: React.FC = () => {
             )}
           </TabsContent>
         </Tabs>
-      </motion.div>
+      </div>
     </div>
   )
 }

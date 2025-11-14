@@ -10,6 +10,7 @@ export * from "./selector";
 
 // Auth slice actions
 export * from "./slices/auth.slice";
+export * from "./slices/address.slice";
 
 // Services
 export * from "../services/auth";
