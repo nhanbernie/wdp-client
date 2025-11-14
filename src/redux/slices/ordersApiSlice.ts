@@ -9,6 +9,8 @@ import type {
   UpdateOrderStatusDto,
   UpdatePaymentStatusDto,
   OrderFilterDto,
+  ReorderDto,
+  ReorderResponse,
 } from '@/services/orders/types';
 
 export const ordersApiSlice = createApi({
@@ -110,6 +112,32 @@ export const ordersApiSlice = createApi({
         'OrderStatistics',
       ],
     }),
+
+    // Reorder items from a previous order
+    reorder: builder.mutation<ReorderResponse, { orderId: string; data?: ReorderDto }>({
+      query: ({ orderId, data }) => ({
+        url: `/orders/${orderId}/reorder`,
+        method: 'POST',
+        body: data || { addToCart: true },
+      }),
+      invalidatesTags: ['Order', 'OrderStatistics'],
+    }),
+
+    // Get order history (completed/delivered orders)
+    getOrderHistory: builder.query<OrdersResponse, OrderFilterDto | undefined>({
+      query: (params) => ({
+        url: '/orders/history',
+        method: 'GET',
+        params: params || {},
+      }),
+      providesTags: (result) =>
+        result
+          ? [
+              ...result.data.map(({ id }) => ({ type: 'Order' as const, id })),
+              { type: 'Order', id: 'HISTORY' },
+            ]
+          : [{ type: 'Order', id: 'HISTORY' }],
+    }),
   }),
 });
 
@@ -122,6 +150,8 @@ export const {
   useUpdateOrderStatusMutation,
   useUpdatePaymentStatusMutation,
   useCancelOrderMutation,
+  useReorderMutation,
+  useGetOrderHistoryQuery,
   useLazyGetOrdersQuery,
   useLazyGetOrderByIdQuery,
 } = ordersApiSlice;

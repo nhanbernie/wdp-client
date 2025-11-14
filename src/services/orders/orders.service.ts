@@ -14,6 +14,7 @@ export interface CheckoutFromCartRequest {
   shippingWard?: string
   shippingPostalCode?: string
   customerNotes?: string
+  cartItemIds?: string[] // Optional: array of cart item IDs to checkout (if not provided, all items will be checked out)
 }
 
 export interface OrderItem {
@@ -189,6 +190,29 @@ export const ordersApi = createApi({
       }),
       invalidatesTags: ['Order'],
     }),
+
+    // Reorder items from a previous order
+    reorder: builder.mutation<
+      { success: boolean; message: string; data: any; unavailableItems?: any[] },
+      { orderId: string; addToCart?: boolean }
+    >({
+      query: ({ orderId, addToCart = true }) => ({
+        url: API_ENDPOINTS.ORDERS.REORDER.replace(':id', orderId),
+        method: 'POST',
+        body: { addToCart },
+      }),
+      invalidatesTags: ['Order', 'OrderStats'],
+    }),
+
+    // Get order history (completed/delivered orders)
+    getOrderHistory: builder.query<OrdersListResponse, GetOrdersParams>({
+      query: (params = {}) => ({
+        url: API_ENDPOINTS.ORDERS.HISTORY,
+        method: 'GET',
+        params,
+      }),
+      providesTags: ['Order'],
+    }),
   }),
 })
 
@@ -202,4 +226,6 @@ export const {
   useAdminConfirmOrderMutation,
   useCompleteOrderMutation,
   useUpdateOrderStatusMutation,
+  useReorderMutation,
+  useGetOrderHistoryQuery,
 } = ordersApi

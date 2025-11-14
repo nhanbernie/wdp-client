@@ -2,9 +2,13 @@
 
 import { motion } from 'framer-motion'
 import { Loader2, XCircle } from 'lucide-react'
+import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
-import { useGetOrderByIdQuery } from '@/redux/slices/ordersApiSlice'
+import { useGetOrderByIdQuery, useReorderMutation } from '@/redux/slices/ordersApiSlice'
+import { cartApi } from '@/services/cart'
+import { useAppDispatch } from '@/redux/hooks'
 import { useTheme } from '@/contexts/ThemeContext'
+import { useToast } from '@/hooks/useToast'
 
 import { OrderDetailHeader } from './components/OrderDetailHeader'
 import { OrderStatusCard } from './components/OrderStatusCard'
@@ -19,9 +23,15 @@ interface OrderDetailProps {
 
 export function OrderDetail({ orderId }: OrderDetailProps) {
   const { colors } = useTheme()
+  const router = useRouter()
+  const toast = useToast()
+  const dispatch = useAppDispatch()
   
   // Fetch order by ID from API
   const { data: orderResponse, isLoading, error } = useGetOrderByIdQuery(orderId)
+
+  // Reorder mutation
+  const [reorder, { isLoading: isReordering }] = useReorderMutation()
 
   // Get order data from response
   const orderData = orderResponse?.data
@@ -37,9 +47,46 @@ export function OrderDetail({ orderId }: OrderDetailProps) {
     // Implement contact support logic
   }
 
-  const handleReorder = () => {
-    console.log('Reorder:', orderId)
-    // Implement reorder logic
+  const handleReorder = async () => {
+    try {
+      const result = await reorder({
+        orderId,
+        data: { addToCart: true },
+      }).unwrap()
+
+      if (result.success) {
+        // Invalidate cart tags to trigger refetch in cart page
+        dispatch(cartApi.util.invalidateTags(['Cart']))
+
+        // Show success message
+        if (result.unavailableItems && result.unavailableItems.length > 0) {
+          const unavailableCount = result.unavailableItems.length
+          const addedCount = result.data?.addedCount || 0
+          toast.success(
+            `Đã thêm ${addedCount} sản phẩm vào giỏ hàng. ${unavailableCount} sản phẩm không khả dụng.`,
+          )
+          // Show details of unavailable items
+          const unavailableNames = result.unavailableItems
+            .map((item) => item.productName)
+            .join(', ')
+          toast.info(`Sản phẩm không khả dụng: ${unavailableNames}`)
+        } else {
+          toast.success(result.message || 'Đã thêm sản phẩm vào giỏ hàng thành công!')
+        }
+
+        // Navigate to cart page after a short delay
+        setTimeout(() => {
+          router.push('/cart')
+        }, 1000)
+      }
+    } catch (error: any) {
+      console.error('Reorder error:', error)
+      toast.error(
+        error?.data?.message ||
+          error?.message ||
+          'Không thể mua lại đơn hàng. Vui lòng thử lại sau.',
+      )
+    }
   }
 
   // Loading State
@@ -157,6 +204,7 @@ export function OrderDetail({ orderId }: OrderDetailProps) {
               onReorder={handleReorder}
               onContactSupport={handleContactSupport}
               onDownloadInvoice={handleDownloadInvoice}
+              isReordering={isReordering}
             />
           </div>
         </div>

@@ -72,6 +72,7 @@ export const API_ENDPOINTS = {
     STATISTICS: '/orders/statistics',
     ADMIN_CONFIRM: (id: string) => `/orders/${id}/admin-confirm`, // PATCH admin confirm order
     COMPLETE: (id: string) => `/orders/${id}/complete`, // PATCH admin complete order
+    REORDER: '/orders/:id/reorder',
   },
 
   // Quotes endpoints
