@@ -41,6 +41,7 @@ import {
   Settings,
   Users,
   MessageSquareQuote,
+  DollarSign,
   Wallet,
 } from 'lucide-react'
 
@@ -49,6 +50,7 @@ export const adminNavigationItems: NavItem[] = [
   { label: 'Quản lý người dùng', href: '/admin/user-management', icon: Users },
   { label: 'Quản lý đơn hàng', href: '/admin/orders', icon: ShoppingBag },
   { label: 'Quản lý sản phẩm', href: '/admin/manage-product', icon: Package },
+  { label: 'Yêu cầu rút tiền', href: '/admin/withdrawals', icon: DollarSign },
   { label: 'Thống kê', href: '/admin/analytics', icon: BarChart3 },
 ]
 

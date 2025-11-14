@@ -94,14 +94,6 @@ export const WalletBalanceCard: React.FC = () => {
           <div className="grid grid-cols-2 gap-4">
             <div>
               <p className="text-sm" style={{ color: colors.textSecondary }}>
-                Hạn mức tín dụng
-              </p>
-              <p className="text-lg font-semibold" style={{ color: colors.text }}>
-                {formatPrice(balance.creditLimit)}
-              </p>
-            </div>
-            <div>
-              <p className="text-sm" style={{ color: colors.textSecondary }}>
                 Số dư khả dụng
               </p>
               <p
@@ -138,10 +130,10 @@ export const WalletBalanceCard: React.FC = () => {
             </div>
           </div>
 
-          <div className="pt-4">
+          <div className="pt-4 space-y-2">
             <Link href="/vendor/wallet/deposit">
               <Button
-                className="w-full"
+                className="w-full mb-1"
                 style={{
                   backgroundColor: colors.accent,
                   color: 'white',
@@ -149,6 +141,30 @@ export const WalletBalanceCard: React.FC = () => {
               >
                 <TrendingUp className="w-4 h-4 mr-2" />
                 Nạp tiền vào ví
+              </Button>
+            </Link>
+            <Link href="/vendor/wallet/withdraw">
+              <Button
+                variant="outline"
+                className="w-full"
+                style={{
+                  backgroundColor: colors.cardBackgroundSecondary,
+                  borderColor: colors.border,
+                  color: colors.text,
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = colors.hoverBackground
+                  e.currentTarget.style.borderColor = colors.textSecondary
+                  e.currentTarget.style.color = colors.text
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = colors.cardBackgroundSecondary
+                  e.currentTarget.style.borderColor = colors.border
+                  e.currentTarget.style.color = colors.text
+                }}
+              >
+                <TrendingDown className="w-4 h-4 mr-2" />
+                Rút tiền từ ví
               </Button>
             </Link>
           </div>

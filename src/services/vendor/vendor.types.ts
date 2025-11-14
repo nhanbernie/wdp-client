@@ -24,6 +24,10 @@ export interface VendorProfile {
   businessEmail: string
   businessLicense: string
   taxId: string
+  bankName?: string
+  bankAccountNumber?: string
+  accountHolderName?: string
+  bankBranch?: string
   status: 'pending' | 'approved' | 'rejected' | 'suspended'
   createdAt: string
   updatedAt: string
@@ -37,6 +41,10 @@ export interface UpdateVendorProfileRequest {
   businessEmail?: string
   businessLicense?: string
   taxId?: string
+  bankName?: string
+  bankAccountNumber?: string
+  accountHolderName?: string
+  bankBranch?: string
 }
 
 // Product Types

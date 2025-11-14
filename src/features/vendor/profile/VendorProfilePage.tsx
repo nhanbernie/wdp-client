@@ -38,6 +38,10 @@ export const VendorProfilePage: React.FC = () => {
     businessEmail: profile.businessEmail,
     businessLicense: profile.businessLicense,
     taxId: profile.taxId,
+    bankName: profile.bankName || '',
+    bankAccountNumber: profile.bankAccountNumber || '',
+    accountHolderName: profile.accountHolderName || '',
+    bankBranch: profile.bankBranch || '',
   }
 
   const onSubmit = async (data: VendorProfileFormData) => {
