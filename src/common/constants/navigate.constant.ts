@@ -38,9 +38,9 @@ import {
   ShoppingBag,
   BarChart3,
   User,
-  Settings,
   Users,
   MessageSquareQuote,
+  MessagesSquare,
   DollarSign,
   Wallet,
 } from 'lucide-react'
@@ -60,5 +60,6 @@ export const vendorNavigationItems: NavItem[] = [
   { label: 'Quản lý sản phẩm', href: '/vendor/product-management', icon: Package },
   { label: 'Yêu cầu báo giá', href: '/vendor/quotes', icon: MessageSquareQuote },
   { label: 'Đơn hàng', href: '/vendor/orders', icon: ShoppingBag },
+  { label: 'Đánh giá', href: '/vendor/review', icon: MessagesSquare },
   { label: 'Ví', href: '/vendor/wallet', icon: Wallet },
 ]

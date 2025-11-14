@@ -78,7 +78,11 @@ export function VendorTable({
   return (
     <div
       className="overflow-x-auto rounded-lg"
-      style={{ background: colors.cardBackground, borderWidth: '1px', borderColor: colors.border }}
+      style={{
+        backgroundColor: colors.cardBackgroundSecondary,
+        border: `1px solid ${colors.border}30`,
+        boxShadow: `0 4px 12px ${colors.border}20`,
+      }}
     >
       <table className="w-full">
         <thead

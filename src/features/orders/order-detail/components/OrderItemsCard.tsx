@@ -1,18 +1,85 @@
 'use client'
 
+import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
-import { Package, Truck, Tag } from 'lucide-react'
+import { Package, Truck, Tag, Star, Eye } from 'lucide-react'
 import type { Order } from '@/services/orders/types'
 import { useTheme } from '@/contexts/ThemeContext'
+import { CreateReviewModal } from '@/features/orders/components/CreateReviewModal'
+import { ViewReviewModal } from '@/features/orders/components/ViewReviewModal'
+import { OrderStatus } from '@/services/orders/types'
+import { reviewService } from '@/services/reviews'
 
 interface OrderItemsCardProps {
   order: Order
 }
 
+interface ReviewStatus {
+  [productId: string]: boolean
+}
+
 export function OrderItemsCard({ order }: OrderItemsCardProps) {
   const { colors } = useTheme()
+  const [selectedItemForReview, setSelectedItemForReview] = useState<any>(null)
+  const [selectedItemForView, setSelectedItemForView] = useState<any>(null)
+  const [reviewedProducts, setReviewedProducts] = useState<ReviewStatus>({})
+  const [loadingReviews, setLoadingReviews] = useState(true)
+
+  const isDelivered = order.status === OrderStatus.DELIVERED
+
+  // Check which products have been reviewed
+  useEffect(() => {
+    const checkReviewedProducts = async () => {
+      if (!order.items) return
+
+      setLoadingReviews(true)
+      const reviewStatus: ReviewStatus = {}
+
+      try {
+        // Check each product for existing reviews
+        await Promise.all(
+          order.items.map(async (item) => {
+            try {
+              const reviews = await reviewService.getProductReviews(item.productId)
+              const hasReview = reviews.some((review) => review.orderId === order.id)
+              reviewStatus[item.productId] = hasReview
+            } catch (err) {
+              reviewStatus[item.productId] = false
+            }
+          }),
+        )
+
+        setReviewedProducts(reviewStatus)
+      } catch (err) {
+        console.error('Error checking reviews:', err)
+      } finally {
+        setLoadingReviews(false)
+      }
+    }
+
+    checkReviewedProducts()
+  }, [order.id, order.items])
+
+  const handleReviewSuccess = () => {
+    setSelectedItemForReview(null)
+    // Refresh review status
+    if (selectedItemForReview) {
+      setReviewedProducts((prev) => ({
+        ...prev,
+        [selectedItemForReview.productId]: true,
+      }))
+    }
+  }
+
+  const handleViewReview = (item: any) => {
+    setSelectedItemForView(item)
+  }
+
+  const handleCreateReview = (item: any) => {
+    setSelectedItemForReview(item)
+  }
 
   return (
     <Card
@@ -81,27 +148,66 @@ export function OrderItemsCard({ order }: OrderItemsCardProps) {
                     {item.productName}
                   </h4>
 
-                  <div className="flex items-center gap-3">
-                    <div
-                      className="flex items-center gap-2 px-3 py-1 rounded-lg text-xs"
-                      style={{
-                        backgroundColor: `${colors.textSecondary}10`,
-                        color: colors.textSecondary,
-                      }}
-                    >
-                      <Package className="h-3 w-3" />
-                      <span className="font-medium">SL: {item.quantity}</span>
+                  <div className="flex items-center justify-between gap-3">
+                    <div className="flex items-center gap-3">
+                      <div
+                        className="flex items-center gap-2 px-3 py-1 rounded-lg text-xs"
+                        style={{
+                          backgroundColor: `${colors.textSecondary}10`,
+                          color: colors.textSecondary,
+                        }}
+                      >
+                        <Package className="h-3 w-3" />
+                        <span className="font-medium">SL: {item.quantity}</span>
+                      </div>
+
+                      <div
+                        className="px-3 py-1 rounded-lg"
+                        style={{
+                          backgroundColor: `${colors.accent}15`,
+                        }}
+                      >
+                        <span className="text-base font-bold" style={{ color: colors.accent }}>
+                          {item.totalPrice.toLocaleString('vi-VN')}₫
+                        </span>
+                      </div>
                     </div>
 
-                    <div
-                      className="px-3 py-1 rounded-lg"
-                      style={{
-                        backgroundColor: `${colors.accent}15`,
-                      }}
-                    >
-                      <span className="text-base font-bold" style={{ color: colors.accent }}>
-                        {item.totalPrice.toLocaleString('vi-VN')}₫
-                      </span>
+                    {/* Review Button - Show for all orders */}
+                    <div className="flex gap-2">
+                      {loadingReviews ? (
+                        <div className="px-4 py-2">
+                          <div
+                            className="animate-spin h-4 w-4 border-2 border-t-transparent rounded-full"
+                            style={{ borderColor: colors.accent, borderTopColor: 'transparent' }}
+                          />
+                        </div>
+                      ) : reviewedProducts[item.productId] ? (
+                        <button
+                          onClick={() => handleViewReview(item)}
+                          className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all hover:shadow-md border"
+                          style={{
+                            borderColor: colors.accent,
+                            color: colors.accent,
+                            backgroundColor: `${colors.accent}10`,
+                          }}
+                        >
+                          <Eye className="h-4 w-4" />
+                          Xem đánh giá
+                        </button>
+                      ) : (
+                        <button
+                          onClick={() => handleCreateReview(item)}
+                          className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all hover:shadow-md"
+                          style={{
+                            backgroundColor: colors.accent,
+                            color: '#fff',
+                          }}
+                        >
+                          <Star className="h-4 w-4" />
+                          Đánh giá
+                        </button>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -188,6 +294,31 @@ export function OrderItemsCard({ order }: OrderItemsCardProps) {
           </div>
         </div>
       </CardContent>
+
+      {/* Create Review Modal */}
+      <CreateReviewModal
+        open={selectedItemForReview !== null}
+        orderId={order.id}
+        orderItem={selectedItemForReview || ({} as any)}
+        onClose={() => setSelectedItemForReview(null)}
+        onSuccess={handleReviewSuccess}
+      />
+
+      {/* View Review Modal */}
+      {selectedItemForView && (
+        <ViewReviewModal
+          open={selectedItemForView !== null}
+          productId={selectedItemForView.productId}
+          orderId={order.id}
+          productName={selectedItemForView.productName}
+          productThumbnail={selectedItemForView.thumbnail}
+          onClose={() => setSelectedItemForView(null)}
+          onReviewUpdated={() => {
+            // Refresh if needed
+            console.log('Review updated')
+          }}
+        />
+      )}
     </Card>
   )
 }

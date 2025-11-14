@@ -88,7 +88,11 @@ export const ProductsManagement: React.FC = () => {
       {/* Modern Filters Card */}
       <div
         className="rounded-2xl shadow-lg p-6 border"
-        style={{ background: colors.cardBackground, borderColor: colors.border }}
+        style={{
+          backgroundColor: colors.cardBackgroundSecondary,
+          border: `1px solid ${colors.border}30`,
+          boxShadow: `0 4px 12px ${colors.border}20`,
+        }}
       >
         <div className="flex items-center gap-4">
           <span className="text-sm font-semibold" style={{ color: colors.text }}>
@@ -117,7 +121,11 @@ export const ProductsManagement: React.FC = () => {
       {/* Modern Products Table */}
       <div
         className="rounded-2xl shadow-xl overflow-hidden border"
-        style={{ background: colors.cardBackground, borderColor: colors.border }}
+        style={{
+          backgroundColor: colors.cardBackgroundSecondary,
+          border: `1px solid ${colors.border}30`,
+          boxShadow: `0 4px 12px ${colors.border}20`,
+        }}
       >
         <div className="overflow-x-auto">
           <table className="w-full border-collapse">
@@ -220,7 +228,11 @@ export const ProductsManagement: React.FC = () => {
       {/* Modern Pagination */}
       <div
         className="rounded-2xl shadow-lg p-6 border"
-        style={{ background: colors.cardBackground, borderColor: colors.border }}
+        style={{
+          backgroundColor: colors.cardBackgroundSecondary,
+          border: `1px solid ${colors.border}30`,
+          boxShadow: `0 4px 12px ${colors.border}20`,
+        }}
       >
         <div className="flex items-center justify-between">
           <p className="text-sm font-medium" style={{ color: colors.text }}>

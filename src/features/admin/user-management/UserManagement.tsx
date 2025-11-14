@@ -132,7 +132,11 @@ const UserManagement = () => {
       >
         <TabsList
           className="grid w-full max-w-md grid-cols-2 p-1 h-14"
-          style={{ background: colors.cardBackground, borderColor: colors.border }}
+          style={{
+            backgroundColor: colors.cardBackgroundSecondary,
+            border: `1px solid ${colors.border}30`,
+            boxShadow: `0 4px 12px ${colors.border}20`,
+          }}
         >
           <TabsTrigger
             value="users"
