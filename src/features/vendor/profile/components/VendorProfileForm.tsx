@@ -78,6 +78,40 @@ export const VendorProfileForm: React.FC<VendorProfileFormProps> = ({ onCancel, 
         </CardContent>
       </Card>
 
+      <Card>
+        <CardHeader>
+          <CardTitle>Thông tin tài khoản ngân hàng</CardTitle>
+          <CardDescription>
+            Thông tin tài khoản ngân hàng để nhận tiền rút từ ví (bắt buộc khi tạo yêu cầu rút tiền)
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <TextField
+            name="bankName"
+            label="Tên ngân hàng"
+            placeholder="Vietcombank, Techcombank, BIDV..."
+          />
+
+          <TextField
+            name="bankAccountNumber"
+            label="Số tài khoản"
+            placeholder="1234567890"
+          />
+
+          <TextField
+            name="accountHolderName"
+            label="Tên chủ tài khoản"
+            placeholder="Nguyen Van A"
+          />
+
+          <TextField
+            name="bankBranch"
+            label="Chi nhánh ngân hàng"
+            placeholder="Chi nhánh Hồ Chí Minh, Chi nhánh Hà Nội..."
+          />
+        </CardContent>
+      </Card>
+
       <div className="flex justify-end gap-3">
         <Button
           type="button"

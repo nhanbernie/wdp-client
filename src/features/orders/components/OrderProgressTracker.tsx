@@ -13,7 +13,11 @@ interface OrderProgressTrackerProps {
 
 export function OrderProgressTracker({ currentStatus }: OrderProgressTrackerProps) {
   const { colors } = useTheme()
-  const currentConfig = statusConfig[currentStatus]
+  const currentConfig = statusConfig[currentStatus as keyof typeof statusConfig]
+  
+  // If status not found in config, don't show progress tracker
+  if (!currentConfig) return null
+  
   const currentStep = currentConfig.step
 
   // Don't show progress for cancelled/refunded orders
@@ -63,6 +67,10 @@ export function OrderProgressTracker({ currentStatus }: OrderProgressTrackerProp
             const isCompleted = step.id <= currentStep
             const isCurrent = step.id === currentStep
             const config = statusConfig[step.status]
+            
+            // Skip if config not found
+            if (!config) return null
+            
             const StepIcon = config.icon
 
             return (

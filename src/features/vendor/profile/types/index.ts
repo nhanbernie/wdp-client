@@ -8,6 +8,10 @@ export interface VendorProfileFormData {
   businessEmail: string
   businessLicense: string
   taxId: string
+  bankName?: string
+  bankAccountNumber?: string
+  accountHolderName?: string
+  bankBranch?: string
 }
 
 export interface VendorProfileState {

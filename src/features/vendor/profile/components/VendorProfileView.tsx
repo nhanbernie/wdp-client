@@ -16,6 +16,7 @@ import {
   Clock,
   XCircle,
   AlertCircle,
+  CreditCard,
 } from 'lucide-react'
 import { VendorProfile } from '@/services/vendor/vendor.types'
 import { format } from 'date-fns'
@@ -142,6 +143,31 @@ export const VendorProfileView: React.FC<VendorProfileViewProps> = ({ profile, o
             <p className="leading-relaxed" style={{ color: colors.textSecondary }}>
               {profile.businessDescription}
             </p>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Bank Account Info */}
+      {(profile.bankName || profile.bankAccountNumber || profile.accountHolderName || profile.bankBranch) && (
+        <Card style={{ backgroundColor: colors.cardBackground, borderColor: colors.border }}>
+          <CardContent className="pt-6">
+            <h3 className="text-lg font-semibold mb-4" style={{ color: colors.text }}>
+              Thông tin tài khoản ngân hàng
+            </h3>
+            <div className="grid md:grid-cols-2 gap-4">
+              {profile.bankName && (
+                <InfoItem icon={CreditCard} label="Tên ngân hàng" value={profile.bankName} colors={colors} />
+              )}
+              {profile.bankAccountNumber && (
+                <InfoItem icon={CreditCard} label="Số tài khoản" value={profile.bankAccountNumber} colors={colors} />
+              )}
+              {profile.accountHolderName && (
+                <InfoItem icon={CreditCard} label="Tên chủ tài khoản" value={profile.accountHolderName} colors={colors} />
+              )}
+              {profile.bankBranch && (
+                <InfoItem icon={CreditCard} label="Chi nhánh ngân hàng" value={profile.bankBranch} colors={colors} />
+              )}
+            </div>
           </CardContent>
         </Card>
       )}

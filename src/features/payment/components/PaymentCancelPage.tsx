@@ -1,35 +1,71 @@
 'use client'
 
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { motion } from 'framer-motion'
 import { XCircle, ArrowLeft, RefreshCw, Home, ShoppingCart } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
+import { useGetPaymentStatusQuery } from '@/services/payments/payment.service'
 
 const PaymentCancelPage: React.FC = () => {
   const router = useRouter()
   const searchParams = useSearchParams()
+
+  const orderCode = searchParams.get('orderCode')
+
   const orderId = searchParams.get('orderId')
   const paymentId = searchParams.get('paymentId')
   const reason = searchParams.get('reason')
 
+  const { data: paymentStatusData, refetch: checkPaymentStatus } = useGetPaymentStatusQuery(
+    orderCode || '',
+    { skip: !orderCode },
+  )
+
+  const serverPaymentType = (paymentStatusData as any)?.data?.payment?.paymentType as string | undefined
+
+  const isWalletDeposit = useMemo(() => {
+    if (serverPaymentType) return serverPaymentType === 'wallet_deposit'
+    if (orderId) return orderId.startsWith('deposit_')
+    return undefined as unknown as boolean | undefined
+  }, [serverPaymentType, orderId])
+
+  const redirectPath = useMemo(() => {
+    if (typeof isWalletDeposit !== 'boolean') return null
+    return isWalletDeposit ? '/vendor/wallet' : '/cart'
+  }, [isWalletDeposit])
+
   const [countdown, setCountdown] = useState(15)
 
   useEffect(() => {
+    if (orderCode) {
+      checkPaymentStatus()
+    }
+  }, [orderCode, checkPaymentStatus])
+
+  useEffect(() => {
+    if (typeof isWalletDeposit !== 'boolean') {
+      return undefined
+    }
+
     const timer = setInterval(() => {
-      setCountdown((prev) => {
-        if (prev <= 1) {
-          router.push('/cart')
-          return 0
-        }
-        return prev - 1
-      })
+      setCountdown((prev) => (prev > 0 ? prev - 1 : 0))
     }, 1000)
 
     return () => clearInterval(timer)
-  }, [router])
+  }, [isWalletDeposit])
+
+  useEffect(() => {
+    const typeResolved = typeof isWalletDeposit === 'boolean'
+    if (!typeResolved) return
+    if (!redirectPath) return
+
+    if (countdown === 0) {
+      router.push(redirectPath)
+    }
+  }, [countdown, redirectPath, router, isWalletDeposit])
 
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat('vi-VN', {
@@ -37,6 +73,8 @@ const PaymentCancelPage: React.FC = () => {
       currency: 'VND',
     }).format(price)
   }
+
+  const typeResolved = typeof isWalletDeposit === 'boolean'
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -58,15 +96,34 @@ const PaymentCancelPage: React.FC = () => {
             </motion.div>
 
             <h1 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
-              Thanh toán đã bị hủy
+              {!typeResolved
+                ? 'Đang xác nhận giao dịch...'
+                : isWalletDeposit
+                  ? 'Nạp tiền đã bị hủy'
+                  : 'Thanh toán đã bị hủy'}
             </h1>
 
-            <p className="text-lg text-gray-600 mb-2">Bạn đã hủy quá trình thanh toán</p>
+            {typeResolved && (
+              <p className="text-lg text-gray-600 mb-2">
+                {isWalletDeposit
+                  ? 'Bạn đã hủy quá trình nạp tiền vào ví'
+                  : 'Bạn đã hủy quá trình thanh toán'}
+              </p>
+            )}
 
             {reason && (
               <p className="text-sm text-orange-600 bg-orange-50 px-4 py-2 rounded-lg inline-block">
                 Lý do: {decodeURIComponent(reason)}
               </p>
+            )}
+
+            {/* Payment Info */}
+            {orderCode && (
+              <div className="mt-4 p-4 bg-orange-50 rounded-lg">
+                <p className="text-sm text-gray-700">
+                  <span className="font-semibold">Mã giao dịch:</span> {orderCode}
+                </p>
+              </div>
             )}
           </div>
 
@@ -147,39 +204,70 @@ const PaymentCancelPage: React.FC = () => {
 
           {/* Actions */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/checkout">
-              <Button size="lg" className="w-full sm:w-auto">
-                <RefreshCw className="h-4 w-4 mr-2" />
-                Thử lại thanh toán
-              </Button>
-            </Link>
-
-            <Link href="/cart">
-              <Button variant="outline" size="lg" className="w-full sm:w-auto">
-                <ShoppingCart className="h-4 w-4 mr-2" />
-                Xem giỏ hàng
-              </Button>
-            </Link>
-
-            <Link href="/categories">
-              <Button variant="outline" size="lg" className="w-full sm:w-auto">
-                <ArrowLeft className="h-4 w-4 mr-2" />
-                Tiếp tục mua sắm
-              </Button>
-            </Link>
-
-            <Link href="/">
-              <Button variant="outline" size="lg" className="w-full sm:w-auto">
-                <Home className="h-4 w-4 mr-2" />
-                Về trang chủ
-              </Button>
-            </Link>
+            {!typeResolved ? (
+              <Link href="/">
+                <Button size="lg" className="w-full sm:w-auto">
+                  Về trang chủ
+                </Button>
+              </Link>
+            ) : isWalletDeposit ? (
+              <>
+                <Link href="/vendor/wallet/deposit">
+                  <Button size="lg" className="w-full sm:w-auto">
+                    <RefreshCw className="h-4 w-4 mr-2" />
+                    Thử lại nạp tiền
+                  </Button>
+                </Link>
+                <Link href="/vendor/wallet">
+                  <Button variant="outline" size="lg" className="w-full sm:w-auto">
+                    <ShoppingCart className="h-4 w-4 mr-2" />
+                    Về trang ví
+                  </Button>
+                </Link>
+                <Link href="/vendor">
+                  <Button variant="outline" size="lg" className="w-full sm:w-auto">
+                    <Home className="h-4 w-4 mr-2" />
+                    Về trang vendor
+                  </Button>
+                </Link>
+              </>
+            ) : (
+              <>
+                <Link href="/checkout">
+                  <Button size="lg" className="w-full sm:w-auto">
+                    <RefreshCw className="h-4 w-4 mr-2" />
+                    Thử lại thanh toán
+                  </Button>
+                </Link>
+                <Link href="/cart">
+                  <Button variant="outline" size="lg" className="w-full sm:w-auto">
+                    <ShoppingCart className="h-4 w-4 mr-2" />
+                    Xem giỏ hàng
+                  </Button>
+                </Link>
+                <Link href="/categories">
+                  <Button variant="outline" size="lg" className="w-full sm:w-auto">
+                    <ArrowLeft className="h-4 w-4 mr-2" />
+                    Tiếp tục mua sắm
+                  </Button>
+                </Link>
+                <Link href="/">
+                  <Button variant="outline" size="lg" className="w-full sm:w-auto">
+                    <Home className="h-4 w-4 mr-2" />
+                    Về trang chủ
+                  </Button>
+                </Link>
+              </>
+            )}
           </div>
 
           {/* Auto redirect notice */}
           <div className="text-center mt-8">
             <p className="text-sm text-gray-500">
-              Tự động chuyển đến giỏ hàng trong {countdown} giây...
+              {!typeResolved
+                ? 'Đang xác nhận giao dịch...'
+                : `Tự động chuyển đến ${isWalletDeposit ? 'trang ví' : 'giỏ hàng'
+                } trong ${countdown} giây...`}
             </p>
           </div>
 
