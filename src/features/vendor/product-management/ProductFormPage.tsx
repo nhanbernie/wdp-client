@@ -4,7 +4,7 @@ import React, { useEffect } from 'react'
 import { ArrowLeft } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import FormProvider from '@/components/form/FormProvider'
-import { ProductFormLinear } from './components/ProductFormLinear'
+import { ProductFormStepper } from './components/ProductFormStepper'
 import { ProductFormData } from './types/product.types'
 import { productFormSchema } from './schemas/product.schema'
 import { useRouter } from 'next/navigation'
@@ -39,6 +39,12 @@ export const ProductFormPage: React.FC<ProductFormPageProps> = ({
       console.log('📤 Form submit data:', data)
       console.log('📦 Variants data:', data.variants)
 
+      // Normalize options data - convert {id, value} format to string format
+      const normalizedOptions = data.options?.map((option) => ({
+        ...option,
+        values: option.values?.map((val) => (typeof val === 'string' ? val : val?.value || '')),
+      }))
+
       // Add vendorId to the data and handle null values
       const dataWithVendorId = {
         ...data,
@@ -47,7 +53,7 @@ export const ProductFormPage: React.FC<ProductFormPageProps> = ({
         // ✅ Backend expects arrays, send empty array if no data
         badges: data.badges && data.badges.length > 0 ? data.badges : [],
         specs: data.specs && Object.keys(data.specs).length > 0 ? data.specs : undefined,
-        options: data.options && data.options.length > 0 ? data.options : [],
+        options: normalizedOptions && normalizedOptions.length > 0 ? normalizedOptions : [],
         variants: data.variants && data.variants.length > 0 ? data.variants : [],
         datasheetUrl: data.datasheetUrl || undefined,
       }
@@ -117,8 +123,8 @@ export const ProductFormPage: React.FC<ProductFormPageProps> = ({
         onSubmit={handleFormSubmit}
         mode="onBlur"
       >
-        {/* Linear Form */}
-        <ProductFormLinear onCancel={handleCancel} mode={mode} />
+        {/* Stepper Form */}
+        <ProductFormStepper onCancel={handleCancel} mode={mode} />
       </FormProvider>
     </div>
   )
