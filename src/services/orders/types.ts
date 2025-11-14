@@ -3,10 +3,12 @@
 export enum OrderStatus {
   PENDING = 'pending',
   PROCESSING = 'processing',
+  ADMIN_CONFIRMED = 'admin_confirmed',
   SHIPPING = 'shipping',
   DELIVERED = 'delivered',
   CANCELLED = 'cancelled',
   REFUNDED = 'refunded',
+  COMPLETED = 'completed',
 }
 
 export enum PaymentStatus {

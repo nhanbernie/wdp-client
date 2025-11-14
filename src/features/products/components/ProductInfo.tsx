@@ -12,6 +12,7 @@ interface ProductInfoProps {
   category?: string
   name: string
   brand?: string
+  badges?: string[]
   price: number
   salePrice?: number
   colors: any
@@ -24,6 +25,7 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({
   name,
   brand,
   price,
+  badges,
   salePrice,
   colors,
   brandColors,
@@ -91,6 +93,28 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({
             <span className="font-semibold" style={{ color: colors.text }}>
               {brand}
             </span>
+          </div>
+        )}
+
+        {badges && badges.length > 0 && (
+          <div className="flex items-center gap-2 flex-wrap text-sm">
+            <span style={{ color: colors.textSecondary }}>Huy hiệu:</span>
+            <div className="flex gap-2 flex-wrap">
+              {badges.map((badges: string, idx: number) => (
+                <Badge
+                  key={idx}
+                  className="px-2 py-0.5 text-xs font-medium capitalize"
+                  style={{
+                    backgroundImage: 'none',
+                    backgroundColor: colors.accent + '20',
+                    color: colors.accent,
+                    borderColor: 'transparent',
+                  }}
+                >
+                  {badges}
+                </Badge>
+              ))}
+            </div>
           </div>
         )}
       </motion.div>

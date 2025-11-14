@@ -57,6 +57,14 @@ export interface CreatePaymentApiResponse {
   statusCode: number;          
 }
 
+export interface CheckPaymentStatusResponse {
+  success: boolean
+  message: string
+  data: {
+    payment: PaymentResponse
+  }
+}
+
 export const paymentApi = createApi({
   reducerPath: 'paymentApi',
   baseQuery: baseQueryWithReauth,
@@ -72,9 +80,19 @@ export const paymentApi = createApi({
       invalidatesTags: ['Payment'],
     }),
 
+    // Check payment status from PayOS API
+    getPaymentStatus: builder.query<CheckPaymentStatusResponse, string>({
+      query: (orderCode) => ({
+        url: `/payments/check-status/${orderCode}`,
+        method: 'GET',
+      }),
+      providesTags: (result, error, orderCode) => [{ type: 'Payment', id: orderCode }],
+    }),
+
   }),
 })
 
 export const {
   useCreatePaymentMutation,
+  useGetPaymentStatusQuery,
 } = paymentApi

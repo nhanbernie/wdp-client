@@ -203,6 +203,7 @@ const ProductDetail: React.FC<ProductDetailProps> = ({ id }) => {
               category={productData.category?.name}
               name={productData.name}
               brand={productData.brand}
+              badges={productData.badges}
               price={productData.price}
               salePrice={productData.salePrice}
               colors={colors}
