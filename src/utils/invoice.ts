@@ -1,26 +1,38 @@
 // @ts-ignore - pdfmake doesn't have proper TypeScript definitions
-import pdfMake from 'pdfmake/build/pdfmake'
-// @ts-ignore
-import pdfFonts from 'pdfmake/build/vfs_fonts'
 import type { Order } from '@/services/orders/types'
 
-// Set up pdfMake fonts
-// @ts-ignore
-try {
-  // Try different possible structures
-  if (pdfFonts?.pdfMake?.vfs) {
-    pdfMake.vfs = pdfFonts.pdfMake.vfs
-  } else if ((pdfFonts as any)?.default?.pdfMake?.vfs) {
-    pdfMake.vfs = (pdfFonts as any).default.pdfMake.vfs
-  } else if ((pdfFonts as any)?.default) {
-    pdfMake.vfs = (pdfFonts as any).default
-  } else if (pdfFonts) {
-    // Last resort: use pdfFonts directly if it's already the vfs object
-    pdfMake.vfs = pdfFonts as any
+// Dynamic import for pdfmake to avoid SSR issues
+let pdfMake: any = null
+
+async function getPdfMake() {
+  if (typeof window === 'undefined') {
+    // Server-side: return null or throw error
+    throw new Error('pdfmake can only be used on the client side')
   }
-} catch (error) {
-  console.warn('Failed to load pdfmake fonts:', error)
-  // pdfMake will use default fonts
+
+  if (!pdfMake) {
+    try {
+      // @ts-ignore
+      pdfMake = (await import('pdfmake/build/pdfmake')).default
+      // @ts-ignore
+      const pdfFonts = await import('pdfmake/build/vfs_fonts')
+      
+      // Set up pdfMake fonts
+      if (pdfFonts?.pdfMake?.vfs) {
+        pdfMake.vfs = pdfFonts.pdfMake.vfs
+      } else if ((pdfFonts as any)?.default?.pdfMake?.vfs) {
+        pdfMake.vfs = (pdfFonts as any).default.pdfMake.vfs
+      } else if ((pdfFonts as any)?.default) {
+        pdfMake.vfs = (pdfFonts as any).default
+      } else if (pdfFonts) {
+        pdfMake.vfs = pdfFonts as any
+      }
+    } catch (error) {
+      console.warn('Failed to load pdfmake fonts:', error)
+    }
+  }
+  
+  return pdfMake
 }
 
 /**
@@ -514,6 +526,7 @@ export const generateInvoicePDF = async (order: Order): Promise<void> => {
   }
 
   // Generate and download PDF
+  const pdfMakeInstance = await getPdfMake()
   const fileName = `Hoa-don-${order.orderNumber}-${new Date().getTime()}.pdf`
-  pdfMake.createPdf(docDefinition).download(fileName)
+  pdfMakeInstance.createPdf(docDefinition).download(fileName)
 }
