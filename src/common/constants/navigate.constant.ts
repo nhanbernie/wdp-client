@@ -43,6 +43,7 @@ import {
   MessagesSquare,
   DollarSign,
   Wallet,
+  MessageCircle,
 } from 'lucide-react'
 
 export const adminNavigationItems: NavItem[] = [
@@ -63,4 +64,5 @@ export const vendorNavigationItems: NavItem[] = [
   { label: 'Đơn hàng', href: '/vendor/orders', icon: ShoppingBag },
   { label: 'Đánh giá', href: '/vendor/review', icon: MessagesSquare },
   { label: 'Ví', href: '/vendor/wallet', icon: Wallet },
+  { label: 'Tin nhắn khách hàng', href: '/vendor/chat', icon: MessageCircle },
 ]

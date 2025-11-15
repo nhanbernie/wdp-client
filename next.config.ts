@@ -16,8 +16,9 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  // Webpack config only for production build
+  // pdfmake is handled via dynamic import in invoice.ts, so minimal config needed
   webpack: (config, { isServer }) => {
-    // Fix for pdfmake in Next.js
     if (!isServer) {
       config.resolve.fallback = {
         ...config.resolve.fallback,
@@ -26,12 +27,6 @@ const nextConfig: NextConfig = {
         crypto: false,
       }
     }
-    
-    // Handle pdfmake build files
-    config.resolve.alias = {
-      ...config.resolve.alias,
-    }
-    
     return config
   },
 }

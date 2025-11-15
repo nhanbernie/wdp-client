@@ -273,7 +273,7 @@ const AICManageLayout: React.FC<AICManageLayoutProps> = ({
             className="flex-1 overflow-y-auto overflow-x-hidden"
             style={{ backgroundColor: colors.background }}
           >
-            <div className={fullWidth ? 'w-full' : 'max-w-8xl mx-auto p-8'}>{children}</div>
+            <div className={fullWidth ? 'w-full h-full' : 'max-w-8xl mx-auto p-8'}>{children}</div>
           </main>
         </div>
       </div>

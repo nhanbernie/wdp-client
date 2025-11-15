@@ -22,10 +22,30 @@ export interface SendMessageResponse {
   message?: string;
 }
 
+// Vendor Chat Conversation Types
+export interface ConversationResponseDto {
+  id: string;
+  userId: string;
+  vendorId: string;
+  lastMessage?: string;
+  lastMessageAt?: Date;
+  unreadCountUser: number;
+  unreadCountVendor: number;
+  createdAt: Date;
+  user?: any;
+  vendor?: any;
+}
+
+export interface GetConversationsResponse {
+  success: boolean;
+  data: ConversationResponseDto[];
+  message?: string;
+}
+
 export const chatApi = createApi({
   reducerPath: "chatApi",
   baseQuery: baseQueryWithReauth,
-  tagTypes: ["Chat"],
+  tagTypes: ["Chat", "Conversations"],
   endpoints: (builder) => ({
     // Send message to chatbot
     sendMessage: builder.mutation<SendMessageResponse, SendMessageRequest>({
@@ -57,6 +77,15 @@ export const chatApi = createApi({
       }),
       invalidatesTags: ["Chat"],
     }),
+
+    // Get all conversations (vendor chat)
+    getConversations: builder.query<GetConversationsResponse, void>({
+      query: () => ({
+        url: "/api/chat/conversations",
+        method: "GET",
+      }),
+      providesTags: ["Conversations"],
+    }),
   }),
 });
 
@@ -64,5 +93,6 @@ export const {
   useSendMessageMutation,
   useGetConversationQuery,
   useCreateConversationMutation,
+  useGetConversationsQuery,
 } = chatApi;
 

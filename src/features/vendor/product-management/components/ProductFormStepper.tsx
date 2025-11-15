@@ -128,7 +128,7 @@ export const ProductFormStepper: React.FC<ProductFormStepperProps> = ({
 
   const { data: categoriesData } = useGetCategoriesQuery({})
   const categoriesArray = Array.isArray(categoriesData?.data)
-    ? categoriesData.data
+    ? categoriesData!.data
     : categoriesData?.data?.items || []
 
   const categoryOptions = categoriesArray.map((cat: any) => ({

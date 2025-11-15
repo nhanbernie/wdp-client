@@ -6,6 +6,7 @@ import { VendorCard } from './VendorCard'
 import { VendorProductsGrid } from './VendorProductsGrid'
 import { useVendorProfile } from '../hooks/useVendorProfile'
 import { useTheme } from '@/contexts/ThemeContext'
+import { useAuth } from '@/contexts/AuthContext'
 
 interface Props {
   vendorId: string
@@ -16,13 +17,14 @@ export const VendorInfo: React.FC<Props> = ({ vendorId, vendorName }) => {
   const { profile, products, loading } = useVendorProfile(vendorId)
   const { colors } = useTheme()
   const router = useRouter()
+  const { user } = useAuth()
 
   const handleViewShop = () => {
     router.push(`/vendors/${vendorId}`)
   }
 
   const handleChat = () => {
-    // placeholder: integrate chat system
+    router.push(`/chat?vendorId=${vendorId}`)
   }
 
   // Show loading skeleton
