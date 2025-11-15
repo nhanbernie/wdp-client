@@ -6,9 +6,11 @@ import { motion } from 'framer-motion'
 import { useTheme } from '@/contexts/ThemeContext'
 import { getTextEmbossShadow, getNeumorphismTrustBadgeShadow } from '@/common/constants/neumorphism'
 import { SectionBadge } from '@/components/common'
+import { useRouter } from 'next/navigation'
 
 const Banner = () => {
   const { theme } = useTheme()
+  const router = useRouter()
 
   // Text emboss shadow for 3D floating effect
   const textEmbossShadow = getTextEmbossShadow(theme)
@@ -86,6 +88,7 @@ const Banner = () => {
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
               <Button
                 size="lg"
+                onClick={() => router.push('/categories')}
                 className="relative overflow-hidden group cursor-pointer bg-accent-primary hover:bg-accent-secondary text-white font-bold px-8 py-7 text-lg rounded-2xl shadow-2xl shadow-accent-primary/50 border-0"
               >
                 <span className="relative z-10 flex items-center gap-2">
@@ -97,7 +100,7 @@ const Banner = () => {
               </Button>
             </motion.div>
 
-            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+            <div>
               <Button
                 size="lg"
                 variant="outline"
@@ -106,7 +109,7 @@ const Banner = () => {
                 <Sparkles className="h-6 w-6 mr-2 text-accent-primary" />
                 Xem demo AI
               </Button>
-            </motion.div>
+            </div>
           </motion.div>
 
           {/* Trust badges */}
