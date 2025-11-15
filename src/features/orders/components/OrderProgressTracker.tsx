@@ -25,20 +25,17 @@ export function OrderProgressTracker({ currentStatus }: OrderProgressTrackerProp
 
   return (
     <div
-      className="mb-8 p-8 rounded-3xl shadow-xl border-2"
+      className="mb-12 p-8 rounded-3xl"
       style={{
         backgroundColor: colors.cardBackgroundSecondary,
-        border: `1px solid ${colors.border}30`,
-        boxShadow: `0 4px 12px ${colors.border}20`,
+        border: `1px solid ${colors.border}20`,
       }}
     >
       <h3
         className="text-2xl font-black mb-6 flex items-center gap-3"
         style={{ color: colors.text }}
       >
-        <div className="p-2 rounded-xl" style={{ backgroundColor: colors.accent }}>
-          <CheckCircle className="h-6 w-6 text-white" />
-        </div>
+    
         Tiến trình đơn hàng
       </h3>
 

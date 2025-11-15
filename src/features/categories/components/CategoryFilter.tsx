@@ -63,7 +63,7 @@ export function CategoryFilter() {
     >
       <div 
         className="flex items-center gap-2 mb-3 pb-2 border-b"
-        style={{ borderColor: colors.border }}
+        style={{ borderColor: `${colors.border}40` }}
       >
         <Tag className="h-4 w-4" style={{ color: colors.textSecondary }} />
         <h3 className="text-base font-semibold" style={{ color: colors.text }}>
@@ -88,7 +88,7 @@ export function CategoryFilter() {
               style={{
                 backgroundColor: isSelected ? colors.accent : 'transparent',
                 color: isSelected ? 'white' : colors.text,
-                border: `1px solid ${isSelected ? 'transparent' : colors.border}`,
+                border: `1px solid ${isSelected ? 'transparent' : `${colors.border}40`}`,
                 boxShadow: isSelected ? '0 2px 4px -1px rgba(0, 0, 0, 0.1)' : 'none',
               }}
               onMouseEnter={(e) => {
@@ -100,7 +100,7 @@ export function CategoryFilter() {
               onMouseLeave={(e) => {
                 if (!isSelected) {
                   e.currentTarget.style.backgroundColor = 'transparent'
-                  e.currentTarget.style.borderColor = colors.border
+                  e.currentTarget.style.borderColor = `${colors.border}40`
                 }
               }}
             >
@@ -113,7 +113,7 @@ export function CategoryFilter() {
                 style={{
                   backgroundColor: isSelected ? 'rgba(255, 255, 255, 0.2)' : `${colors.accent}10`,
                   color: isSelected ? 'white' : colors.textSecondary,
-                  borderColor: isSelected ? 'rgba(255, 255, 255, 0.3)' : colors.border,
+                  borderColor: isSelected ? 'rgba(255, 255, 255, 0.3)' : `${colors.border}40`,
                 }}
               >
                 {category.productCount}

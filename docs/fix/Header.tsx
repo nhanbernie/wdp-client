@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState, useMemo } from 'react'
-import { ShoppingCart, Menu, Bell, Sun, Moon, Search } from 'lucide-react'
+import { ShoppingCart, Menu, Bell, Sun, Moon } from 'lucide-react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { Button } from '@/components/ui/button'
@@ -27,7 +27,7 @@ const Header = () => {
   const { theme, toggleTheme } = useTheme()
   const { cartCount } = useCartApi()
   const neumorphismShadow = getNeumorphismShadow(theme)
-
+  
   // Background color cho các nút để dễ nhìn hơn trong cả light và dark mode
   const buttonBackgroundColor = theme === 'light' ? '#ffffff' : '#2a2a2a'
 
@@ -63,12 +63,10 @@ const Header = () => {
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="relative flex h-16 items-center justify-between gap-4">
-          {/* Logo */}
           <Link href="/" className="flex items-center shrink-0">
             <Logo showText={false} imageSize={32} />
           </Link>
 
-          {/* Navigation - Center - Only for authenticated users */}
           {isAuthenticated && (
             <nav className="hidden md:flex items-center justify-center absolute left-1/2 -translate-x-1/2">
               <div className="flex items-center gap-3">
@@ -98,25 +96,7 @@ const Header = () => {
             </nav>
           )}
 
-          {/* Right Actions */}
           <div className="flex items-center gap-2 shrink-0">
-            {/* Search Icon - Navigate to categories */}
-            <Button
-              variant="ghost"
-              size="icon"
-              className="bg-card text-foreground hover:text-accent-primary"
-              style={{
-                boxShadow: neumorphismShadow,
-                backgroundColor: buttonBackgroundColor,
-              }}
-              asChild
-            >
-              <Link href="/categories">
-                <Search className="h-4 w-4" />
-              </Link>
-            </Button>
-
-            {/* Theme Toggle */}
             <Button
               variant="ghost"
               size="icon"
@@ -135,7 +115,6 @@ const Header = () => {
               )}
             </Button>
 
-            {/* Notifications and Cart - Only for non-admin authenticated users */}
             {isAuthenticated && user && !user.roles.includes('admin') && (
               <>
                 <Button
@@ -180,10 +159,8 @@ const Header = () => {
               </>
             )}
 
-            {/* User Menu */}
             <UserMenu />
 
-            {/* Mobile Menu Toggle */}
             <Button
               variant="ghost"
               size="icon"
@@ -199,49 +176,45 @@ const Header = () => {
           </div>
         </div>
 
-        {/* Mobile Menu */}
         {isMenuOpen && (
           <div className="md:hidden border-t border-border py-4">
-            {/* Mobile Navigation */}
-            {isAuthenticated && (
-              <nav className="flex flex-col gap-3 px-2">
-                {currentNavigationItems.map((item) => (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    className={`text-sm font-medium transition-colors py-2 ${
-                      item.active || isActive(item.href)
-                        ? 'text-accent-primary'
-                        : 'text-muted-foreground hover:text-accent-primary'
-                    }`}
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    {item.label}
-                  </Link>
-                ))}
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="justify-start hover:bg-accent-primary/10"
-                  onClick={() => {
-                    toggleTheme()
-                    setIsMenuOpen(false)
-                  }}
+            <nav className="flex flex-col gap-3">
+              {currentNavigationItems.map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={`text-sm font-medium transition-colors py-2 ${
+                    item.active || isActive(item.href)
+                      ? 'text-accent-primary'
+                      : 'text-muted-foreground hover:text-accent-primary'
+                  }`}
+                  onClick={() => setIsMenuOpen(false)}
                 >
-                  {theme === 'dark' ? (
-                    <>
-                      <Sun className="h-4 w-4 mr-2" />
-                      Light Mode
-                    </>
-                  ) : (
-                    <>
-                      <Moon className="h-4 w-4 mr-2" />
-                      Dark Mode
-                    </>
-                  )}
-                </Button>
-              </nav>
-            )}
+                  {item.label}
+                </Link>
+              ))}
+              <Button
+                variant="ghost"
+                size="sm"
+                className="justify-start hover:bg-accent-primary/10"
+                onClick={() => {
+                  toggleTheme()
+                  setIsMenuOpen(false)
+                }}
+              >
+                {theme === 'dark' ? (
+                  <>
+                    <Sun className="h-4 w-4 mr-2" />
+                    Light Mode
+                  </>
+                ) : (
+                  <>
+                    <Moon className="h-4 w-4 mr-2" />
+                    Dark Mode
+                  </>
+                )}
+              </Button>
+            </nav>
           </div>
         )}
       </div>

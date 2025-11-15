@@ -52,42 +52,33 @@ export function OrderCard({ order, index }: OrderCardProps) {
       transition={{ duration: 0.5, delay: index * 0.1 }}
     >
       <Card
-        className="overflow-hidden border rounded-lg"
+        className="overflow-hidden rounded-xl"
         style={{
-          backgroundColor: colors.cardBackgroundSecondary,
-          border: `1px solid ${colors.border}30`,
-          boxShadow: `0 4px 12px ${colors.border}20`,
+          backgroundColor: colors.cardBackground,
+          border: `1px solid ${colors.border}20`,
         }}
       >
         <CardHeader
           className="p-4 border-b"
           style={{
-            borderColor: colors.border,
-            backgroundColor: colors.cardBackground,
+            borderColor: `${colors.border}20`,
+            backgroundColor: 'transparent',
           }}
         >
-          <div className="flex justify-between items-start">
+          <div className="flex justify-between items-center">
             <div className="flex-1">
-              <div className="flex items-center gap-3 mb-2">
-                <div className="p-2 rounded-lg" style={{ backgroundColor: `${statusColors.primary}15` }}>
-                  <StatusIcon className="h-4 w-4" style={{ color: statusColors.primary }} />
-                </div>
-                <div>
-                  <p className="text-sm font-medium" style={{ color: colors.text }}>
-                    Đơn hàng #{order.orderNumber}
-                  </p>
-                  <p className="text-xs" style={{ color: colors.textSecondary }}>
-                    {new Date(order.createdAt).toLocaleDateString('vi-VN')}
-                  </p>
-                </div>
-              </div>
+              <p className="text-sm font-semibold mb-0.5" style={{ color: colors.text }}>
+                Đơn hàng #{order.orderNumber}
+              </p>
+              <p className="text-xs" style={{ color: colors.textSecondary }}>
+                {new Date(order.createdAt).toLocaleDateString('vi-VN')}
+              </p>
             </div>
 
             <div
-              className="px-3 py-1 rounded-lg"
+              className="px-3 py-1 rounded-full"
               style={{
-                backgroundColor: `${statusColors.primary}20`,
-                boxShadow: `0 2px 8px ${statusColors.primary}20`,
+                backgroundColor: `${statusColors.primary}15`,
               }}
             >
               <span className="text-xs font-semibold" style={{ color: statusColors.primary }}>
@@ -97,19 +88,16 @@ export function OrderCard({ order, index }: OrderCardProps) {
           </div>
         </CardHeader>
 
-        <CardContent className="p-4" style={{ backgroundColor: colors.cardBackground }}>
+        <CardContent className="p-4" style={{ backgroundColor: 'transparent' }}>
           {/* Order Items Preview */}
-          <div className="space-y-2 mb-4">
+          <div className="space-y-2 mb-4 border-b pb-4" style={{ borderColor: `${colors.border}20` }}>
             {order.items?.slice(0, 2).map((item, idx) => (
               <div
                 key={idx}
-                className="flex items-center gap-3 p-3 rounded-lg"
-                style={{
-                  backgroundColor: colors.cardBackgroundSecondary,
-                }}
+                className="flex items-center gap-3"
               >
                 <div
-                  className="relative w-12 h-12 rounded-lg overflow-hidden"
+                  className="relative w-10 h-10 rounded overflow-hidden flex-shrink-0"
                   style={{ backgroundColor: colors.border }}
                 >
                   <Image
@@ -120,18 +108,18 @@ export function OrderCard({ order, index }: OrderCardProps) {
                   />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="font-medium truncate text-sm" style={{ color: colors.text }}>
+                  <p className="font-medium truncate text-xs mb-1" style={{ color: colors.text }}>
                     {item.productName}
                   </p>
                   {/* Variant Name & SKU */}
                   {(item.variantName || item.sku) && (
-                    <div className="flex flex-wrap items-center gap-1.5 mt-1">
+                    <div className="flex flex-wrap items-center gap-1.5">
                       {item.variantName && (
                         <Badge
-                          className="px-2 py-0.5 text-xs font-medium capitalize"
+                          className="px-2 py-0 text-xs font-medium capitalize rounded-full"
                           style={{
                             backgroundImage: 'none',
-                            backgroundColor: colors.accent + '20',
+                            backgroundColor: `${colors.accent}15`,
                             color: colors.accent,
                             borderColor: 'transparent',
                           }}
@@ -140,13 +128,7 @@ export function OrderCard({ order, index }: OrderCardProps) {
                         </Badge>
                       )}
                       {item.sku && (
-                        <span
-                          className="text-sm font-bold px-2 py-1 rounded"
-                          style={{
-                            backgroundColor: colors.cardBackgroundSecondary,
-                            color: colors.text,
-                          }}
-                        >
+                        <span className="text-xs" style={{ color: colors.textSecondary }}>
                           SKU: {item.sku}
                         </span>
                       )}
@@ -160,10 +142,9 @@ export function OrderCard({ order, index }: OrderCardProps) {
             ))}
             {(order.items?.length ?? 0) > 2 && (
               <p
-                className="text-xs text-center py-2 rounded-lg"
+                className="text-xs text-center py-1"
                 style={{
                   color: colors.textSecondary,
-                  backgroundColor: colors.cardBackgroundSecondary,
                 }}
               >
                 +{(order.items?.length ?? 0) - 2} sản phẩm khác
@@ -171,62 +152,52 @@ export function OrderCard({ order, index }: OrderCardProps) {
             )}
           </div>
 
-          {/* Order Info - Footer content will be here */}
-          <div className="space-y-3">
-            <div
-              className="flex items-center justify-between p-4 rounded-2xl shadow-sm border"
-              style={{
-                backgroundColor: colors.cardBackgroundSecondary,
-                borderColor: colors.border,
-              }}
-            >
+          {/* Order Info */}
+          <div className="space-y-2">
+            <div className="flex items-center justify-between py-2 border-b" style={{ borderColor: `${colors.border}20` }}>
               <span
-                className="font-medium flex items-center gap-2"
+                className="text-xs flex items-center gap-1.5"
                 style={{ color: colors.textSecondary }}
               >
-                <Calendar className="h-4 w-4" />
+                <Calendar className="h-3 w-3" />
                 Ngày đặt:
               </span>
-              <span className="font-bold" style={{ color: colors.text }}>
+              <span className="text-xs font-medium" style={{ color: colors.text }}>
                 {new Date(order.createdAt).toLocaleDateString('vi-VN')}
               </span>
             </div>
 
             <div
-              className="flex items-center justify-between p-5 rounded-2xl shadow-md border-2"
+              className="flex items-center justify-between p-3 rounded-lg"
               style={{
-                backgroundColor: colors.cardBackgroundSecondary,
-                borderColor: colors.accent,
+                backgroundColor: `${colors.accent}10`,
               }}
             >
-              <span className="font-bold flex items-center gap-2" style={{ color: colors.text }}>
-                <Sparkles className="h-5 w-5" style={{ color: colors.accent }} />
+              <span className="font-medium flex items-center gap-1.5 text-sm" style={{ color: colors.text }}>
                 Tổng tiền:
               </span>
-              <span className="text-2xl font-black" style={{ color: colors.accent }}>
+              <span className="text-lg font-bold" style={{ color: colors.accent }}>
                 {order.totalAmount.toLocaleString('vi-VN')} VNĐ
               </span>
             </div>
           </div>
         </CardContent>
 
-        <CardFooter className="p-6 pt-0" style={{ backgroundColor: colors.cardBackground }}>
+        <CardFooter className="p-4 pt-3" style={{ backgroundColor: 'transparent' }}>
           <Link href={`/orders/${order.id}`} className="w-full">
-            <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-              <Button
-                className="w-full h-14 text-white font-bold text-base rounded-2xl shadow-xl hover:shadow-2xl transition-all group"
-                style={{ backgroundColor: colors.accent }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.backgroundColor = colors.accentSecondary
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.backgroundColor = colors.accent
-                }}
-              >
-                <Eye className="h-5 w-5 mr-2 group-hover:scale-110 transition-transform" />
-                Xem chi tiết
-              </Button>
-            </motion.div>
+            <Button
+              className="w-full h-10 text-white font-medium text-sm rounded-lg transition-all"
+              style={{ backgroundColor: colors.accent }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = colors.accentSecondary
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = colors.accent
+              }}
+            >
+              <Eye className="h-3.5 w-3.5 mr-1.5" />
+              Xem chi tiết
+            </Button>
           </Link>
         </CardFooter>
       </Card>

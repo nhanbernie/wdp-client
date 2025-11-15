@@ -1,10 +1,12 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, usePathname, useSearchParams } from 'next/navigation'
 import { Input } from '@/components/ui/input'
 import { Search } from 'lucide-react'
 import { useProducts } from '@/features/categories'
+import { useTheme } from '@/contexts/ThemeContext'
+import { getNeumorphismShadow } from '@/common/constants/neumorphism'
 import SearchBarDropdown from './SearchBarDropdown'
 
 export default function SearchBar() {
@@ -13,6 +15,19 @@ export default function SearchBar() {
   const [isOpen, setIsOpen] = useState<boolean>(false)
   const wrapRef = useRef<HTMLDivElement>(null)
   const router = useRouter()
+  const pathname = usePathname()
+  const searchParams = useSearchParams()
+  const { theme } = useTheme()
+  const neumorphismShadow = getNeumorphismShadow(theme)
+  const buttonBackgroundColor = theme === 'light' ? '#ffffff' : '#2a2a2a'
+
+  // Sync query with URL params when on search page
+  useEffect(() => {
+    if (pathname === '/search') {
+      const urlQuery = searchParams.get('q') || ''
+      setQuery(urlQuery)
+    }
+  }, [pathname, searchParams])
 
   const { products, loading } = useProducts(
     debouncedQuery
@@ -58,10 +73,10 @@ export default function SearchBar() {
 
   return (
     <div className="flex w-full">
-      <div ref={wrapRef} className="relative flex-1 ">
+      <div ref={wrapRef} className="relative flex-1">
         <Search
-          className={`absolute left-3 top-1/2 -translate-y-1/2 text-[var(--foreground)] cursor-pointer hover:opacity-70 transition-opacity`}
-          size={20}
+          className={`absolute left-4 top-1/2 -translate-y-1/2 z-10 text-foreground cursor-pointer hover:opacity-70 transition-opacity`}
+          size={24}
           onClick={handleSearch}
         />
         <Input
@@ -73,7 +88,12 @@ export default function SearchBar() {
             setIsOpen(true)
           }}
           onKeyPress={handleKeyPress}
-          className={`pl-10 bg-[var(--card)] shadow-none border-gray-300 hover:border-gray-500 rounded-2xl placeholder:text-[0.8rem]  focus-visible:border-[var(--primary)] focus-visible:ring-2 focus-visible:ring-gray-300/20 placeholder:text-[var(--neutral-medium)]`}
+          className={`pl-12 py-6 h-16 text-base rounded-xl border-2 transition-all duration-200 placeholder:text-base`}
+          style={{
+            boxShadow: neumorphismShadow,
+            backgroundColor: buttonBackgroundColor,
+            borderColor: theme === 'light' ? 'rgba(0, 0, 0, 0.1)' : 'rgba(255, 255, 255, 0.1)',
+          }}
         />
         {isOpen && debouncedQuery && (
           <div className="absolute left-0 right-0 top-[calc(100%+10px)] z-[100]">

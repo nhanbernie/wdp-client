@@ -9,6 +9,7 @@ import { ProductGrid } from './components/ProductGrid'
 import { PriceFilter } from './components/PriceFilter'
 import { ClearFiltersButton } from './components/ClearFiltersButton'
 import { useTheme } from '@/contexts/ThemeContext'
+import SearchBar from '@/components/layouts/components/SearchBar'
 
 const CategoriesPage: React.FC = () => {
   const { viewMode } = useCategories()
@@ -32,12 +33,24 @@ const CategoriesPage: React.FC = () => {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 relative z-10">
-        {/* Modern Header */}
+        {/* Search Bar - Top of page */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="mb-8"
+          className="mb-32"
+        >
+          <div className="w-full max-w-2xl mx-auto">
+            <SearchBar />
+          </div>
+        </motion.div>
+
+        {/* Modern Header */}
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.1 }}
+          className="mb-16"
         >
           <div 
             className="rounded-2xl shadow-xl p-6"

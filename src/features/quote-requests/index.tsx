@@ -107,7 +107,6 @@ export const MyQuoteRequestsPage: React.FC = () => {
             className="text-3xl font-bold mb-2 flex items-center gap-3"
             style={{ color: colors.text }}
           >
-            <MessageSquareQuote className="w-8 h-8" style={{ color: colors.accent }} />
             Yêu cầu báo giá của tôi
           </h1>
           <p style={{ color: colors.textSecondary }}>Quản lý các yêu cầu báo giá bạn đã gửi</p>

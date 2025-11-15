@@ -12,6 +12,7 @@ import ProductCard from '@/components/common/ProductCard'
 import ProductCardSkeleton from '@/components/common/ProductCardSkeleton'
 import { useTheme } from '@/contexts/ThemeContext'
 import { Product } from '@/features/categories/types/categories.types'
+import SearchBar from '@/components/layouts/components/SearchBar'
 
 const SearchPage: React.FC = () => {
   const searchParams = useSearchParams()
@@ -53,11 +54,23 @@ const SearchPage: React.FC = () => {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 relative z-10">
-        {/* Modern Header */}
+        {/* Search Bar - Top of page */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
+          className="mb-12"
+        >
+          <div className="w-full max-w-2xl mx-auto">
+            <SearchBar />
+          </div>
+        </motion.div>
+
+        {/* Modern Header */}
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.1 }}
           className="mb-8"
         >
           <div

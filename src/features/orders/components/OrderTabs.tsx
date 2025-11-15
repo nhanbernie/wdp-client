@@ -78,10 +78,10 @@ export function OrderTabs({ activeTab, onTabChange, counts }: OrderTabsProps) {
 
   return (
     <TabsList
-      className="grid grid-cols-2 lg:grid-cols-7 gap-2 p-2 rounded-2xl h-auto border"
+      className="grid grid-cols-2 lg:grid-cols-7 gap-2 p-2 rounded-2xl h-auto border mb-8"
       style={{
         backgroundColor: colors.cardBackgroundSecondary,
-        borderColor: colors.border,
+        borderColor: `${colors.border}20`,
       }}
       data-order-tabs-list
     >

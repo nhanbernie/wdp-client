@@ -55,7 +55,7 @@ export function OrderSearchAndFilter({
     style.textContent = `
       [data-slot="select-content"] {
         background-color: ${colors.cardBackground} !important;
-        border-color: ${colors.border} !important;
+        border-color: ${colors.border}30 !important;
         color: ${colors.text} !important;
       }
       
@@ -87,12 +87,7 @@ export function OrderSearchAndFilter({
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay: 0.2 }}
-      className="mb-6 p-4 rounded-lg border"
-      style={{
-        backgroundColor: colors.cardBackgroundSecondary,
-        border: `1px solid ${colors.border}30`,
-        boxShadow: `0 4px 12px ${colors.border}20`,
-      }}
+      className="mb-8 p-6 rounded-lg"
     >
       <div className="flex flex-col lg:flex-row gap-4">
         {/* Search Input */}
@@ -105,15 +100,15 @@ export function OrderSearchAndFilter({
             placeholder="Tìm kiếm đơn hàng (mã đơn, sản phẩm)..."
             value={searchTerm}
             onChange={(e) => onSearchChange(e.target.value)}
-            className="pl-12 h-14 text-base rounded-2xl border-2 transition-all"
+            className="pl-12 h-14 text-base rounded-2xl border transition-all"
             style={{
-              borderColor: colors.border,
+              borderColor: `${colors.border}30`,
             }}
             onFocus={(e) => {
               e.currentTarget.style.borderColor = colors.accent
             }}
             onBlur={(e) => {
-              e.currentTarget.style.borderColor = colors.border
+              e.currentTarget.style.borderColor = `${colors.border}30`
             }}
           />
         </div>
@@ -121,9 +116,9 @@ export function OrderSearchAndFilter({
         {/* Status Filter */}
         <Select value={statusFilter} onValueChange={onStatusFilterChange}>
           <SelectTrigger
-            className="lg:w-[220px] h-14 rounded-2xl border-2 text-base font-medium"
+            className="lg:w-[220px] h-14 rounded-2xl border text-base font-medium"
             style={{
-              borderColor: colors.border,
+              borderColor: `${colors.border}30`,
               backgroundColor: colors.cardBackground,
               color: colors.text,
             }}
@@ -134,7 +129,7 @@ export function OrderSearchAndFilter({
             className="rounded-xl"
             style={{
               backgroundColor: colors.cardBackground,
-              borderColor: colors.border,
+              borderColor: `${colors.border}30`,
             }}
           >
             <SelectItem value="all" className="text-base">
@@ -171,9 +166,9 @@ export function OrderSearchAndFilter({
         {/* Date Sort */}
         <Select value={dateSort} onValueChange={onDateSortChange}>
           <SelectTrigger
-            className="lg:w-[200px] h-14 rounded-2xl border-2 text-base font-medium"
+            className="lg:w-[200px] h-14 rounded-2xl border text-base font-medium"
             style={{
-              borderColor: colors.border,
+              borderColor: `${colors.border}30`,
               backgroundColor: colors.cardBackground,
               color: colors.text,
             }}
@@ -188,7 +183,7 @@ export function OrderSearchAndFilter({
             className="rounded-xl"
             style={{
               backgroundColor: colors.cardBackground,
-              borderColor: colors.border,
+              borderColor: `${colors.border}30`,
             }}
           >
             <SelectItem value="newest" className="text-base">

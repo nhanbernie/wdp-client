@@ -51,7 +51,7 @@ export const PriceFilter = () => {
       <div>
         <div
           className="flex items-center gap-2 pb-2 mb-3 border-b"
-          style={{ borderColor: colors.border }}
+          style={{ borderColor: `${colors.border}40` }}
         >
           <DollarSign className="h-4 w-4" style={{ color: colors.textSecondary }} />
           <h1 className="text-base font-semibold" style={{ color: colors.text }}>
@@ -80,7 +80,7 @@ export const PriceFilter = () => {
               className="flex-1 text-sm rounded-xl"
               style={{
                 backgroundColor: colors.cardBackgroundSecondary,
-                borderColor: colors.border,
+                borderColor: `${colors.border}40`,
                 color: colors.text,
               }}
             />
@@ -96,7 +96,7 @@ export const PriceFilter = () => {
               className="flex-1 text-sm rounded-xl"
               style={{
                 backgroundColor: colors.cardBackgroundSecondary,
-                borderColor: colors.border,
+                borderColor: `${colors.border}40`,
                 color: colors.text,
               }}
             />
@@ -107,7 +107,7 @@ export const PriceFilter = () => {
             className="rounded-xl p-2.5 border"
             style={{
               backgroundColor: colors.cardBackgroundSecondary,
-              borderColor: colors.border,
+              borderColor: `${colors.border}40`,
             }}
           >
             <div className="text-center">

@@ -162,7 +162,7 @@ export function OrdersList() {
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: colors.background }}>
-      <div className="max-w-7xl mx-auto relative z-10 py-4 px-6">
+      <div className="max-w-7xl mx-auto relative z-10 py-8 px-6">
         <OrderListHeader totalOrders={orders.length} />
 
         <OrderSearchAndFilter
@@ -174,12 +174,12 @@ export function OrdersList() {
           onDateSortChange={setDateSort}
         />
 
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="mb-4">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="mb-8">
           <OrderTabs activeTab={activeTab} onTabChange={setActiveTab} counts={orderCounts} />
 
           {firstOrder && <OrderProgressTracker currentStatus={firstOrder.status} />}
 
-          <TabsContent value={activeTab} className="mt-4">
+          <TabsContent value={activeTab} className="mt-8">
             {filteredAndSortedOrders.length === 0 ? (
               <motion.div
                 initial={{ opacity: 0 }}
@@ -215,7 +215,7 @@ export function OrdersList() {
                 </div>
               </motion.div>
             ) : (
-              <div className="flex flex-col gap-3">
+              <div className="flex flex-col gap-6">
                 {filteredAndSortedOrders.map((order: Order, index: number) => (
                   <OrderCard key={order.id} order={order} index={index} />
                 ))}
