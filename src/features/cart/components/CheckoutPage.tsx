@@ -18,9 +18,11 @@ import { useGetAddressesQuery } from '@/services/addresses'
 import type { Address } from '@/services/addresses/types'
 import { AddressDisplay } from './AddressDisplay'
 import { AddressSelectionDialog } from './AddressSelectionDialog'
+import { cartApi } from '@/services/cart'
+import { useDispatch } from 'react-redux'
 
 interface CheckoutFormData {
-  paymentMethod: 'cod' | 'bank_transfer' | 'credit_card' | 'e_wallet'
+  paymentMethod: 'cod' | 'bank_transfer'
   addressId?: string
   customerNotes: string
 }
@@ -30,6 +32,7 @@ const CheckoutPage: React.FC = () => {
   const { cart, isLoadingCart, clearCart } = useCartApi()
   const { checkoutFromCart } = useOrders()
   const { createPayment } = usePayment()
+  const dispatch = useDispatch()
   const { colors } = useTheme()
   const {
     data: addressesData,
@@ -153,6 +156,12 @@ const CheckoutPage: React.FC = () => {
 
       const order = await checkoutFromCart(checkoutPayload)
 
+      // Clear sessionStorage
+      sessionStorage.removeItem('selectedCartItems')
+
+      // ✅ Invalidate cart cache để làm mới giỏ hàng
+      dispatch(cartApi.util.invalidateTags(['Cart']))
+
       // Clear selected items from sessionStorage after successful checkout
       if (typeof window !== 'undefined') {
         sessionStorage.removeItem('selectedCartItems')
@@ -219,14 +228,6 @@ const CheckoutPage: React.FC = () => {
       value: 'bank_transfer',
       label: 'Chuyển khoản ngân hàng (PayOS)',
     },
-    {
-      value: 'credit_card',
-      label: 'Thẻ tín dụng/Ghi nợ',
-    },
-    {
-      value: 'e_wallet',
-      label: 'Ví điện tử',
-    },
   ]
 
   // Trạng thái loading
@@ -271,14 +272,12 @@ const CheckoutPage: React.FC = () => {
   }
 
   // Nếu có selectedCartItemIds nhưng không có item nào match, redirect về cart
-  if (selectedCartItemIds.length > 0 && itemsToCheckout.length === 0) {
-    // Clear invalid selection and redirect
-    if (typeof window !== 'undefined') {
+  useEffect(() => {
+    if (selectedCartItemIds.length > 0 && itemsToCheckout.length === 0 && !isLoadingCart) {
       sessionStorage.removeItem('selectedCartItems')
+      router.push('/orders')
     }
-    router.push('/cart')
-    return null
-  }
+  }, [selectedCartItemIds.length, itemsToCheckout.length, isLoadingCart, router])
 
   // Giao diện chính
   return (

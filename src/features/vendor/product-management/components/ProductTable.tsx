@@ -167,13 +167,10 @@ export function ProductTable({ products, onView, onEdit, onDelete, isLoading }: 
                   />
                   <div>
                     <p className="font-medium text-foreground">{product.name}</p>
-                    {product.variants && product.variants.length > 0 ? (
-                      <p className="text-xs text-muted-foreground">
-                        SKU: {product.variants[0].sku}
-                        {product.variants.length > 1 && ` (+${product.variants.length - 1} variants)`}
-                      </p>
+                    {product.slug ? (
+                      <p className="text-xs text-muted-foreground">Slug: {product.slug}</p>
                     ) : (
-                      <p className="text-xs text-muted-foreground">Không có SKU</p>
+                      <p className="text-xs text-muted-foreground">Không có slug</p>
                     )}
                   </div>
                 </div>

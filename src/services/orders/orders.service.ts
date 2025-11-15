@@ -112,6 +112,15 @@ export const ordersApi = createApi({
         body,
       }),
       invalidatesTags: ['Order'],
+      async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+        try {
+          await queryFulfilled
+          // Invalidate cart cache after successful checkout
+          dispatch({ type: 'cartApi/invalidateTags', payload: ['Cart'] })
+        } catch (error) {
+          // Error handled by mutation
+        }
+      },
     }),
 
     // Get all orders (user's orders)

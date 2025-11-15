@@ -46,11 +46,19 @@ const translatePaymentStatus = (status: string): string => {
 }
 
 export const TransactionCharts: React.FC<TransactionChartsProps> = ({ analytics }) => {
+  const { colors } = useTheme()
+
   if (!analytics) {
     return (
       <div className="space-y-6">
-        <Card className="p-6">
-          <div className="h-64 bg-gray-200 animate-pulse rounded"></div>
+        <Card
+          className="p-6"
+          style={{ background: colors.cardBackground, borderColor: colors.border }}
+        >
+          <div
+            className="h-64 animate-pulse rounded"
+            style={{ background: colors.cardBackgroundSecondary }}
+          ></div>
         </Card>
       </div>
     )
@@ -59,7 +67,6 @@ export const TransactionCharts: React.FC<TransactionChartsProps> = ({ analytics 
   const byDate = analytics.byDate || []
   const byType = analytics.byType || []
   const byStatus = analytics.byStatus || []
-  const { colors } = useTheme()
 
   // Format date for display
   const formatDate = (date: string) => {
@@ -74,23 +81,36 @@ export const TransactionCharts: React.FC<TransactionChartsProps> = ({ analytics 
   return (
     <div className="space-y-6">
       {/* Transaction Amount Over Time */}
-      <Card className="p-6">
-        <h3 className="text-xl font-bold " style={{ color: colors.text }}>
+      <Card
+        className="p-6 border-2"
+        style={{ background: colors.cardBackground, borderColor: colors.border }}
+      >
+        <h3 className="text-xl font-bold mb-6" style={{ color: colors.text }}>
           Biểu đồ giao dịch theo thời gian
         </h3>
         <ResponsiveContainer width="100%" height={300}>
           <LineChart data={byDate}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="date" tickFormatter={formatDate} style={{ fontSize: '12px' }} />
+            <CartesianGrid strokeDasharray="3 3" stroke={colors.border} />
+            <XAxis
+              dataKey="date"
+              tickFormatter={formatDate}
+              style={{ fontSize: '12px', fill: colors.textSecondary }}
+            />
             <YAxis
               tickFormatter={(value) => `${(value / 1000000).toFixed(1)}M`}
-              style={{ fontSize: '12px' }}
+              style={{ fontSize: '12px', fill: colors.textSecondary }}
             />
             <Tooltip
               formatter={(value: number) => `${value.toLocaleString('vi-VN')} VND`}
               labelFormatter={(label) => `Ngày: ${formatDate(label)}`}
+              contentStyle={{
+                background: colors.cardBackground,
+                border: `1px solid ${colors.border}`,
+                borderRadius: '8px',
+                color: colors.text,
+              }}
             />
-            <Legend />
+            <Legend wrapperStyle={{ color: colors.text }} />
             <Line
               type="monotone"
               dataKey="successfulAmount"
@@ -117,20 +137,33 @@ export const TransactionCharts: React.FC<TransactionChartsProps> = ({ analytics 
       </Card>
 
       {/* Transaction Count Over Time */}
-      <Card className="p-6">
-        <h3 className="text-xl font-bold " style={{ color: colors.text }}>
+      <Card
+        className="p-6 border-2"
+        style={{ background: colors.cardBackground, borderColor: colors.border }}
+      >
+        <h3 className="text-xl font-bold mb-6" style={{ color: colors.text }}>
           Số lượng giao dịch theo thời gian
         </h3>
         <ResponsiveContainer width="100%" height={300}>
           <BarChart data={byDate}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="date" tickFormatter={formatDate} style={{ fontSize: '12px' }} />
-            <YAxis style={{ fontSize: '12px' }} />
+            <CartesianGrid strokeDasharray="3 3" stroke={colors.border} />
+            <XAxis
+              dataKey="date"
+              tickFormatter={formatDate}
+              style={{ fontSize: '12px', fill: colors.textSecondary }}
+            />
+            <YAxis style={{ fontSize: '12px', fill: colors.textSecondary }} />
             <Tooltip
               formatter={(value: number) => `${value} giao dịch`}
               labelFormatter={(label) => `Ngày: ${formatDate(label)}`}
+              contentStyle={{
+                background: colors.cardBackground,
+                border: `1px solid ${colors.border}`,
+                borderRadius: '8px',
+                color: colors.text,
+              }}
             />
-            <Legend />
+            <Legend wrapperStyle={{ color: colors.text }} />
             <Bar dataKey="successfulCount" fill="#10b981" name="Thành công" />
             <Bar dataKey="pendingCount" fill="#f59e0b" name="Đang chờ" />
             <Bar dataKey="failedCount" fill="#ef4444" name="Thất bại" />
@@ -140,8 +173,11 @@ export const TransactionCharts: React.FC<TransactionChartsProps> = ({ analytics 
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Transactions by Payment Type */}
-        <Card className="p-6">
-          <h3 className="text-xl font-bold" style={{ color: colors.text }}>
+        <Card
+          className="p-6 border-2"
+          style={{ background: colors.cardBackground, borderColor: colors.border }}
+        >
+          <h3 className="text-xl font-bold mb-6" style={{ color: colors.text }}>
             Giao dịch theo loại thanh toán
           </h3>
           <ResponsiveContainer width="100%" height={300}>
@@ -164,28 +200,47 @@ export const TransactionCharts: React.FC<TransactionChartsProps> = ({ analytics 
                   <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                 ))}
               </Pie>
-              <Tooltip formatter={(value: number) => `${value.toLocaleString('vi-VN')} VND`} />
+              <Tooltip
+                formatter={(value: number) => `${value.toLocaleString('vi-VN')} VND`}
+                contentStyle={{
+                  background: colors.cardBackground,
+                  border: `1px solid ${colors.border}`,
+                  borderRadius: '8px',
+                  color: colors.text,
+                }}
+              />
             </PieChart>
           </ResponsiveContainer>
         </Card>
 
         {/* Transactions by Status */}
-        <Card className="p-6">
-          <h3 className="text-xl font-bold mb-6 text-gray-900">Giao dịch theo trạng thái</h3>
+        <Card
+          className="p-6 border-2"
+          style={{ background: colors.cardBackground, borderColor: colors.border }}
+        >
+          <h3 className="text-xl font-bold mb-6" style={{ color: colors.text }}>
+            Giao dịch theo trạng thái
+          </h3>
           <ResponsiveContainer width="100%" height={300}>
             <BarChart data={byStatus} layout="vertical">
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis type="number" style={{ fontSize: '12px' }} />
+              <CartesianGrid strokeDasharray="3 3" stroke={colors.border} />
+              <XAxis type="number" style={{ fontSize: '12px', fill: colors.textSecondary }} />
               <YAxis
                 dataKey="status"
                 type="category"
-                style={{ fontSize: '12px' }}
+                style={{ fontSize: '12px', fill: colors.textSecondary }}
                 width={100}
                 tickFormatter={translatePaymentStatus}
               />
               <Tooltip
                 formatter={(value: number) => `${value.toLocaleString('vi-VN')} VND`}
                 labelFormatter={(label) => `Trạng thái: ${translatePaymentStatus(label)}`}
+                contentStyle={{
+                  background: colors.cardBackground,
+                  border: `1px solid ${colors.border}`,
+                  borderRadius: '8px',
+                  color: colors.text,
+                }}
               />
               <Bar dataKey="amount" fill="#3b82f6" />
             </BarChart>

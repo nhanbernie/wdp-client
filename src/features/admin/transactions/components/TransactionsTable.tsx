@@ -5,6 +5,7 @@ import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import type { Transaction, PaymentStatus } from '../types'
 import { format } from 'date-fns'
+import { useTheme } from '@/contexts/ThemeContext'
 
 // Helper function to translate payment method to Vietnamese
 const translatePaymentMethod = (method: string): string => {
@@ -32,83 +33,143 @@ const getStatusBadge = (status: PaymentStatus) => {
   }
 
   const config = statusConfig[status] || statusConfig.PENDING
-  return (
-    <Badge className={config.className}>{config.label}</Badge>
-  )
+  return <Badge className={config.className}>{config.label}</Badge>
 }
 
 export const TransactionsTable: React.FC<TransactionsTableProps> = ({
   transactions,
   onViewDetails,
 }) => {
+  const { colors } = useTheme()
+
   if (transactions.length === 0) {
     return (
-      <Card className="p-8 text-center">
-        <p className="text-gray-500">Không có giao dịch nào</p>
+      <Card
+        className="p-8 text-center"
+        style={{ background: colors.cardBackground, borderColor: colors.border }}
+      >
+        <p style={{ color: colors.textSecondary }}>Không có giao dịch nào</p>
       </Card>
     )
   }
 
   return (
-    <Card className="overflow-hidden">
+    <Card
+      className="overflow-hidden border-2"
+      style={{ background: colors.cardBackground, borderColor: colors.border }}
+    >
       <div className="overflow-x-auto">
         <table className="w-full">
-          <thead className="bg-gray-50 border-b-2 border-gray-200">
+          <thead
+            style={{
+              background: colors.cardBackgroundSecondary,
+              borderBottomWidth: '2px',
+              borderBottomColor: colors.border,
+            }}
+          >
             <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th
+                className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                style={{ color: colors.textSecondary }}
+              >
                 Mã giao dịch
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th
+                className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                style={{ color: colors.textSecondary }}
+              >
                 Mã đơn hàng
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th
+                className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                style={{ color: colors.textSecondary }}
+              >
                 Số tiền
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th
+                className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                style={{ color: colors.textSecondary }}
+              >
                 Phương thức
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th
+                className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                style={{ color: colors.textSecondary }}
+              >
                 Trạng thái
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th
+                className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                style={{ color: colors.textSecondary }}
+              >
                 Ngày tạo
               </th>
               {onViewDetails && (
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th
+                  className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                  style={{ color: colors.textSecondary }}
+                >
                   Thao tác
                 </th>
               )}
             </tr>
           </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
+          <tbody style={{ background: colors.cardBackground }}>
             {transactions.map((transaction) => (
               <tr
                 key={transaction.id}
-                className="hover:bg-gray-50 transition-colors"
+                className="transition-colors"
+                style={{
+                  borderBottomWidth: '1px',
+                  borderBottomColor: colors.border,
+                  background: colors.cardBackground,
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = colors.hoverBackground
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = colors.cardBackground
+                }}
               >
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                <td
+                  className="px-6 py-4 whitespace-nowrap text-sm font-medium"
+                  style={{ color: colors.text }}
+                >
                   {transaction.id.slice(0, 8)}...
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                <td
+                  className="px-6 py-4 whitespace-nowrap text-sm"
+                  style={{ color: colors.textSecondary }}
+                >
                   {transaction.orderCode || transaction.orderId.slice(0, 8)}
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-900">
+                <td
+                  className="px-6 py-4 whitespace-nowrap text-sm font-semibold"
+                  style={{ color: colors.text }}
+                >
                   {transaction.amount.toLocaleString('vi-VN')} {transaction.currency}
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                <td
+                  className="px-6 py-4 whitespace-nowrap text-sm"
+                  style={{ color: colors.textSecondary }}
+                >
                   {translatePaymentMethod(transaction.paymentMethod)}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
                   {getStatusBadge(transaction.status)}
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                <td
+                  className="px-6 py-4 whitespace-nowrap text-sm"
+                  style={{ color: colors.textSecondary }}
+                >
                   {format(new Date(transaction.createdAt), 'dd/MM/yyyy HH:mm')}
                 </td>
                 {onViewDetails && (
                   <td className="px-6 py-4 whitespace-nowrap text-sm">
                     <button
                       onClick={() => onViewDetails(transaction.id)}
-                      className="text-blue-600 hover:text-blue-800 font-medium"
+                      className="font-medium hover:underline"
+                      style={{ color: colors.accent }}
                     >
                       Xem chi tiết
                     </button>
@@ -122,5 +183,3 @@ export const TransactionsTable: React.FC<TransactionsTableProps> = ({
     </Card>
   )
 }
-
-
