@@ -78,6 +78,7 @@ export function OrdersList() {
       processing: orders.filter((o: Order) => o.status === OrderStatus.PROCESSING).length,
       shipping: orders.filter((o: Order) => o.status === OrderStatus.SHIPPING).length,
       delivered: orders.filter((o: Order) => o.status === OrderStatus.DELIVERED).length,
+      completed: orders.filter((o: Order) => o.status === OrderStatus.COMPLETED).length,
       cancelled: orders.filter((o: Order) => o.status === OrderStatus.CANCELLED).length,
     }
   }, [orders])
@@ -125,10 +126,9 @@ export function OrdersList() {
               className="text-center max-w-md"
             >
               <div
-                className="p-6 rounded-lg border"
+                className="p-6 rounded-lg"
                 style={{
                   backgroundColor: colors.cardBackground,
-                  borderColor: colors.border,
                 }}
               >
                 <div
@@ -162,7 +162,7 @@ export function OrdersList() {
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: colors.background }}>
-      <div className="max-w-7xl mx-auto relative z-10 py-6 px-6">
+      <div className="max-w-7xl mx-auto relative z-10 py-4 px-6">
         <OrderListHeader totalOrders={orders.length} />
 
         <OrderSearchAndFilter
@@ -174,12 +174,12 @@ export function OrdersList() {
           onDateSortChange={setDateSort}
         />
 
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="mb-6">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="mb-4">
           <OrderTabs activeTab={activeTab} onTabChange={setActiveTab} counts={orderCounts} />
 
           {firstOrder && <OrderProgressTracker currentStatus={firstOrder.status} />}
 
-          <TabsContent value={activeTab} className="mt-6">
+          <TabsContent value={activeTab} className="mt-4">
             {filteredAndSortedOrders.length === 0 ? (
               <motion.div
                 initial={{ opacity: 0 }}
@@ -187,10 +187,9 @@ export function OrdersList() {
                 className="text-center py-16"
               >
                 <div
-                  className="p-8 rounded-lg border inline-block"
+                  className="p-6 rounded-xl inline-block"
                   style={{
                     backgroundColor: colors.cardBackground,
-                    borderColor: colors.border,
                   }}
                 >
                   <div className="flex items-center justify-center mb-4">
@@ -216,7 +215,7 @@ export function OrdersList() {
                 </div>
               </motion.div>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="flex flex-col gap-3">
                 {filteredAndSortedOrders.map((order: Order, index: number) => (
                   <OrderCard key={order.id} order={order} index={index} />
                 ))}

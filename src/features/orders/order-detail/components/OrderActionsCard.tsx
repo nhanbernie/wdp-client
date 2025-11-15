@@ -4,8 +4,10 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { RotateCcw, MessageCircle, Download, Zap, Loader2 } from 'lucide-react'
 import { useTheme } from '@/contexts/ThemeContext'
+import type { Order } from '@/services/orders/types'
 
 interface OrderActionsCardProps {
+  order: Order
   onReorder?: () => void
   onContactSupport?: () => void
   onDownloadInvoice?: () => void
@@ -13,12 +15,19 @@ interface OrderActionsCardProps {
 }
 
 export function OrderActionsCard({
+  order,
   onReorder,
   onContactSupport,
   onDownloadInvoice,
   isReordering = false,
 }: OrderActionsCardProps) {
   const { colors } = useTheme()
+
+  const handleDownloadInvoice = () => {
+    if (onDownloadInvoice) {
+      onDownloadInvoice()
+    }
+  }
 
   return (
     <Card
@@ -61,18 +70,7 @@ export function OrderActionsCard({
           Mua lại
         </Button>
         <Button
-          onClick={onContactSupport}
-          className="w-full h-10 text-sm rounded-lg transition-opacity hover:opacity-80"
-          style={{
-            backgroundColor: colors.textSecondary,
-            color: colors.background,
-          }}
-        >
-          <MessageCircle className="h-4 w-4 mr-2" />
-          Liên hệ hỗ trợ
-        </Button>
-        <Button
-          onClick={onDownloadInvoice}
+          onClick={handleDownloadInvoice}
           className="w-full h-10 text-sm rounded-lg transition-opacity hover:opacity-80"
           style={{
             backgroundColor: colors.success,

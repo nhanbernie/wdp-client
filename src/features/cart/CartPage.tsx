@@ -7,12 +7,14 @@ import { CartEmpty, CartSummary } from './components'
 import ApiCartItem from './components/ApiCartItem'
 import { useCartApi } from './hooks'
 import { useTheme } from '@/contexts/ThemeContext'
+import { useToast } from '@/hooks/useToast'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 
 const CartPage: React.FC = () => {
   const { cart, isLoadingCart, updateQuantity, removeFromCart, clearCart } = useCartApi()
   const { colors } = useTheme()
+  const toast = useToast()
   const router = useRouter()
 
   const [selectedItems, setSelectedItems] = useState<string[]>([])
@@ -52,7 +54,7 @@ const CartPage: React.FC = () => {
   const handleCheckout = () => {
     if (selectedItems.length === 0) {
       // If no items selected, show message or select all
-      alert('Vui lòng chọn ít nhất một sản phẩm để thanh toán')
+      toast.warning('Vui lòng chọn ít nhất một sản phẩm để thanh toán')
       return
     }
     // Store selected items in sessionStorage to pass to checkout page

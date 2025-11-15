@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button'
 import { Eye, Sparkles, Calendar } from 'lucide-react'
 import { statusConfig } from '../constants/order-status.constant'
 import type { Order } from '@/services/orders/types'
+import { OrderStatus } from '@/services/orders/types'
 import { useTheme } from '@/contexts/ThemeContext'
 
 interface OrderCardProps {
@@ -16,10 +17,33 @@ interface OrderCardProps {
   index: number
 }
 
+// Helper function to get status colors
+const getStatusColor = (status: OrderStatus) => {
+  switch (status) {
+    case OrderStatus.PENDING:
+      return { primary: '#F59E0B', secondary: '#F97316' } // amber/orange
+    case OrderStatus.PROCESSING:
+    case OrderStatus.ADMIN_CONFIRMED:
+      return { primary: '#3B82F6', secondary: '#6366F1' } // blue/indigo
+    case OrderStatus.SHIPPING:
+      return { primary: '#6366F1', secondary: '#A855F7' } // indigo/purple
+    case OrderStatus.DELIVERED:
+    case OrderStatus.COMPLETED:
+      return { primary: '#10B981', secondary: '#059669' } // emerald/green
+    case OrderStatus.CANCELLED:
+      return { primary: '#EF4444', secondary: '#F43F5E' } // red/rose
+    case OrderStatus.REFUNDED:
+      return { primary: '#A855F7', secondary: '#D946EF' } // purple/fuchsia
+    default:
+      return { primary: '#F4A800', secondary: '#F56F10' } // default accent
+  }
+}
+
 export function OrderCard({ order, index }: OrderCardProps) {
   const { colors } = useTheme()
   const config = statusConfig[order.status]
   const StatusIcon = config.icon
+  const statusColors = getStatusColor(order.status)
 
   return (
     <motion.div
@@ -45,8 +69,8 @@ export function OrderCard({ order, index }: OrderCardProps) {
           <div className="flex justify-between items-start">
             <div className="flex-1">
               <div className="flex items-center gap-3 mb-2">
-                <div className="p-2 rounded-lg" style={{ backgroundColor: `${colors.accent}15` }}>
-                  <StatusIcon className="h-4 w-4" style={{ color: colors.accent }} />
+                <div className="p-2 rounded-lg" style={{ backgroundColor: `${statusColors.primary}15` }}>
+                  <StatusIcon className="h-4 w-4" style={{ color: statusColors.primary }} />
                 </div>
                 <div>
                   <p className="text-sm font-medium" style={{ color: colors.text }}>
@@ -62,10 +86,11 @@ export function OrderCard({ order, index }: OrderCardProps) {
             <div
               className="px-3 py-1 rounded-lg"
               style={{
-                backgroundColor: `${colors.accent}15`,
+                backgroundColor: `${statusColors.primary}20`,
+                boxShadow: `0 2px 8px ${statusColors.primary}20`,
               }}
             >
-              <span className="text-xs font-medium" style={{ color: colors.accent }}>
+              <span className="text-xs font-semibold" style={{ color: statusColors.primary }}>
                 {config.label}
               </span>
             </div>

@@ -64,11 +64,11 @@ export const statusConfig: Record<OrderStatus, StatusConfig> = {
     ringColor: 'ring-emerald-500/30',
   },
   [OrderStatus.COMPLETED]: {
-    label: 'Hoàn thành',
+    label: 'Hoàn thành đơn hàng',
     className:
       'bg-gradient-to-r from-emerald-500 via-green-500 to-emerald-600 hover:shadow-xl border-2 border-white/50',
     icon: CheckCircle,
-    step: 4,
+    step: 5,
     bgColor: 'bg-gradient-to-br from-emerald-50 via-green-50 to-emerald-50',
     progressColor: 'bg-gradient-to-r from-emerald-500 to-green-600',
     ringColor: 'ring-emerald-500/30',
@@ -100,4 +100,5 @@ export const orderSteps = [
   { id: 2, name: 'Đang xử lý', status: OrderStatus.PROCESSING },
   { id: 3, name: 'Đang giao', status: OrderStatus.SHIPPING },
   { id: 4, name: 'Đã giao', status: OrderStatus.DELIVERED },
+  { id: 5, name: 'Hoàn thành đơn hàng', status: OrderStatus.COMPLETED },
 ]
