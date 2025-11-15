@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import {
   Minus,
@@ -17,18 +17,35 @@ import {
 } from 'lucide-react'
 import { useCartApi } from '@/features/cart/hooks'
 import { RequestQuoteButton } from '@/features/quote-requests/components'
+import { useToast } from '@/hooks/useToast'
 import { motion } from 'framer-motion'
 
 interface ProductQuantityProps {
   stock?: number
   colors: any
   productId?: string
+  variantId?: string
+  hasVariants?: boolean
+  selectedVariant?: { id: string; sku: string; price?: number; stockQty: number } | null
 }
 
-export const ProductQuantity: React.FC<ProductQuantityProps> = ({ stock, colors, productId }) => {
+export const ProductQuantity: React.FC<ProductQuantityProps> = ({ 
+  stock, 
+  colors, 
+  productId, 
+  variantId,
+  hasVariants = false,
+  selectedVariant 
+}) => {
   const [quantity, setQuantity] = useState(1)
   const [isFavorite, setIsFavorite] = useState(false)
   const { addToCart, isAddingToCart } = useCartApi()
+  const toast = useToast()
+
+  // Reset quantity khi variant thay đổi hoặc stock thay đổi
+  useEffect(() => {
+    setQuantity(1)
+  }, [variantId, stock])
 
   const handleQuantityChange = (change: number) => {
     setQuantity((prev) => Math.max(1, Math.min(stock ?? 9999, prev + change)))
@@ -37,11 +54,21 @@ export const ProductQuantity: React.FC<ProductQuantityProps> = ({ stock, colors,
   const handleAddToCart = async () => {
     if (!productId) {
       console.error('Product ID is required to add to cart')
+      toast.error('Lỗi', 'Không thể thêm sản phẩm vào giỏ hàng')
       return
     }
 
-    await addToCart(productId, quantity)
+    // Nếu product có variants nhưng chưa chọn variant, không cho add to cart
+    if (hasVariants && !variantId) {
+      toast.error('Vui lòng chọn biến thể', 'Bạn cần chọn biến thể sản phẩm trước khi thêm vào giỏ hàng')
+      return
+    }
+
+    await addToCart(productId, quantity, variantId)
   }
+
+  // Disable button nếu có variants nhưng chưa chọn variant
+  const isAddToCartDisabled = !productId || isAddingToCart || (hasVariants && !variantId)
 
   return (
     <motion.div
@@ -110,20 +137,31 @@ export const ProductQuantity: React.FC<ProductQuantityProps> = ({ stock, colors,
       {/* Action Buttons */}
       <div className="space-y-2">
         <Button
-          className="w-full text-white rounded-lg h-11 text-sm font-bold shadow-md transition-all duration-200 hover:shadow-lg"
+          className="w-full text-white rounded-lg h-11 text-sm font-bold shadow-md transition-all duration-200 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
           size="lg"
           onClick={handleAddToCart}
-          disabled={isAddingToCart || !productId}
-          style={{ backgroundColor: colors.accent }}
+          disabled={isAddToCartDisabled}
+          style={{ 
+            backgroundColor: isAddToCartDisabled ? colors.textSecondary : colors.accent 
+          }}
           onMouseEnter={(e) => {
-            e.currentTarget.style.backgroundColor = colors.accentSecondary
+            if (!isAddToCartDisabled) {
+              e.currentTarget.style.backgroundColor = colors.accentSecondary
+            }
           }}
           onMouseLeave={(e) => {
-            e.currentTarget.style.backgroundColor = colors.accent
+            if (!isAddToCartDisabled) {
+              e.currentTarget.style.backgroundColor = colors.accent
+            }
           }}
+          title={hasVariants && !variantId ? 'Vui lòng chọn biến thể sản phẩm' : ''}
         >
           <ShoppingCart className="h-4 w-4 mr-2" />
-          {isAddingToCart ? 'Đang thêm...' : 'Thêm vào giỏ hàng'}
+          {isAddingToCart 
+            ? 'Đang thêm...' 
+            : hasVariants && !variantId 
+            ? 'Vui lòng chọn biến thể' 
+            : 'Thêm vào giỏ hàng'}
         </Button>
 
         {productId && <RequestQuoteButton productId={productId} />}

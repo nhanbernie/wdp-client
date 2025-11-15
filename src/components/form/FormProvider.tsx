@@ -39,6 +39,14 @@ const FormProvider = <T extends FieldValues = FieldValues>({
     }),
   })
 
+  // 🔒 Reset form only once when defaultValues are provided (for edit mode)
+  useEffect(() => {
+    if (defaultValues && Object.keys(defaultValues).length > 0) {
+      methods.reset(defaultValues, { keepDefaultValues: true })
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []) // Empty dependency array = run once on mount
+
   // Auto-scroll to first error when form is submitted with errors
   useEffect(() => {
     const { errors, isSubmitted, isSubmitSuccessful } = methods.formState
@@ -50,6 +58,7 @@ const FormProvider = <T extends FieldValues = FieldValues>({
         scrollToError(firstErrorKey)
       }, 100)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     methods.formState.isSubmitted,
     methods.formState.isSubmitSuccessful,

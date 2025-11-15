@@ -189,35 +189,41 @@ export const ProductOptionsField: React.FC<ProductOptionsFieldProps> = ({ name =
                     <div>
                       <Label className="mb-2 block">Các giá trị đã thêm:</Label>
                       <div className="flex flex-wrap gap-2">
-                        {option.values.map((value, valueIndex) => (
-                          <Badge
-                            key={valueIndex}
-                            variant="secondary"
-                            className="gap-2 pr-1 text-sm group"
-                            style={{
-                              backgroundImage: 'none',
-                              backgroundColor: colors.accent + '20',
-                              color: colors.accent,
-                              borderColor: 'transparent',
-                            }}
-                          >
-                            {value}
-                            <button
-                              type="button"
-                              onClick={() => handleRemoveValue(optionIndex, valueIndex)}
-                              className="ml-1 hover:bg-destructive/20 rounded-full p-0.5 transition-colors"
+                        {option.values.map((value, valueIndex) => {
+                          // Handle both string and object formats
+                          const displayValue =
+                            typeof value === 'string' ? value : value?.value || ''
+
+                          return (
+                            <Badge
+                              key={valueIndex}
+                              variant="secondary"
+                              className="gap-2 pr-1 text-sm group"
+                              style={{
+                                backgroundImage: 'none',
+                                backgroundColor: colors.accent + '20',
+                                color: colors.accent,
+                                borderColor: 'transparent',
+                              }}
                             >
-                              <X className="h-3 w-3" />
-                            </button>
-                          </Badge>
-                        ))}
+                              {displayValue}
+                              <button
+                                type="button"
+                                onClick={() => handleRemoveValue(optionIndex, valueIndex)}
+                                className="ml-1 hover:bg-destructive/20 rounded-full p-0.5 transition-colors"
+                              >
+                                <X className="h-3 w-3" />
+                              </button>
+                            </Badge>
+                          )
+                        })}
                       </div>
                     </div>
                   )}
 
                   {(!option.values || option.values.length === 0) && (
                     <p className="text-sm italic" style={{ color: colors.textSecondary }}>
-                      Nhấn Enter hoặc click "Thêm" để thêm giá trị
+                      Nhấn Enter hoặc click &quot;Thêm&quot; để thêm giá trị
                     </p>
                   )}
                 </CardContent>

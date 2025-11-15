@@ -33,7 +33,7 @@ const SearchBarDropdown = ({ productList, loading, query, onClose }: Props) => {
             onClick={onClose}
             className="block px-4 py-2 text-center text-sm font-medium text-[var(--primary)] hover:bg-[var(--primary)]/10 transition-colors border-t border-[var(--border)]"
           >
-            Xem tất cả kết quả cho "{query}"
+            Xem tất cả kết quả cho &quot;{query}&quot;
           </Link>
         </>
       ) : (

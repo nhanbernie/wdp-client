@@ -1,14 +1,17 @@
 'use client'
 
+import React from 'react'
+import Link from 'next/link'
 import { useTheme } from '@/contexts/ThemeContext'
 import { useProductDetail } from '../hooks/useProductDetail'
-import { ProductDetailDto } from '../types/products.types'
+import { ProductDetailDto, ProductVariant } from '../types/products.types'
 
 import { Breadcrumb } from './Breadcrumb'
 import { ProductGallery } from './ProductGallery'
 import { ProductInfo } from './ProductInfo'
 import { ProductQuantity } from './ProductQuantity'
 import { ProductTabs } from './ProductTabs'
+import { ProductVariants } from './ProductVariants'
 import { AIRecommendationSection } from './AIRecommendationSection'
 import { VendorInfo } from '@/features/vendors'
 
@@ -19,6 +22,7 @@ interface ProductDetailProps {
 const ProductDetail: React.FC<ProductDetailProps> = ({ id }) => {
   const { product, loading, error } = useProductDetail(id)
   const { colors, brandColors } = useTheme()
+  const [selectedVariant, setSelectedVariant] = React.useState<ProductVariant | null>(null)
 
   if (loading)
     return (
@@ -151,7 +155,7 @@ const ProductDetail: React.FC<ProductDetailProps> = ({ id }) => {
             >
               Xem danh mục
             </a>
-            <a
+            <Link
               href="/"
               className="flex-1 px-6 py-3 font-bold rounded-xl transition-all duration-300"
               style={{
@@ -166,7 +170,7 @@ const ProductDetail: React.FC<ProductDetailProps> = ({ id }) => {
               }}
             >
               Về trang chủ
-            </a>
+            </Link>
           </div>
         </div>
       </div>
@@ -208,11 +212,31 @@ const ProductDetail: React.FC<ProductDetailProps> = ({ id }) => {
               salePrice={productData.salePrice}
               colors={colors}
               brandColors={brandColors}
+              selectedVariant={selectedVariant ? {
+                sku: selectedVariant.sku,
+                price: selectedVariant.price,
+                stockQty: selectedVariant.stockQty,
+              } : undefined}
             />
+            
+            {/* Variants Section */}
+            {productData.variants && productData.variants.length > 0 && (
+              <ProductVariants
+                variants={productData.variants}
+                options={productData.options}
+                colors={colors}
+                onVariantSelect={(variant) => setSelectedVariant(variant)}
+                selectedVariantId={selectedVariant?.id}
+              />
+            )}
+            
             <ProductQuantity
-              stock={productData.stock?.quantity}
+              stock={selectedVariant?.stockQty || productData.stock?.quantity}
               colors={colors}
               productId={productData.id}
+              variantId={selectedVariant?.id}
+              hasVariants={productData.variants && productData.variants.length > 0}
+              selectedVariant={selectedVariant}
             />
           </div>
         </div>
@@ -230,6 +254,7 @@ const ProductDetail: React.FC<ProductDetailProps> = ({ id }) => {
           description={productData.description}
           specs={productData.specs}
           colors={colors}
+          variants={productData.variants}
         />
         <AIRecommendationSection productId={id} />
       </main>

@@ -180,6 +180,21 @@ export default function ProductDetailPage() {
                     <label className="text-sm font-medium text-muted-foreground">Danh mục</label>
                     <p className="text-foreground mt-1">{product.category?.name || 'N/A'}</p>
                   </div>
+                  {product.variants && product.variants.length > 0 && (
+                    <div className="col-span-2">
+                      <label className="text-sm font-medium text-muted-foreground">SKU (Variants)</label>
+                      <div className="flex flex-wrap gap-2 mt-1">
+                        {product.variants.map((variant: any, idx: number) => (
+                          <span
+                            key={idx}
+                            className="px-2 py-1 text-xs font-semibold rounded bg-muted text-foreground"
+                          >
+                            {variant.sku}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </div>
               </CardContent>
             </Card>

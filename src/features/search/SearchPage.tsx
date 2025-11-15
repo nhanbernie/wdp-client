@@ -83,7 +83,7 @@ const SearchPage: React.FC = () => {
                     <>
                       Tìm kiếm cho:{' '}
                       <span className="font-bold" style={{ color: colors.accent }}>
-                        "{keyword}"
+                        &quot;{keyword}&quot;
                       </span>
                       {pagination && (
                         <span className="ml-2">- Tìm thấy {pagination.totalItems} sản phẩm</span>

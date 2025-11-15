@@ -9,7 +9,7 @@ import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { useRouter } from 'next/navigation'
-import { Product } from '@/services/vendor/vendor.types'
+import { Product, ProductVariant } from '@/services/vendor/vendor.types'
 import { useTheme } from '@/contexts/ThemeContext'
 
 interface ProductDetailPageProps {
@@ -236,7 +236,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                     <h3 className="font-semibold mb-2">Thông tin khác</h3>
                     <div className="grid grid-cols-2 gap-4 text-sm">
                       <div>
-                        <span className="text-muted-foreground">SKU:</span>
+                        <span className="text-muted-foreground">Slug:</span>
                         <span className="ml-2 font-medium">{product.slug}</span>
                       </div>
                       <div>
@@ -253,6 +253,18 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                         <span className="text-muted-foreground">Tiền tệ:</span>
                         <span className="ml-2 font-medium">{product.currency}</span>
                       </div>
+                      {product.variants && product.variants.length > 0 && (
+                        <div className="col-span-2">
+                          <span className="text-muted-foreground">SKU (Variants):</span>
+                          <div className="flex flex-wrap gap-2 mt-2">
+                            {product.variants.map((variant: ProductVariant, idx: number) => (
+                              <Badge key={idx} variant="secondary" className="text-xs">
+                                {variant.sku}
+                              </Badge>
+                            ))}
+                          </div>
+                        </div>
+                      )}
                     </div>
                   </div>
 
@@ -380,7 +392,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                 <CardContent>
                   {product.variants && product.variants.length > 0 ? (
                     <div className="space-y-3">
-                      {product.variants.map((variant, index) => (
+                      {product.variants.map((variant: ProductVariant, index: number) => (
                         <div key={index} className="border rounded-lg p-4">
                           <div className="flex items-center justify-between mb-3">
                             <div className="flex flex-wrap gap-2">

@@ -2,19 +2,21 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { RotateCcw, MessageCircle, Download, Zap } from 'lucide-react'
+import { RotateCcw, MessageCircle, Download, Zap, Loader2 } from 'lucide-react'
 import { useTheme } from '@/contexts/ThemeContext'
 
 interface OrderActionsCardProps {
   onReorder?: () => void
   onContactSupport?: () => void
   onDownloadInvoice?: () => void
+  isReordering?: boolean
 }
 
 export function OrderActionsCard({
   onReorder,
   onContactSupport,
   onDownloadInvoice,
+  isReordering = false,
 }: OrderActionsCardProps) {
   const { colors } = useTheme()
 
@@ -46,6 +48,7 @@ export function OrderActionsCard({
       >
         <Button
           onClick={onReorder}
+          disabled={isReordering}
           className="w-full h-10 text-sm rounded-lg transition-opacity hover:opacity-80"
           style={{
             backgroundColor: colors.accent,

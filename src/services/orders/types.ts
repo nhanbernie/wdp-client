@@ -144,3 +144,25 @@ export interface OrderStatisticsResponse {
   message: string;
   data: OrderStatistics;
 }
+
+export interface ReorderDto {
+  addToCart?: boolean;
+}
+
+export interface UnavailableItem {
+  productId: string;
+  variantId?: string;
+  productName: string;
+  reason: string;
+}
+
+export interface ReorderResponse {
+  success: boolean;
+  message: string;
+  data: {
+    cartItems?: any[];
+    addedCount?: number;
+    order?: Order;
+  };
+  unavailableItems?: UnavailableItem[];
+}
