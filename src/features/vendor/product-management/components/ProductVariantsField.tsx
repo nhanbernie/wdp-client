@@ -26,7 +26,7 @@ interface ProductVariant {
   options: { [key: string]: string }
   sku?: string
   price: number
-  stock: number
+  stockQty: number
   image?: string
 }
 
@@ -108,7 +108,7 @@ export const ProductVariantsField: React.FC<ProductVariantsFieldProps> = ({
         options: combo,
         sku: '',
         price: basePrice,
-        stock: 0,
+        stockQty: 0,
         image: '',
       })
     })
@@ -128,7 +128,7 @@ export const ProductVariantsField: React.FC<ProductVariantsFieldProps> = ({
       options: defaultOptions,
       sku: '',
       price: basePrice,
-      stock: 0,
+      stockQty: 0,
       image: '',
     })
   }
@@ -422,21 +422,25 @@ export const ProductVariantsField: React.FC<ProductVariantsFieldProps> = ({
                         id={`variant-stock-${variantIndex}`}
                         type="number"
                         placeholder="0"
-                        defaultValue={variant.stock || ''}
+                        defaultValue={variant.stockQty || ''}
                         onBlur={(e) =>
-                          handleVariantChange(variantIndex, 'stock', parseInt(e.target.value) || 0)
+                          handleVariantChange(
+                            variantIndex,
+                            'stockQty',
+                            parseInt(e.target.value) || 0,
+                          )
                         }
                         className="mt-1"
                         style={{
                           backgroundColor: colors.background,
-                          borderColor: (errors.variants as any)?.[variantIndex]?.stock
+                          borderColor: (errors.variants as any)?.[variantIndex]?.stockQty
                             ? colors.error
                             : colors.border,
                           color: colors.text,
                         }}
                       />
                       <ErrorMessage
-                        message={(errors.variants as any)?.[variantIndex]?.stock?.message}
+                        message={(errors.variants as any)?.[variantIndex]?.stockQty?.message}
                       />
                     </div>
                   </div>

@@ -142,6 +142,52 @@ export default function EditProductPageRoute() {
         }
       }
 
+      // Specs
+      if (data.specs && typeof data.specs === 'object' && Object.keys(data.specs).length > 0) {
+        formData.append('specs', JSON.stringify(data.specs))
+      }
+
+      // Badges
+      if (data.badges && Array.isArray(data.badges) && data.badges.length > 0) {
+        formData.append('badges', JSON.stringify(data.badges))
+      }
+
+      // Options
+      if (data.options && Array.isArray(data.options) && data.options.length > 0) {
+        const formattedOptions = data.options
+          .filter((opt) => opt.name && opt.values && opt.values.length > 0)
+          .map((opt) => ({
+            name: opt.name,
+            displayName: opt.displayName || opt.name,
+            values: Array.isArray(opt.values)
+              ? opt.values.map((v) => (typeof v === 'string' ? { value: v } : v))
+              : [],
+          }))
+        if (formattedOptions.length > 0) {
+          formData.append('options', JSON.stringify(formattedOptions))
+        }
+      }
+
+      // Variants
+      if (data.variants && Array.isArray(data.variants) && data.variants.length > 0) {
+        const formattedVariants = data.variants
+          .filter((v: any) => v.price && v.options)
+          .map((variant: any) => {
+            const formattedVariant: any = {
+              options: variant.options || {},
+              price: parseFloat(variant.price?.toString() || '0'),
+              stockQty: parseInt(variant.stockQty?.toString() || '0'),
+            }
+            if (variant.sku) formattedVariant.sku = variant.sku
+            if (variant.specs) formattedVariant.specs = variant.specs
+            if (variant.image) formattedVariant.image = variant.image
+            return formattedVariant
+          })
+        if (formattedVariants.length > 0) {
+          formData.append('variants', JSON.stringify(formattedVariants))
+        }
+      }
+
       await updateProduct({ id: productId, data: formData }).unwrap()
 
       // Show success modal with animation
