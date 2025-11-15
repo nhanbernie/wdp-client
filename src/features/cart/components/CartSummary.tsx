@@ -223,8 +223,9 @@ const CartSummary: React.FC<CartSummaryProps> = ({
           )}
         </div>
 
+        {/* NOTE: Comment feat Coupon */}
         {/* Coupon Section */}
-        <div className="mb-6">
+        {/* <div className="mb-6">
           {appliedCoupon ? (
             <motion.div
               initial={{ opacity: 0, height: 0 }}
@@ -348,7 +349,7 @@ const CartSummary: React.FC<CartSummaryProps> = ({
               </AnimatePresence>
             </div>
           )}
-        </div>
+        </div> */}
 
         {/* Total */}
         <div

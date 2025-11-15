@@ -10,6 +10,7 @@ import { productFormSchema } from './schemas/product.schema'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/contexts/AuthContext'
 import { useTheme } from '@/contexts/ThemeContext'
+import { toast } from 'sonner'
 
 interface ProductFormPageProps {
   mode: 'create' | 'edit'
@@ -45,11 +46,31 @@ export const ProductFormPage: React.FC<ProductFormPageProps> = ({
         values: option.values?.map((val) => (typeof val === 'string' ? val : val?.value || '')),
       }))
 
+      // ✅ Auto-calculate product stock from variants (NO VALIDATION, just calculate)
+      // Product stock = SUM of all variant stocks (read-only, auto-sync)
+      let calculatedProductStock = data.stock?.quantity || 0
+
+      if (data.variants && data.variants.length > 0) {
+        calculatedProductStock = data.variants.reduce(
+          (sum, variant) => sum + (variant.stockQty || 0),
+          0,
+        )
+
+        console.log(
+          `📊 Auto-calculated product stock: ${calculatedProductStock} (from ${data.variants.length} variants)`,
+        )
+      }
+
       // Add vendorId to the data and handle null values
       const dataWithVendorId = {
         ...data,
         vendorId: (user as any)?.vendorId || user?.id || '',
         salePrice: data.salePrice || undefined,
+        // ✅ Override product stock with calculated value from variants
+        stock: {
+          ...data.stock,
+          quantity: calculatedProductStock,
+        },
         // ✅ Backend expects arrays, send empty array if no data
         badges: data.badges && data.badges.length > 0 ? data.badges : [],
         specs: data.specs && Object.keys(data.specs).length > 0 ? data.specs : undefined,
