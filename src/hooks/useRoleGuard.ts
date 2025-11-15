@@ -60,7 +60,6 @@ export const useRoleGuard = () => {
       const success = await refreshTokenAndProfile()
 
       if (success) {
-        console.log('Token and profile refreshed successfully')
       } else {
         console.warn('Failed to refresh token and profile')
       }

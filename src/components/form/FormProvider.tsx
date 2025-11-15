@@ -107,17 +107,9 @@ const FormProvider = <T extends FieldValues = FieldValues>({
     if (!element && firstErrorKey.includes('.')) {
       const parts = firstErrorKey.split('.')
       element = document.querySelector(`[data-field="${parts[0]}"]`)
-      console.log(
-        `Step 5 - Parent field [data-field="${parts[0]}"]:`,
-        element ? '✓ Found' : '✗ Not found',
-      )
 
       if (!element) {
         element = document.querySelector(`[name="${parts.join('.')}"]`)
-        console.log(
-          `Step 5b - Full nested path [name="${parts.join('.')}"]:`,
-          element ? '✓ Found' : '✗ Not found',
-        )
       }
     }
 
@@ -125,10 +117,6 @@ const FormProvider = <T extends FieldValues = FieldValues>({
     if (!element && firstErrorKey.match(/\[\d+\]/)) {
       const baseField = firstErrorKey.split('[')[0]
       element = document.querySelector(`[data-field="${baseField}"]`)
-      console.log(
-        `Step 6 - Array field [data-field="${baseField}"]:`,
-        element ? '✓ Found' : '✗ Not found',
-      )
     }
 
     // 7. For top-level array fields like "options", "variants"
@@ -174,7 +162,6 @@ const FormProvider = <T extends FieldValues = FieldValues>({
         }
       }, 800)
     } else {
-      console.warn('⚠️ Could not find element for field:', firstErrorKey)
     }
   }
 

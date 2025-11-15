@@ -79,15 +79,12 @@ export const useCart = (
   );
 
   const saveForLater = useCallback((id: string) => {
-    console.log("Save for later:", id);
   }, []);
 
   const applyCoupon = useCallback((coupon: string) => {
-    console.log("Apply coupon:", coupon);
   }, []);
 
   const checkout = useCallback(() => {
-    console.log("Proceed to checkout");
   }, []);
 
   return {

@@ -94,17 +94,6 @@ export const ProductFormStepper: React.FC<ProductFormStepperProps> = ({
   // 🔍 Debug: Log form values when they change
   useEffect(() => {
     const subscription = watch((value, { name, type }) => {
-      console.log('📝 Form value changed:', {
-        name,
-        type,
-        value: value[name as keyof ProductFormData],
-      })
-      console.log('📊 All form values:', {
-        name: value.name,
-        slug: value.slug,
-        price: value.price,
-        salePrice: value.salePrice,
-      })
     })
     return () => subscription.unsubscribe()
   }, [watch])

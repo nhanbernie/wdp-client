@@ -10,24 +10,19 @@ export const yupResolver = (schema: any) => {
       // Validate data with Yup
       const validData = await schema.validate(data, { abortEarly: false })
 
-      console.log('✅ Validation passed:', validData)
-
       return {
         values: validData,
         errors: {},
       }
     } catch (error: any) {
-      console.log('❌ Validation failed:', error)
 
       const fieldErrors: FieldErrors = {}
 
       if (error.inner && Array.isArray(error.inner)) {
-        console.log(`📋 Found ${error.inner.length} validation errors:`)
 
         error.inner.forEach((err: any) => {
           if (!err.path) return
 
-          console.log(`  - ${err.path}: ${err.message}`)
 
           // Split path into parts: "variants[0].sku" -> ["variants", "0", "sku"]
           const pathParts = err.path.split(/[\.\[\]]/).filter(Boolean)
@@ -80,8 +75,6 @@ export const yupResolver = (schema: any) => {
           })
         })
       }
-
-      console.log('🔍 Parsed field errors:', JSON.stringify(fieldErrors, null, 2))
 
       return {
         values: {},

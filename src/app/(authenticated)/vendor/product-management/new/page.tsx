@@ -18,8 +18,6 @@ export default function NewProductPageRoute() {
 
   const handleSubmit = async (data: ProductFormData) => {
     try {
-      console.log('📤 Full form data:', data)
-      console.log('📦 Variants data:', data.variants)
       const formData = new FormData()
 
       // Basic required fields
@@ -91,7 +89,6 @@ export default function NewProductPageRoute() {
 
       // Variants
       if (data.variants && Array.isArray(data.variants) && data.variants.length > 0) {
-        console.log('🔍 Raw variants from form:', data.variants)
         const formattedVariants = data.variants
           .filter((v: any) => v.price && v.options)
           .map((variant: any) => {
@@ -104,22 +101,14 @@ export default function NewProductPageRoute() {
             if (variant.specs) formattedVariant.specs = variant.specs
             return formattedVariant
           })
-        console.log('📦 Formatted variants to send:', formattedVariants)
         if (formattedVariants.length > 0) {
           formData.append('variants', JSON.stringify(formattedVariants))
-          console.log('✅ Variants appended to FormData')
         } else {
-          console.log('⚠️ No variants to send (filtered out)')
         }
       } else {
-        console.log('⚠️ No variants in form data')
       }
 
       // Debug: Log FormData contents
-      console.log('🚀 FormData entries:')
-      for (const pair of formData.entries()) {
-        console.log(pair[0] + ':', pair[1])
-      }
 
       await createProduct(formData).unwrap()
       

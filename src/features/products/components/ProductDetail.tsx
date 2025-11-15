@@ -178,8 +178,6 @@ const ProductDetail: React.FC<ProductDetailProps> = ({ id }) => {
 
   const productData = product.data as unknown as ProductDetailDto
 
-  console.log('ProductDetail - productData:', productData)
-  console.log('ProductDetail - vendor:', productData.vendor)
 
   return (
     <div

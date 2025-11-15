@@ -72,6 +72,14 @@ export function OrderSearchAndFilter({
       [data-slot="select-item"][data-state="checked"] {
         background-color: ${colors.accent}15 !important;
       }
+      
+      [data-slot="select-trigger"] svg {
+        color: ${colors.textSecondary} !important;
+      }
+      
+      [data-slot="select-trigger"]:hover svg {
+        color: ${colors.text} !important;
+      }
     `
 
     return () => {
@@ -103,6 +111,8 @@ export function OrderSearchAndFilter({
             className="pl-12 h-14 text-base rounded-2xl border transition-all"
             style={{
               borderColor: `${colors.border}30`,
+              backgroundColor: colors.cardBackground,
+              color: colors.text,
             }}
             onFocus={(e) => {
               e.currentTarget.style.borderColor = colors.accent
@@ -121,6 +131,12 @@ export function OrderSearchAndFilter({
               borderColor: `${colors.border}30`,
               backgroundColor: colors.cardBackground,
               color: colors.text,
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.borderColor = `${colors.border}50`
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.borderColor = `${colors.border}30`
             }}
           >
             <SelectValue placeholder="Lọc theo trạng thái" />
@@ -171,6 +187,12 @@ export function OrderSearchAndFilter({
               borderColor: `${colors.border}30`,
               backgroundColor: colors.cardBackground,
               color: colors.text,
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.borderColor = `${colors.border}50`
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.borderColor = `${colors.border}30`
             }}
           >
             {/* <Calendar

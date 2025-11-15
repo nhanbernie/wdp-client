@@ -61,12 +61,10 @@ const baseQuery = fetchBaseQuery({
 
       if (token) {
         headers.set('Authorization', `Bearer ${token}`)
-        console.log('✅ Authorization header set')
       } else {
         console.warn('⚠️ No token found in storage!')
       }
     } else {
-      console.log('🌍 Public endpoint - no auth needed')
     }
 
     // Check if body is FormData, don't set Content-Type for FormData

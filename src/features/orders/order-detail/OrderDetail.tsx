@@ -50,7 +50,6 @@ export function OrderDetail({ orderId }: OrderDetailProps) {
   }
 
   const handleContactSupport = () => {
-    console.log('Contact support for order:', orderId)
     // Implement contact support logic
   }
 

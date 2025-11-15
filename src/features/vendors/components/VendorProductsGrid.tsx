@@ -135,7 +135,6 @@ export const VendorProductsGrid: React.FC<Props> = ({
                 onClick={(e) => {
                   e.stopPropagation()
                   // TODO: Add to cart functionality
-                  console.log('Add to cart:', p.id)
                 }}
                 className="w-full flex items-center justify-center gap-2 py-2 rounded-lg font-medium transition-opacity hover:opacity-90"
                 style={{

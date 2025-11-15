@@ -23,7 +23,6 @@ export const VendorInfo: React.FC<Props> = ({ vendorId, vendorName }) => {
 
   const handleChat = () => {
     // placeholder: integrate chat system
-    console.log('Chat with vendor', vendorId)
   }
 
   // Show loading skeleton
@@ -66,11 +65,9 @@ export const VendorInfo: React.FC<Props> = ({ vendorId, vendorName }) => {
   }
 
   if (!profile) {
-    console.log('VendorInfo: No profile data for vendorId:', vendorId)
     return null
   }
 
-  console.log('VendorInfo: Rendering with profile:', profile, 'products:', products)
 
   return (
     <section aria-label="vendor-info" className="mt-8 mb-9">

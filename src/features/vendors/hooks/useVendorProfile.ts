@@ -43,14 +43,6 @@ export function useVendorProfile(vendorId?: string) {
       }
     : undefined
 
-  console.log('useVendorProfile:', {
-    vendorId,
-    profile,
-    products,
-    loading: loadingProducts,
-    error: productsError,
-  })
-
   return {
     profile,
     products,

@@ -192,7 +192,6 @@ const UserManagement = () => {
                 isLoading={usersLoading}
                 onViewActivity={(userId) => {
                   // Navigate to user activity page or open modal
-                  console.log('View activity for user:', userId)
                 }}
                 onBanUser={banUser}
                 onUnbanUser={unbanUser}

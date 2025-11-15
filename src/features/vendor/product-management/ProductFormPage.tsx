@@ -37,9 +37,6 @@ export const ProductFormPage: React.FC<ProductFormPageProps> = ({
 
   const handleFormSubmit = async (data: ProductFormData) => {
     try {
-      console.log('📤 Form submit data:', data)
-      console.log('📦 Variants data:', data.variants)
-
       // Normalize options data - convert {id, value} format to string format
       const normalizedOptions = data.options?.map((option) => ({
         ...option,
@@ -56,9 +53,6 @@ export const ProductFormPage: React.FC<ProductFormPageProps> = ({
           0,
         )
 
-        console.log(
-          `📊 Auto-calculated product stock: ${calculatedProductStock} (from ${data.variants.length} variants)`,
-        )
       }
 
       // Add vendorId to the data and handle null values
@@ -79,11 +73,8 @@ export const ProductFormPage: React.FC<ProductFormPageProps> = ({
         datasheetUrl: data.datasheetUrl || undefined,
       }
 
-      console.log('📤 Sending to backend:', dataWithVendorId)
-
       await onSubmit(dataWithVendorId as any)
     } catch (error) {
-      console.error('ProductFormPage - Error in handleFormSubmit:', error)
       throw error // Re-throw to let the caller handle it
     }
   }

@@ -351,7 +351,6 @@ export function OrderItemsCard({ order }: OrderItemsCardProps) {
           onClose={() => setSelectedItemForView(null)}
           onReviewUpdated={() => {
             // Refresh if needed
-            console.log('Review updated')
           }}
         />
       )}

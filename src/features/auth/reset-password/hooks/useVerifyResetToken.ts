@@ -43,7 +43,6 @@ export const useVerifyResetToken = (token: string) => {
         router.push("/forgot-password");
       }, 3000);
     } else if (data) {
-      console.log("Token verification response:", data);
       
       const responseData = data as any;
       if (responseData.success && responseData.data) {
