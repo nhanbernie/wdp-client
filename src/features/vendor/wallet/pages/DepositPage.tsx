@@ -70,7 +70,7 @@ export const DepositPage: React.FC = () => {
             <h3 className="font-semibold">Các bước nạp tiền:</h3>
             <ol className="list-decimal list-inside space-y-2 ml-4">
               <li>Nhập số tiền bạn muốn nạp (tối thiểu 10,000 VND)</li>
-              <li>Nhấn nút "Nạp tiền" để tạo yêu cầu</li>
+              <li>Nhấn nút &quot;Nạp tiền&quot; để tạo yêu cầu</li>
               <li>Thanh toán qua PayOS bằng QR code hoặc link thanh toán</li>
               <li>Sau khi thanh toán thành công, số tiền sẽ được cộng vào ví của bạn</li>
             </ol>

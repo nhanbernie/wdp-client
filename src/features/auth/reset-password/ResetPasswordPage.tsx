@@ -22,7 +22,11 @@ export const ResetPasswordPage = () => {
     password: string
     confirmPassword: string
   }) => {
-    await submitResetPassword(data)
+    await submitResetPassword({
+      token: data.token,
+      newPassword: data.password,
+      confirmPassword: data.confirmPassword
+    })
   }
 
   // Show loading state while verifying token
