@@ -1,4 +1,4 @@
-import { LucideIcon } from 'lucide-react'
+import { CreditCard, LucideIcon } from 'lucide-react'
 
 export interface NavItem {
   label: string
@@ -52,6 +52,7 @@ export const adminNavigationItems: NavItem[] = [
   { label: 'Quản lý sản phẩm', href: '/admin/manage-product', icon: Package },
   { label: 'Yêu cầu rút tiền', href: '/admin/withdrawals', icon: DollarSign },
   { label: 'Thống kê', href: '/admin/analytics', icon: BarChart3 },
+  { label: 'Giao dịch', href: '/admin/transactions', icon: CreditCard },
 ]
 
 export const vendorNavigationItems: NavItem[] = [
