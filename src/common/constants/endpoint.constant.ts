@@ -119,6 +119,11 @@ export const API_ENDPOINTS = {
     PRODUCTS: '/admin/products',
     PRODUCT_STOCK: (id: string) => `/admin/products/${id}/stock`,
 
+    // Transactions Management
+    TRANSACTIONS: '/admin/transactions',
+    TRANSACTION_DETAILS: (id: string) => `/admin/transactions/${id}/details`,
+    TRANSACTION_ANALYTICS: '/admin/transactions/analytics',
+
     // Legacy endpoints
     MATERIALS: '/admin/materials',
     SUPPLIERS: '/admin/suppliers',

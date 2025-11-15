@@ -21,6 +21,7 @@ import {
   DollarSign,
   Filter,
   RefreshCw,
+  Wallet,
 } from 'lucide-react'
 import { format } from 'date-fns'
 import { vi } from 'date-fns/locale'
@@ -74,19 +75,56 @@ export const WithdrawalsManagement: React.FC = () => {
 
   const getStatusBadge = (status: string) => {
     const configs = {
-      pending: { label: 'Chờ duyệt', icon: Clock, className: 'bg-yellow-100 text-yellow-800' },
-      approved: { label: 'Đã duyệt', icon: CheckCircle, className: 'bg-blue-100 text-blue-800' },
-      paid: { label: 'Đã thanh toán', icon: CheckCircle, className: 'bg-green-100 text-green-800' },
-      rejected: { label: 'Từ chối', icon: XCircle, className: 'bg-red-100 text-red-800' },
-      cancelled: { label: 'Đã hủy', icon: AlertCircle, className: 'bg-gray-100 text-gray-800' },
+      pending: {
+        label: 'Chờ duyệt',
+        icon: Clock,
+        bgColor: colors.warning + '20',
+        textColor: colors.warning,
+        borderColor: colors.warning,
+      },
+      approved: {
+        label: 'Đã duyệt',
+        icon: CheckCircle,
+        bgColor: colors.accent + '20',
+        textColor: colors.accent,
+        borderColor: colors.accent,
+      },
+      paid: {
+        label: 'Đã thanh toán',
+        icon: CheckCircle,
+        bgColor: colors.success + '20',
+        textColor: colors.success,
+        borderColor: colors.success,
+      },
+      rejected: {
+        label: 'Từ chối',
+        icon: XCircle,
+        bgColor: colors.error + '20',
+        textColor: colors.error,
+        borderColor: colors.error,
+      },
+      cancelled: {
+        label: 'Đã hủy',
+        icon: AlertCircle,
+        bgColor: colors.textSecondary + '20',
+        textColor: colors.textSecondary,
+        borderColor: colors.textSecondary,
+      },
     }
     const config = configs[status as keyof typeof configs] || configs.pending
     const Icon = config.icon
     return (
-      <Badge className={config.className}>
-        <Icon className="w-3 h-3 mr-1" />
+      <span
+        className="inline-flex items-center justify-center px-3 py-1.5 rounded-full text-xs font-semibold border-2 shadow-sm transition-all"
+        style={{
+          backgroundColor: config.bgColor,
+          color: config.textColor,
+          borderColor: config.borderColor,
+        }}
+      >
+        <Icon className="w-3 h-3 mr-1.5" />
         {config.label}
-      </Badge>
+      </span>
     )
   }
 
@@ -159,26 +197,57 @@ export const WithdrawalsManagement: React.FC = () => {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center min-h-[400px]">
-        <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
+      <div
+        className="flex items-center justify-center min-h-screen"
+        style={{ background: colors.backgroundGradient }}
+      >
+        <div className="text-center">
+          <Loader2 className="h-16 w-16 animate-spin mx-auto" style={{ color: colors.accent }} />
+          <p className="mt-6 font-medium text-lg" style={{ color: colors.textSecondary }}>
+            Đang tải yêu cầu rút tiền...
+          </p>
+        </div>
       </div>
     )
   }
 
   return (
-    <div className="container mx-auto py-8 px-4">
+    <div className="space-y-8 min-h-screen p-6" style={{ background: colors.backgroundGradient }}>
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
+        className="space-y-6"
       >
-        <div className="mb-8">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900 mb-2">Quản lý yêu cầu rút tiền</h1>
-              <p className="text-gray-600">Duyệt và quản lý các yêu cầu rút tiền từ vendor</p>
+        {/* Header */}
+        <div
+          className="p-8 rounded-2xl shadow-lg"
+          style={{
+            background: colors.cardBackground,
+            borderLeftWidth: '4px',
+            borderLeftColor: colors.accent,
+          }}
+        >
+          <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4">
+            <div className="flex items-center gap-4">
+              <div className="p-4 rounded-2xl shadow-lg" style={{ background: colors.accent }}>
+                <Wallet className="h-8 w-8 text-white" />
+              </div>
+              <div>
+                <h1 className="text-4xl font-bold" style={{ color: colors.text }}>
+                  Quản lý yêu cầu rút tiền
+                </h1>
+                <p className="mt-2" style={{ color: colors.textSecondary }}>
+                  Duyệt và quản lý các yêu cầu rút tiền từ vendor
+                </p>
+              </div>
             </div>
-            <Button onClick={() => refetch()} variant="outline">
+            <Button
+              onClick={() => refetch()}
+              variant="outline"
+              style={{ borderColor: colors.border }}
+              className="hover:text-white transition-all"
+            >
               <RefreshCw className="w-4 h-4 mr-2" />
               Làm mới
             </Button>
@@ -186,9 +255,12 @@ export const WithdrawalsManagement: React.FC = () => {
         </div>
 
         {/* Filters */}
-        <Card className="mb-6">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
+        <Card
+          className="mb-6"
+          style={{ background: colors.cardBackground, borderColor: colors.border }}
+        >
+          <CardHeader style={{ borderBottomColor: colors.border }}>
+            <CardTitle className="flex items-center gap-2" style={{ color: colors.text }}>
               <Filter className="w-5 h-5" />
               Bộ lọc
             </CardTitle>
@@ -196,14 +268,24 @@ export const WithdrawalsManagement: React.FC = () => {
           <CardContent>
             <div className="flex gap-4">
               <div className="flex-1">
-                <label className="block text-sm font-medium text-gray-700 mb-2">Trạng thái</label>
+                <label
+                  className="block text-sm font-medium mb-2"
+                  style={{ color: colors.text }}
+                >
+                  Trạng thái
+                </label>
                 <select
                   value={statusFilter}
                   onChange={(e) => {
                     setStatusFilter(e.target.value)
                     setPage(1)
                   }}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 border-2 rounded-lg focus:outline-none focus:ring-2 transition-all"
+                  style={{
+                    borderColor: colors.border,
+                    background: colors.background,
+                    color: colors.text,
+                  }}
                 >
                   {statusOptions.map((option) => (
                     <option key={option.value} value={option.value}>
@@ -217,30 +299,42 @@ export const WithdrawalsManagement: React.FC = () => {
         </Card>
 
         {/* Requests Table */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Danh sách yêu cầu rút tiền</CardTitle>
-            <CardDescription>
-              Tổng số: {meta?.total || 0} yêu cầu | Trang {page} / {meta?.totalPages || 1}
+        <Card style={{ background: colors.cardBackground, borderColor: colors.border }}>
+          <CardHeader style={{ borderBottomColor: colors.border }}>
+            <CardTitle style={{ color: colors.text }}>Danh sách yêu cầu rút tiền</CardTitle>
+            <CardDescription style={{ color: colors.textSecondary }}>
+              Tổng số: <span style={{ color: colors.accent, fontWeight: 'bold' }}>{meta?.total || 0}</span> yêu cầu | Trang{' '}
+              <span style={{ color: colors.accent, fontWeight: 'bold' }}>{page}</span> /{' '}
+              <span style={{ color: colors.accent, fontWeight: 'bold' }}>{meta?.totalPages || 1}</span>
             </CardDescription>
           </CardHeader>
           <CardContent>
             {requests.length === 0 ? (
               <div className="text-center py-12">
-                <DollarSign className="w-16 h-16 mx-auto text-gray-400 mb-4" />
-                <p className="text-gray-500">Không có yêu cầu rút tiền nào</p>
+                <DollarSign className="w-16 h-16 mx-auto mb-4" style={{ color: colors.textSecondary }} />
+                <p style={{ color: colors.textSecondary }}>Không có yêu cầu rút tiền nào</p>
               </div>
             ) : (
               <div className="space-y-4">
                 {requests.map((request: any) => (
                   <div
                     key={request.id}
-                    className="border rounded-lg p-4 hover:bg-gray-50 transition-colors"
+                    className="border rounded-lg p-4 transition-colors"
+                    style={{
+                      borderColor: colors.border,
+                      backgroundColor: colors.cardBackgroundSecondary,
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.backgroundColor = colors.hoverBackground
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.backgroundColor = colors.cardBackgroundSecondary
+                    }}
                   >
                     <div className="flex items-start justify-between">
                       <div className="flex-1">
                         <div className="flex items-center gap-3 mb-3">
-                          <p className="text-2xl font-bold text-gray-900">
+                          <p className="text-2xl font-bold" style={{ color: colors.accent }}>
                             {Number(request.amount).toLocaleString('vi-VN')} VND
                           </p>
                           {getStatusBadge(request.status)}
@@ -248,21 +342,29 @@ export const WithdrawalsManagement: React.FC = () => {
 
                         <div className="grid md:grid-cols-2 gap-4 mb-3">
                           <div>
-                            <p className="text-sm text-gray-500">Vendor</p>
-                            <p className="font-medium">
+                            <p className="text-sm" style={{ color: colors.textSecondary }}>
+                              Vendor
+                            </p>
+                            <p className="font-medium" style={{ color: colors.text }}>
                               {request.vendor?.businessName || request.vendorId}
                             </p>
                           </div>
                           <div>
-                            <p className="text-sm text-gray-500">Thông tin ngân hàng</p>
-                            <p className="font-medium">
+                            <p className="text-sm" style={{ color: colors.textSecondary }}>
+                              Thông tin ngân hàng
+                            </p>
+                            <p className="font-medium" style={{ color: colors.text }}>
                               {request.bankName} - {request.bankAccountNumber}
                             </p>
-                            <p className="text-sm text-gray-600">{request.accountHolderName}</p>
+                            <p className="text-sm" style={{ color: colors.textSecondary }}>
+                              {request.accountHolderName}
+                            </p>
                           </div>
                           <div>
-                            <p className="text-sm text-gray-500">Ngày tạo</p>
-                            <p className="font-medium">
+                            <p className="text-sm" style={{ color: colors.textSecondary }}>
+                              Ngày tạo
+                            </p>
+                            <p className="font-medium" style={{ color: colors.text }}>
                               {format(new Date(request.createdAt), 'dd/MM/yyyy HH:mm', {
                                 locale: vi,
                               })}
@@ -270,8 +372,10 @@ export const WithdrawalsManagement: React.FC = () => {
                           </div>
                           {request.approvedAt && (
                             <div>
-                              <p className="text-sm text-gray-500">Ngày duyệt</p>
-                              <p className="font-medium">
+                              <p className="text-sm" style={{ color: colors.textSecondary }}>
+                                Ngày duyệt
+                              </p>
+                              <p className="font-medium" style={{ color: colors.text }}>
                                 {format(new Date(request.approvedAt), 'dd/MM/yyyy HH:mm', {
                                   locale: vi,
                                 })}
@@ -280,8 +384,10 @@ export const WithdrawalsManagement: React.FC = () => {
                           )}
                           {request.paidAt && (
                             <div>
-                              <p className="text-sm text-gray-500">Ngày thanh toán</p>
-                              <p className="font-medium">
+                              <p className="text-sm" style={{ color: colors.textSecondary }}>
+                                Ngày thanh toán
+                              </p>
+                              <p className="font-medium" style={{ color: colors.text }}>
                                 {format(new Date(request.paidAt), 'dd/MM/yyyy HH:mm', {
                                   locale: vi,
                                 })}
@@ -292,15 +398,23 @@ export const WithdrawalsManagement: React.FC = () => {
 
                         {request.notes && (
                           <div className="mb-2">
-                            <p className="text-sm text-gray-500">Ghi chú từ vendor:</p>
-                            <p className="text-sm text-gray-700">{request.notes}</p>
+                            <p className="text-sm" style={{ color: colors.textSecondary }}>
+                              Ghi chú từ vendor:
+                            </p>
+                            <p className="text-sm" style={{ color: colors.text }}>
+                              {request.notes}
+                            </p>
                           </div>
                         )}
 
                         {request.adminNotes && (
                           <div className="mb-2">
-                            <p className="text-sm text-blue-600 font-medium">Ghi chú từ admin:</p>
-                            <p className="text-sm text-gray-700">{request.adminNotes}</p>
+                            <p className="text-sm font-medium" style={{ color: colors.accent }}>
+                              Ghi chú từ admin:
+                            </p>
+                            <p className="text-sm" style={{ color: colors.text }}>
+                              {request.adminNotes}
+                            </p>
                           </div>
                         )}
                       </div>
@@ -311,7 +425,16 @@ export const WithdrawalsManagement: React.FC = () => {
                             <Button
                               size="sm"
                               onClick={() => openActionDialog(request, 'approve')}
-                              className="bg-green-600 hover:bg-green-700"
+                              style={{
+                                backgroundColor: colors.success,
+                                color: 'white',
+                              }}
+                              onMouseEnter={(e) => {
+                                e.currentTarget.style.backgroundColor = `${colors.success}dd`
+                              }}
+                              onMouseLeave={(e) => {
+                                e.currentTarget.style.backgroundColor = colors.success
+                              }}
                             >
                               <CheckCircle className="w-4 h-4 mr-1" />
                               Duyệt
@@ -339,7 +462,16 @@ export const WithdrawalsManagement: React.FC = () => {
                           <Button
                             size="sm"
                             onClick={() => openActionDialog(request, 'mark-paid')}
-                            className="bg-blue-600 hover:bg-blue-700"
+                            style={{
+                              backgroundColor: colors.accent,
+                              color: 'white',
+                            }}
+                            onMouseEnter={(e) => {
+                              e.currentTarget.style.backgroundColor = colors.accentSecondary
+                            }}
+                            onMouseLeave={(e) => {
+                              e.currentTarget.style.backgroundColor = colors.accent
+                            }}
                           >
                             <DollarSign className="w-4 h-4 mr-1" />
                             Đánh dấu đã thanh toán
@@ -354,24 +486,40 @@ export const WithdrawalsManagement: React.FC = () => {
 
             {/* Pagination */}
             {meta && meta.totalPages > 1 && (
-              <div className="flex items-center justify-center gap-2 mt-6">
-                <Button
-                  variant="outline"
-                  onClick={() => setPage((p) => Math.max(1, p - 1))}
-                  disabled={page === 1}
-                >
-                  Trước
-                </Button>
-                <span className="text-sm text-gray-600">
-                  Trang {page} / {meta.totalPages}
-                </span>
-                <Button
-                  variant="outline"
-                  onClick={() => setPage((p) => Math.min(meta.totalPages, p + 1))}
-                  disabled={page === meta.totalPages}
-                >
-                  Sau
-                </Button>
+              <div
+                className="flex items-center justify-between p-6 rounded-xl shadow-lg border-2 mt-6"
+                style={{
+                  background: colors.cardBackground,
+                  borderColor: colors.border,
+                }}
+              >
+                <p className="text-base font-medium" style={{ color: colors.text }}>
+                  Trang{' '}
+                  <span className="font-bold" style={{ color: colors.accent }}>
+                    {page}
+                  </span>{' '}
+                  / <span className="font-bold" style={{ color: colors.accent }}>{meta.totalPages || 1}</span>
+                </p>
+                <div className="flex gap-3">
+                  <Button
+                    variant="outline"
+                    onClick={() => setPage((p) => Math.max(1, p - 1))}
+                    disabled={page === 1}
+                    className="hover:text-white transition-all shadow-sm disabled:opacity-50"
+                    style={{ borderColor: colors.border }}
+                  >
+                    Trước
+                  </Button>
+                  <Button
+                    variant="outline"
+                    onClick={() => setPage((p) => Math.min(meta.totalPages || 1, p + 1))}
+                    disabled={page >= (meta.totalPages || 1)}
+                    className="hover:text-white transition-all shadow-sm disabled:opacity-50"
+                    style={{ borderColor: colors.border }}
+                  >
+                    Sau
+                  </Button>
+                </div>
               </div>
             )}
           </CardContent>
