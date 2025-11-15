@@ -1,14 +1,20 @@
 'use client'
 
+import { useState } from 'react'
 import { CategoryDto } from '@/services/categories/category.type'
 import { useCategories } from '../hooks/useCategories'
 import CategoryCard from './CategoryCard'
 import { motion } from 'framer-motion'
-import { Sparkles } from 'lucide-react'
+import { Sparkles, ChevronDown, ChevronUp } from 'lucide-react'
 import { SectionBadge } from '@/components/common'
+import { Button } from '@/components/ui/button'
 
 const CategoryShowcase = () => {
   const { categories, loading } = useCategories({ productCount: true })
+  const [showMore, setShowMore] = useState(false)
+  
+  const displayedCategories = showMore ? categories : categories.slice(0, 4)
+  const hasMoreCategories = categories.length > 4
 
   return (
     <div className="px-4 sm:px-6 lg:px-8 py-16 sm:py-24 relative overflow-visible">
@@ -47,8 +53,8 @@ const CategoryShowcase = () => {
       {/* Categories list */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 sm:gap-8 lg:gap-10 p-2">
         {!loading
-          ? categories.length > 0 &&
-            categories.map((cate: CategoryDto, index: number) => (
+          ? displayedCategories.length > 0 &&
+            displayedCategories.map((cate: CategoryDto, index: number) => (
               <motion.div
                 key={cate.id}
                 initial={{ opacity: 0, y: 30 }}
@@ -84,6 +90,38 @@ const CategoryShowcase = () => {
               </motion.div>
             ))}
       </div>
+
+      {/* Show More Button */}
+      {!loading && hasMoreCategories && (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, delay: 0.6 }}
+          className="flex justify-center mt-12"
+        >
+          <Button
+            onClick={() => setShowMore(!showMore)}
+            variant="outline"
+            size="lg"
+            className="group cursor-pointer font-bold px-8 py-6 text-lg rounded-2xl bg-card border-2 hover:border-accent-primary hover:bg-accent-primary/10 transition-all duration-300 shadow-xl"
+          >
+            <span className="flex items-center gap-2">
+              {showMore ? (
+                <>
+                  Thu gọn
+                  <ChevronUp className="h-5 w-5 text-accent-primary group-hover:-translate-y-1 transition-transform" />
+                </>
+              ) : (
+                <>
+                  Xem thêm {categories.length - 4} danh mục
+                  <ChevronDown className="h-5 w-5 text-accent-primary group-hover:translate-y-1 transition-transform" />
+                </>
+              )}
+            </span>
+          </Button>
+        </motion.div>
+      )}
       </div>
     </div>
   )
