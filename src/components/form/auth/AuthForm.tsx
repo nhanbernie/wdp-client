@@ -33,14 +33,10 @@ const AuthForm = ({
     console.log("Form submitted:", data);
   };
 
-  // Enhanced handleSubmit with validation
-  const handleSubmit = async (data: any, formMethods?: any) => {
+  // Handle form submission - validation is already handled by FormProvider resolver
+  const handleSubmit = async (data: any) => {
     setIsSubmitting(true);
     try {
-      // Validate data using appropriate schema
-      const schema = validatorSchema[type];
-      await schema.validate(data, { abortEarly: false });
-
       // For verifyOTP, combine the email from props with the code from form
       if (type === "verifyOTP" && email) {
         await (customOnSubmit?.({ email, otp: data.code }) ||
@@ -53,19 +49,8 @@ const AuthForm = ({
         await (customOnSubmit?.(data) || defaultOnSubmit(data));
       }
     } catch (error: any) {
-      if (error.name === "ValidationError" && formMethods?.setError) {
-        // Set validation errors to respective fields
-        error.inner?.forEach((err: any) => {
-          if (err.path) {
-            formMethods.setError(err.path, {
-              type: "manual",
-              message: err.message,
-            });
-          }
-        });
-      } else {
-        console.error("Form submission error:", error);
-      }
+      // Handle non-validation errors (e.g., API errors)
+      console.error("Form submission error:", error);
     } finally {
       setIsSubmitting(false);
     }
@@ -77,7 +62,7 @@ const AuthForm = ({
 
     return (
       <div className="w-full">
-        <div className="space-y-4 sm:space-y-5">
+        <div className="space-y-4 sm:space-y-5 w-full">
           {INPUT_FIELDS[type].map((field) => {
             return <TextField key={field.name} {...field} />;
           })}

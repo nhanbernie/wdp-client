@@ -8,31 +8,41 @@ import { useLoginSubmit } from "./hooks/useLoginSubmit";
 
 export const LoginPage = () => {
   const { login, isLoading } = useLoginSubmit();
-  const { colors } = useTheme();
+  const themeContext = useTheme();
+  const colors = themeContext?.colors;
+
+  // Fallback colors if context is not available
+  const fallbackColors = {
+    text: '#F2F2F2',
+    textSecondary: '#909090',
+    cardBackground: '#1a1a1a',
+  };
+
+  const safeColors = colors || fallbackColors;
 
   const handleLogin = async (data: { email: string; password: string }) => {
     await login(data);
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4">
+    <div className="w-full">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
-        className="w-full min-w-[420px] max-w-md rounded-2xl shadow-xl p-8 border-0"
+        className="w-full max-w-md mx-auto rounded-2xl shadow-xl p-4 sm:p-6 lg:p-8 border-0"
         style={{
-          backgroundColor: colors.cardBackground,
+          backgroundColor: safeColors.cardBackground,
         }}
       >
         <div className="text-center mb-8">
           <h2
             className="text-2xl font-bold mb-2"
-            style={{ color: colors.text }}
+            style={{ color: safeColors.text }}
           >
             Sign In
           </h2>
-          <p style={{ color: colors.textSecondary }}>
+          <p style={{ color: safeColors.textSecondary }}>
             Welcome back to WDP Materials!
           </p>
         </div>

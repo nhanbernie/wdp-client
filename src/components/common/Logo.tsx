@@ -25,7 +25,24 @@ const Logo: React.FC<LogoProps> = ({
   onClick,
   animated = true,
 }) => {
-  const { colors, brandColors } = useTheme();
+  const themeContext = useTheme();
+  const colors = themeContext?.colors;
+  const brandColors = themeContext?.brandColors;
+
+  // Fallback colors if context is not available
+  const fallbackColors = {
+    background: '#161616',
+    text: '#F2F2F2',
+  };
+
+  const fallbackBrandColors = {
+    primary: '#F4A800',
+    primaryDark: '#F56F10',
+    secondary: '#F56F10',
+  };
+
+  const safeColors = colors || fallbackColors;
+  const safeBrandColors = brandColors || fallbackBrandColors;
 
   const motionProps = animated
     ? {
@@ -49,8 +66,8 @@ const Logo: React.FC<LogoProps> = ({
         cx="50"
         cy="50"
         r="48"
-        fill={brandColors.primary}
-        stroke={brandColors.primaryDark}
+        fill={safeBrandColors.primary}
+        stroke={safeBrandColors.primaryDark}
         strokeWidth="2"
       />
 
@@ -62,15 +79,15 @@ const Logo: React.FC<LogoProps> = ({
           y="35"
           width="50"
           height="15"
-          fill={colors.background}
+          fill={safeColors.background}
           rx="2"
         />
 
         {/* Building Pillars */}
-        <rect x="10" y="20" width="6" height="30" fill={colors.background} />
-        <rect x="22" y="15" width="6" height="35" fill={colors.background} />
-        <rect x="34" y="20" width="6" height="30" fill={colors.background} />
-        <rect x="46" y="25" width="6" height="25" fill={colors.background} />
+        <rect x="10" y="20" width="6" height="30" fill={safeColors.background} />
+        <rect x="22" y="15" width="6" height="35" fill={safeColors.background} />
+        <rect x="34" y="20" width="6" height="30" fill={safeColors.background} />
+        <rect x="46" y="25" width="6" height="25" fill={safeColors.background} />
 
         {/* WDP Text */}
         <text
@@ -79,7 +96,7 @@ const Logo: React.FC<LogoProps> = ({
           textAnchor="middle"
           fontSize="8"
           fontWeight="bold"
-          fill={brandColors.primary}
+          fill={safeBrandColors.primary}
         >
           WDP
         </text>
@@ -90,14 +107,14 @@ const Logo: React.FC<LogoProps> = ({
         cx="25"
         cy="25"
         r="3"
-        fill={brandColors.secondary}
+        fill={safeBrandColors.secondary}
         opacity="0.8"
       />
       <circle
         cx="75"
         cy="75"
         r="3"
-        fill={brandColors.secondary}
+        fill={safeBrandColors.secondary}
         opacity="0.8"
       />
     </svg>
@@ -130,7 +147,7 @@ const Logo: React.FC<LogoProps> = ({
               direction === "vertical" && "text-center",
               textClassName
             )}
-            style={{ color: colors.text }}
+            style={{ color: safeColors.text }}
           >
             WDP
           </span>
@@ -164,7 +181,7 @@ const Logo: React.FC<LogoProps> = ({
             direction === "vertical" && "text-center",
             textClassName
           )}
-          style={{ color: colors.text }}
+          style={{ color: safeColors.text }}
         >
           WDP
         </span>
