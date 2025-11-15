@@ -33,10 +33,7 @@ export function OrderStatusCard({ order }: OrderStatusCardProps) {
         }}
       >
         <CardTitle className="flex items-center text-lg font-bold">
-          <div
-            className="p-2 rounded-lg mr-3"
-            style={{ backgroundColor: `${colors.accent}15` }}
-          >
+          <div className="p-2 rounded-lg mr-3" style={{ backgroundColor: `${colors.accent}15` }}>
             <StatusIcon className="h-5 w-5" style={{ color: colors.accent }} />
           </div>
           <span style={{ color: colors.text }}>Trạng thái đơn hàng</span>
@@ -50,7 +47,8 @@ export function OrderStatusCard({ order }: OrderStatusCardProps) {
             className="text-center p-4 rounded-lg border"
             style={{
               backgroundColor: colors.cardBackgroundSecondary,
-              borderColor: colors.border,
+              border: `1px solid ${colors.border}30`,
+              boxShadow: `0 4px 12px ${colors.border}20`,
             }}
           >
             <p
@@ -63,10 +61,7 @@ export function OrderStatusCard({ order }: OrderStatusCardProps) {
               className="inline-block px-4 py-2 rounded-lg"
               style={{ backgroundColor: `${colors.accent}15` }}
             >
-              <span
-                className="text-sm font-medium"
-                style={{ color: colors.accent }}
-              >
+              <span className="text-sm font-medium" style={{ color: colors.accent }}>
                 {config.label}
               </span>
             </div>
@@ -78,7 +73,8 @@ export function OrderStatusCard({ order }: OrderStatusCardProps) {
               className="p-4 rounded-lg border"
               style={{
                 backgroundColor: colors.cardBackgroundSecondary,
-                borderColor: colors.border,
+                border: `1px solid ${colors.border}30`,
+                boxShadow: `0 4px 12px ${colors.border}20`,
               }}
             >
               <div className="flex items-center gap-2 mb-2">
@@ -101,7 +97,8 @@ export function OrderStatusCard({ order }: OrderStatusCardProps) {
               className="p-4 rounded-lg border"
               style={{
                 backgroundColor: colors.cardBackgroundSecondary,
-                borderColor: colors.border,
+                border: `1px solid ${colors.border}30`,
+                boxShadow: `0 4px 12px ${colors.border}20`,
               }}
             >
               <div className="flex items-center gap-2 mb-2">
@@ -164,10 +161,7 @@ export function OrderStatusCard({ order }: OrderStatusCardProps) {
               }}
             >
               <div className="flex items-center gap-2 mb-2">
-                <div
-                  className="p-2 rounded-lg"
-                  style={{ backgroundColor: `${colors.success}20` }}
-                >
+                <div className="p-2 rounded-lg" style={{ backgroundColor: `${colors.success}20` }}>
                   <CheckCircle className="h-4 w-4" style={{ color: colors.success }} />
                 </div>
                 <p className="text-sm font-medium" style={{ color: colors.text }}>

@@ -11,8 +11,8 @@ interface ProductInfoProps {
   productId: string
   category?: string
   name: string
-  brand?: string
   badges?: string[]
+  brand?: string
   price: number
   salePrice?: number
   colors: any
@@ -30,8 +30,8 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({
   category,
   name,
   brand,
-  price,
   badges,
+  price,
   salePrice,
   colors,
   brandColors,
@@ -99,7 +99,9 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({
         >
           {name}
         </h1>
-        <div className="flex flex-wrap items-center gap-3 text-sm">
+
+        <div className="flex flex-col gap-3 text-sm">
+          {/* BRAND */}
           {brand && (
             <div className="flex items-center gap-1.5" style={{ color: colors.textSecondary }}>
               <span>Thương hiệu:</span>
@@ -108,6 +110,31 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({
               </span>
             </div>
           )}
+
+          {/* BADGES */}
+          {badges && badges.length > 0 && (
+            <div className="flex items-center gap-2 flex-wrap text-sm">
+              <span style={{ color: colors.textSecondary }}>Huy hiệu:</span>
+              <div className="flex gap-2 flex-wrap">
+                {badges.map((badge: string, idx: number) => (
+                  <Badge
+                    key={idx}
+                    className="px-2 py-0.5 text-xs font-medium capitalize"
+                    style={{
+                      backgroundImage: 'none',
+                      backgroundColor: colors.accent + '20',
+                      color: colors.accent,
+                      borderColor: 'transparent',
+                    }}
+                  >
+                    {badge}
+                  </Badge>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* SKU */}
           {displaySku && (
             <div className="flex items-center gap-1.5" style={{ color: colors.textSecondary }}>
               <span>SKU:</span>

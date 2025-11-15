@@ -206,19 +206,23 @@ const ProductDetail: React.FC<ProductDetailProps> = ({ id }) => {
               productId={productData.id}
               category={productData.category?.name}
               name={productData.name}
-              brand={productData.brand}
               badges={productData.badges}
+              brand={productData.brand}
               price={productData.price}
               salePrice={productData.salePrice}
               colors={colors}
               brandColors={brandColors}
-              selectedVariant={selectedVariant ? {
-                sku: selectedVariant.sku,
-                price: selectedVariant.price,
-                stockQty: selectedVariant.stockQty,
-              } : undefined}
+              selectedVariant={
+                selectedVariant
+                  ? {
+                      sku: selectedVariant.sku,
+                      price: selectedVariant.price,
+                      stockQty: selectedVariant.stockQty,
+                    }
+                  : undefined
+              }
             />
-            
+
             {/* Variants Section */}
             {productData.variants && productData.variants.length > 0 && (
               <ProductVariants
@@ -229,7 +233,7 @@ const ProductDetail: React.FC<ProductDetailProps> = ({ id }) => {
                 selectedVariantId={selectedVariant?.id}
               />
             )}
-            
+
             <ProductQuantity
               stock={selectedVariant?.stockQty || productData.stock?.quantity}
               colors={colors}

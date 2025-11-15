@@ -11,6 +11,7 @@ import { CreateReviewModal } from '@/features/orders/components/CreateReviewModa
 import { ViewReviewModal } from '@/features/orders/components/ViewReviewModal'
 import { OrderStatus } from '@/services/orders/types'
 import { reviewService } from '@/services/reviews'
+import { Badge } from '@/components/ui/badge'
 
 interface OrderItemsCardProps {
   order: Order
@@ -85,15 +86,17 @@ export function OrderItemsCard({ order }: OrderItemsCardProps) {
     <Card
       className="rounded-lg border overflow-hidden"
       style={{
-        backgroundColor: colors.cardBackground,
-        borderColor: colors.border,
+        backgroundColor: colors.cardBackgroundSecondary,
+        border: `1px solid ${colors.border}30`,
+        boxShadow: `0 4px 12px ${colors.border}20`,
       }}
     >
       <CardHeader
         className="p-4 border-b"
         style={{
-          borderColor: colors.border,
-          backgroundColor: colors.cardBackground,
+          backgroundColor: colors.cardBackgroundSecondary,
+          border: `1px solid ${colors.border}30`,
+          boxShadow: `0 4px 12px ${colors.border}20`,
         }}
       >
         <CardTitle className="flex items-center text-lg font-bold">
@@ -113,7 +116,8 @@ export function OrderItemsCard({ order }: OrderItemsCardProps) {
               className="p-4 rounded-lg border transition-colors hover:border-opacity-50"
               style={{
                 backgroundColor: colors.cardBackgroundSecondary,
-                borderColor: colors.border,
+                border: `1px solid ${colors.border}30`,
+                boxShadow: `0 4px 12px ${colors.border}20`,
               }}
             >
               <div className="flex items-center gap-4">
@@ -148,22 +152,36 @@ export function OrderItemsCard({ order }: OrderItemsCardProps) {
                     {item.productName}
                   </h4>
 
-                    {/* Variant Name & SKU */}
-                    {(item.variantName || item.sku) && (
-                      <div className="flex flex-wrap items-center gap-2 mb-3">
-                        {item.variantName && (
-                          <span className="px-3 py-1 bg-indigo-100 text-indigo-700 text-xs font-semibold rounded-lg">
-                            {item.variantName}
-                          </span>
-                        )}
-                        {item.sku && (
-                          <span className="px-3 py-1 bg-slate-100 text-slate-700 text-xs font-bold rounded-lg flex items-center gap-1">
-                            <span className="text-slate-500">SKU:</span>
-                            <span>{item.sku}</span>
-                          </span>
-                        )}
-                      </div>
-                    )}
+                  {/* Variant Name & SKU */}
+                  {(item.variantName || item.sku) && (
+                    <div className="flex flex-wrap items-center gap-2 mb-3">
+                      {item.variantName && (
+                        <Badge
+                          className="px-2 py-0.5 text-xs font-medium capitalize"
+                          style={{
+                            backgroundImage: 'none',
+                            backgroundColor: colors.accent + '20',
+                            color: colors.accent,
+                            borderColor: 'transparent',
+                          }}
+                        >
+                          {item.variantName}
+                        </Badge>
+                      )}
+                      {item.sku && (
+                        <span
+                          className="text-sm font-bold px-2 py-1 rounded"
+                          style={{
+                            backgroundColor: colors.cardBackgroundSecondary,
+                            color: colors.text,
+                          }}
+                        >
+                          <span className="text-slate-500">SKU: </span>
+                          <span>{item.sku}</span>
+                        </span>
+                      )}
+                    </div>
+                  )}
 
                   <div className="flex items-center justify-between gap-3">
                     <div className="flex items-center gap-3">
@@ -239,7 +257,8 @@ export function OrderItemsCard({ order }: OrderItemsCardProps) {
             className="space-y-3 p-4 rounded-lg border"
             style={{
               backgroundColor: colors.cardBackgroundSecondary,
-              borderColor: colors.border,
+              border: `1px solid ${colors.border}30`,
+              boxShadow: `0 4px 12px ${colors.border}20`,
             }}
           >
             {/* Subtotal */}

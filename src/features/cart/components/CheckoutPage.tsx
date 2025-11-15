@@ -52,13 +52,14 @@ const CheckoutPage: React.FC = () => {
   })
 
   // Filter cart items to only show selected items
-  const itemsToCheckout = selectedCartItemIds.length > 0
-    ? (cart?.items || []).filter((item) => selectedCartItemIds.includes(item.id))
-    : (cart?.items || [])
+  const itemsToCheckout =
+    selectedCartItemIds.length > 0
+      ? (cart?.items || []).filter((item) => selectedCartItemIds.includes(item.id))
+      : cart?.items || []
 
   // Calculate summary for selected items only
   const selectedSubtotal = itemsToCheckout.reduce((sum, item) => sum + item.totalPrice, 0)
-  const selectedTotal = selectedSubtotal + (selectedSubtotal >= 1000000 ? 0 : 30000) // Total equals subtotal for now (shipping is free)
+  const selectedTotal = selectedSubtotal + (selectedSubtotal >= 1000000 ? 0 : 5000) // Total equals subtotal for now (shipping is free)
   const selectedItemCount = itemsToCheckout.reduce((sum, item) => sum + item.quantity, 0)
 
   const [formData, setFormData] = useState<CheckoutFormData>({
@@ -151,7 +152,7 @@ const CheckoutPage: React.FC = () => {
       }
 
       const order = await checkoutFromCart(checkoutPayload)
-      
+
       // Clear selected items from sessionStorage after successful checkout
       if (typeof window !== 'undefined') {
         sessionStorage.removeItem('selectedCartItems')
@@ -485,23 +486,26 @@ const CheckoutPage: React.FC = () => {
                             {/* Variant Info & SKU */}
                             {item.variant && (
                               <div className="flex items-center gap-2 mb-1 flex-wrap">
-                                {item.variant.optionValues && item.variant.optionValues.length > 0 && (
-                                  <span 
-                                    className="text-xs px-2 py-0.5 rounded"
-                                    style={{ 
-                                      backgroundColor: colors.cardBackgroundSecondary,
-                                      color: colors.textSecondary
-                                    }}
-                                  >
-                                    {item.variant.optionValues.map(ov => `${ov.optionName}: ${ov.value}`).join(', ')}
-                                  </span>
-                                )}
+                                {item.variant.optionValues &&
+                                  item.variant.optionValues.length > 0 && (
+                                    <span
+                                      className="text-xs px-2 py-0.5 rounded"
+                                      style={{
+                                        backgroundColor: colors.cardBackgroundSecondary,
+                                        color: colors.textSecondary,
+                                      }}
+                                    >
+                                      {item.variant.optionValues
+                                        .map((ov) => `${ov.optionName}: ${ov.value}`)
+                                        .join(', ')}
+                                    </span>
+                                  )}
                                 {item.variant.sku && (
-                                  <span 
+                                  <span
                                     className="text-xs font-bold px-2 py-0.5 rounded"
-                                    style={{ 
+                                    style={{
                                       backgroundColor: colors.cardBackgroundSecondary,
-                                      color: colors.textSecondary
+                                      color: colors.textSecondary,
                                     }}
                                   >
                                     SKU: {item.variant.sku}
@@ -523,13 +527,15 @@ const CheckoutPage: React.FC = () => {
                     <div className="space-y-3">
                       <div className="flex justify-between items-center">
                         <span style={{ color: colors.textSecondary }}>Tạm tính</span>
-                        <span className="font-bold" style={{ color: colors.text }}>{formatPrice(selectedSubtotal)}</span>
+                        <span className="font-bold" style={{ color: colors.text }}>
+                          {formatPrice(selectedSubtotal)}
+                        </span>
                       </div>
 
                       <div className="flex justify-between items-center">
                         <span style={{ color: colors.textSecondary }}>Phí vận chuyển</span>
                         <span className="font-bold" style={{ color: colors.success }}>
-                          {formatPrice(selectedSubtotal >= 1000000 ? 0 : 30000)}
+                          {formatPrice(selectedSubtotal >= 1000000 ? 0 : 5000)}
                         </span>
                       </div>
 

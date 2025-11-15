@@ -30,8 +30,9 @@ export function OrderDetailHeader({
       <Card
         className="rounded-lg border p-6"
         style={{
-          backgroundColor: colors.cardBackground,
-          borderColor: colors.border,
+          backgroundColor: colors.cardBackgroundSecondary,
+          border: `1px solid ${colors.border}30`,
+          boxShadow: `0 4px 12px ${colors.border}20`,
         }}
       >
         <div className="flex items-center gap-4 mb-4">
@@ -52,10 +53,7 @@ export function OrderDetailHeader({
 
           {/* Icon & Order Number */}
           <div className="flex items-center gap-3 flex-1">
-            <div
-              className="p-3 rounded-lg"
-              style={{ backgroundColor: `${colors.accent}15` }}
-            >
+            <div className="p-3 rounded-lg" style={{ backgroundColor: `${colors.accent}15` }}>
               <StatusIcon className="h-5 w-5" style={{ color: colors.accent }} />
             </div>
 
@@ -66,10 +64,7 @@ export function OrderDetailHeader({
               >
                 Chi tiết đơn hàng
               </p>
-              <h1
-                className="text-2xl font-bold"
-                style={{ color: colors.text }}
-              >
+              <h1 className="text-2xl font-bold" style={{ color: colors.text }}>
                 #{order.orderNumber}
               </h1>
             </div>
@@ -82,10 +77,7 @@ export function OrderDetailHeader({
               backgroundColor: `${colors.accent}15`,
             }}
           >
-            <span
-              className="text-sm font-medium"
-              style={{ color: colors.accent }}
-            >
+            <span className="text-sm font-medium" style={{ color: colors.accent }}>
               {config.label}
             </span>
           </div>

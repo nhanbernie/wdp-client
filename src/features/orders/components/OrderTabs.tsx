@@ -84,10 +84,7 @@ export function OrderTabs({ activeTab, onTabChange, counts }: OrderTabsProps) {
       }}
       data-order-tabs-list
     >
-      <TabsTrigger
-        value="all"
-        className="h-14 rounded-xl text-base font-bold transition-all"
-      >
+      <TabsTrigger value="all" className="h-14 rounded-xl text-base font-bold transition-all">
         <ClipboardList className="h-5 w-5 mr-2" />
         <span className="hidden sm:inline">Tất cả</span>
         <span className="ml-2 px-2 py-0.5 bg-white/20 rounded-full text-xs">{counts.all}</span>

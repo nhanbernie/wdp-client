@@ -43,15 +43,17 @@ export function OrderPaymentInfo({ order }: OrderPaymentInfoProps) {
     <Card
       className="rounded-lg border overflow-hidden"
       style={{
-        backgroundColor: colors.cardBackground,
-        borderColor: colors.border,
+        backgroundColor: colors.cardBackgroundSecondary,
+        border: `1px solid ${colors.border}30`,
+        boxShadow: `0 4px 12px ${colors.border}20`,
       }}
     >
       <CardHeader
         className="p-4 border-b"
         style={{
-          borderColor: colors.border,
-          backgroundColor: colors.cardBackground,
+          backgroundColor: colors.cardBackgroundSecondary,
+          border: `1px solid ${colors.border}30`,
+          boxShadow: `0 4px 12px ${colors.border}20`,
         }}
       >
         <CardTitle className="flex items-center text-lg font-bold">
@@ -69,7 +71,8 @@ export function OrderPaymentInfo({ order }: OrderPaymentInfoProps) {
           className="flex justify-between items-center p-4 rounded-lg border"
           style={{
             backgroundColor: colors.cardBackgroundSecondary,
-            borderColor: colors.border,
+            border: `1px solid ${colors.border}30`,
+            boxShadow: `0 4px 12px ${colors.border}20`,
           }}
         >
           <span className="font-medium text-sm" style={{ color: colors.textSecondary }}>
@@ -89,7 +92,8 @@ export function OrderPaymentInfo({ order }: OrderPaymentInfoProps) {
           className="flex justify-between items-center p-4 rounded-lg border"
           style={{
             backgroundColor: colors.cardBackgroundSecondary,
-            borderColor: colors.border,
+            border: `1px solid ${colors.border}30`,
+            boxShadow: `0 4px 12px ${colors.border}20`,
           }}
         >
           <span className="font-medium text-sm" style={{ color: colors.textSecondary }}>

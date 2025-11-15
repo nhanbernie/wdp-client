@@ -227,7 +227,7 @@ export function ProductReviewList({ productId }: ProductReviewListProps) {
                           ))}
                         </div>
                         <span className="text-sm" style={{ color: colors.textSecondary }}>
-                          {formatDate(review.createdAt)}
+                          {formatDate(review.updatedAt)}
                         </span>
                         {review.editCount > 0 && (
                           <span

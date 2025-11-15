@@ -18,6 +18,7 @@ import {
 } from 'recharts'
 import { Card } from '@/components/ui/card'
 import type { TransactionAnalytics } from '../types'
+import { useTheme } from '@/contexts/ThemeContext'
 
 interface TransactionChartsProps {
   analytics: TransactionAnalytics | undefined
@@ -58,6 +59,7 @@ export const TransactionCharts: React.FC<TransactionChartsProps> = ({ analytics 
   const byDate = analytics.byDate || []
   const byType = analytics.byType || []
   const byStatus = analytics.byStatus || []
+  const { colors } = useTheme()
 
   // Format date for display
   const formatDate = (date: string) => {
@@ -73,42 +75,40 @@ export const TransactionCharts: React.FC<TransactionChartsProps> = ({ analytics 
     <div className="space-y-6">
       {/* Transaction Amount Over Time */}
       <Card className="p-6">
-        <h3 className="text-xl font-bold mb-6 text-gray-900">Biểu đồ giao dịch theo thời gian</h3>
+        <h3 className="text-xl font-bold " style={{ color: colors.text }}>
+          Biểu đồ giao dịch theo thời gian
+        </h3>
         <ResponsiveContainer width="100%" height={300}>
           <LineChart data={byDate}>
             <CartesianGrid strokeDasharray="3 3" />
-            <XAxis 
-              dataKey="date" 
-              tickFormatter={formatDate}
-              style={{ fontSize: '12px' }}
-            />
-            <YAxis 
+            <XAxis dataKey="date" tickFormatter={formatDate} style={{ fontSize: '12px' }} />
+            <YAxis
               tickFormatter={(value) => `${(value / 1000000).toFixed(1)}M`}
               style={{ fontSize: '12px' }}
             />
-            <Tooltip 
+            <Tooltip
               formatter={(value: number) => `${value.toLocaleString('vi-VN')} VND`}
               labelFormatter={(label) => `Ngày: ${formatDate(label)}`}
             />
             <Legend />
-            <Line 
-              type="monotone" 
-              dataKey="successfulAmount" 
-              stroke="#10b981" 
+            <Line
+              type="monotone"
+              dataKey="successfulAmount"
+              stroke="#10b981"
               strokeWidth={2}
               name="Thành công"
             />
-            <Line 
-              type="monotone" 
-              dataKey="pendingAmount" 
-              stroke="#f59e0b" 
+            <Line
+              type="monotone"
+              dataKey="pendingAmount"
+              stroke="#f59e0b"
               strokeWidth={2}
               name="Đang chờ"
             />
-            <Line 
-              type="monotone" 
-              dataKey="failedAmount" 
-              stroke="#ef4444" 
+            <Line
+              type="monotone"
+              dataKey="failedAmount"
+              stroke="#ef4444"
               strokeWidth={2}
               name="Thất bại"
             />
@@ -118,17 +118,15 @@ export const TransactionCharts: React.FC<TransactionChartsProps> = ({ analytics 
 
       {/* Transaction Count Over Time */}
       <Card className="p-6">
-        <h3 className="text-xl font-bold mb-6 text-gray-900">Số lượng giao dịch theo thời gian</h3>
+        <h3 className="text-xl font-bold " style={{ color: colors.text }}>
+          Số lượng giao dịch theo thời gian
+        </h3>
         <ResponsiveContainer width="100%" height={300}>
           <BarChart data={byDate}>
             <CartesianGrid strokeDasharray="3 3" />
-            <XAxis 
-              dataKey="date" 
-              tickFormatter={formatDate}
-              style={{ fontSize: '12px' }}
-            />
+            <XAxis dataKey="date" tickFormatter={formatDate} style={{ fontSize: '12px' }} />
             <YAxis style={{ fontSize: '12px' }} />
-            <Tooltip 
+            <Tooltip
               formatter={(value: number) => `${value} giao dịch`}
               labelFormatter={(label) => `Ngày: ${formatDate(label)}`}
             />
@@ -143,7 +141,9 @@ export const TransactionCharts: React.FC<TransactionChartsProps> = ({ analytics 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Transactions by Payment Type */}
         <Card className="p-6">
-          <h3 className="text-xl font-bold mb-6 text-gray-900">Giao dịch theo loại thanh toán</h3>
+          <h3 className="text-xl font-bold" style={{ color: colors.text }}>
+            Giao dịch theo loại thanh toán
+          </h3>
           <ResponsiveContainer width="100%" height={300}>
             <PieChart>
               <Pie
@@ -164,9 +164,7 @@ export const TransactionCharts: React.FC<TransactionChartsProps> = ({ analytics 
                   <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                 ))}
               </Pie>
-              <Tooltip 
-                formatter={(value: number) => `${value.toLocaleString('vi-VN')} VND`}
-              />
+              <Tooltip formatter={(value: number) => `${value.toLocaleString('vi-VN')} VND`} />
             </PieChart>
           </ResponsiveContainer>
         </Card>
@@ -178,14 +176,14 @@ export const TransactionCharts: React.FC<TransactionChartsProps> = ({ analytics 
             <BarChart data={byStatus} layout="vertical">
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis type="number" style={{ fontSize: '12px' }} />
-              <YAxis 
-                dataKey="status" 
-                type="category" 
+              <YAxis
+                dataKey="status"
+                type="category"
                 style={{ fontSize: '12px' }}
                 width={100}
                 tickFormatter={translatePaymentStatus}
               />
-              <Tooltip 
+              <Tooltip
                 formatter={(value: number) => `${value.toLocaleString('vi-VN')} VND`}
                 labelFormatter={(label) => `Trạng thái: ${translatePaymentStatus(label)}`}
               />
@@ -197,4 +195,3 @@ export const TransactionCharts: React.FC<TransactionChartsProps> = ({ analytics 
     </div>
   )
 }
-
