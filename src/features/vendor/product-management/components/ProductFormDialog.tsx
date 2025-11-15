@@ -9,7 +9,7 @@ import {
   DialogDescription,
 } from '@/components/ui/dialog'
 import FormProvider from '@/components/form/FormProvider'
-import { ProductForm } from './ProductFormSimple'
+import { ProductFormLinear } from './ProductFormLinear'
 import { ProductFormData } from '../types/product.types'
 import { productFormSchema } from '../schemas/product.schema'
 
@@ -70,7 +70,7 @@ export const ProductFormDialog: React.FC<ProductFormDialogProps> = ({
           validationSchema={productFormSchema}
           onSubmit={onSubmit}
         >
-          <ProductForm onCancel={handleCancel} />
+          <ProductFormLinear onCancel={handleCancel} />
         </FormProvider>
       </DialogContent>
     </Dialog>

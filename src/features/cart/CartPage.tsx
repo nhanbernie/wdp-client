@@ -8,10 +8,12 @@ import ApiCartItem from './components/ApiCartItem'
 import { useCartApi } from './hooks'
 import { useTheme } from '@/contexts/ThemeContext'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 
 const CartPage: React.FC = () => {
   const { cart, isLoadingCart, updateQuantity, removeFromCart, clearCart } = useCartApi()
   const { colors } = useTheme()
+  const router = useRouter()
 
   const [selectedItems, setSelectedItems] = useState<string[]>([])
 
@@ -39,10 +41,23 @@ const CartPage: React.FC = () => {
 
   const handleRemoveItem = (itemId: string) => {
     removeFromCart(itemId)
+    // Also remove from selected items if it was selected
+    setSelectedItems((prev) => prev.filter((id) => id !== itemId))
   }
 
   const handleUpdateQuantity = (itemId: string, quantity: number) => {
     updateQuantity(itemId, quantity)
+  }
+
+  const handleCheckout = () => {
+    if (selectedItems.length === 0) {
+      // If no items selected, show message or select all
+      alert('Vui lòng chọn ít nhất một sản phẩm để thanh toán')
+      return
+    }
+    // Store selected items in sessionStorage to pass to checkout page
+    sessionStorage.setItem('selectedCartItems', JSON.stringify(selectedItems))
+    router.push('/checkout')
   }
 
   // Show loading state
@@ -379,7 +394,7 @@ const CartPage: React.FC = () => {
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.5, delay: 0.4 }}
               >
-                <CartSummary cart={cart} />
+                <CartSummary cart={cart} selectedItems={selectedItems} onCheckout={handleCheckout} />
               </motion.div>
             </div>
           </div>

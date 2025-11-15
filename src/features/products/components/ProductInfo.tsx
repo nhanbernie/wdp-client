@@ -1,10 +1,14 @@
 'use client'
 
+import { useState, useEffect } from 'react'
 import { Badge } from '@/components/ui/badge'
 import { Star, Award, TrendingUp, Sparkles, Shield, Zap, Crown } from 'lucide-react'
 import { motion } from 'framer-motion'
+import { reviewService } from '@/services/reviews'
+import type { ReviewStats } from '@/services/reviews'
 
 interface ProductInfoProps {
+  productId: string
   category?: string
   name: string
   brand?: string
@@ -12,9 +16,16 @@ interface ProductInfoProps {
   salePrice?: number
   colors: any
   brandColors: any
+  sku?: string
+  selectedVariant?: {
+    sku: string
+    price?: number
+    stockQty: number
+  }
 }
 
 export const ProductInfo: React.FC<ProductInfoProps> = ({
+  productId,
   category,
   name,
   brand,
@@ -22,8 +33,35 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({
   salePrice,
   colors,
   brandColors,
+  sku,
+  selectedVariant,
 }) => {
-  const discountPercentage = salePrice ? Math.round(((price - salePrice) / price) * 100) : 0
+  // Only calculate discount when no variant is selected (variants have their own pricing)
+  const discountPercentage = !selectedVariant && salePrice && price 
+    ? Math.round(((price - salePrice) / price) * 100) 
+    : 0
+  const displaySku = selectedVariant?.sku || sku
+  // If variant is selected, use variant price; otherwise use product salePrice or price
+  const displayPrice = selectedVariant?.price || (salePrice || price)
+  // Only show sale price if no variant is selected (variants have their own pricing)
+  const displaySalePrice = selectedVariant ? undefined : salePrice
+  const [reviewStats, setReviewStats] = useState<ReviewStats | null>(null)
+  const [loadingStats, setLoadingStats] = useState(true)
+
+  useEffect(() => {
+    const fetchReviewStats = async () => {
+      try {
+        const stats = await reviewService.getProductReviewStats(productId)
+        setReviewStats(stats)
+      } catch (error) {
+        console.error('Failed to load review stats:', error)
+      } finally {
+        setLoadingStats(false)
+      }
+    }
+
+    fetchReviewStats()
+  }, [productId])
 
   return (
     <motion.div
@@ -33,8 +71,8 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({
       className="space-y-4"
     >
       {/* Category & Badges */}
-      {salePrice && (
-        <Badge
+      {displaySalePrice && discountPercentage > 0 && (
+        <Badge 
           className="px-3 py-1 text-xs font-bold text-white shadow-sm inline-block"
           style={{
             backgroundImage: 'none',
@@ -60,17 +98,33 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({
         >
           {name}
         </h1>
-        {brand && (
-          <div
-            className="flex items-center gap-1.5 text-sm"
+        <div className="flex flex-wrap items-center gap-3 text-sm">
+          {brand && (
+            <div
+            className="flex items-center gap-1.5"
             style={{ color: colors.textSecondary }}
           >
-            <span>Thương hiệu:</span>
-            <span className="font-semibold" style={{ color: colors.text }}>
-              {brand}
-            </span>
-          </div>
-        )}
+              <span>Thương hiệu:</span>
+              <span className="font-semibold" style={{ color: colors.text }}>
+                {brand}
+              </span>
+            </div>
+          )}
+          {displaySku && (
+            <div className="flex items-center gap-1.5" style={{ color: colors.textSecondary }}>
+              <span>SKU:</span>
+              <span 
+                className="font-bold px-2 py-1 rounded text-xs"
+                style={{ 
+                  backgroundColor: colors.cardBackgroundSecondary,
+                  color: colors.text 
+                }}
+              >
+                {displaySku}
+              </span>
+            </div>
+          )}
+        </div>
       </motion.div>
 
       {/* Rating & Price Combined */}
@@ -85,29 +139,48 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({
       >
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-3">
-            <div className="flex gap-0.5">
-              {[...Array(5)].map((_, i) => (
-                <Star
-                  key={i}
-                  className="h-4 w-4"
-                  style={{
-                    fill: i < 4 ? colors.textSecondary : 'none',
-                    color: i < 4 ? colors.textSecondary : colors.border,
-                  }}
+            {loadingStats ? (
+              <div className="flex items-center gap-2">
+                <div
+                  className="animate-pulse h-4 w-24 rounded"
+                  style={{ backgroundColor: colors.border }}
                 />
-              ))}
-            </div>
-            <span className="text-sm font-semibold" style={{ color: colors.text }}>
-              4.0
-            </span>
-            <span className="text-xs" style={{ color: colors.textSecondary }}>
-              (12 đánh giá)
-            </span>
+              </div>
+            ) : reviewStats && reviewStats.totalReviews > 0 ? (
+              <>
+                <div className="flex gap-0.5">
+                  {[...Array(5)].map((_, i) => (
+                    <Star
+                      key={i}
+                      className="h-4 w-4"
+                      style={{
+                        fill: i < Math.round(reviewStats.averageRating) ? colors.accent : 'none',
+                        color:
+                          i < Math.round(reviewStats.averageRating) ? colors.accent : colors.border,
+                      }}
+                    />
+                  ))}
+                </div>
+                <span className="text-sm font-semibold" style={{ color: colors.text }}>
+                  {reviewStats.averageRating.toFixed(1)}
+                </span>
+                <span className="text-xs" style={{ color: colors.textSecondary }}>
+                  ({reviewStats.totalReviews} đánh giá)
+                </span>
+              </>
+            ) : (
+              <span className="text-xs" style={{ color: colors.textSecondary }}>
+                Chưa có đánh giá
+              </span>
+            )}
           </div>
-          {salePrice ? (
+          {displaySalePrice ? (
             <div className="flex items-baseline gap-2">
-              <span className="text-3xl font-black" style={{ color: colors.accent }}>
-                {salePrice.toLocaleString('vi-VN')}
+              <span 
+                className="text-3xl font-black"
+                style={{ color: colors.accent }}
+              >
+                {displaySalePrice.toLocaleString('vi-VN')}
               </span>
               <span className="text-sm font-medium" style={{ color: colors.textSecondary }}>
                 VND
@@ -118,8 +191,11 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({
             </div>
           ) : (
             <div className="flex items-baseline gap-2">
-              <span className="text-3xl font-black" style={{ color: colors.accent }}>
-                {price.toLocaleString('vi-VN')}
+              <span 
+                className="text-3xl font-black"
+                style={{ color: colors.accent }}
+              >
+                {displayPrice.toLocaleString('vi-VN')}
               </span>
               <span className="text-sm font-medium" style={{ color: colors.textSecondary }}>
                 VND

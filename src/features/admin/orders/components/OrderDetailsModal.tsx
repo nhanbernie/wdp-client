@@ -42,7 +42,11 @@ export const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({
           {/* Order Info with modern card */}
           <div
             className="p-5 rounded-xl border-2 shadow-sm"
-            style={{ background: colors.cardBackground, borderColor: colors.border }}
+            style={{
+              backgroundColor: colors.cardBackgroundSecondary,
+              border: `1px solid ${colors.border}30`,
+              boxShadow: `0 4px 12px ${colors.border}20`,
+            }}
           >
             <h3
               className="font-bold mb-4 flex items-center gap-2 text-lg"
@@ -85,7 +89,11 @@ export const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({
           {/* Customer Info with modern card */}
           <div
             className="p-5 rounded-xl border-2 shadow-sm"
-            style={{ background: colors.cardBackground, borderColor: colors.border }}
+            style={{
+              backgroundColor: colors.cardBackgroundSecondary,
+              border: `1px solid ${colors.border}30`,
+              boxShadow: `0 4px 12px ${colors.border}20`,
+            }}
           >
             <h3
               className="font-bold mb-4 flex items-center gap-2 text-lg"
@@ -136,7 +144,11 @@ export const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({
           {order.shippingAddress && (
             <div
               className="p-5 rounded-xl border-2 shadow-sm"
-              style={{ background: colors.cardBackground, borderColor: colors.border }}
+              style={{
+                backgroundColor: colors.cardBackgroundSecondary,
+                border: `1px solid ${colors.border}30`,
+                boxShadow: `0 4px 12px ${colors.border}20`,
+              }}
             >
               <h3
                 className="font-bold mb-4 flex items-center gap-2 text-lg"
@@ -169,7 +181,11 @@ export const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({
           {/* Items with modern design */}
           <div
             className="p-5 rounded-xl border-2 shadow-sm"
-            style={{ background: colors.cardBackground, borderColor: colors.border }}
+            style={{
+              backgroundColor: colors.cardBackgroundSecondary,
+              border: `1px solid ${colors.border}30`,
+              boxShadow: `0 4px 12px ${colors.border}20`,
+            }}
           >
             <h3
               className="font-bold mb-4 flex items-center gap-2 text-lg"
@@ -182,7 +198,11 @@ export const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({
                 <div
                   key={item.id}
                   className="flex justify-between items-center p-4 rounded-lg shadow-sm border transition-all hover:shadow-md"
-                  style={{ background: colors.background, borderColor: colors.border }}
+                  style={{
+                    backgroundColor: colors.cardBackgroundSecondary,
+                    border: `1px solid ${colors.border}30`,
+                    boxShadow: `0 4px 12px ${colors.border}20`,
+                  }}
                 >
                   <div className="flex-1">
                     <p className="font-bold" style={{ color: colors.text }}>
@@ -225,9 +245,8 @@ export const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({
             {order.status === 'pending' && (
               <>
                 <Button
-                  onClick={() => onUpdateStatus('processing')}
-                  className="shadow-lg hover:shadow-xl transition-all"
-                  style={{ background: colors.success, color: 'white' }}
+                  onClick={() => onUpdateStatus('admin_confirm')}
+                  className="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white shadow-lg hover:shadow-xl transition-all"
                 >
                   Xác nhận đơn
                 </Button>
@@ -240,22 +259,12 @@ export const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({
                 </Button>
               </>
             )}
-            {order.status === 'processing' && (
+            {order.status === 'delivered' && (
               <Button
-                onClick={() => onUpdateStatus('shipping')}
-                className="shadow-lg hover:shadow-xl transition-all"
-                style={{ background: colors.accent, color: 'white' }}
+                onClick={() => onUpdateStatus('complete')}
+                className="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white shadow-lg hover:shadow-xl transition-all"
               >
-                Bắt đầu giao hàng
-              </Button>
-            )}
-            {order.status === 'shipping' && (
-              <Button
-                onClick={() => onUpdateStatus('delivered')}
-                className="shadow-lg hover:shadow-xl transition-all"
-                style={{ background: colors.success, color: 'white' }}
-              >
-                Đã giao hàng
+                Hoàn thành đơn hàng
               </Button>
             )}
           </div>

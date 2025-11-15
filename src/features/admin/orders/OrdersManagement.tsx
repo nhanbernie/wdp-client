@@ -99,7 +99,11 @@ export const OrdersManagement: React.FC = () => {
       {/* Filters with modern card design */}
       <div
         className="p-6 rounded-xl shadow-lg border-2"
-        style={{ background: colors.cardBackground, borderColor: colors.border }}
+        style={{
+          backgroundColor: colors.cardBackgroundSecondary,
+          border: `1px solid ${colors.border}30`,
+          boxShadow: `0 4px 12px ${colors.border}20`,
+        }}
       >
         <div className="flex flex-col md:flex-row gap-4 items-center">
           <label
@@ -134,7 +138,11 @@ export const OrdersManagement: React.FC = () => {
       {/* Orders Table with modern card */}
       <div
         className="rounded-2xl border-2 shadow-xl hover:shadow-2xl transition-all duration-300 overflow-hidden"
-        style={{ background: colors.cardBackground, borderColor: colors.border }}
+        style={{
+          backgroundColor: colors.cardBackgroundSecondary,
+          border: `1px solid ${colors.border}30`,
+          boxShadow: `0 4px 12px ${colors.border}20`,
+        }}
       >
         <OrdersTable orders={orders} onViewDetails={handleViewDetails} />
       </div>
@@ -142,7 +150,11 @@ export const OrdersManagement: React.FC = () => {
       {/* Pagination with modern design */}
       <div
         className="flex items-center justify-between p-6 rounded-xl shadow-lg border-2"
-        style={{ background: colors.cardBackground, borderColor: colors.border }}
+        style={{
+          backgroundColor: colors.cardBackgroundSecondary,
+          border: `1px solid ${colors.border}30`,
+          boxShadow: `0 4px 12px ${colors.border}20`,
+        }}
       >
         <p className="text-base font-medium" style={{ color: colors.text }}>
           Trang{' '}

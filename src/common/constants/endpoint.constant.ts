@@ -70,6 +70,9 @@ export const API_ENDPOINTS = {
     CANCEL: '/orders/:id/cancel',
     HISTORY: '/orders/history',
     STATISTICS: '/orders/statistics',
+    ADMIN_CONFIRM: (id: string) => `/orders/${id}/admin-confirm`, // PATCH admin confirm order
+    COMPLETE: (id: string) => `/orders/${id}/complete`, // PATCH admin complete order
+    REORDER: '/orders/:id/reorder',
   },
 
   // Quotes endpoints
@@ -137,18 +140,30 @@ export const API_ENDPOINTS = {
     LIST: '/categories',
   },
 
+  // Reviews endpoints
+  REVIEWS: {
+    CREATE: '/reviews',
+    LIST_BY_PRODUCT: (productId: string) => `/reviews/product/${productId}`,
+    PRODUCT_STATS: (productId: string) => `/reviews/product/${productId}/stats`,
+    DETAILS: (id: string) => `/reviews/${id}`,
+    UPDATE: (id: string) => `/reviews/${id}`,
+    VENDOR_REPLY: (id: string) => `/reviews/${id}/reply`,
+    VENDOR_OVERVIEW: (vendorId: string) => `/reviews/vendor/${vendorId}/overview`,
+    HISTORY: (id: string) => `/reviews/${id}/history`,
+  },
+
   // Payments endpoints
   PAYMENTS: {
     CREATE: '/payments',
   },
-  
+
   // Addresses endpoints
   ADDRESSES: {
     LIST: '/addresses',
     CREATE: '/addresses',
     DETAILS: (id: string) => `/addresses/${id}`,
   },
-  
+
   // Vendor endpoints
   VENDOR: {
     // Profile
@@ -172,9 +187,17 @@ export const API_ENDPOINTS = {
     // Orders
     ORDERS: '/vendors/orders', // GET vendor's orders (orders containing vendor's products)
     ORDER_DETAIL: (id: string) => `/vendors/orders/${id}`, // GET specific order details
+    ORDER_UPDATE_STATUS: (id: string) => `/vendors/orders/${id}/status`, // PATCH update order status
 
     // Statistics
     STATISTICS: '/vendors/statistics', // GET vendor statistics (orders, revenue, products)
+
+    // Wallet
+    WALLET: {
+      BALANCE: '/vendors/wallet/balance', // GET wallet balance
+      DEPOSIT: '/vendors/wallet/deposit', // POST deposit money
+      TRANSACTIONS: '/vendors/wallet/transactions', // GET transaction history
+    },
   },
 }
 

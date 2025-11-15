@@ -24,6 +24,7 @@ import {
   getVendorOrdersEndpoint,
   getOrderDetailEndpoint,
   getOrderStatisticsEndpoint,
+  updateVendorOrderStatusEndpoint,
 } from './endpoints/index'
 
 export const vendorApi = createApi({
@@ -63,6 +64,7 @@ export const vendorApi = createApi({
     getVendorOrders: getVendorOrdersEndpoint(builder),
     getOrderDetail: getOrderDetailEndpoint(builder),
     getOrderStatistics: getOrderStatisticsEndpoint(builder),
+    updateVendorOrderStatus: updateVendorOrderStatusEndpoint(builder),
   }),
 })
 
@@ -99,4 +101,5 @@ export const {
   useGetVendorOrdersQuery,
   useGetOrderDetailQuery,
   useGetOrderStatisticsQuery,
+  useUpdateVendorOrderStatusMutation,
 } = vendorApi

@@ -10,6 +10,18 @@ import { Plus, X, Grid3x3, AlertCircle } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { useTheme } from '@/contexts/ThemeContext'
 
+// Helper component to display error messages
+const ErrorMessage: React.FC<{ message?: string }> = ({ message }) => {
+  const { colors } = useTheme()
+  if (!message) return null
+  return (
+    <p className="text-xs mt-1 flex items-center gap-1" style={{ color: colors.error }}>
+      <AlertCircle className="h-3 w-3" />
+      {message}
+    </p>
+  )
+}
+
 interface ProductVariant {
   options: { [key: string]: string }
   sku?: string
@@ -31,7 +43,11 @@ export const ProductVariantsField: React.FC<ProductVariantsFieldProps> = ({
   name = 'variants',
 }) => {
   const { colors } = useTheme()
-  const { control, watch } = useFormContext()
+  const {
+    control,
+    watch,
+    formState: { errors },
+  } = useFormContext()
   const { fields, append, remove, update } = useFieldArray({
     control,
     name,
@@ -206,7 +222,10 @@ export const ProductVariantsField: React.FC<ProductVariantsFieldProps> = ({
       {fields.length === 0 ? (
         <Card
           className="border-dashed"
-          style={{ backgroundColor: colors.cardBackground, borderColor: colors.border }}
+          style={{
+            backgroundColor: colors.cardBackground,
+            borderColor: (errors.variants as any)?.message ? colors.error : colors.border,
+          }}
         >
           <CardContent className="flex flex-col items-center justify-center py-8 text-center">
             <Grid3x3
@@ -217,6 +236,12 @@ export const ProductVariantsField: React.FC<ProductVariantsFieldProps> = ({
             <p className="text-sm mb-4" style={{ color: colors.textSecondary }}>
               Thêm biến thể thủ công hoặc tự động tạo từ tùy chọn
             </p>
+            {(errors.variants as any)?.message && (
+              <p className="text-sm mb-4 flex items-center gap-1" style={{ color: colors.error }}>
+                <AlertCircle className="h-4 w-4" />
+                {(errors.variants as any).message}
+              </p>
+            )}
             <div className="flex gap-2">
               {showAutoGenerate && (
                 <Button
@@ -310,11 +335,19 @@ export const ProductVariantsField: React.FC<ProductVariantsFieldProps> = ({
                                   handleOptionValueChange(variantIndex, option.name, e.target.value)
                                 }
                               >
-                                {option.values.map((value) => (
-                                  <option key={value} value={value}>
-                                    {value}
-                                  </option>
-                                ))}
+                                {option.values.map((value, idx) => {
+                                  // Handle both string and object formats
+                                  const displayValue =
+                                    typeof value === 'string' ? value : value?.value || ''
+                                  const keyValue =
+                                    typeof value === 'string' ? value : value?.id || idx
+
+                                  return (
+                                    <option key={keyValue} value={displayValue}>
+                                      {displayValue}
+                                    </option>
+                                  )
+                                })}
                               </select>
                             </div>
                           ),
@@ -325,7 +358,7 @@ export const ProductVariantsField: React.FC<ProductVariantsFieldProps> = ({
                   <div className="grid grid-cols-3 gap-4">
                     <div>
                       <Label htmlFor={`variant-sku-${variantIndex}`} style={{ color: colors.text }}>
-                        SKU (tùy chọn)
+                        SKU <span style={{ color: colors.error }}>*</span>
                       </Label>
                       <Input
                         id={`variant-sku-${variantIndex}`}
@@ -336,9 +369,14 @@ export const ProductVariantsField: React.FC<ProductVariantsFieldProps> = ({
                         className="mt-1"
                         style={{
                           backgroundColor: colors.background,
-                          borderColor: colors.border,
+                          borderColor: (errors.variants as any)?.[variantIndex]?.sku
+                            ? colors.error
+                            : colors.border,
                           color: colors.text,
                         }}
+                      />
+                      <ErrorMessage
+                        message={(errors.variants as any)?.[variantIndex]?.sku?.message}
                       />
                     </div>
                     <div>
@@ -363,9 +401,14 @@ export const ProductVariantsField: React.FC<ProductVariantsFieldProps> = ({
                         className="mt-1"
                         style={{
                           backgroundColor: colors.background,
-                          borderColor: colors.border,
+                          borderColor: (errors.variants as any)?.[variantIndex]?.price
+                            ? colors.error
+                            : colors.border,
                           color: colors.text,
                         }}
+                      />
+                      <ErrorMessage
+                        message={(errors.variants as any)?.[variantIndex]?.price?.message}
                       />
                     </div>
                     <div>
@@ -373,7 +416,7 @@ export const ProductVariantsField: React.FC<ProductVariantsFieldProps> = ({
                         htmlFor={`variant-stock-${variantIndex}`}
                         style={{ color: colors.text }}
                       >
-                        Tồn kho <span style={{ color: colors.error }}>*</span>
+                        Tồn kho
                       </Label>
                       <Input
                         id={`variant-stock-${variantIndex}`}
@@ -386,9 +429,14 @@ export const ProductVariantsField: React.FC<ProductVariantsFieldProps> = ({
                         className="mt-1"
                         style={{
                           backgroundColor: colors.background,
-                          borderColor: colors.border,
+                          borderColor: (errors.variants as any)?.[variantIndex]?.stock
+                            ? colors.error
+                            : colors.border,
                           color: colors.text,
                         }}
+                      />
+                      <ErrorMessage
+                        message={(errors.variants as any)?.[variantIndex]?.stock?.message}
                       />
                     </div>
                   </div>

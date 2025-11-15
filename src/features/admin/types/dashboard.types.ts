@@ -10,6 +10,20 @@ export interface DashboardStats {
   todayNewUsers: number
   revenueGrowth: number
   ordersGrowth: number
+  totalWalletBalance: number
+  pendingWithdrawalAmount: number
+  totalPaidWithdrawals: number
+  totalVendors: number
+  pendingWithdrawalCount: number
+  approvedWithdrawalCount: number
+  vendorWalletBalances: Array<{
+    vendorId: string
+    businessName: string
+    status: string
+    balance: number
+    availableBalance: number
+    totalFeesPaid: number
+  }>
 }
 
 export interface RevenueReportItem {

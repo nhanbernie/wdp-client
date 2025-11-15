@@ -38,9 +38,11 @@ import {
   ShoppingBag,
   BarChart3,
   User,
-  Settings,
   Users,
   MessageSquareQuote,
+  MessagesSquare,
+  DollarSign,
+  Wallet,
 } from 'lucide-react'
 
 export const adminNavigationItems: NavItem[] = [
@@ -48,6 +50,7 @@ export const adminNavigationItems: NavItem[] = [
   { label: 'Quản lý người dùng', href: '/admin/user-management', icon: Users },
   { label: 'Quản lý đơn hàng', href: '/admin/orders', icon: ShoppingBag },
   { label: 'Quản lý sản phẩm', href: '/admin/manage-product', icon: Package },
+  { label: 'Yêu cầu rút tiền', href: '/admin/withdrawals', icon: DollarSign },
   { label: 'Thống kê', href: '/admin/analytics', icon: BarChart3 },
 ]
 
@@ -57,4 +60,6 @@ export const vendorNavigationItems: NavItem[] = [
   { label: 'Quản lý sản phẩm', href: '/vendor/product-management', icon: Package },
   { label: 'Yêu cầu báo giá', href: '/vendor/quotes', icon: MessageSquareQuote },
   { label: 'Đơn hàng', href: '/vendor/orders', icon: ShoppingBag },
+  { label: 'Đánh giá', href: '/vendor/review', icon: MessagesSquare },
+  { label: 'Ví', href: '/vendor/wallet', icon: Wallet },
 ]

@@ -86,57 +86,36 @@ export const ProductOptionsField: React.FC<ProductOptionsFieldProps> = ({ name =
   }
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <div>
-          <h3
-            className="text-lg font-semibold flex items-center gap-2"
-            style={{ color: colors.text }}
-          >
-            <Layers className="h-5 w-5" style={{ color: colors.accent }} />
-            Tùy chọn sản phẩm
-          </h3>
-          <p className="text-sm" style={{ color: colors.textSecondary }}>
-            Thêm các tùy chọn như Màu sắc, Kích thước, v.v.
-          </p>
-        </div>
-        <Button
-          type="button"
-          onClick={handleAddOption}
-          variant="outline"
-          size="sm"
-          className="gap-2"
-        >
-          <Plus className="h-4 w-4" />
-          Thêm tùy chọn
-        </Button>
-      </div>
-
       {fields.length === 0 ? (
-        <Card
-          className="border-dashed"
-          style={{ backgroundColor: colors.cardBackground, borderColor: colors.border }}
+        <div
+          className="border-2 border-dashed rounded-xl p-10 text-center"
+          style={{
+            borderColor: colors.border,
+            backgroundColor: colors.background,
+          }}
         >
-          <CardContent className="flex flex-col items-center justify-center py-8 text-center">
-            <Layers
-              className="h-12 w-12 mb-3"
-              style={{ color: colors.textSecondary, opacity: 0.5 }}
-            />
-            <p style={{ color: colors.textSecondary }}>Chưa có tùy chọn nào</p>
-            <p className="text-sm mb-4" style={{ color: colors.textSecondary }}>
-              Thêm tùy chọn để tạo các biến thể sản phẩm
-            </p>
-            <Button
-              type="button"
-              onClick={handleAddOption}
-              variant="outline"
-              size="sm"
-              className="gap-2"
-            >
-              <Plus className="h-4 w-4" />
-              Thêm tùy chọn đầu tiên
-            </Button>
-          </CardContent>
-        </Card>
+          <div
+            className="mx-auto w-16 h-16 rounded-full flex items-center justify-center mb-4"
+            style={{ backgroundColor: colors.accent + '10' }}
+          >
+            <Layers className="h-8 w-8" style={{ color: colors.accent }} />
+          </div>
+          <h4 className="font-semibold text-base mb-2" style={{ color: colors.text }}>
+            Chưa có tùy chọn nào
+          </h4>
+          <p className="text-sm mb-5" style={{ color: colors.textSecondary }}>
+            Thêm tùy chọn như màu sắc, kích thước để tạo các biến thể sản phẩm
+          </p>
+          <Button
+            type="button"
+            onClick={handleAddOption}
+            className="gap-2"
+            style={{ backgroundColor: colors.accent, color: '#ffffff' }}
+          >
+            <Plus className="h-4 w-4" />
+            Thêm tùy chọn đầu tiên
+          </Button>
+        </div>
       ) : (
         <div className="space-y-4">
           {fields.map((field, optionIndex) => {
@@ -210,35 +189,41 @@ export const ProductOptionsField: React.FC<ProductOptionsFieldProps> = ({ name =
                     <div>
                       <Label className="mb-2 block">Các giá trị đã thêm:</Label>
                       <div className="flex flex-wrap gap-2">
-                        {option.values.map((value, valueIndex) => (
-                          <Badge
-                            key={valueIndex}
-                            variant="secondary"
-                            className="gap-2 pr-1 text-sm group"
-                            style={{
-                              backgroundImage: 'none',
-                              backgroundColor: colors.accent + '20',
-                              color: colors.accent,
-                              borderColor: 'transparent',
-                            }}
-                          >
-                            {value}
-                            <button
-                              type="button"
-                              onClick={() => handleRemoveValue(optionIndex, valueIndex)}
-                              className="ml-1 hover:bg-destructive/20 rounded-full p-0.5 transition-colors"
+                        {option.values.map((value, valueIndex) => {
+                          // Handle both string and object formats
+                          const displayValue =
+                            typeof value === 'string' ? value : value?.value || ''
+
+                          return (
+                            <Badge
+                              key={valueIndex}
+                              variant="secondary"
+                              className="gap-2 pr-1 text-sm group"
+                              style={{
+                                backgroundImage: 'none',
+                                backgroundColor: colors.accent + '20',
+                                color: colors.accent,
+                                borderColor: 'transparent',
+                              }}
                             >
-                              <X className="h-3 w-3" />
-                            </button>
-                          </Badge>
-                        ))}
+                              {displayValue}
+                              <button
+                                type="button"
+                                onClick={() => handleRemoveValue(optionIndex, valueIndex)}
+                                className="ml-1 hover:bg-destructive/20 rounded-full p-0.5 transition-colors"
+                              >
+                                <X className="h-3 w-3" />
+                              </button>
+                            </Badge>
+                          )
+                        })}
                       </div>
                     </div>
                   )}
 
                   {(!option.values || option.values.length === 0) && (
                     <p className="text-sm italic" style={{ color: colors.textSecondary }}>
-                      Nhấn Enter hoặc click "Thêm" để thêm giá trị
+                      Nhấn Enter hoặc click &quot;Thêm&quot; để thêm giá trị
                     </p>
                   )}
                 </CardContent>

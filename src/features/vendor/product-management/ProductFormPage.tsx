@@ -1,11 +1,10 @@
 'use client'
 
-import React from 'react'
+import React, { useEffect } from 'react'
 import { ArrowLeft } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import FormProvider from '@/components/form/FormProvider'
-import { ProductForm } from './components/ProductFormSimple'
+import { ProductFormStepper } from './components/ProductFormStepper'
 import { ProductFormData } from './types/product.types'
 import { productFormSchema } from './schemas/product.schema'
 import { useRouter } from 'next/navigation'
@@ -37,18 +36,29 @@ export const ProductFormPage: React.FC<ProductFormPageProps> = ({
 
   const handleFormSubmit = async (data: ProductFormData) => {
     try {
+      console.log('📤 Form submit data:', data)
+      console.log('📦 Variants data:', data.variants)
+
+      // Normalize options data - convert {id, value} format to string format
+      const normalizedOptions = data.options?.map((option) => ({
+        ...option,
+        values: option.values?.map((val) => (typeof val === 'string' ? val : val?.value || '')),
+      }))
+
       // Add vendorId to the data and handle null values
       const dataWithVendorId = {
         ...data,
         vendorId: (user as any)?.vendorId || user?.id || '',
         salePrice: data.salePrice || undefined,
-        // ✅ Only include if has data (empty array = undefined)
-        badges: data.badges && data.badges.length > 0 ? data.badges : undefined,
+        // ✅ Backend expects arrays, send empty array if no data
+        badges: data.badges && data.badges.length > 0 ? data.badges : [],
         specs: data.specs && Object.keys(data.specs).length > 0 ? data.specs : undefined,
-        options: data.options && data.options.length > 0 ? data.options : undefined,
-        variants: data.variants && data.variants.length > 0 ? data.variants : undefined,
+        options: normalizedOptions && normalizedOptions.length > 0 ? normalizedOptions : [],
+        variants: data.variants && data.variants.length > 0 ? data.variants : [],
         datasheetUrl: data.datasheetUrl || undefined,
       }
+
+      console.log('📤 Sending to backend:', dataWithVendorId)
 
       await onSubmit(dataWithVendorId as any)
     } catch (error) {
@@ -83,46 +93,39 @@ export const ProductFormPage: React.FC<ProductFormPageProps> = ({
         </div>
       </div>
 
-      {/* Form Card */}
-      <div>
-        <Card style={{ backgroundColor: colors.cardBackground, borderColor: colors.border }}>
-          <CardHeader>
-            <CardTitle style={{ color: colors.text }}>Thông tin sản phẩm</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <FormProvider<ProductFormData>
-              defaultValues={
-                initialData || {
-                  name: '',
-                  slug: '',
-                  price: 0,
-                  currency: 'VND',
-                  stock: {
-                    quantity: 0,
-                    unit: 'cái',
-                  },
-                  categoryId: '',
-                  brand: '',
-                  thumbnail: undefined,
-                  images: [],
-                  shortDescription: '',
-                  description: '',
-                  options: [], // Keep empty array for useFieldArray
-                  variants: [], // Keep empty array for useFieldArray
-                  specs: {}, // Keep empty object for field iteration
-                  badges: [], // Keep empty array for badges
-                  datasheetUrl: '',
-                  salePrice: undefined,
-                }
-              }
-              validationSchema={productFormSchema}
-              onSubmit={handleFormSubmit}
-            >
-              <ProductForm onCancel={handleCancel} mode={mode} />
-            </FormProvider>
-          </CardContent>
-        </Card>
-      </div>
+      {/* Form */}
+      <FormProvider<ProductFormData>
+        defaultValues={
+          initialData || {
+            name: '',
+            slug: '',
+            price: undefined,
+            currency: 'VND',
+            stock: {
+              quantity: undefined,
+              unit: '',
+            },
+            categoryId: '',
+            brand: '',
+            thumbnail: undefined,
+            images: [],
+            shortDescription: '',
+            description: '',
+            options: [],
+            variants: [],
+            specs: {},
+            badges: [],
+            datasheetUrl: '',
+            salePrice: undefined,
+          }
+        }
+        validationSchema={productFormSchema}
+        onSubmit={handleFormSubmit}
+        mode="onBlur"
+      >
+        {/* Stepper Form */}
+        <ProductFormStepper onCancel={handleCancel} mode={mode} />
+      </FormProvider>
     </div>
   )
 }

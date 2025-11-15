@@ -70,7 +70,11 @@ export const AnalyticsPage: React.FC = () => {
       {/* Modern Header with Gradient */}
       <div
         className="rounded-2xl shadow-xl p-8 border"
-        style={{ background: colors.cardBackground, borderColor: colors.border }}
+        style={{
+          backgroundColor: colors.cardBackgroundSecondary,
+          border: `1px solid ${colors.border}30`,
+          boxShadow: `0 4px 12px ${colors.border}20`,
+        }}
       >
         <div className="flex items-center gap-4">
           <div className="p-4 rounded-2xl shadow-lg" style={{ background: colors.accent }}>
@@ -106,7 +110,11 @@ export const AnalyticsPage: React.FC = () => {
             <div>
               <Card
                 className="p-6 border-2 shadow-xl rounded-2xl hover:shadow-2xl transition-all duration-300"
-                style={{ background: colors.cardBackground, borderColor: colors.border }}
+                style={{
+                  backgroundColor: colors.cardBackgroundSecondary,
+                  border: `1px solid ${colors.border}30`,
+                  boxShadow: `0 4px 12px ${colors.border}20`,
+                }}
               >
                 <div className="flex items-center gap-3 mb-4">
                   <div className="p-2 rounded-lg" style={{ background: colors.accent }}>
@@ -170,7 +178,11 @@ export const AnalyticsPage: React.FC = () => {
             <div>
               <Card
                 className="p-6 border-2 shadow-xl rounded-2xl hover:shadow-2xl transition-all duration-300"
-                style={{ background: colors.cardBackground, borderColor: colors.border }}
+                style={{
+                  backgroundColor: colors.cardBackgroundSecondary,
+                  border: `1px solid ${colors.border}30`,
+                  boxShadow: `0 4px 12px ${colors.border}20`,
+                }}
               >
                 <div className="flex items-center gap-3 mb-4">
                   <div className="p-2 rounded-lg" style={{ background: colors.accentSecondary }}>
@@ -230,7 +242,11 @@ export const AnalyticsPage: React.FC = () => {
             <div>
               <Card
                 className="p-6 border-2 shadow-xl rounded-2xl hover:shadow-2xl transition-all duration-300"
-                style={{ background: colors.cardBackground, borderColor: colors.border }}
+                style={{
+                  backgroundColor: colors.cardBackgroundSecondary,
+                  border: `1px solid ${colors.border}30`,
+                  boxShadow: `0 4px 12px ${colors.border}20`,
+                }}
               >
                 <div className="flex items-center gap-3 mb-4">
                   <div className="p-2 rounded-lg" style={{ background: colors.success }}>
@@ -289,7 +305,11 @@ export const AnalyticsPage: React.FC = () => {
           <div>
             <Card
               className="p-6 border-2 shadow-xl rounded-2xl hover:shadow-2xl transition-all duration-300"
-              style={{ background: colors.cardBackground, borderColor: colors.border }}
+              style={{
+                backgroundColor: colors.cardBackgroundSecondary,
+                border: `1px solid ${colors.border}30`,
+                boxShadow: `0 4px 12px ${colors.border}20`,
+              }}
             >
               <div className="flex items-center gap-3 mb-6">
                 <div className="p-2 rounded-lg" style={{ background: colors.warning }}>
@@ -359,7 +379,11 @@ export const AnalyticsPage: React.FC = () => {
           <div>
             <Card
               className="p-6 border-2 shadow-xl rounded-2xl hover:shadow-2xl transition-all duration-300"
-              style={{ background: colors.cardBackground, borderColor: colors.border }}
+              style={{
+                backgroundColor: colors.cardBackgroundSecondary,
+                border: `1px solid ${colors.border}30`,
+                boxShadow: `0 4px 12px ${colors.border}20`,
+              }}
             >
               <div className="flex items-center gap-3 mb-6">
                 <div className="p-2 rounded-lg" style={{ background: colors.accentSecondary }}>

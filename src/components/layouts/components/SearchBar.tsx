@@ -1,6 +1,7 @@
 'use client'
 
-import { ReactNode, useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { Input } from '@/components/ui/input'
 import { Search } from 'lucide-react'
 import { useProducts } from '@/features/categories'
@@ -11,6 +12,7 @@ export default function SearchBar() {
   const [debouncedQuery, setDebouncedQuery] = useState<string>('')
   const [isOpen, setIsOpen] = useState<boolean>(false)
   const wrapRef = useRef<HTMLDivElement>(null)
+  const router = useRouter()
 
   const { products, loading } = useProducts(
     debouncedQuery
@@ -41,12 +43,26 @@ export default function SearchBar() {
     return () => document.removeEventListener('mousedown', handleClickOutside)
   }, [])
 
+  const handleSearch = () => {
+    if (query.trim()) {
+      router.push(`/search?q=${encodeURIComponent(query.trim())}`)
+      setIsOpen(false)
+    }
+  }
+
+  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      handleSearch()
+    }
+  }
+
   return (
-    <div className="flex w-full max-w-md mx-auto">
-      <div ref={wrapRef} className="relative flex-1">
+    <div className="flex w-full">
+      <div ref={wrapRef} className="relative flex-1 ">
         <Search
-          className={`absolute left-3 top-1/2 -translate-y-1/2 text-[var(--foreground)]`}
+          className={`absolute left-3 top-1/2 -translate-y-1/2 text-[var(--foreground)] cursor-pointer hover:opacity-70 transition-opacity`}
           size={20}
+          onClick={handleSearch}
         />
         <Input
           id="search"
@@ -56,11 +72,17 @@ export default function SearchBar() {
             setQuery(e.target.value)
             setIsOpen(true)
           }}
-          className={`pl-10 rounded-2xl placeholder:text-[0.8rem] focus-visible:ring-[var(--primary)] placeholder:text-[var(--foreground)]`}
+          onKeyPress={handleKeyPress}
+          className={`pl-10 bg-[var(--card)] shadow-none border-gray-300 hover:border-gray-500 rounded-2xl placeholder:text-[0.8rem]  focus-visible:border-[var(--primary)] focus-visible:ring-2 focus-visible:ring-gray-300/20 placeholder:text-[var(--neutral-medium)]`}
         />
         {isOpen && debouncedQuery && (
-          <div className="absolute left-0 right-0 top-[calc(100%+10px)]">
-            <SearchBarDropdown productList={products} />
+          <div className="absolute left-0 right-0 top-[calc(100%+10px)] z-[100]">
+            <SearchBarDropdown
+              productList={products}
+              loading={loading}
+              query={query}
+              onClose={() => setIsOpen(false)}
+            />
           </div>
         )}
       </div>

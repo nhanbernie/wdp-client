@@ -14,6 +14,10 @@ export const vendorProfileSchema = z.object({
     .string()
     .min(10, 'Mã số thuế phải có ít nhất 10 ký tự')
     .max(14, 'Mã số thuế không quá 14 ký tự'),
+  bankName: z.string().optional(),
+  bankAccountNumber: z.string().optional(),
+  accountHolderName: z.string().optional(),
+  bankBranch: z.string().optional(),
 })
 
 export type VendorProfileFormData = z.infer<typeof vendorProfileSchema>

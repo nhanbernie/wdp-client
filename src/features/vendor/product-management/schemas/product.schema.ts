@@ -25,12 +25,26 @@ export const productFormSchema = yup.object().shape({
   // Pricing
   price: yup
     .number()
+    .transform((value, originalValue) => {
+      // Handle empty string
+      if (originalValue === '' || originalValue === null || originalValue === undefined) {
+        return undefined
+      }
+      return value
+    })
     .required('Giá là bắt buộc')
-    .min(0, 'Giá phải lớn hơn hoặc bằng 0')
+    .min(1, 'Giá phải lớn hơn 0')
     .typeError('Giá phải là số'),
 
   salePrice: yup
     .number()
+    .transform((value, originalValue) => {
+      // Handle empty string - allow null/undefined
+      if (originalValue === '' || originalValue === null || originalValue === undefined) {
+        return null
+      }
+      return value
+    })
     .nullable()
     .min(0, 'Giá khuyến mãi phải lớn hơn hoặc bằng 0')
     .test('is-less-than-price', 'Giá khuyến mãi phải nhỏ hơn giá gốc', function (value) {
@@ -46,8 +60,15 @@ export const productFormSchema = yup.object().shape({
   stock: yup.object().shape({
     quantity: yup
       .number()
+      .transform((value, originalValue) => {
+        // Handle empty string
+        if (originalValue === '' || originalValue === null || originalValue === undefined) {
+          return undefined
+        }
+        return value
+      })
       .required('Số lượng là bắt buộc')
-      .min(0, 'Số lượng phải lớn hơn hoặc bằng 0')
+      .min(1, 'Số lượng phải lớn hơn 0')
       .integer('Số lượng phải là số nguyên')
       .typeError('Số lượng phải là số'),
 
@@ -138,29 +159,51 @@ export const productFormSchema = yup.object().shape({
           .min(1, 'Phải có ít nhất 1 giá trị'),
       }),
     )
-    .nullable(),
+    .min(1, 'Phải tạo ít nhất 1 tùy chọn')
+    .required('Phải tạo ít nhất 1 tùy chọn'),
 
-  // Variants - simplified, make fields optional
+  // Variants - validate required fields when creating variants
   variants: yup
     .array()
     .of(
       yup.object().shape({
-        sku: yup.string().nullable(),
-        price: yup.number().min(0, 'Giá phải lớn hơn 0').nullable(),
+        sku: yup
+          .string()
+          .required('SKU là bắt buộc')
+          .min(1, 'SKU không được để trống')
+          .max(50, 'SKU không được quá 50 ký tự')
+          .matches(
+            /^[a-zA-Z0-9-_]+$/,
+            'SKU chỉ được chứa chữ cái, số, dấu gạch ngang và gạch dưới',
+          ),
+        price: yup
+          .number()
+          .transform((value, originalValue) => {
+            if (originalValue === '' || originalValue === null || originalValue === undefined) {
+              return undefined
+            }
+            return value
+          })
+          .required('Giá biến thể là bắt buộc')
+          .min(1, 'Giá phải lớn hơn 0')
+          .typeError('Giá phải là số'),
         stockQty: yup
           .number()
-          .min(0, 'Số lượng phải lớn hơn 0')
+          .nullable()
+          .min(0, 'Số lượng phải lớn hơn hoặc bằng 0')
           .integer('Số lượng phải là số nguyên')
-          .nullable(),
+          .typeError('Số lượng phải là số'),
         stock: yup
           .number()
-          .min(0, 'Số lượng phải lớn hơn 0')
+          .nullable()
+          .min(0, 'Số lượng phải lớn hơn hoặc bằng 0')
           .integer('Số lượng phải là số nguyên')
-          .nullable(),
-        options: yup.object().nullable(),
+          .typeError('Số lượng phải là số'),
+        options: yup.object().nullable(), // Made optional - variants can exist without options
         image: yup.mixed().nullable(), // Allow File or string or null
         specs: yup.object().nullable(),
       }),
     )
-    .nullable(),
+    .min(1, 'Phải tạo ít nhất 1 biến thể')
+    .required('Phải tạo ít nhất 1 biến thể'),
 })

@@ -3,10 +3,12 @@
 export enum OrderStatus {
   PENDING = 'pending',
   PROCESSING = 'processing',
+  ADMIN_CONFIRMED = 'admin_confirmed',
   SHIPPING = 'shipping',
   DELIVERED = 'delivered',
   CANCELLED = 'cancelled',
   REFUNDED = 'refunded',
+  COMPLETED = 'completed',
 }
 
 export enum PaymentStatus {
@@ -141,4 +143,26 @@ export interface OrderStatisticsResponse {
   success: boolean;
   message: string;
   data: OrderStatistics;
+}
+
+export interface ReorderDto {
+  addToCart?: boolean;
+}
+
+export interface UnavailableItem {
+  productId: string;
+  variantId?: string;
+  productName: string;
+  reason: string;
+}
+
+export interface ReorderResponse {
+  success: boolean;
+  message: string;
+  data: {
+    cartItems?: any[];
+    addedCount?: number;
+    order?: Order;
+  };
+  unavailableItems?: UnavailableItem[];
 }

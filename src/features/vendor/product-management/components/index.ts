@@ -1,5 +1,6 @@
 export { ProductFormDialog } from './ProductFormDialog'
-export { ProductForm } from './ProductFormSimple'
+export { ProductFormLinear } from './ProductFormLinear'
+export { ProductFormStepper as ProductForm } from './ProductFormStepper'
 export { ProductTable } from './ProductTable'
 export { ProductOptionsField } from './ProductOptionsField'
 export { ProductVariantsField } from './ProductVariantsField'

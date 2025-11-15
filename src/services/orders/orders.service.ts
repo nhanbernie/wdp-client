@@ -14,6 +14,7 @@ export interface CheckoutFromCartRequest {
   shippingWard?: string
   shippingPostalCode?: string
   customerNotes?: string
+  cartItemIds?: string[] // Optional: array of cart item IDs to checkout (if not provided, all items will be checked out)
 }
 
 export interface OrderItem {
@@ -29,7 +30,15 @@ export interface OrderItem {
 export interface Order {
   id: string
   orderNumber: string
-  status: 'pending' | 'processing' | 'shipping' | 'delivered' | 'cancelled' | 'refunded'
+  status:
+    | 'pending'
+    | 'admin_confirmed'
+    | 'shipping'
+    | 'delivered'
+    | 'completed'
+    | 'processing'
+    | 'cancelled'
+    | 'refunded'
   paymentStatus: 'pending' | 'paid' | 'failed' | 'refunded'
   paymentMethod: string
   subtotal: string
@@ -37,6 +46,9 @@ export interface Order {
   taxAmount: string
   discountAmount: string
   totalAmount: string
+  projectedFees?: string
+  platformFee?: string
+  vendorPayoutAmount?: string
   currency: string
   shippingName: string
   shippingPhone: string
@@ -50,6 +62,16 @@ export interface Order {
   items: OrderItem[]
   createdAt?: string
   updatedAt?: string
+  adminConfirmedAt?: string
+  shippingStartedAt?: string
+  deliveredByVendorAt?: string
+  completedAt?: string
+}
+
+export interface UpdateOrderStatusRequest {
+  status: Order['status']
+  trackingNumber?: string
+  notes?: string
 }
 
 export interface OrdersListResponse {
@@ -137,6 +159,60 @@ export const ordersApi = createApi({
       }),
       invalidatesTags: ['Order'],
     }),
+
+    // Admin confirm order
+    adminConfirmOrder: builder.mutation<{ data: Order }, string>({
+      query: (orderId) => ({
+        url: API_ENDPOINTS.ORDERS.ADMIN_CONFIRM(orderId),
+        method: 'PATCH',
+      }),
+      invalidatesTags: ['Order'],
+    }),
+
+    // Admin complete order
+    completeOrder: builder.mutation<{ data: Order }, string>({
+      query: (orderId) => ({
+        url: API_ENDPOINTS.ORDERS.COMPLETE(orderId),
+        method: 'PATCH',
+      }),
+      invalidatesTags: ['Order'],
+    }),
+
+    // Update order status (admin)
+    updateOrderStatus: builder.mutation<
+      { data: Order },
+      { orderId: string; body: UpdateOrderStatusRequest }
+    >({
+      query: ({ orderId, body }) => ({
+        url: API_ENDPOINTS.ORDERS.DETAILS.replace(':id', orderId) + '/status',
+        method: 'PATCH',
+        body,
+      }),
+      invalidatesTags: ['Order'],
+    }),
+
+    // Reorder items from a previous order
+    reorder: builder.mutation<
+      { success: boolean; message: string; data: any; unavailableItems?: any[] },
+      { orderId: string; addToCart?: boolean }
+    >({
+      query: ({ orderId, addToCart = true }) => ({
+        url: API_ENDPOINTS.ORDERS.REORDER.replace(':id', orderId),
+        method: 'POST',
+        body: { addToCart },
+      }),
+      invalidatesTags: ['Order', 'OrderStats'],
+    }),
+
+    // Get order history (completed/delivered orders)
+    getOrderHistory: builder.query<OrdersListResponse, GetOrdersParams>({
+      query: (params = {}) => ({
+        url: API_ENDPOINTS.ORDERS.HISTORY,
+        method: 'GET',
+        params,
+      }),
+      providesTags: ['Order'],
+    }),
   }),
 })
 
@@ -147,4 +223,9 @@ export const {
   useGetOrderByNumberQuery,
   useGetOrderStatisticsQuery,
   useCancelOrderMutation,
+  useAdminConfirmOrderMutation,
+  useCompleteOrderMutation,
+  useUpdateOrderStatusMutation,
+  useReorderMutation,
+  useGetOrderHistoryQuery,
 } = ordersApi

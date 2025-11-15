@@ -23,9 +23,10 @@ interface CartSummaryProps {
   summary?: CartSummaryType // Legacy support
   onCheckout?: () => void
   onApplyCoupon?: (coupon: string) => void
+  selectedItems?: string[] // Optional: array of selected cart item IDs
 }
 
-const CartSummary: React.FC<CartSummaryProps> = ({ cart, summary, onCheckout, onApplyCoupon }) => {
+const CartSummary: React.FC<CartSummaryProps> = ({ cart, summary, onCheckout, onApplyCoupon, selectedItems }) => {
   const router = useRouter()
   const { colors } = useTheme()
   const [couponCode, setCouponCode] = useState('')
@@ -56,13 +57,34 @@ const CartSummary: React.FC<CartSummaryProps> = ({ cart, summary, onCheckout, on
     }
   }, [colors.textSecondary])
 
-  // Use cart data if available, otherwise fallback to legacy summary
-  const itemCount = cart?.totalQuantity || summary?.itemCount || 0
-  const subtotal = cart?.subtotal || summary?.subtotal || 0
-  const shipping = summary?.shipping || 0 // API doesn't provide shipping fee yet
+  // Calculate summary for selected items only if selectedItems is provided
+  let itemCount = 0
+  let subtotal = 0
+  let total = 0
+
+  if (cart) {
+    if (selectedItems && selectedItems.length > 0) {
+      // Calculate for selected items only
+      const selectedCartItems = cart.items.filter((item) => selectedItems.includes(item.id))
+      itemCount = selectedCartItems.reduce((sum, item) => sum + item.quantity, 0)
+      subtotal = selectedCartItems.reduce((sum, item) => sum + item.totalPrice, 0)
+      total = subtotal // Total equals subtotal for now (shipping, tax, discount are 0)
+    } else {
+      // Use all cart items if no selection
+      itemCount = cart.totalQuantity || 0
+      subtotal = cart.subtotal || 0
+      total = cart.total || 0
+    }
+  } else {
+    // Fallback to legacy summary
+    itemCount = summary?.itemCount || 0
+    subtotal = summary?.subtotal || 0
+    total = summary?.total || 0
+  }
+
+  const shipping = subtotal >= 1000000 ? 0 : 30000
   const tax = summary?.tax || 0 // API doesn't provide tax yet
   const discount = summary?.discount || 0 // API doesn't provide discount yet
-  const total = cart?.total || summary?.total || 0
 
   const handleCheckout = () => {
     if (onCheckout) {
@@ -374,7 +396,7 @@ const CartSummary: React.FC<CartSummaryProps> = ({ cart, summary, onCheckout, on
             className="text-2xl font-bold"
             style={{ color: colors.text }}
           >
-            {formatPrice(total)}
+            {formatPrice(total+shipping)}
           </div>
         </div>
 

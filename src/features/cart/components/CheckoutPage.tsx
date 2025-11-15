@@ -31,12 +31,35 @@ const CheckoutPage: React.FC = () => {
   const { checkoutFromCart } = useOrders()
   const { createPayment } = usePayment()
   const { colors } = useTheme()
-  const { data: addressesData, isLoading: isLoadingAddresses, refetch: refetchAddresses } = useGetAddressesQuery()
+  const {
+    data: addressesData,
+    isLoading: isLoadingAddresses,
+    refetch: refetchAddresses,
+  } = useGetAddressesQuery()
 
   const addresses = addressesData?.data || []
-  const defaultAddress = addresses.find(addr => addr.isDefault) || addresses[0]
+  const defaultAddress = addresses.find((addr) => addr.isDefault) || addresses[0]
   const [selectedAddress, setSelectedAddress] = useState<Address | null>(null)
   const [isAddressDialogOpen, setIsAddressDialogOpen] = useState(false)
+
+  // Get selected items from sessionStorage
+  const [selectedCartItemIds, setSelectedCartItemIds] = useState<string[]>(() => {
+    if (typeof window !== 'undefined') {
+      const stored = sessionStorage.getItem('selectedCartItems')
+      return stored ? JSON.parse(stored) : []
+    }
+    return []
+  })
+
+  // Filter cart items to only show selected items
+  const itemsToCheckout = selectedCartItemIds.length > 0
+    ? (cart?.items || []).filter((item) => selectedCartItemIds.includes(item.id))
+    : (cart?.items || [])
+
+  // Calculate summary for selected items only
+  const selectedSubtotal = itemsToCheckout.reduce((sum, item) => sum + item.totalPrice, 0)
+  const selectedTotal = selectedSubtotal + (selectedSubtotal >= 1000000 ? 0 : 30000) // Total equals subtotal for now (shipping is free)
+  const selectedItemCount = itemsToCheckout.reduce((sum, item) => sum + item.quantity, 0)
 
   const [formData, setFormData] = useState<CheckoutFormData>({
     paymentMethod: 'cod',
@@ -52,7 +75,7 @@ const CheckoutPage: React.FC = () => {
     if (!isLoadingAddresses) {
       if (defaultAddress && !selectedAddress) {
         setSelectedAddress(defaultAddress)
-        setFormData(prev => ({
+        setFormData((prev) => ({
           ...prev,
           addressId: defaultAddress.id,
         }))
@@ -63,7 +86,7 @@ const CheckoutPage: React.FC = () => {
   // Update form data when selected address changes
   useEffect(() => {
     if (selectedAddress) {
-      setFormData(prev => ({
+      setFormData((prev) => ({
         ...prev,
         addressId: selectedAddress.id,
       }))
@@ -103,7 +126,8 @@ const CheckoutPage: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!cart?.items?.length) {
+    if (!itemsToCheckout.length) {
+      alert('Vui lòng chọn ít nhất một sản phẩm để thanh toán')
       return
     }
 
@@ -121,7 +145,17 @@ const CheckoutPage: React.FC = () => {
         customerNotes: formData.customerNotes,
       }
 
+      // Only include cartItemIds if there are selected items
+      if (selectedCartItemIds.length > 0) {
+        checkoutPayload.cartItemIds = selectedCartItemIds
+      }
+
       const order = await checkoutFromCart(checkoutPayload)
+      
+      // Clear selected items from sessionStorage after successful checkout
+      if (typeof window !== 'undefined') {
+        sessionStorage.removeItem('selectedCartItems')
+      }
       if (order) {
         setCreatedOrder(order)
 
@@ -213,8 +247,13 @@ const CheckoutPage: React.FC = () => {
       <div className="min-h-screen" style={{ backgroundColor: colors.background }}>
         <div className="max-w-7xl mx-auto relative z-10 py-12 px-6">
           <div className="text-center py-16">
-            <ShoppingCart className="w-16 h-16 mx-auto mb-4" style={{ color: colors.textSecondary }} />
-            <h1 className="text-3xl font-bold mb-4" style={{ color: colors.text }}>Giỏ hàng trống</h1>
+            <ShoppingCart
+              className="w-16 h-16 mx-auto mb-4"
+              style={{ color: colors.textSecondary }}
+            />
+            <h1 className="text-3xl font-bold mb-4" style={{ color: colors.text }}>
+              Giỏ hàng trống
+            </h1>
             <p className="mb-8" style={{ color: colors.textSecondary }}>
               Có vẻ như bạn chưa thêm sản phẩm nào. Hãy khám phá các sản phẩm của chúng tôi!
             </p>
@@ -230,6 +269,16 @@ const CheckoutPage: React.FC = () => {
     )
   }
 
+  // Nếu có selectedCartItemIds nhưng không có item nào match, redirect về cart
+  if (selectedCartItemIds.length > 0 && itemsToCheckout.length === 0) {
+    // Clear invalid selection and redirect
+    if (typeof window !== 'undefined') {
+      sessionStorage.removeItem('selectedCartItems')
+    }
+    router.push('/cart')
+    return null
+  }
+
   // Giao diện chính
   return (
     <div className="min-h-screen" style={{ backgroundColor: colors.background }}>
@@ -242,16 +291,23 @@ const CheckoutPage: React.FC = () => {
         >
           <div className="mb-4 flex items-center gap-4">
             <Link href="/cart">
-              <Button variant="outline" size="icon" style={{ 
-                backgroundColor: colors.cardBackground,
-                borderColor: colors.border,
-                color: colors.text 
-              }}>
+              <Button
+                variant="outline"
+                size="icon"
+                style={{
+                  backgroundColor: colors.cardBackground,
+                  borderColor: colors.border,
+                  color: colors.text,
+                }}
+              >
                 <ArrowLeft className="w-5 h-5" />
               </Button>
             </Link>
             <div>
-              <h1 className="text-2xl font-bold flex items-center gap-3" style={{ color: colors.text }}>
+              <h1
+                className="text-2xl font-bold flex items-center gap-3"
+                style={{ color: colors.text }}
+              >
                 {/* <ShoppingCart className="w-6 h-6" style={{ color: colors.textSecondary }} /> */}
                 Thanh toán
               </h1>
@@ -264,14 +320,14 @@ const CheckoutPage: React.FC = () => {
               {/* Cột thông tin (trái) */}
               <div className="lg:col-span-2 space-y-4">
                 {/* 1. Thông tin giao hàng */}
-                <Card style={{ 
-                  backgroundColor: colors.cardBackground,
-                  borderColor: colors.border 
-                }}>
+                <Card
+                  style={{
+                    backgroundColor: colors.cardBackground,
+                    borderColor: colors.border,
+                  }}
+                >
                   <CardHeader>
-                    <CardTitle style={{ color: colors.text }}>
-                      Thông tin giao hàng
-                    </CardTitle>
+                    <CardTitle style={{ color: colors.text }}>Thông tin giao hàng</CardTitle>
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-4">
@@ -279,7 +335,7 @@ const CheckoutPage: React.FC = () => {
                       <AddressDisplay
                         address={selectedAddress}
                         onChange={handleAddressChange}
-                        onManage={() => router.push("/addresses")}
+                        onManage={() => router.push('/addresses')}
                       />
 
                       {/* Customer Notes */}
@@ -290,7 +346,7 @@ const CheckoutPage: React.FC = () => {
                         <Textarea
                           id="customerNotes"
                           value={formData.customerNotes}
-                          onChange={(e) => handleInputChange("customerNotes", e.target.value)}
+                          onChange={(e) => handleInputChange('customerNotes', e.target.value)}
                           placeholder="Ghi chú thêm cho người giao hàng..."
                           className="min-h-[100px] resize-none focus:ring-2 focus:ring-offset-1"
                           style={{
@@ -299,12 +355,18 @@ const CheckoutPage: React.FC = () => {
                             color: colors.text,
                           }}
                           onFocus={(e) => {
-                            e.currentTarget.style.setProperty("--tw-ring-color", `${colors.border}40`);
-                            e.currentTarget.style.setProperty("--tw-ring-offset-color", colors.cardBackground);
-                            e.currentTarget.style.borderColor = colors.accent;
+                            e.currentTarget.style.setProperty(
+                              '--tw-ring-color',
+                              `${colors.border}40`,
+                            )
+                            e.currentTarget.style.setProperty(
+                              '--tw-ring-offset-color',
+                              colors.cardBackground,
+                            )
+                            e.currentTarget.style.borderColor = colors.accent
                           }}
                           onBlur={(e) => {
-                            e.currentTarget.style.borderColor = `${colors.border}60`;
+                            e.currentTarget.style.borderColor = `${colors.border}60`
                           }}
                         />
                       </div>
@@ -313,10 +375,12 @@ const CheckoutPage: React.FC = () => {
                 </Card>
 
                 {/* 2. Phương thức thanh toán */}
-                <Card style={{ 
-                  backgroundColor: colors.cardBackground,
-                  borderColor: colors.border 
-                }}>
+                <Card
+                  style={{
+                    backgroundColor: colors.cardBackground,
+                    borderColor: colors.border,
+                  }}
+                >
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2" style={{ color: colors.text }}>
                       <CreditCard className="h-5 w-5" style={{ color: colors.textSecondary }} />
@@ -337,13 +401,17 @@ const CheckoutPage: React.FC = () => {
                             }
                             className="peer absolute opacity-0"
                           />
-                          <div 
+                          <div
                             className="p-4 rounded-lg border cursor-pointer transition-all duration-200 peer-checked:bg-card-secondary"
                             style={{
-                              borderColor: formData.paymentMethod === method.value ? colors.accent : colors.border,
-                              backgroundColor: formData.paymentMethod === method.value 
-                                ? `${colors.accent}10` 
-                                : colors.cardBackground,
+                              borderColor:
+                                formData.paymentMethod === method.value
+                                  ? colors.accent
+                                  : colors.border,
+                              backgroundColor:
+                                formData.paymentMethod === method.value
+                                  ? `${colors.accent}10`
+                                  : colors.cardBackground,
                             }}
                             onMouseEnter={(e) => {
                               if (formData.paymentMethod !== method.value) {
@@ -356,7 +424,9 @@ const CheckoutPage: React.FC = () => {
                               }
                             }}
                           >
-                            <span className="font-medium" style={{ color: colors.text }}>{method.label}</span>
+                            <span className="font-medium" style={{ color: colors.text }}>
+                              {method.label}
+                            </span>
                           </div>
                         </label>
                       ))}
@@ -367,22 +437,22 @@ const CheckoutPage: React.FC = () => {
 
               {/* Cột tóm tắt đơn hàng (phải) */}
               <div className="lg:col-span-1">
-                <Card 
+                <Card
                   className="sticky top-24"
-                  style={{ 
+                  style={{
                     backgroundColor: colors.cardBackground,
-                    borderColor: colors.border 
+                    borderColor: colors.border,
                   }}
                 >
                   <CardHeader>
                     <CardTitle style={{ color: colors.text }}>
-                      Đơn hàng ({cart.items.length} sản phẩm)
+                      Đơn hàng ({selectedItemCount} sản phẩm)
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-4">
                     {/* Danh sách sản phẩm */}
                     <div className="max-h-80 space-y-3 overflow-y-auto">
-                      {cart.items.map((item) => (
+                      {itemsToCheckout.map((item) => (
                         <div
                           key={item.id}
                           className="flex items-center gap-3 p-3 rounded-lg"
@@ -398,7 +468,7 @@ const CheckoutPage: React.FC = () => {
                               className="object-cover"
                               unoptimized
                             />
-                            <div 
+                            <div
                               className="absolute -top-1 -right-1 w-5 h-5 rounded-full flex items-center justify-center text-xs font-bold text-white"
                               style={{ backgroundColor: colors.accent }}
                             >
@@ -406,9 +476,39 @@ const CheckoutPage: React.FC = () => {
                             </div>
                           </div>
                           <div className="flex-1 min-w-0">
-                            <h3 className="font-medium text-sm line-clamp-2 mb-1" style={{ color: colors.text }}>
+                            <h3
+                              className="font-medium text-sm line-clamp-2 mb-1"
+                              style={{ color: colors.text }}
+                            >
                               {item.product.name}
                             </h3>
+                            {/* Variant Info & SKU */}
+                            {item.variant && (
+                              <div className="flex items-center gap-2 mb-1 flex-wrap">
+                                {item.variant.optionValues && item.variant.optionValues.length > 0 && (
+                                  <span 
+                                    className="text-xs px-2 py-0.5 rounded"
+                                    style={{ 
+                                      backgroundColor: colors.cardBackgroundSecondary,
+                                      color: colors.textSecondary
+                                    }}
+                                  >
+                                    {item.variant.optionValues.map(ov => `${ov.optionName}: ${ov.value}`).join(', ')}
+                                  </span>
+                                )}
+                                {item.variant.sku && (
+                                  <span 
+                                    className="text-xs font-bold px-2 py-0.5 rounded"
+                                    style={{ 
+                                      backgroundColor: colors.cardBackgroundSecondary,
+                                      color: colors.textSecondary
+                                    }}
+                                  >
+                                    SKU: {item.variant.sku}
+                                  </span>
+                                )}
+                              </div>
+                            )}
                             <p className="text-sm font-bold" style={{ color: colors.text }}>
                               {formatPrice(item.totalPrice)}
                             </p>
@@ -417,26 +517,30 @@ const CheckoutPage: React.FC = () => {
                       ))}
                     </div>
 
-                    <div style={{  paddingTop: '1rem' }} />
+                    <div style={{ paddingTop: '1rem' }} />
 
                     {/* Chi tiết giá */}
                     <div className="space-y-3">
                       <div className="flex justify-between items-center">
                         <span style={{ color: colors.textSecondary }}>Tạm tính</span>
-                        <span className="font-bold" style={{ color: colors.text }}>{formatPrice(cart.subtotal)}</span>
+                        <span className="font-bold" style={{ color: colors.text }}>{formatPrice(selectedSubtotal)}</span>
                       </div>
 
                       <div className="flex justify-between items-center">
                         <span style={{ color: colors.textSecondary }}>Phí vận chuyển</span>
-                        <span className="font-bold" style={{ color: colors.success }}>Miễn phí</span>
+                        <span className="font-bold" style={{ color: colors.success }}>
+                          {formatPrice(selectedSubtotal >= 1000000 ? 0 : 30000)}
+                        </span>
                       </div>
 
-                      <div style={{  paddingTop: '0.75rem' }} />
+                      <div style={{ paddingTop: '0.75rem' }} />
 
                       <div className="flex justify-between items-center">
-                        <span className="text-lg font-bold" style={{ color: colors.text }}>Tổng cộng</span>
+                        <span className="text-lg font-bold" style={{ color: colors.text }}>
+                          Tổng cộng
+                        </span>
                         <span className="text-2xl font-bold" style={{ color: colors.text }}>
-                          {formatPrice(cart.total)}
+                          {formatPrice(selectedTotal)}
                         </span>
                       </div>
                     </div>
@@ -446,9 +550,9 @@ const CheckoutPage: React.FC = () => {
                       type="submit"
                       disabled={isSubmitting}
                       className="w-full h-12 text-base gap-2"
-                      style={{ 
+                      style={{
                         backgroundColor: colors.textSecondary,
-                        color: 'white'
+                        color: 'white',
                       }}
                       onMouseEnter={(e) => {
                         if (!isSubmitting) {
@@ -466,7 +570,7 @@ const CheckoutPage: React.FC = () => {
                           <Loader2 className="w-5 h-5 animate-spin" />
                           Đang xử lý...
                         </>
-                      ) : ( 
+                      ) : (
                         <>
                           <CreditCard className="w-5 h-5" />
                           Xác nhận đặt hàng
@@ -491,7 +595,7 @@ const CheckoutPage: React.FC = () => {
         onAddNew={handleAddressFormSuccess}
       />
     </div>
-  );
-};
+  )
+}
 
-export default CheckoutPage;
+export default CheckoutPage
