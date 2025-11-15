@@ -11,6 +11,7 @@ interface ProductInfoProps {
   productId: string
   category?: string
   name: string
+  badges?: string[]
   brand?: string
   price: number
   salePrice?: number
@@ -29,6 +30,7 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({
   category,
   name,
   brand,
+  badges,
   price,
   salePrice,
   colors,
@@ -37,12 +39,11 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({
   selectedVariant,
 }) => {
   // Only calculate discount when no variant is selected (variants have their own pricing)
-  const discountPercentage = !selectedVariant && salePrice && price 
-    ? Math.round(((price - salePrice) / price) * 100) 
-    : 0
+  const discountPercentage =
+    !selectedVariant && salePrice && price ? Math.round(((price - salePrice) / price) * 100) : 0
   const displaySku = selectedVariant?.sku || sku
   // If variant is selected, use variant price; otherwise use product salePrice or price
-  const displayPrice = selectedVariant?.price || (salePrice || price)
+  const displayPrice = selectedVariant?.price || salePrice || price
   // Only show sale price if no variant is selected (variants have their own pricing)
   const displaySalePrice = selectedVariant ? undefined : salePrice
   const [reviewStats, setReviewStats] = useState<ReviewStats | null>(null)
@@ -72,7 +73,7 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({
     >
       {/* Category & Badges */}
       {displaySalePrice && discountPercentage > 0 && (
-        <Badge 
+        <Badge
           className="px-3 py-1 text-xs font-bold text-white shadow-sm inline-block"
           style={{
             backgroundImage: 'none',
@@ -98,26 +99,50 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({
         >
           {name}
         </h1>
-        <div className="flex flex-wrap items-center gap-3 text-sm">
+
+        <div className="flex flex-col gap-3 text-sm">
+          {/* BRAND */}
           {brand && (
-            <div
-            className="flex items-center gap-1.5"
-            style={{ color: colors.textSecondary }}
-          >
+            <div className="flex items-center gap-1.5" style={{ color: colors.textSecondary }}>
               <span>Thương hiệu:</span>
               <span className="font-semibold" style={{ color: colors.text }}>
                 {brand}
               </span>
             </div>
           )}
+
+          {/* BADGES */}
+          {badges && badges.length > 0 && (
+            <div className="flex items-center gap-2 flex-wrap text-sm">
+              <span style={{ color: colors.textSecondary }}>Huy hiệu:</span>
+              <div className="flex gap-2 flex-wrap">
+                {badges.map((badge: string, idx: number) => (
+                  <Badge
+                    key={idx}
+                    className="px-2 py-0.5 text-xs font-medium capitalize"
+                    style={{
+                      backgroundImage: 'none',
+                      backgroundColor: colors.accent + '20',
+                      color: colors.accent,
+                      borderColor: 'transparent',
+                    }}
+                  >
+                    {badge}
+                  </Badge>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* SKU */}
           {displaySku && (
             <div className="flex items-center gap-1.5" style={{ color: colors.textSecondary }}>
               <span>SKU:</span>
-              <span 
+              <span
                 className="font-bold px-2 py-1 rounded text-xs"
-                style={{ 
+                style={{
                   backgroundColor: colors.cardBackgroundSecondary,
-                  color: colors.text 
+                  color: colors.text,
                 }}
               >
                 {displaySku}
@@ -176,10 +201,7 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({
           </div>
           {displaySalePrice ? (
             <div className="flex items-baseline gap-2">
-              <span 
-                className="text-3xl font-black"
-                style={{ color: colors.accent }}
-              >
+              <span className="text-3xl font-black" style={{ color: colors.accent }}>
                 {displaySalePrice.toLocaleString('vi-VN')}
               </span>
               <span className="text-sm font-medium" style={{ color: colors.textSecondary }}>
@@ -191,10 +213,7 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({
             </div>
           ) : (
             <div className="flex items-baseline gap-2">
-              <span 
-                className="text-3xl font-black"
-                style={{ color: colors.accent }}
-              >
+              <span className="text-3xl font-black" style={{ color: colors.accent }}>
                 {displayPrice.toLocaleString('vi-VN')}
               </span>
               <span className="text-sm font-medium" style={{ color: colors.textSecondary }}>

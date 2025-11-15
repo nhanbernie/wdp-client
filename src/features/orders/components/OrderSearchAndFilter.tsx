@@ -89,8 +89,9 @@ export function OrderSearchAndFilter({
       transition={{ duration: 0.5, delay: 0.2 }}
       className="mb-6 p-4 rounded-lg border"
       style={{
-        backgroundColor: colors.cardBackground,
-        borderColor: colors.border,
+        backgroundColor: colors.cardBackgroundSecondary,
+        border: `1px solid ${colors.border}30`,
+        boxShadow: `0 4px 12px ${colors.border}20`,
       }}
     >
       <div className="flex flex-col lg:flex-row gap-4">

@@ -43,13 +43,13 @@ export const PriceFilter = () => {
       transition={{ duration: 0.3, delay: 0.1 }}
       whileHover={{ scale: 1.01 }}
       className="rounded-3xl shadow-xl p-4 hover:shadow-2xl transition-all duration-300"
-      style={{ 
+      style={{
         backgroundColor: colors.cardBackground,
         borderColor: colors.border,
       }}
     >
       <div>
-        <div 
+        <div
           className="flex items-center gap-2 pb-2 mb-3 border-b"
           style={{ borderColor: colors.border }}
         >
@@ -77,16 +77,28 @@ export const PriceFilter = () => {
               type="number"
               value={priceRange[0]}
               onChange={(e) => setPriceRange([Number(e.target.value), priceRange[1]])}
-              className="flex-1 text-sm"
+              className="flex-1 text-sm rounded-xl"
+              style={{
+                backgroundColor: colors.cardBackgroundSecondary,
+                borderColor: colors.border,
+                color: colors.text,
+              }}
             />
 
-            <span className="text-xs" style={{ color: colors.textSecondary }}>—</span>
+            <span className="text-xs" style={{ color: colors.textSecondary }}>
+              —
+            </span>
 
             <Input
               type="number"
               value={priceRange[1]}
               onChange={(e) => setPriceRange([priceRange[0], Number(e.target.value)])}
-              className="flex-1 text-sm"
+              className="flex-1 text-sm rounded-xl"
+              style={{
+                backgroundColor: colors.cardBackgroundSecondary,
+                borderColor: colors.border,
+                color: colors.text,
+              }}
             />
           </div>
 
@@ -99,16 +111,10 @@ export const PriceFilter = () => {
             }}
           >
             <div className="text-center">
-              <p 
-                className="text-xs mb-1"
-                style={{ color: colors.textSecondary }}
-              >
+              <p className="text-xs mb-1" style={{ color: colors.textSecondary }}>
                 Phạm vi giá được chọn
               </p>
-              <p 
-                className="font-semibold text-sm"
-                style={{ color: colors.text }}
-              >
+              <p className="font-semibold text-sm" style={{ color: colors.text }}>
                 {priceRange[0].toLocaleString('vi-VN')} - {priceRange[1].toLocaleString('vi-VN')}{' '}
                 VNĐ
               </p>

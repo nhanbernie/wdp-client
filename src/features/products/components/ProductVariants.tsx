@@ -50,7 +50,10 @@ export const ProductVariants: React.FC<ProductVariantsProps> = ({
         }}
       >
         <CardHeader className="pb-3">
-          <CardTitle className="text-lg font-bold flex items-center gap-2" style={{ color: colors.text }}>
+          <CardTitle
+            className="text-lg font-bold flex items-center gap-2"
+            style={{ color: colors.text }}
+          >
             <Package className="h-5 w-5" style={{ color: colors.accent }} />
             Biến thể sản phẩm ({variants.length})
           </CardTitle>
@@ -73,9 +76,9 @@ export const ProductVariants: React.FC<ProductVariantsProps> = ({
                   isSelected ? 'ring-2' : 'hover:shadow-md'
                 }`}
                 style={{
-                  backgroundColor: isSelected ? colors.cardBackgroundSecondary : colors.cardBackground,
-                  borderColor: isSelected ? colors.accent : colors.border,
-                  boxShadow: isSelected ? `0 0 0 2px ${colors.accent}40` : 'none',
+                  backgroundColor: colors.cardBackgroundSecondary,
+                  border: `1px solid ${colors.border}30`,
+                  boxShadow: `0 4px 12px ${colors.border}20`,
                 }}
               >
                 <div className="flex items-start justify-between gap-4">
@@ -84,13 +87,19 @@ export const ProductVariants: React.FC<ProductVariantsProps> = ({
                     {/* SKU */}
                     <div className="flex items-center gap-2">
                       <Hash className="h-4 w-4" style={{ color: colors.textSecondary }} />
-                      <span className="text-xs font-semibold" style={{ color: colors.textSecondary }}>
+                      <span
+                        className="text-xs font-semibold"
+                        style={{ color: colors.textSecondary }}
+                      >
                         SKU:
                       </span>
-                      <span className="text-sm font-bold px-2 py-1 rounded" style={{ 
-                        backgroundColor: colors.cardBackgroundSecondary,
-                        color: colors.text 
-                      }}>
+                      <span
+                        className="text-sm font-bold px-2 py-1 rounded"
+                        style={{
+                          backgroundColor: colors.cardBackgroundSecondary,
+                          color: colors.text,
+                        }}
+                      >
                         {variant.sku}
                       </span>
                     </div>
@@ -104,8 +113,10 @@ export const ProductVariants: React.FC<ProductVariantsProps> = ({
                             variant="secondary"
                             className="text-xs px-2 py-1"
                             style={{
-                              backgroundColor: colors.cardBackgroundSecondary,
-                              color: colors.text,
+                              backgroundImage: 'none',
+                              backgroundColor: colors.accent + '20',
+                              color: colors.accent,
+                              borderColor: 'transparent',
                             }}
                           >
                             {key}: <span className="font-bold ml-1">{value}</span>
@@ -117,25 +128,28 @@ export const ProductVariants: React.FC<ProductVariantsProps> = ({
                     {/* Variant-specific specs */}
                     {variant.specs && Object.keys(variant.specs).length > 0 && (
                       <div className="flex flex-wrap gap-2 mt-2">
-                        {Object.entries(variant.specs).slice(0, 3).map(([key, value]) => {
-                          const displayValue = typeof value === 'object' && value !== null
-                            ? (value as any).value && (value as any).unit
-                              ? `${(value as any).value} ${(value as any).unit}`
-                              : JSON.stringify(value)
-                            : String(value)
-                          return (
-                            <span
-                              key={key}
-                              className="text-xs px-2 py-1 rounded"
-                              style={{
-                                backgroundColor: colors.cardBackgroundSecondary,
-                                color: colors.textSecondary,
-                              }}
-                            >
-                              {key.replace(/_/g, ' ')}: {displayValue}
-                            </span>
-                          )
-                        })}
+                        {Object.entries(variant.specs)
+                          .slice(0, 3)
+                          .map(([key, value]) => {
+                            const displayValue =
+                              typeof value === 'object' && value !== null
+                                ? (value as any).value && (value as any).unit
+                                  ? `${(value as any).value} ${(value as any).unit}`
+                                  : JSON.stringify(value)
+                                : String(value)
+                            return (
+                              <span
+                                key={key}
+                                className="text-xs px-2 py-1 rounded"
+                                style={{
+                                  backgroundColor: colors.cardBackgroundSecondary,
+                                  color: colors.textSecondary,
+                                }}
+                              >
+                                {key.replace(/_/g, ' ')}: {displayValue}
+                              </span>
+                            )
+                          })}
                       </div>
                     )}
                   </div>
@@ -145,10 +159,7 @@ export const ProductVariants: React.FC<ProductVariantsProps> = ({
                     {/* Price */}
                     <div className="flex items-center gap-1">
                       <DollarSign className="h-4 w-4" style={{ color: colors.accent }} />
-                      <span
-                        className="text-lg font-bold"
-                        style={{ color: colors.accent }}
-                      >
+                      <span className="text-lg font-bold" style={{ color: colors.accent }}>
                         {formatPrice(displayPrice)}
                       </span>
                     </div>

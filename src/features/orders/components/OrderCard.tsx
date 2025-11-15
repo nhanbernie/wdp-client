@@ -30,8 +30,9 @@ export function OrderCard({ order, index }: OrderCardProps) {
       <Card
         className="overflow-hidden border rounded-lg"
         style={{
-          backgroundColor: colors.cardBackground,
-          borderColor: colors.border,
+          backgroundColor: colors.cardBackgroundSecondary,
+          border: `1px solid ${colors.border}30`,
+          boxShadow: `0 4px 12px ${colors.border}20`,
         }}
       >
         <CardHeader
@@ -44,23 +45,14 @@ export function OrderCard({ order, index }: OrderCardProps) {
           <div className="flex justify-between items-start">
             <div className="flex-1">
               <div className="flex items-center gap-3 mb-2">
-                <div
-                  className="p-2 rounded-lg"
-                  style={{ backgroundColor: `${colors.accent}15` }}
-                >
+                <div className="p-2 rounded-lg" style={{ backgroundColor: `${colors.accent}15` }}>
                   <StatusIcon className="h-4 w-4" style={{ color: colors.accent }} />
                 </div>
                 <div>
-                  <p
-                    className="text-sm font-medium"
-                    style={{ color: colors.text }}
-                  >
+                  <p className="text-sm font-medium" style={{ color: colors.text }}>
                     Đơn hàng #{order.orderNumber}
                   </p>
-                  <p
-                    className="text-xs"
-                    style={{ color: colors.textSecondary }}
-                  >
+                  <p className="text-xs" style={{ color: colors.textSecondary }}>
                     {new Date(order.createdAt).toLocaleDateString('vi-VN')}
                   </p>
                 </div>
@@ -73,10 +65,7 @@ export function OrderCard({ order, index }: OrderCardProps) {
                 backgroundColor: `${colors.accent}15`,
               }}
             >
-              <span
-                className="text-xs font-medium"
-                style={{ color: colors.accent }}
-              >
+              <span className="text-xs font-medium" style={{ color: colors.accent }}>
                 {config.label}
               </span>
             </div>
@@ -106,32 +95,31 @@ export function OrderCard({ order, index }: OrderCardProps) {
                   />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p
-                    className="font-medium truncate text-sm"
-                    style={{ color: colors.text }}
-                  >
+                  <p className="font-medium truncate text-sm" style={{ color: colors.text }}>
                     {item.productName}
                   </p>
                   {/* Variant Name & SKU */}
                   {(item.variantName || item.sku) && (
                     <div className="flex flex-wrap items-center gap-1.5 mt-1">
                       {item.variantName && (
-                        <span 
-                          className="px-2 py-0.5 rounded text-xs font-medium"
-                          style={{ 
-                            backgroundColor: `${colors.accent}20`,
-                            color: colors.accent
+                        <Badge
+                          className="px-2 py-0.5 text-xs font-medium capitalize"
+                          style={{
+                            backgroundImage: 'none',
+                            backgroundColor: colors.accent + '20',
+                            color: colors.accent,
+                            borderColor: 'transparent',
                           }}
                         >
                           {item.variantName}
-                        </span>
+                        </Badge>
                       )}
                       {item.sku && (
-                        <span 
-                          className="px-2 py-0.5 rounded text-xs font-bold"
-                          style={{ 
+                        <span
+                          className="text-sm font-bold px-2 py-1 rounded"
+                          style={{
                             backgroundColor: colors.cardBackgroundSecondary,
-                            color: colors.textSecondary
+                            color: colors.text,
                           }}
                         >
                           SKU: {item.sku}
@@ -139,10 +127,7 @@ export function OrderCard({ order, index }: OrderCardProps) {
                       )}
                     </div>
                   )}
-                  <p
-                    className="text-xs mt-1"
-                    style={{ color: colors.textSecondary }}
-                  >
+                  <p className="text-xs mt-1" style={{ color: colors.textSecondary }}>
                     SL: {item.quantity} × {item.unitPrice.toLocaleString('vi-VN')} VNĐ
                   </p>
                 </div>
@@ -189,17 +174,11 @@ export function OrderCard({ order, index }: OrderCardProps) {
                 borderColor: colors.accent,
               }}
             >
-              <span
-                className="font-bold flex items-center gap-2"
-                style={{ color: colors.text }}
-              >
+              <span className="font-bold flex items-center gap-2" style={{ color: colors.text }}>
                 <Sparkles className="h-5 w-5" style={{ color: colors.accent }} />
                 Tổng tiền:
               </span>
-              <span
-                className="text-2xl font-black"
-                style={{ color: colors.accent }}
-              >
+              <span className="text-2xl font-black" style={{ color: colors.accent }}>
                 {order.totalAmount.toLocaleString('vi-VN')} VNĐ
               </span>
             </div>

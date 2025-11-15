@@ -26,7 +26,13 @@ interface CartSummaryProps {
   selectedItems?: string[] // Optional: array of selected cart item IDs
 }
 
-const CartSummary: React.FC<CartSummaryProps> = ({ cart, summary, onCheckout, onApplyCoupon, selectedItems }) => {
+const CartSummary: React.FC<CartSummaryProps> = ({
+  cart,
+  summary,
+  onCheckout,
+  onApplyCoupon,
+  selectedItems,
+}) => {
   const router = useRouter()
   const { colors } = useTheme()
   const [couponCode, setCouponCode] = useState('')
@@ -82,7 +88,7 @@ const CartSummary: React.FC<CartSummaryProps> = ({ cart, summary, onCheckout, on
     total = summary?.total || 0
   }
 
-  const shipping = subtotal >= 1000000 ? 0 : 30000
+  const shipping = subtotal >= 1000000 ? 0 : 5000
   const tax = summary?.tax || 0 // API doesn't provide tax yet
   const discount = summary?.discount || 0 // API doesn't provide discount yet
 
@@ -142,16 +148,10 @@ const CartSummary: React.FC<CartSummaryProps> = ({ cart, summary, onCheckout, on
             <ShoppingCart className="w-5 h-5" style={{ color: colors.text }} />
           </div>
           <div>
-            <h2
-              className="text-2xl font-bold"
-              style={{ color: colors.text }}
-            >
+            <h2 className="text-2xl font-bold" style={{ color: colors.text }}>
               Tóm tắt
             </h2>
-            <p
-              className="text-sm font-medium mt-0.5"
-              style={{ color: colors.textSecondary }}
-            >
+            <p className="text-sm font-medium mt-0.5" style={{ color: colors.textSecondary }}>
               {itemCount} sản phẩm
             </p>
           </div>
@@ -164,16 +164,10 @@ const CartSummary: React.FC<CartSummaryProps> = ({ cart, summary, onCheckout, on
             className="flex items-center justify-between py-2.5 px-3 rounded-lg"
             style={{ backgroundColor: colors.cardBackgroundSecondary }}
           >
-            <span
-              className="text-sm font-medium"
-              style={{ color: colors.textSecondary }}
-            >
+            <span className="text-sm font-medium" style={{ color: colors.textSecondary }}>
               Tạm tính
             </span>
-            <span
-              className="text-base font-bold"
-              style={{ color: colors.text }}
-            >
+            <span className="text-base font-bold" style={{ color: colors.text }}>
               {formatPrice(subtotal)}
             </span>
           </div>
@@ -187,17 +181,11 @@ const CartSummary: React.FC<CartSummaryProps> = ({ cart, summary, onCheckout, on
           >
             <div className="flex items-center gap-2">
               <Truck className="w-4 h-4" style={{ color: colors.textSecondary }} />
-              <span
-                className="text-sm font-medium"
-                style={{ color: colors.textSecondary }}
-              >
+              <span className="text-sm font-medium" style={{ color: colors.textSecondary }}>
                 Phí vận chuyển
               </span>
             </div>
-            <span
-              className="text-base font-bold"
-              style={{ color: colors.text }}
-            >
+            <span className="text-base font-bold" style={{ color: colors.text }}>
               {shipping === 0 ? 'Miễn phí' : formatPrice(shipping)}
             </span>
           </div>
@@ -208,16 +196,10 @@ const CartSummary: React.FC<CartSummaryProps> = ({ cart, summary, onCheckout, on
               className="flex items-center justify-between py-2.5 px-3 rounded-lg"
               style={{ backgroundColor: colors.cardBackgroundSecondary }}
             >
-              <span
-                className="text-sm font-medium"
-                style={{ color: colors.textSecondary }}
-              >
+              <span className="text-sm font-medium" style={{ color: colors.textSecondary }}>
                 Thuế VAT
               </span>
-              <span
-                className="text-base font-bold"
-                style={{ color: colors.text }}
-              >
+              <span className="text-base font-bold" style={{ color: colors.text }}>
                 {formatPrice(tax)}
               </span>
             </div>
@@ -231,16 +213,10 @@ const CartSummary: React.FC<CartSummaryProps> = ({ cart, summary, onCheckout, on
                 backgroundColor: colors.cardBackgroundSecondary,
               }}
             >
-              <span
-                className="text-sm font-medium"
-                style={{ color: colors.textSecondary }}
-              >
+              <span className="text-sm font-medium" style={{ color: colors.textSecondary }}>
                 Giảm giá
               </span>
-              <span
-                className="text-base font-bold"
-                style={{ color: colors.text }}
-              >
+              <span className="text-base font-bold" style={{ color: colors.text }}>
                 -{formatPrice(discount)}
               </span>
             </div>
@@ -261,10 +237,7 @@ const CartSummary: React.FC<CartSummaryProps> = ({ cart, summary, onCheckout, on
             >
               <div className="flex items-center gap-2">
                 <CheckCircle className="w-4 h-4" style={{ color: colors.textSecondary }} />
-                <span
-                  className="text-xs font-medium"
-                  style={{ color: colors.text }}
-                >
+                <span className="text-xs font-medium" style={{ color: colors.text }}>
                   Mã: {appliedCoupon}
                 </span>
               </div>
@@ -273,9 +246,9 @@ const CartSummary: React.FC<CartSummaryProps> = ({ cart, summary, onCheckout, on
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 className="px-3 py-1.5 rounded-lg text-xs font-medium transition-colors shadow-sm"
-                style={{ 
+                style={{
                   backgroundColor: colors.error,
-                  color: 'white'
+                  color: 'white',
                 }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.backgroundColor = `${colors.error}dd`
@@ -306,10 +279,7 @@ const CartSummary: React.FC<CartSummaryProps> = ({ cart, summary, onCheckout, on
               >
                 <div className="flex items-center gap-2.5">
                   <Tag className="w-4 h-4" style={{ color: colors.textSecondary }} />
-                  <span
-                    className="text-sm font-medium"
-                    style={{ color: colors.text }}
-                  >
+                  <span className="text-sm font-medium" style={{ color: colors.text }}>
                     Áp dụng mã giảm giá
                   </span>
                 </div>
@@ -343,7 +313,10 @@ const CartSummary: React.FC<CartSummaryProps> = ({ cart, summary, onCheckout, on
                         }}
                         onFocus={(e) => {
                           e.currentTarget.style.setProperty('--tw-ring-color', `${colors.border}40`)
-                          e.currentTarget.style.setProperty('--tw-ring-offset-color', colors.cardBackground)
+                          e.currentTarget.style.setProperty(
+                            '--tw-ring-offset-color',
+                            colors.cardBackground,
+                          )
                         }}
                         onBlur={(e) => {
                           e.currentTarget.style.setProperty('--tw-ring-color', 'transparent')
@@ -385,18 +358,12 @@ const CartSummary: React.FC<CartSummaryProps> = ({ cart, summary, onCheckout, on
           }}
         >
           <div className="flex items-center justify-between mb-1">
-            <span
-              className="text-sm font-medium"
-              style={{ color: colors.textSecondary }}
-            >
+            <span className="text-sm font-medium" style={{ color: colors.textSecondary }}>
               Tổng cộng
             </span>
           </div>
-          <div
-            className="text-2xl font-bold"
-            style={{ color: colors.text }}
-          >
-            {formatPrice(total+shipping)}
+          <div className="text-2xl font-bold" style={{ color: colors.text }}>
+            {formatPrice(total + shipping)}
           </div>
         </div>
 
@@ -425,4 +392,3 @@ const CartSummary: React.FC<CartSummaryProps> = ({ cart, summary, onCheckout, on
 }
 
 export default CartSummary
-

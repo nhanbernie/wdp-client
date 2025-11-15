@@ -255,10 +255,20 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                       </div>
                       {product.variants && product.variants.length > 0 && (
                         <div className="col-span-2">
-                          <span className="text-muted-foreground">SKU (Variants):</span>
+                          <span className="text-muted-foreground">SKU (Variants)</span>
                           <div className="flex flex-wrap gap-2 mt-2">
                             {product.variants.map((variant: ProductVariant, idx: number) => (
-                              <Badge key={idx} variant="secondary" className="text-xs">
+                              <Badge
+                                key={idx}
+                                variant="secondary"
+                                className="text-xs"
+                                style={{
+                                  backgroundImage: 'none',
+                                  backgroundColor: colors.accent + '20',
+                                  color: colors.accent,
+                                  borderColor: 'transparent',
+                                }}
+                              >
                                 {variant.sku}
                               </Badge>
                             ))}

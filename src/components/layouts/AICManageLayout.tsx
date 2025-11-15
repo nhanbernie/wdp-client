@@ -44,7 +44,18 @@ const AICManageLayout: React.FC<AICManageLayoutProps> = ({
 
   // Check if route is active
   const isRouteActive = (href: string) => {
-    return pathname === href || (href !== '/' && pathname.startsWith(href))
+    // Exact match first
+    if (pathname === href) return true
+
+    // For dashboard routes (ending with /vendor, /admin, etc), only exact match
+    if (href === '/vendor' || href === '/admin' || href === '/user') {
+      return pathname === href
+    }
+
+    // For other routes, check if pathname starts with href followed by a slash
+    if (href !== '/' && pathname.startsWith(href + '/')) return true
+
+    return false
   }
 
   // Get appropriate navigation items based on role

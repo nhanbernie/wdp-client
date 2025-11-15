@@ -14,10 +14,10 @@ interface OrderProgressTrackerProps {
 export function OrderProgressTracker({ currentStatus }: OrderProgressTrackerProps) {
   const { colors } = useTheme()
   const currentConfig = statusConfig[currentStatus as keyof typeof statusConfig]
-  
+
   // If status not found in config, don't show progress tracker
   if (!currentConfig) return null
-  
+
   const currentStep = currentConfig.step
 
   // Don't show progress for cancelled/refunded orders
@@ -27,18 +27,16 @@ export function OrderProgressTracker({ currentStatus }: OrderProgressTrackerProp
     <div
       className="mb-8 p-8 rounded-3xl shadow-xl border-2"
       style={{
-        backgroundColor: colors.cardBackground,
-        borderColor: colors.border,
+        backgroundColor: colors.cardBackgroundSecondary,
+        border: `1px solid ${colors.border}30`,
+        boxShadow: `0 4px 12px ${colors.border}20`,
       }}
     >
       <h3
         className="text-2xl font-black mb-6 flex items-center gap-3"
         style={{ color: colors.text }}
       >
-        <div
-          className="p-2 rounded-xl"
-          style={{ backgroundColor: colors.accent }}
-        >
+        <div className="p-2 rounded-xl" style={{ backgroundColor: colors.accent }}>
           <CheckCircle className="h-6 w-6 text-white" />
         </div>
         Tiến trình đơn hàng
@@ -67,10 +65,10 @@ export function OrderProgressTracker({ currentStatus }: OrderProgressTrackerProp
             const isCompleted = step.id <= currentStep
             const isCurrent = step.id === currentStep
             const config = statusConfig[step.status]
-            
+
             // Skip if config not found
             if (!config) return null
-            
+
             const StepIcon = config.icon
 
             return (
@@ -99,10 +97,7 @@ export function OrderProgressTracker({ currentStatus }: OrderProgressTrackerProp
                       className="absolute -top-1 -right-1 p-1 rounded-full shadow-lg"
                       style={{ backgroundColor: colors.cardBackground }}
                     >
-                      <CheckCircle
-                        className="h-4 w-4"
-                        style={{ color: colors.success }}
-                      />
+                      <CheckCircle className="h-4 w-4" style={{ color: colors.success }} />
                     </motion.div>
                   )}
                 </motion.div>
