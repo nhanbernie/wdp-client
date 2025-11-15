@@ -15,6 +15,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { useVendorWallet } from '../hooks/useVendorWallet'
 import { Loader2, Wallet } from 'lucide-react'
 import { useTheme } from '@/contexts/ThemeContext'
+import { useToast } from '@/hooks/useToast'
 
 interface DepositWalletDialogProps {
   open: boolean
@@ -29,6 +30,7 @@ export const DepositWalletDialog: React.FC<DepositWalletDialogProps> = ({
 }) => {
   const { deposit, isDepositing } = useVendorWallet()
   const { colors } = useTheme()
+  const toast = useToast()
 
   const [amount, setAmount] = useState('')
   const [description, setDescription] = useState('')
@@ -38,7 +40,7 @@ export const DepositWalletDialog: React.FC<DepositWalletDialogProps> = ({
 
     const amountNum = Number(amount.replace(/[^0-9]/g, ''))
     if (amountNum < 10000) {
-      alert('Số tiền nạp tối thiểu là 10,000 VND')
+      toast.warning('Số tiền nạp tối thiểu là 10,000 VND')
       return
     }
 

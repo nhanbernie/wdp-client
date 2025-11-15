@@ -15,6 +15,7 @@ interface OrderTabsProps {
     processing: number
     shipping: number
     delivered: number
+    completed: number
     cancelled: number
   }
 }
@@ -77,7 +78,7 @@ export function OrderTabs({ activeTab, onTabChange, counts }: OrderTabsProps) {
 
   return (
     <TabsList
-      className="grid grid-cols-2 lg:grid-cols-6 gap-2 p-2 rounded-2xl h-auto border"
+      className="grid grid-cols-2 lg:grid-cols-7 gap-2 p-2 rounded-2xl h-auto border"
       style={{
         backgroundColor: colors.cardBackgroundSecondary,
         borderColor: colors.border,
@@ -127,6 +128,17 @@ export function OrderTabs({ activeTab, onTabChange, counts }: OrderTabsProps) {
         <span className="hidden sm:inline">Giao</span>
         <span className="ml-2 px-2 py-0.5 bg-white/20 rounded-full text-xs">
           {counts.delivered}
+        </span>
+      </TabsTrigger>
+
+      <TabsTrigger
+        value={OrderStatus.COMPLETED}
+        className="h-14 rounded-xl text-base font-bold transition-all"
+      >
+        <CheckCircle className="h-5 w-5 mr-2" />
+        <span className="hidden sm:inline">Hoàn thành</span>
+        <span className="ml-2 px-2 py-0.5 bg-white/20 rounded-full text-xs">
+          {counts.completed}
         </span>
       </TabsTrigger>
 

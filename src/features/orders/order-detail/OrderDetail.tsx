@@ -16,6 +16,7 @@ import { OrderItemsCard } from './components/OrderItemsCard'
 import { OrderShippingInfo } from './components/OrderShippingInfo'
 import { OrderPaymentInfo } from './components/OrderPaymentInfo'
 import { OrderActionsCard } from './components/OrderActionsCard'
+import { generateInvoicePDF } from '@/utils/invoice'
 
 interface OrderDetailProps {
   orderId: string
@@ -37,9 +38,15 @@ export function OrderDetail({ orderId }: OrderDetailProps) {
   const orderData = orderResponse?.data
 
   // Handlers
-  const handleDownloadInvoice = () => {
-    console.log('Download invoice for order:', orderId)
-    // Implement download invoice logic
+  const handleDownloadInvoice = async () => {
+    if (orderData) {
+      try {
+        await generateInvoicePDF(orderData)
+      } catch (error) {
+        console.error('Error generating invoice:', error)
+        toast.error('Không thể tải hóa đơn. Vui lòng thử lại sau.')
+      }
+    }
   }
 
   const handleContactSupport = () => {
@@ -182,16 +189,16 @@ export function OrderDetail({ orderId }: OrderDetailProps) {
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: colors.background }}>
-      <div className="max-w-7xl mx-auto relative z-10 py-6 px-6">
+      <div className="max-w-7xl mx-auto relative z-10 py-4 px-6">
         <OrderDetailHeader
           order={orderData}
           onDownloadInvoice={handleDownloadInvoice}
           onContactSupport={handleContactSupport}
         />
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
           {/* Main Content */}
-          <div className="lg:col-span-2 space-y-6">
+          <div className="lg:col-span-2 space-y-4">
             <OrderStatusCard order={orderData} />
             <OrderItemsCard order={orderData} />
           </div>
@@ -201,6 +208,7 @@ export function OrderDetail({ orderId }: OrderDetailProps) {
             <OrderShippingInfo order={orderData} />
             <OrderPaymentInfo order={orderData} />
             <OrderActionsCard
+              order={orderData}
               onReorder={handleReorder}
               onContactSupport={handleContactSupport}
               onDownloadInvoice={handleDownloadInvoice}

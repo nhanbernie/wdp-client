@@ -82,45 +82,6 @@ export function OrderDetailHeader({
             </span>
           </div>
         </div>
-
-        {/* Action Buttons */}
-        <div className="flex gap-3">
-          <Button
-            onClick={onDownloadInvoice}
-            className="flex-1 h-10 text-sm rounded-lg"
-            style={{
-              backgroundColor: colors.textSecondary,
-              color: 'white',
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = colors.text
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = colors.textSecondary
-            }}
-          >
-            <Download className="h-4 w-4 mr-2" />
-            Tải hóa đơn
-          </Button>
-
-          <Button
-            onClick={onContactSupport}
-            className="flex-1 h-10 text-sm rounded-lg"
-            style={{
-              backgroundColor: colors.textSecondary,
-              color: 'white',
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = colors.text
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = colors.textSecondary
-            }}
-          >
-            <MessageCircle className="h-4 w-4 mr-2" />
-            Liên hệ hỗ trợ
-          </Button>
-        </div>
       </Card>
     </div>
   )

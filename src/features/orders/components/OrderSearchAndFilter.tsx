@@ -157,6 +157,10 @@ export function OrderSearchAndFilter({
               <CheckCircle className="h-4 w-4 mr-2" style={{ color: colors.success }} />
               Đã giao
             </SelectItem>
+            <SelectItem value={OrderStatus.COMPLETED} className="text-base">
+              <CheckCircle className="h-4 w-4 mr-2" style={{ color: colors.success }} />
+              Hoàn thành đơn hàng
+            </SelectItem>
             <SelectItem value={OrderStatus.CANCELLED} className="text-base">
               <XCircle className="h-4 w-4 mr-2" style={{ color: colors.error }} />
               Đã hủy
