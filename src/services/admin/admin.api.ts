@@ -6,12 +6,19 @@ import type {
   RevenueReportItem, 
   RevenueReportParams 
 } from './dashboard.service'
+import type {
+  Transaction,
+  TransactionDetails,
+  TransactionAnalytics,
+  TransactionFilters,
+  PaginatedTransactions,
+} from '@/features/admin/transactions/types/transactions.types'
 
 // Admin API
 export const adminApi = createApi({
   reducerPath: 'adminApi',
   baseQuery: baseQueryWithReauth,
-  tagTypes: ['Dashboard', 'Analytics', 'Orders', 'Users', 'Products', 'Withdrawals'],
+  tagTypes: ['Dashboard', 'Analytics', 'Orders', 'Users', 'Products', 'Transactions', 'Withdrawals'],
   endpoints: (builder) => ({
     // Dashboard
     getDashboardStats: builder.query<DashboardStats, void>({
@@ -191,6 +198,63 @@ export const adminApi = createApi({
       }),
       invalidatesTags: ['Withdrawals'],
     }),
+
+    // Transactions
+    getTransactions: builder.query<PaginatedTransactions, TransactionFilters>({
+      query: (params) => {
+        const queryParams = new URLSearchParams()
+        if (params?.page) queryParams.append('page', params.page.toString())
+        if (params?.limit) queryParams.append('limit', params.limit.toString())
+        if (params?.status) queryParams.append('status', params.status)
+        if (params?.paymentType) queryParams.append('paymentType', params.paymentType)
+        if (params?.paymentMethod) queryParams.append('paymentMethod', params.paymentMethod)
+        if (params?.orderId) queryParams.append('orderId', params.orderId)
+        if (params?.minAmount !== undefined) queryParams.append('minAmount', params.minAmount.toString())
+        if (params?.maxAmount !== undefined) queryParams.append('maxAmount', params.maxAmount.toString())
+        if (params?.startDate) queryParams.append('startDate', params.startDate)
+        if (params?.endDate) queryParams.append('endDate', params.endDate)
+        if (params?.search) queryParams.append('search', params.search)
+        if (params?.sortBy) queryParams.append('sortBy', params.sortBy)
+        if (params?.order) queryParams.append('order', params.order)
+
+        const url = `${API_ENDPOINTS.ADMIN.TRANSACTIONS}${queryParams.toString() ? `?${queryParams}` : ''}`
+        return url
+      },
+      transformResponse: (response: any): PaginatedTransactions => {
+        // Extract data from API response wrapper
+        return response?.data || response
+      },
+      providesTags: ['Transactions'],
+    }),
+
+    getTransactionDetails: builder.query<TransactionDetails, string>({
+      query: (transactionId) => API_ENDPOINTS.ADMIN.TRANSACTION_DETAILS(transactionId),
+      transformResponse: (response: any): TransactionDetails => {
+        // Extract data from API response wrapper
+        return response?.data || response
+      },
+      providesTags: ['Transactions'],
+    }),
+
+    getTransactionAnalytics: builder.query<
+      TransactionAnalytics,
+      { startDate?: string; endDate?: string; groupBy?: 'day' | 'week' | 'month' }
+    >({
+      query: (params) => {
+        const queryParams = new URLSearchParams()
+        if (params?.startDate) queryParams.append('startDate', params.startDate)
+        if (params?.endDate) queryParams.append('endDate', params.endDate)
+        if (params?.groupBy) queryParams.append('groupBy', params.groupBy)
+
+        const url = `${API_ENDPOINTS.ADMIN.TRANSACTION_ANALYTICS}${queryParams.toString() ? `?${queryParams}` : ''}`
+        return url
+      },
+      transformResponse: (response: any): TransactionAnalytics => {
+        // Extract data from API response wrapper
+        return response?.data || response
+      },
+      providesTags: ['Transactions'],
+    }),
   }),
 })
 
@@ -213,4 +277,7 @@ export const {
   useApproveWithdrawalRequestMutation,
   useRejectWithdrawalRequestMutation,
   useMarkWithdrawalRequestAsPaidMutation,
+  useGetTransactionsQuery,
+  useGetTransactionDetailsQuery,
+  useGetTransactionAnalyticsQuery,
 } = adminApi
