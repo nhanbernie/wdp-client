@@ -4,8 +4,10 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { motion } from 'framer-motion'
 import { Mail, ArrowRight, Gift, Bell } from 'lucide-react'
+import { useRouter } from 'next/navigation'
 
 const NewsletterSignupSection = () => {
+  const router = useRouter()
   return (
     <div className="px-4 sm:px-6 lg:px-8 py-16 sm:py-24 mb-20 overflow-visible">
       <motion.div
@@ -59,7 +61,7 @@ const NewsletterSignupSection = () => {
               transition={{ duration: 0.6, delay: 0.3 }}
               className="text-3xl lg:text-4xl font-black mb-4 leading-tight text-foreground dark:text-white drop-shadow-md"
             >
-              ĐĂNG KÝ NHẬN ƯU ĐÃI NGAY
+              ĐĂNG KÝ
             </motion.h2>
 
             <motion.p
@@ -69,8 +71,7 @@ const NewsletterSignupSection = () => {
               transition={{ duration: 0.6, delay: 0.4 }}
               className="text-lg text-foreground dark:text-white leading-relaxed drop-shadow-sm"
             >
-              Để lại email bạn sẽ biết thêm về các ưu đãi đặc biệt, sản phẩm mới và nhiều hơn thế
-              nữa!
+              Hãy đăng ký để mua những vật liệu chất lượng và ưu đãi nhất
             </motion.p>
 
             {/* Benefits list */}
@@ -105,18 +106,19 @@ const NewsletterSignupSection = () => {
             <div className="p-8 rounded-3xl bg-white/20 backdrop-blur-md border-2 border-white/30 shadow-2xl">
               <div className="flex flex-col gap-4">
                 <div className="relative">
-                  <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400 dark:text-slate-500" />
-                  <Input
+                  {/* <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400 dark:text-slate-500" /> */}
+                  {/* <Input
                     type="email"
                     placeholder="Nhập email của bạn..."
                     className="pl-12 h-14 rounded-2xl border-2 border-white/50 bg-white focus-visible:ring-2 focus-visible:ring-white focus-visible:border-white text-lg text-foreground placeholder:text-slate-400 dark:placeholder:text-slate-500"
-                  />
+                  /> */}
                 </div>
 
                 <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
                   <Button
                     size="lg"
                     className="w-full h-14 rounded-2xl bg-white text-accent-primary hover:bg-white/90 font-bold text-lg shadow-xl cursor-pointer group"
+                    onClick={() => router.push('/register')}
                   >
                     Đăng ký ngay
                     <ArrowRight className="h-6 w-6 ml-2 group-hover:translate-x-1 transition-transform" />
