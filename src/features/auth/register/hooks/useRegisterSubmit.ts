@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useRegisterMutation } from "@/services/auth/auth.service";
 import { StorageService } from "@/services/storage/secureStorage.service";
+import { useToast } from "@/hooks/useToast";
 
 interface RegisterCredentials {
   email: string;
@@ -22,6 +23,7 @@ export const useRegisterSubmit = (): UseRegisterSubmitReturn => {
   const [registerMutation] = useRegisterMutation();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<Error | null>(null);
+  const toast = useToast();
 
   const register = async (data: RegisterCredentials): Promise<void> => {
     setIsLoading(true);
@@ -44,6 +46,11 @@ export const useRegisterSubmit = (): UseRegisterSubmitReturn => {
           expires_in: 3600, // Default 1 hour
         });
 
+        toast.success(
+          "Đăng ký thành công!",
+          `Chào mừng ${userData.email}. Đang chuyển hướng...`
+        );
+
         // Redirect based on role
         if (userData.roles.includes("admin")) {
           router.push("/admin");
@@ -53,9 +60,12 @@ export const useRegisterSubmit = (): UseRegisterSubmitReturn => {
       } else {
         throw new Error(response.message || "Registration failed");
       }
-    } catch (err) {
+    } catch (err: any) {
       const error = err as Error;
       console.error("Registration failed:", error);
+
+      const errorMessage = err?.data?.message || err?.message || "Đăng ký thất bại";
+      toast.error("Lỗi đăng ký", errorMessage);
       setError(error);
       throw error;
     } finally {

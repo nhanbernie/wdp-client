@@ -28,7 +28,7 @@ export const TextField = forwardRef<HTMLInputElement, TextFieldProps>(
     })
 
     return (
-      <div className="w-full mb-5">
+      <div className="w-full mb-4 sm:mb-5">
         {label && (
           <label className="block text-sm font-medium mb-2" style={{ color: colors.text }}>
             {label}
@@ -44,8 +44,8 @@ export const TextField = forwardRef<HTMLInputElement, TextFieldProps>(
             ref={ref}
             type={type === 'password' ? (showPassword ? 'text' : 'password') : type}
             className={cn(
-              'w-full border rounded-xl px-4 py-4 text-base focus:outline-none focus:ring-2 focus:border-transparent transition-all duration-300 ease-in-out',
-              type === 'password' && 'pr-12',
+              'w-full border rounded-xl px-3 sm:px-4 py-3 sm:py-4 text-sm sm:text-base focus:outline-none focus:ring-2 focus:border-transparent transition-all duration-300 ease-in-out',
+              type === 'password' && 'pr-10 sm:pr-12',
               className,
             )}
             style={{

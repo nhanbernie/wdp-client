@@ -10,7 +10,21 @@ import { Lock } from 'lucide-react'
 import { useSearchParams } from 'next/navigation'
 
 export const ResetPasswordPage = () => {
-  const { colors } = useTheme()
+  const themeContext = useTheme()
+  const colors = themeContext?.colors
+
+  // Fallback colors if context is not available
+  const fallbackColors = {
+    accent: '#F4A800',
+    accentSecondary: '#F56F10',
+    text: '#F2F2F2',
+    textSecondary: '#909090',
+    cardBackground: '#1a1a1a',
+    error: '#ef4444',
+  }
+
+  const safeColors = colors || fallbackColors
+
   const searchParams = useSearchParams()
   const token = searchParams.get('token') || ''
 
@@ -36,9 +50,9 @@ export const ResetPasswordPage = () => {
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center">
           <div
             className="animate-spin rounded-full h-12 w-12 border-b-2 mx-auto mb-4"
-            style={{ borderColor: colors.accent }}
+            style={{ borderColor: safeColors.accent }}
           ></div>
-          <p style={{ color: colors.textSecondary }}>Đang xác thực liên kết đặt lại...</p>
+          <p style={{ color: safeColors.textSecondary }}>Đang xác thực liên kết đặt lại...</p>
         </motion.div>
       </div>
     )
@@ -51,24 +65,24 @@ export const ResetPasswordPage = () => {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="w-full min-w-[420px] max-w-md rounded-2xl shadow-xl p-8 border-0 text-center"
+          className="w-full max-w-md mx-auto rounded-2xl shadow-xl p-4 sm:p-6 lg:p-8 border-0 text-center"
           style={{
-            backgroundColor: colors.cardBackground,
+            backgroundColor: safeColors.cardBackground,
           }}
         >
           <div className="mb-8">
             <div
               className="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6"
-              style={{ backgroundColor: colors.error || '#ef4444' }}
+              style={{ backgroundColor: safeColors.error }}
             >
               <Lock className="w-10 h-10 text-white" />
             </div>
 
-            <h2 className="text-2xl font-bold mb-4" style={{ color: colors.text }}>
+            <h2 className="text-2xl font-bold mb-4" style={{ color: safeColors.text }}>
               Liên kết không hợp lệ
             </h2>
 
-            <p style={{ color: colors.textSecondary }} className="mb-6">
+            <p style={{ color: safeColors.textSecondary }} className="mb-6">
               Liên kết đặt lại mật khẩu này không hợp lệ hoặc đã hết hạn.
             </p>
 
@@ -81,7 +95,7 @@ export const ResetPasswordPage = () => {
                 onClick={() => (window.location.href = '/forgot-password')}
                 className="w-full relative overflow-hidden group font-semibold"
                 style={{
-                  background: `linear-gradient(135deg, ${colors.accent}, ${colors.accentSecondary})`,
+                  background: `linear-gradient(135deg, ${safeColors.accent}, ${safeColors.accentSecondary})`,
                   border: 'none',
                   borderRadius: '12px',
                   padding: '16px 24px',
@@ -120,29 +134,29 @@ export const ResetPasswordPage = () => {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
-        className="w-full min-w-[420px] max-w-md rounded-2xl shadow-xl p-8 border-0"
+        className="w-full max-w-md mx-auto rounded-2xl shadow-xl p-4 sm:p-6 lg:p-8 border-0"
         style={{
-          backgroundColor: colors.cardBackground,
+          backgroundColor: safeColors.cardBackground,
         }}
       >
         <div className="text-center mb-8">
           <div
             className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4"
-            style={{ backgroundColor: colors.accent }}
+            style={{ backgroundColor: safeColors.accent }}
           >
             <Lock className="w-8 h-8 text-white" />
           </div>
 
-          <h2 className="text-2xl font-bold mb-2" style={{ color: colors.text }}>
+          <h2 className="text-2xl font-bold mb-2" style={{ color: safeColors.text }}>
             Đặt lại mật khẩu
           </h2>
 
-          <p style={{ color: colors.textSecondary }} className="mb-2">
+          <p style={{ color: safeColors.textSecondary }} className="mb-2">
             Nhập mật khẩu mới cho
           </p>
 
           {userEmail && (
-            <p style={{ color: colors.text }} className="font-medium">
+            <p style={{ color: safeColors.text }} className="font-medium">
               {userEmail}
             </p>
           )}

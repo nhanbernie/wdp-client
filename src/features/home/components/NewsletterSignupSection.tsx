@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input'
 import { motion } from 'framer-motion'
 import { Mail, ArrowRight, Gift, Bell } from 'lucide-react'
 import { useRouter } from 'next/navigation'
-
+  
 const NewsletterSignupSection = () => {
   const router = useRouter()
   return (
