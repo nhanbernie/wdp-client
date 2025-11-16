@@ -17,11 +17,12 @@ export function CategoryFilter() {
 
   const [selectedCategory, setSelectedCategory] = useState<string>('')
 
-  // Lấy giá trị ban đầu từ URL
+  // Lấy giá trị ban đầu từ URL (chỉ chạy một lần), và tránh setState nếu không đổi
   useEffect(() => {
     const categoryFromUrl = searchParams.get('categoryId') || ''
-    setSelectedCategory(categoryFromUrl)
-  }, [searchParams])
+    setSelectedCategory((prev) => (prev === categoryFromUrl ? prev : categoryFromUrl))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const handleSelect = (id: string) => {
     const newSelected = selectedCategory === id ? '' : id

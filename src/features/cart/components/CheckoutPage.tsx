@@ -177,9 +177,26 @@ const CheckoutPage: React.FC = () => {
               description: `Đơn hàng #${order.orderNumber}`,
             })
 
-            if ((payment as any)?.data?.data?.payosData?.data?.checkoutUrl) {
-              window.open((payment as any).data.data.payosData?.data?.checkoutUrl, '_blank')
-              router.push(`/orders/${order.id}`)
+            const checkoutUrl =
+              (payment as any)?.data?.data?.payosData?.data?.checkoutUrl ||
+              (payment as any)?.data?.data?.payosData?.checkoutUrl
+
+            if (checkoutUrl) {
+              // Open a blank tab synchronously-friendly, then navigate it to avoid popup blockers
+              const newTab = typeof window !== 'undefined' ? window.open('', '_blank') : null
+              if (newTab) {
+                try {
+                  newTab.opener = null
+                  newTab.location.href = checkoutUrl
+                } catch {
+                  // Fallback to same-tab navigation if cross-origin restrictions apply
+                  window.location.href = checkoutUrl
+                }
+              } else {
+                // If the browser blocked popup, fallback to same-tab
+                window.location.href = checkoutUrl
+              }
+              // Do not immediately redirect to order page; let user complete payment
             } else {
               console.error('No checkout URL found in payment response')
               router.push(`/orders/${order.id}`)

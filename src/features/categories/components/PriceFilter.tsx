@@ -23,18 +23,25 @@ export const PriceFilter = () => {
 
   const [priceRange, setPriceRange] = useState<number[]>(getInitialRange)
 
+  // Push params only when they actually differ to avoid double-runs under StrictMode
   useEffect(() => {
+    const currentMin = Number(searchParams.get('minPrice')) || 0
+    const currentMax = Number(searchParams.get('maxPrice')) || 10000000
+    if (currentMin === priceRange[0] && currentMax === priceRange[1]) return
+
     const params = new URLSearchParams(searchParams)
     params.set('minPrice', priceRange[0].toString())
     params.set('maxPrice', priceRange[1].toString())
     router.replace(`${pathname}?${params.toString()}`, { scroll: false })
-  }, [priceRange])
+  }, [priceRange, router, pathname, searchParams])
 
+  // Initialize from URL once on mount (avoid reacting to our own router.replace)
   useEffect(() => {
     const min = Number(searchParams.get('minPrice')) || 0
     const max = Number(searchParams.get('maxPrice')) || 10000000
     setPriceRange([min, max])
-  }, [searchParams])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   return (
     <motion.div
