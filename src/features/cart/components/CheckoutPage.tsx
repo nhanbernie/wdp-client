@@ -230,6 +230,13 @@ const CheckoutPage: React.FC = () => {
     },
   ]
 
+  useEffect(() => {
+    if (selectedCartItemIds.length > 0 && itemsToCheckout.length === 0 && !isLoadingCart) {
+      sessionStorage.removeItem('selectedCartItems')
+      router.push('/orders')
+    }
+  }, [selectedCartItemIds.length, itemsToCheckout.length, isLoadingCart, router])
+
   // Trạng thái loading
   if (isLoadingCart) {
     return (
@@ -270,14 +277,6 @@ const CheckoutPage: React.FC = () => {
       </div>
     )
   }
-
-  // Nếu có selectedCartItemIds nhưng không có item nào match, redirect về cart
-  useEffect(() => {
-    if (selectedCartItemIds.length > 0 && itemsToCheckout.length === 0 && !isLoadingCart) {
-      sessionStorage.removeItem('selectedCartItems')
-      router.push('/orders')
-    }
-  }, [selectedCartItemIds.length, itemsToCheckout.length, isLoadingCart, router])
 
   // Giao diện chính
   return (

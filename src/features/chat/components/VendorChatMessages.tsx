@@ -33,7 +33,7 @@ export const VendorChatMessages = forwardRef<VendorChatMessagesRef, VendorChatMe
 
     return (
       <div
-        className="flex-1 overflow-y-auto p-4 space-y-4"
+        className="flex-1 h-full min-h-0 overflow-y-auto p-4 space-y-4"
         style={{
           backgroundColor: colors.background,
         }}

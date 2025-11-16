@@ -6,6 +6,8 @@ import { Bot, User } from 'lucide-react'
 import { useTheme } from '@/contexts/ThemeContext'
 import { Message } from '../types'
 import { ProductMessageCard } from './ProductMessageCard'
+import { CartMessageCard } from './CartMessageCard'
+import { SearchProductsMessageCard } from './SearchProductsMessageCard'
 
 interface ChatMessageProps {
   message: Message
@@ -43,6 +45,20 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
       >
         {message.product ? (
           <ProductMessageCard product={message.product} isUser={isUser} />
+        ) : message.action === 'GET_MY_CART' && message.payload ? (
+          <div className="space-y-2">
+            {!!message.content && (
+              <p className="text-sm whitespace-pre-wrap">{message.content}</p>
+            )}
+            <CartMessageCard payload={message.payload} isUser={isUser} />
+          </div>
+        ) : message.action === 'SEARCH_PRODUCTS' && message.payload ? (
+          <div className="space-y-2">
+            {!!message.content && (
+              <p className="text-sm whitespace-pre-wrap">{message.content}</p>
+            )}
+            <SearchProductsMessageCard payload={message.payload} isUser={isUser} />
+          </div>
         ) : (
           <p className="text-sm whitespace-pre-wrap">{message.content}</p>
         )}

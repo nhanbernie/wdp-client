@@ -6,4 +6,6 @@ export interface Message {
   role: 'user' | 'assistant'
   timestamp: Date
   product?: ProductDto
+  action?: string
+  payload?: any
 }

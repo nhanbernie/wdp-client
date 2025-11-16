@@ -5,12 +5,19 @@ import {
   createConversationEndpoint,
   sendMessageEndpoint,
   getConversationEndpoint,
+  getVendorMessagesEndpoint,
+  getUnreadCountEndpoint,
 } from "./endpoints/index";
 
 // Export types from endpoints
 export type { CreateConversationRequest } from "./endpoints/index";
 export type { SendMessageRequest, SendMessageResponse } from "./endpoints/index";
 export type { ConversationMessagesResponse } from "./endpoints/index";
+export type {
+  GetVendorMessagesRequest,
+  VendorChatMessageDto,
+  UnreadCountResponse,
+} from "./endpoints/index";
 
 // Chat Message Types
 export interface ChatMessage {
@@ -43,6 +50,8 @@ export const chatApi = createApi({
     createConversation: createConversationEndpoint(builder),
     sendMessage: sendMessageEndpoint(builder),
     getConversation: getConversationEndpoint(builder),
+    getVendorMessages: getVendorMessagesEndpoint(builder),
+    getUnreadCount: getUnreadCountEndpoint(builder),
   }),
 });
 
@@ -51,5 +60,7 @@ export const {
   useGetConversationQuery,
   useCreateConversationMutation,
   useGetConversationsQuery,
+  useGetVendorMessagesQuery,
+  useGetUnreadCountQuery,
 } = chatApi;
 

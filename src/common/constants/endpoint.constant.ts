@@ -171,9 +171,17 @@ export const API_ENDPOINTS = {
 
   CHAT: {
     CONVERSATIONS: '/chat/conversations',
+    // Backend: GET /chat/conversations/:id/messages
     CONVERSATION: (id: string) => `/chat/conversations/${id}`,
     MESSAGES: (conversationId: string) => `/chat/conversations/${conversationId}/messages`,
+    VENDOR_MESSAGES: (vendorId: string) => `/chat/vendors/${vendorId}/messages`,
+    UNREAD_COUNT: '/chat/unread-count',
     SEND_MESSAGE: '/chat/messages',
+  },
+
+  // AI endpoints
+  AI: {
+    ASSISTANT: '/ai/assistant',
   },
 
   // Vendor endpoints

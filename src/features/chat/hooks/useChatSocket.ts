@@ -88,6 +88,7 @@ export function useChatSocket({
     if (!socket || !isConnected || !enabled) return
 
     const handleNewMessage = (data: any) => {
+      console.log('new_message event received:', data)
       // Map message từ backend format sang VendorChatMessage
       const message: VendorChatMessage = {
         id: data.message?.id || data.id,
@@ -118,6 +119,7 @@ export function useChatSocket({
         imageUrl: data.message?.imageUrl || data.imageUrl,
       }
       
+      console.log('mapped new message:', message)
       callbacksRef.current.onNewMessage?.(message)
     }
 

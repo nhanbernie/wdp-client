@@ -4,7 +4,12 @@ import React, { useState, useEffect, useCallback, useMemo } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { useTheme } from '@/contexts/ThemeContext'
 import { useAuth } from '@/contexts/AuthContext'
-import { useGetConversationsQuery, type ConversationResponseDto } from '@/services/chat/chat.service'
+import {
+  useGetConversationsQuery,
+  useGetConversationQuery,
+  type ConversationResponseDto,
+  type ConversationMessagesResponse,
+} from '@/services/chat/chat.service'
 import type { VendorChatConversation, VendorChatMessage } from './types'
 import { ChatConversationList } from './components/ChatConversationList'
 import { ChatDetail } from './components/ChatDetail'
@@ -46,7 +51,14 @@ export const ChatListPage: React.FC = () => {
 
     return conversationsResponse.data.map((conv: ConversationResponseDto): VendorChatConversation => {
       // Determine unread count based on user role
-      const isVendor = user.roles?.includes('vendor') || user.role === 'vendor'
+      const hasVendorRole =
+        Array.isArray(user.roles)
+          ? user.roles.some((r: any) => String(r).toUpperCase() === 'VENDOR')
+          : false
+      const isVendor =
+        hasVendorRole ||
+        (user.role && String(user.role).toUpperCase() === 'VENDOR') ||
+        Boolean((user as any).vendorId)
       const unreadCount = isVendor ? conv.unreadCountVendor : conv.unreadCountUser
 
       // Map last message if exists
@@ -137,6 +149,28 @@ export const ChatListPage: React.FC = () => {
 
   const selectedConversation = conversations.find((c) => c.id === selectedConversationId)
 
+  // Determine if current user is a vendor (used for socket join logic)
+  const isVendorUser = useMemo(() => {
+    if (!user) return false
+    const hasVendorRole =
+      Array.isArray(user.roles)
+        ? user.roles.some((r: any) => String(r).toUpperCase() === 'VENDOR')
+        : false
+    return (
+      hasVendorRole ||
+      (user.role && String(user.role).toUpperCase() === 'VENDOR') ||
+      Boolean((user as any).vendorId)
+    )
+  }, [user])
+
+  // Load messages for selected conversation (REST fallback when socket not available)
+  const {
+    data: conversationMessagesResponse,
+    isLoading: isLoadingMessagesFromApi,
+  } = useGetConversationQuery(selectedConversation?.id as string, {
+    skip: !selectedConversation || !user,
+  })
+
   // Load messages for selected conversation
   const [messages, setMessages] = useState<VendorChatMessage[]>([])
   const [isLoadingMessages, setIsLoadingMessages] = useState(false)
@@ -144,13 +178,33 @@ export const ChatListPage: React.FC = () => {
   const [inputValue, setInputValue] = useState('')
   const [isSending, setIsSending] = useState(false)
 
+  // Debounce refetch to avoid UI jank
+  const refetchDebounceRef = React.useRef<NodeJS.Timeout | null>(null)
+  const optimisticIdRef = React.useRef<string | null>(null)
+
   // Use chat socket hook để join conversation, nhận messages và gửi messages
   const { isConnected: isSocketConnected, sendMessage: sendSocketMessage } = useChatSocket({
-    vendorId: selectedConversation?.vendorId,
+    // Với user thường: vendorId = vendorId của conversation.
+    // Với vendor: FE sẽ gửi vendorId = userId của khách để BE map đúng trong WebsocketGateway.
+    vendorId: selectedConversation
+      ? isVendorUser
+        ? selectedConversation.userId
+        : selectedConversation.vendorId
+      : undefined,
     conversationId: selectedConversation?.id,
     enabled: !!selectedConversation,
     onConversationHistory: (historyMessages) => {
-      setMessages(historyMessages)
+      // Normalize order: oldest -> newest
+      const ordered = [...historyMessages].sort(
+        (a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime(),
+      )
+      // Keep optimistic message (if any) when server history returns
+      setMessages((prev) => {
+        const optimistic = optimisticIdRef.current
+          ? prev.filter((m) => m.id === optimisticIdRef.current)
+          : []
+        return [...ordered, ...optimistic]
+      })
       setIsLoadingMessages(false)
     },
     onNewMessage: (newMessage) => {
@@ -159,8 +213,22 @@ export const ChatListPage: React.FC = () => {
         if (prev.some((msg) => msg.id === newMessage.id)) {
           return prev
         }
-        return [...prev, newMessage]
+        // Remove optimistic when real message arrives
+        if (optimisticIdRef.current) {
+          prev = prev.filter((m) => m.id !== optimisticIdRef.current)
+          optimisticIdRef.current = null
+        }
+        const next = [...prev, newMessage]
+        // Ensure order oldest -> newest
+        next.sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime())
+        return next
       })
+
+      // Debounce sidebar refresh to reduce jank
+      if (refetchDebounceRef.current) clearTimeout(refetchDebounceRef.current)
+      refetchDebounceRef.current = setTimeout(() => {
+        refetchConversations()
+      }, 400)
     },
   })
 
@@ -181,53 +249,53 @@ export const ChatListPage: React.FC = () => {
     }
   }, [selectedConversation?.id, joinedConversationId])
 
-  // Fallback: Load messages via API nếu socket không hoạt động
+  // Load messages via REST API (chỉ dùng khi không có socket để tránh race)
   useEffect(() => {
     if (!selectedConversation || !user || isSocketConnected) return
 
-    const loadMessages = async () => {
+    // Đang load từ API
+    if (isLoadingMessagesFromApi) {
       setIsLoadingMessages(true)
-      try {
-        // TODO: Replace with actual API call
-        // const response = await chatApi.getConversation(selectedConversation.id)
-        // setMessages(response.data)
-
-        // Mock messages (fallback)
-        await new Promise((resolve) => setTimeout(resolve, 300))
-        const mockMessages: VendorChatMessage[] = [
-          {
-            id: 'msg-1',
-            content: `Xin chào! Tôi là ${selectedConversation.vendorName}. Tôi có thể giúp gì cho bạn?`,
-            senderId: selectedConversation.vendorId,
-            senderName: selectedConversation.vendorName,
-            senderAvatar: selectedConversation.vendorAvatar,
-            receiverId: user.id,
-            timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24),
-            isRead: true,
-            type: 'text',
-          },
-          {
-            id: 'msg-2',
-            content: 'Xin chào! Tôi muốn hỏi về sản phẩm...',
-            senderId: user.id,
-            senderName: user.name,
-            senderAvatar: user.avatar,
-            receiverId: selectedConversation.vendorId,
-            timestamp: new Date(Date.now() - 1000 * 60 * 30),
-            isRead: true,
-            type: 'text',
-          },
-        ]
-        setMessages(mockMessages)
-      } catch (error) {
-        console.error('Failed to load messages:', error)
-      } finally {
-        setIsLoadingMessages(false)
-      }
+      return
     }
 
-    loadMessages()
-  }, [selectedConversation, user, isSocketConnected])
+    const apiMessages = conversationMessagesResponse?.data as ConversationMessagesResponse | undefined
+    if (!apiMessages) return
+
+    const mappedMessages: VendorChatMessage[] = apiMessages.map((msg) => {
+      const isVendorSender = msg.senderType === 'VENDOR'
+      const senderId = msg.senderId
+      const senderName = isVendorSender ? selectedConversation.vendorName : user.name
+      const senderAvatar = isVendorSender ? selectedConversation.vendorAvatar : (user as any).avatar
+      const receiverId = isVendorSender ? selectedConversation.userId : selectedConversation.vendorId
+
+      return {
+        id: msg.id,
+        content: msg.message,
+        senderId,
+        senderName,
+        senderAvatar,
+        receiverId,
+        timestamp: new Date(msg.createdAt),
+        isRead: msg.isRead,
+        type: 'text',
+      }
+    })
+
+    // Backend trả DESC, cần đảo thành ASC để UI mới nhất ở dưới
+    const ordered = [...mappedMessages].sort(
+      (a, b) => a.timestamp.getTime() - b.timestamp.getTime(),
+    )
+
+    setMessages(ordered)
+    setIsLoadingMessages(false)
+  }, [
+    conversationMessagesResponse,
+    isLoadingMessagesFromApi,
+    isSocketConnected,
+    selectedConversation,
+    user,
+  ])
 
   const handleSelectConversation = useCallback((conversationId: string) => {
     setSelectedConversationId(conversationId)
@@ -242,6 +310,23 @@ export const ChatListPage: React.FC = () => {
 
     const content = inputValue.trim()
     setIsSending(true)
+    // Optimistic UI append
+    const optimisticId = `optimistic-${Date.now()}`
+    optimisticIdRef.current = optimisticId
+    setMessages((prev) => [
+      ...prev,
+      {
+        id: optimisticId,
+        content,
+        senderId: user?.id || 'me',
+        senderName: user?.name || 'Me',
+        senderAvatar: (user as any)?.avatar,
+        receiverId: selectedConversation.vendorId,
+        timestamp: new Date(),
+        isRead: false,
+        type: 'text',
+      },
+    ])
     const ok = sendSocketMessage(content)
     if (ok) {
       setInputValue('')

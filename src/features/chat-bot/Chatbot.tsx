@@ -5,6 +5,7 @@ import { ProductDto } from '@/services/api/product.type'
 import { Message } from './types'
 import { ChatbotButton } from './components/chat/ChatbotButton'
 import { ChatWindow, ChatWindowRef } from './components/chat/ChatWindow'
+import { useAssistantMutation } from '@/services/ai/ai.service'
 
 interface ChatbotProps {
   onSendMessage?: (message: string) => Promise<string>
@@ -24,6 +25,66 @@ export const Chatbot: React.FC<ChatbotProps> = ({ onSendMessage }) => {
   const [isLoading, setIsLoading] = useState(false)
   const [isDragOver, setIsDragOver] = useState(false)
   const chatWindowRef = useRef<ChatWindowRef>(null)
+  const [assistant, { isLoading: isAssistantLoading }] = useAssistantMutation()
+
+  // Local storage keys
+  const STORAGE_KEYS = {
+    open: 'chatbot:isOpen',
+    messages: 'chatbot:messages',
+    input: 'chatbot:input',
+  }
+
+  // Load persisted state on mount
+  useEffect(() => {
+    try {
+      if (typeof window === 'undefined') return
+
+      const savedOpen = window.localStorage.getItem(STORAGE_KEYS.open)
+      if (savedOpen !== null) {
+        setIsOpen(savedOpen === '1')
+      }
+
+      const savedMessages = window.localStorage.getItem(STORAGE_KEYS.messages)
+      if (savedMessages) {
+        const parsed: Array<Omit<Message, 'timestamp'> & { timestamp: string }> = JSON.parse(savedMessages)
+        const restored: Message[] = parsed.map((m) => ({
+          ...m,
+          timestamp: new Date(m.timestamp),
+        }))
+        if (restored.length > 0) {
+          setMessages(restored)
+        }
+      }
+
+      const savedInput = window.localStorage.getItem(STORAGE_KEYS.input)
+      if (savedInput) setInputValue(savedInput)
+    } catch {
+      // ignore storage errors
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  // Persist messages and open state
+  useEffect(() => {
+    try {
+      if (typeof window === 'undefined') return
+      window.localStorage.setItem(STORAGE_KEYS.open, isOpen ? '1' : '0')
+      const serializable = messages.map((m) => ({ ...m, timestamp: m.timestamp.toISOString() }))
+      window.localStorage.setItem(STORAGE_KEYS.messages, JSON.stringify(serializable))
+    } catch {
+      // ignore storage errors
+    }
+  }, [isOpen, messages])
+
+  // Persist input value
+  useEffect(() => {
+    try {
+      if (typeof window === 'undefined') return
+      window.localStorage.setItem(STORAGE_KEYS.input, inputValue)
+    } catch {
+      // ignore storage errors
+    }
+  }, [inputValue])
 
   const scrollToBottom = () => {
     chatWindowRef.current?.scrollToBottom()
@@ -50,19 +111,31 @@ export const Chatbot: React.FC<ChatbotProps> = ({ onSendMessage }) => {
     setIsLoading(true)
 
     try {
-      let response = ''
+      let responseText = ''
+      let responseAction: string | undefined
+      let responsePayload: any | undefined
       if (onSendMessage) {
-        response = await onSendMessage(userMessage.content)
+        responseText = await onSendMessage(userMessage.content)
       } else {
-        // Mock response for demo
-        await new Promise((resolve) => setTimeout(resolve, 1000))
-        response =
-          'Cảm ơn bạn đã liên hệ! Đây là phản hồi từ AI Assistant. Chúng tôi sẽ liên hệ lại với bạn sớm nhất có thể.'
+        // Call backend AI assistant
+        const history = messages.map((m) => ({
+          role: m.role,
+          content: m.content,
+        }))
+        const res = await assistant({
+          message: userMessage.content,
+          conversationHistory: history,
+        }).unwrap()
+        responseText = res.data?.message || res.message || 'Xin lỗi, tôi chưa có câu trả lời.'
+        responseAction = res.data?.action || res.action
+        responsePayload = res.data?.data || res.data
       }
 
       const assistantMessage: Message = {
         id: (Date.now() + 1).toString(),
-        content: response,
+        content: responseText,
+        action: responseAction,
+        payload: responsePayload,
         role: 'assistant',
         timestamp: new Date(),
       }

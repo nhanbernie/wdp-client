@@ -48,7 +48,11 @@ export const VendorChatMessage: React.FC<VendorChatMessageProps> = ({
       </div>
 
       {/* Message Content */}
-      <div className={`flex flex-col gap-1 max-w-[75%] ${isCurrentUser ? 'items-end' : 'items-start'}`}>
+      <div
+        className={`flex flex-col gap-1 max-w-[75%] sm:max-w-[60%] ${
+          isCurrentUser ? 'items-end' : 'items-start'
+        }`}
+      >
         <div
           className={`px-4 py-2 rounded-2xl ${
             isCurrentUser ? 'rounded-tr-sm' : 'rounded-tl-sm'
@@ -56,6 +60,8 @@ export const VendorChatMessage: React.FC<VendorChatMessageProps> = ({
           style={{
             backgroundColor: isCurrentUser ? colors.accent : colors.cardBackgroundSecondary,
             color: isCurrentUser ? '#fff' : colors.text,
+            maxHeight: '320px',
+            overflowY: 'auto',
           }}
         >
           {message.type === 'image' && message.imageUrl ? (
@@ -67,7 +73,9 @@ export const VendorChatMessage: React.FC<VendorChatMessageProps> = ({
               className="rounded-lg object-cover"
             />
           ) : (
-            <p className="text-sm whitespace-pre-wrap break-words">{message.content}</p>
+            <p className="text-sm whitespace-pre-wrap break-words break-all">
+              {message.content}
+            </p>
           )}
         </div>
         <p
