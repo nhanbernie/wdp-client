@@ -8,7 +8,6 @@ import { useGetConversationsQuery, type ConversationResponseDto } from '@/servic
 import type { VendorChatConversation, VendorChatMessage } from './types'
 import { ChatConversationList } from './components/ChatConversationList'
 import { ChatDetail } from './components/ChatDetail'
-import { useVendorChat } from './hooks/useVendorChat'
 import { useChatSocket } from './hooks/useChatSocket'
 
 export const ChatListPage: React.FC = () => {
@@ -142,19 +141,19 @@ export const ChatListPage: React.FC = () => {
   const [messages, setMessages] = useState<VendorChatMessage[]>([])
   const [isLoadingMessages, setIsLoadingMessages] = useState(false)
   const [joinedConversationId, setJoinedConversationId] = useState<string | null>(null)
+  const [inputValue, setInputValue] = useState('')
+  const [isSending, setIsSending] = useState(false)
 
-  // Use chat socket hook để join conversation và nhận messages
-  // Hook sẽ tự động join khi có vendorId và socket connected
-  const { isConnected: isSocketConnected } = useChatSocket({
+  // Use chat socket hook để join conversation, nhận messages và gửi messages
+  const { isConnected: isSocketConnected, sendMessage: sendSocketMessage } = useChatSocket({
     vendorId: selectedConversation?.vendorId,
-    enabled: !!selectedConversation?.vendorId,
+    conversationId: selectedConversation?.id,
+    enabled: !!selectedConversation,
     onConversationHistory: (historyMessages) => {
-      console.log('Received conversation history:', historyMessages)
       setMessages(historyMessages)
       setIsLoadingMessages(false)
     },
     onNewMessage: (newMessage) => {
-      console.log('New message received:', newMessage)
       setMessages((prev) => {
         // Tránh duplicate messages
         if (prev.some((msg) => msg.id === newMessage.id)) {
@@ -230,22 +229,6 @@ export const ChatListPage: React.FC = () => {
     loadMessages()
   }, [selectedConversation, user, isSocketConnected])
 
-  // Use vendor chat hook for sending messages
-  const {
-    inputValue,
-    isLoading: isSending,
-    setInputValue,
-    handleSend: sendMessage,
-    handleKeyPress,
-  } = useVendorChat({
-    vendorId: selectedConversation?.vendorId || '',
-    vendorName: selectedConversation?.vendorName || '',
-    vendorAvatar: selectedConversation?.vendorAvatar,
-    currentUserId: user?.id,
-    currentUserName: user?.name,
-    currentUserAvatar: user?.avatar,
-  })
-
   const handleSelectConversation = useCallback((conversationId: string) => {
     setSelectedConversationId(conversationId)
     if (isMobile) {
@@ -253,15 +236,28 @@ export const ChatListPage: React.FC = () => {
     }
   }, [isMobile])
 
-  const handleSend = useCallback(async () => {
-    if (!selectedConversation) return
-    await sendMessage()
-    // Reload messages after sending
-    // TODO: Use socket.io or polling to get new messages
-    setTimeout(() => {
-      setMessages((prev) => [...prev])
-    }, 500)
-  }, [selectedConversation, sendMessage])
+  const handleSend = useCallback(() => {
+    if (!selectedConversation || !inputValue.trim() || !isSocketConnected) return
+    if (isSending) return
+
+    const content = inputValue.trim()
+    setIsSending(true)
+    const ok = sendSocketMessage(content)
+    if (ok) {
+      setInputValue('')
+    }
+    setIsSending(false)
+  }, [selectedConversation, inputValue, isSocketConnected, isSending, sendSocketMessage])
+
+  const handleKeyPress = useCallback(
+    (e: React.KeyboardEvent<HTMLInputElement>) => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault()
+        handleSend()
+      }
+    },
+    [handleSend],
+  )
 
   if (!user) {
     return null

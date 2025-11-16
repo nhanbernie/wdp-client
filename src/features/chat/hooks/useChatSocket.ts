@@ -6,20 +6,18 @@ import type { VendorChatMessage } from '../types'
 
 interface UseChatSocketProps {
   vendorId?: string // VendorId để join conversation (theo backend: join_conversation nhận { vendorId })
+  conversationId?: string // ConversationId để gửi tin nhắn (send_message)
   onConversationHistory?: (messages: VendorChatMessage[]) => void
   onNewMessage?: (message: VendorChatMessage) => void
   enabled?: boolean
 }
 
-/**
- * Custom hook để quản lý socket events cho chat
- * Follow đúng backend flow:
- * 1. Emit 'join_conversation' với { vendorId }
- * 2. Listen 'conversation_history' -> nhận messages
- * 3. Listen 'message:new' -> nhận tin nhắn mới
- */
+//  * 1. Emit 'join_conversation' với { vendorId }
+//  * 2. Listen 'conversation_history' -> nhận messages
+//  * 3. Listen 'message:new' -> nhận tin nhắn mới
 export function useChatSocket({
   vendorId,
+  conversationId,
   onConversationHistory,
   onNewMessage,
   enabled = true,
@@ -92,29 +90,67 @@ export function useChatSocket({
     const handleNewMessage = (data: any) => {
       // Map message từ backend format sang VendorChatMessage
       const message: VendorChatMessage = {
-        id: data.id,
-        content: data.content || data.message || '',
-        senderId: data.senderId || data.userId || '',
-        senderName: data.senderName || data.sender?.name || data.user?.name || 'User',
-        senderAvatar: data.senderAvatar || data.sender?.avatar || data.user?.avatar,
-        receiverId: data.receiverId || '',
-        timestamp: new Date(data.timestamp || data.createdAt || Date.now()),
-        isRead: data.isRead || false,
-        type: data.type || 'text',
-        productId: data.productId,
-        imageUrl: data.imageUrl,
+        id: data.message?.id || data.id,
+        content: data.message?.content || data.message?.message || data.content || data.message || '',
+        senderId: data.message?.senderId || data.senderId || data.userId || '',
+        senderName:
+          data.message?.senderName ||
+          data.senderName ||
+          data.sender?.name ||
+          data.user?.name ||
+          'User',
+        senderAvatar:
+          data.message?.senderAvatar ||
+          data.senderAvatar ||
+          data.sender?.avatar ||
+          data.user?.avatar,
+        receiverId: data.message?.receiverId || data.receiverId || '',
+        timestamp: new Date(
+          data.message?.timestamp ||
+            data.message?.createdAt ||
+            data.timestamp ||
+            data.createdAt ||
+            Date.now(),
+        ),
+        isRead: data.message?.isRead ?? data.isRead ?? false,
+        type: data.message?.type || data.type || 'text',
+        productId: data.message?.productId || data.productId,
+        imageUrl: data.message?.imageUrl || data.imageUrl,
       }
       
       callbacksRef.current.onNewMessage?.(message)
     }
 
-    // Listen to general new message event (backend sẽ emit vào room conversation_${conversation.id})
-    socket.on('message:new', handleNewMessage)
+    // Backend emit: server.to(`conversation_${conversationId}`).emit('new_message', { message })
+    socket.on('new_message', handleNewMessage)
 
     return () => {
-      socket.off('message:new', handleNewMessage)
+      socket.off('new_message', handleNewMessage)
     }
   }, [socket, isConnected, enabled])
+
+  // Gửi tin nhắn qua socket theo chuẩn backend: send_message
+  const sendMessage = useCallback(
+    (message: string, attachments: string[] = []) => {
+      if (!socket || !isConnected) {
+        return false
+      }
+
+      const convId = conversationId
+      if (!convId) {
+        return false
+      }
+
+      socket.emit('send_message', {
+        conversationId: convId,
+        message,
+        attachments,
+      })
+
+      return true
+    },
+    [socket, isConnected, conversationId],
+  )
 
   // Auto join conversation khi có vendorId và socket connected
   useEffect(() => {
@@ -135,11 +171,8 @@ export function useChatSocket({
 
     // Chỉ join nếu vendorId thay đổi và chưa đang join (tránh join duplicate)
     if (joinedVendorIdRef.current !== vendorId && !isJoiningRef.current) {
-      // Đợi một chút sau khi socket reconnect để đảm bảo socket ready
-      // Đặc biệt quan trọng sau khi refresh token và reconnect
       reconnectTimeoutRef.current = setTimeout(() => {
         if (socket && isConnected && vendorId) {
-          console.log('🔄 Joining conversation with vendorId:', vendorId)
           isJoiningRef.current = true
           joinedVendorIdRef.current = vendorId
           
@@ -164,6 +197,7 @@ export function useChatSocket({
 
   return {
     joinConversation,
+    sendMessage,
     isConnected,
   }
 }
