@@ -26,10 +26,6 @@ interface Props {
 export const SearchProductsMessageCard: React.FC<Props> = ({ payload, isUser }) => {
   const { colors } = useTheme()
   const items = payload.items || []
-  const webBase =
-    (typeof window !== 'undefined' ? window.location.origin : '') ||
-    process.env.NEXT_PUBLIC_WEB_URL ||
-    ''
 
   return (
     <div
@@ -60,10 +56,9 @@ export const SearchProductsMessageCard: React.FC<Props> = ({ payload, isUser }) 
               )}
               <div className="mt-1">
                 <Link
-                  href={`${webBase}/products/${p.id}`}
+                  href={`/products/${p.id}`}
                   className="text-xs underline"
                   style={{ color: isUser ? '#fff' : colors.accent }}
-                  target="_blank"
                 >
                   Xem chi tiết
                 </Link>

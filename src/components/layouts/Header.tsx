@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useMemo } from 'react'
+import React, { useState, useMemo, useEffect } from 'react'
 import { ShoppingCart, Menu, Bell, Sun, Moon, Search } from 'lucide-react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
@@ -18,6 +18,8 @@ import { useAuth } from '@/contexts/AuthContext'
 import { useTheme } from '@/contexts/ThemeContext'
 import { useCartApi } from '@/features/cart/hooks'
 import { getNeumorphismShadow } from '@/common/constants/neumorphism'
+import { useSocket } from '@/contexts/SocketContext'
+import { NotificationsPanel } from './components/NotificationsPanel'
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -27,6 +29,12 @@ const Header = () => {
   const { theme, toggleTheme } = useTheme()
   const { cartCount } = useCartApi()
   const neumorphismShadow = getNeumorphismShadow(theme)
+  const { socket, isConnected } = useSocket()
+  const [unreadCount, setUnreadCount] = useState(0)
+  const [notifications, setNotifications] = useState<
+    { id: string; title: string; createdAt: Date }[]
+  >([])
+  const [isNotiOpen, setIsNotiOpen] = useState(false)
 
   // Background color cho các nút để dễ nhìn hơn trong cả light và dark mode
   const buttonBackgroundColor = theme === 'light' ? '#ffffff' : '#2a2a2a'
@@ -45,7 +53,28 @@ const Header = () => {
     }
   }, [isAuthenticated, user])
 
-  const notificationCount = 0
+  // Listen realtime order_created to bump header bell and store a simple in-memory list
+  useEffect(() => {
+    if (!socket || !isConnected) return
+    const onOrderCreated = (data: any) => {
+      setUnreadCount((c) => Math.min(c + 1, 99))
+      setNotifications((prev) => [
+        {
+          id: data?.orderId || `order-${Date.now()}`,
+          title:
+            data?.orderNumber
+              ? `Đơn hàng ${data.orderNumber} đã được tạo`
+              : 'Đơn hàng mới đã được tạo',
+          createdAt: new Date(data?.createdAt || Date.now()),
+        },
+        ...prev,
+      ])
+    }
+    socket.on('order_created', onOrderCreated)
+    return () => {
+      socket.off('order_created', onOrderCreated)
+    }
+  }, [socket, isConnected])
 
   const isActive = (href: string) => {
     if (href === '/') return pathname === '/'
@@ -138,25 +167,37 @@ const Header = () => {
             {/* Notifications and Cart - Only for non-admin authenticated users */}
             {isAuthenticated && user && !user.roles.includes('admin') && (
               <>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="relative bg-card text-foreground hover:text-accent-primary"
-                  style={{
-                    boxShadow: neumorphismShadow,
-                    backgroundColor: buttonBackgroundColor,
-                  }}
-                  asChild
-                >
-                  <Link href="/notifications">
+                <div className="relative">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="relative bg-card text-foreground hover:text-accent-primary"
+                    style={{
+                      boxShadow: neumorphismShadow,
+                      backgroundColor: buttonBackgroundColor,
+                    }}
+                    onClick={() => {
+                      setUnreadCount(0)
+                      setIsNotiOpen((v) => !v)
+                    }}
+                  >
                     <Bell className="h-4 w-4" />
-                    {notificationCount > 0 && (
+                    {unreadCount > 0 && (
                       <Badge className="absolute -top-1 -right-1 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs bg-accent-primary">
-                        {notificationCount > 9 ? '9+' : notificationCount}
+                        {unreadCount > 9 ? '9+' : unreadCount}
                       </Badge>
                     )}
-                  </Link>
-                </Button>
+                  </Button>
+                  <NotificationsPanel
+                    open={isNotiOpen}
+                    items={notifications}
+                    onClose={() => setIsNotiOpen(false)}
+                    onMarkRead={() => {
+                      setUnreadCount(0)
+                      setIsNotiOpen(false)
+                    }}
+                  />
+                </div>
 
                 <Button
                   variant="ghost"

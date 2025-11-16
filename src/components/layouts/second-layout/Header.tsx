@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import UserMenu from "../components/UserMenu";
 import { userNavigationItems } from "@/common/constants/navigate.constant";
+import { useSocket } from "@/contexts/SocketContext";
 
 interface HeaderProps {
   navigationItems?: typeof userNavigationItems;
@@ -21,6 +22,22 @@ interface HeaderProps {
 
 export function Header({ navigationItems = userNavigationItems }: HeaderProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [unread, setUnread] = useState(0);
+  const { socket, isConnected } = useSocket();
+
+  // Listen order_created to bump notification badge
+  useEffect(() => {
+    if (!socket || !isConnected) return;
+
+    const onOrderCreated = () => {
+      setUnread((c) => Math.min(c + 1, 99));
+    };
+
+    socket.on("order_created", onOrderCreated);
+    return () => {
+      socket.off("order_created", onOrderCreated);
+    };
+  }, [socket, isConnected]);
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -75,9 +92,11 @@ export function Header({ navigationItems = userNavigationItems }: HeaderProps) {
               {/* Notifications */}
               <Button variant="ghost" size="icon" className="relative">
                 <Bell className="h-4 w-4" />
-                <Badge className="absolute -top-1 -right-1 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs">
-                  3
-                </Badge>
+                {unread > 0 && (
+                  <Badge className="absolute -top-1 -right-1 h-5 min-w-5 rounded-full p-0 flex items-center justify-center text-xs">
+                    {unread > 9 ? "9+" : unread}
+                  </Badge>
+                )}
               </Button>
 
               {/* Cart */}

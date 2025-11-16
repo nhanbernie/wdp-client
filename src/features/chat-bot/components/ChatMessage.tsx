@@ -8,6 +8,7 @@ import { Message } from '../types'
 import { ProductMessageCard } from './ProductMessageCard'
 import { CartMessageCard } from './CartMessageCard'
 import { SearchProductsMessageCard } from './SearchProductsMessageCard'
+import { CategoriesMessageCard } from './CategoriesMessageCard'
 
 interface ChatMessageProps {
   message: Message
@@ -58,6 +59,13 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
               <p className="text-sm whitespace-pre-wrap">{message.content}</p>
             )}
             <SearchProductsMessageCard payload={message.payload} isUser={isUser} />
+          </div>
+        ) : message.action === 'GET_CATEGORIES' && message.payload ? (
+          <div className="space-y-2">
+            {!!message.content && (
+              <p className="text-sm whitespace-pre-wrap">{message.content}</p>
+            )}
+            <CategoriesMessageCard payload={message.payload} isUser={isUser} />
           </div>
         ) : (
           <p className="text-sm whitespace-pre-wrap">{message.content}</p>
