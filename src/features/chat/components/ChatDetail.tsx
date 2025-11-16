@@ -56,9 +56,12 @@ export const ChatDetail: React.FC<ChatDetailProps> = ({
     )
   }
 
+  // Determine other party name based on current user
+  // If current user is the user in conversation, show vendor name
+  // If current user is vendor, show user name
   const otherPartyName = currentUserId === conversation.userId
-    ? 'User'
-    : conversation.vendorName
+    ? conversation.vendorName // Current user is user, show vendor name
+    : (conversation.userName || 'User') // Current user is vendor, show user name
 
   return (
     <div className="h-full w-full flex flex-col min-h-0 min-w-0">

@@ -17,6 +17,7 @@ import { quoteRequestsApi } from '@/services/quote-requests'
 import { vendorWalletApi } from '@/services/vendor/vendor-wallet.service'
 import { addressesApi } from '@/services/addresses'
 import { walletApi } from '@/services/wallet/wallet.service'
+import { chatApi } from '@/services/chat/chat.service'
 // import { apiErrorHandler } from "@/services/api/apiErrorHandler";
 
 export const store = configureStore({
@@ -40,6 +41,7 @@ export const store = configureStore({
     [vendorWalletApi.reducerPath]: vendorWalletApi.reducer,
     [addressesApi.reducerPath]: addressesApi.reducer,
     [walletApi.reducerPath]: walletApi.reducer,
+    [chatApi.reducerPath]: chatApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
@@ -62,6 +64,7 @@ export const store = configureStore({
       vendorWalletApi.middleware,
       addressesApi.middleware,
       walletApi.middleware,
+      chatApi.middleware,
     ),
   devTools: process.env.NODE_ENV !== 'production',
 })

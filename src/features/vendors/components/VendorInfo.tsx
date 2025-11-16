@@ -7,6 +7,8 @@ import { VendorProductsGrid } from './VendorProductsGrid'
 import { useVendorProfile } from '../hooks/useVendorProfile'
 import { useTheme } from '@/contexts/ThemeContext'
 import { useAuth } from '@/contexts/AuthContext'
+import { useCreateConversationMutation } from '@/services/chat/chat.service'
+import { useToast } from '@/hooks/useToast'
 
 interface Props {
   vendorId: string
@@ -18,13 +20,45 @@ export const VendorInfo: React.FC<Props> = ({ vendorId, vendorName }) => {
   const { colors } = useTheme()
   const router = useRouter()
   const { user } = useAuth()
+  const [createConversation, { isLoading: isCreatingConversation }] = useCreateConversationMutation()
+  const toast = useToast()
 
   const handleViewShop = () => {
     router.push(`/vendors/${vendorId}`)
   }
 
-  const handleChat = () => {
-    router.push(`/chat?vendorId=${vendorId}`)
+  const handleChat = async () => {
+    if (!user) {
+      toast.error('Vui lòng đăng nhập để chat')
+      router.push('/login')
+      return
+    }
+
+    try {
+      // Gọi API POST /api/chat/conversations để tạo conversation trước
+      const result = await createConversation({ vendorId }).unwrap()
+      
+      if (result.success && result.data) {
+        // Navigate đến chat page với conversationId từ response
+        router.push(`/chat?vendorId=${vendorId}&conversationId=${result.data.id}`)
+      } else {
+        toast.error(result.message || 'Không thể tạo cuộc trò chuyện')
+        // Fallback: vẫn navigate nếu có lỗi
+        router.push(`/chat?vendorId=${vendorId}`)
+      }
+    } catch (error: any) {
+      console.error('Failed to create conversation:', error)
+      
+      // Nếu lỗi 409 (conversation đã tồn tại) hoặc lỗi khác, vẫn navigate
+      if (error?.status === 409 || error?.data?.statusCode === 409) {
+        // Conversation đã tồn tại, navigate với vendorId để tìm conversation cũ
+        router.push(`/chat?vendorId=${vendorId}`)
+      } else {
+        toast.error(error?.data?.message || 'Không thể tạo cuộc trò chuyện. Vui lòng thử lại.')
+        // Fallback: vẫn navigate nếu có lỗi
+        router.push(`/chat?vendorId=${vendorId}`)
+      }
+    }
   }
 
   // Show loading skeleton

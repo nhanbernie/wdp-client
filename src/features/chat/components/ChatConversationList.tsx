@@ -15,6 +15,8 @@ interface ChatConversationListProps {
   onSelectConversation: (conversationId: string) => void
   searchQuery?: string
   onSearchChange?: (query: string) => void
+  isLoading?: boolean
+  error?: any
 }
 
 export const ChatConversationList: React.FC<ChatConversationListProps> = ({
@@ -24,6 +26,8 @@ export const ChatConversationList: React.FC<ChatConversationListProps> = ({
   onSelectConversation,
   searchQuery = '',
   onSearchChange,
+  isLoading = false,
+  error,
 }) => {
   const { colors } = useTheme()
   const router = useRouter()
@@ -94,7 +98,27 @@ export const ChatConversationList: React.FC<ChatConversationListProps> = ({
 
       {/* Conversation List */}
       <div className="flex-1 overflow-y-auto">
-        {filteredConversations.length === 0 ? (
+        {isLoading ? (
+          <div className="flex flex-col items-center justify-center h-full py-12 px-4">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 mb-4" style={{ borderColor: colors.accent }} />
+            <p className="text-sm text-center" style={{ color: colors.textSecondary }}>
+              Đang tải danh sách trò chuyện...
+            </p>
+          </div>
+        ) : error ? (
+          <div className="flex flex-col items-center justify-center h-full py-12 px-4">
+            <MessageCircle
+              className="w-16 h-16 mb-4"
+              style={{ color: colors.error, opacity: 0.5 }}
+            />
+            <p className="text-sm text-center mb-2" style={{ color: colors.error }}>
+              Không thể tải danh sách trò chuyện
+            </p>
+            <p className="text-xs text-center" style={{ color: colors.textSecondary }}>
+              {(error as any)?.data?.message || 'Vui lòng thử lại sau'}
+            </p>
+          </div>
+        ) : filteredConversations.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-full py-12 px-4">
             <MessageCircle
               className="w-16 h-16 mb-4"

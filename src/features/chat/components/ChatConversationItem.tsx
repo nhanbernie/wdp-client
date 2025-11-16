@@ -22,10 +22,14 @@ export const ChatConversationItem: React.FC<ChatConversationItemProps> = ({
 }) => {
   const { colors } = useTheme()
 
-  // Determine if the conversation is with a vendor or user
-  const isVendor = currentUserId === conversation.userId
-  const otherPartyName = isVendor ? 'User' : conversation.vendorName
-  const otherPartyAvatar = conversation.vendorAvatar
+  // Determine other party based on current user
+  // If current user is the user in conversation, show vendor info
+  // If current user is vendor, show user info
+  const isCurrentUserVendor = currentUserId === conversation.vendorId
+  const otherPartyName = isCurrentUserVendor 
+    ? (conversation.userName || 'User') // Current user is vendor, show user name
+    : conversation.vendorName // Current user is user, show vendor name
+  const otherPartyAvatar = isCurrentUserVendor ? conversation.userAvatar : conversation.vendorAvatar
 
   // Format relative time
   const formatRelativeTime = (date: Date) => {
@@ -75,7 +79,7 @@ export const ChatConversationItem: React.FC<ChatConversationItemProps> = ({
                 color: colors.accent,
               }}
             >
-              {isVendor ? <User className="w-7 h-7" /> : <Store className="w-7 h-7" />}
+              {isCurrentUserVendor ? <User className="w-7 h-7" /> : <Store className="w-7 h-7" />}
             </div>
           )}
         </div>

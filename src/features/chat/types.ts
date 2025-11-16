@@ -18,6 +18,8 @@ export interface VendorChatConversation {
   vendorName: string
   vendorAvatar?: string
   userId: string
+  userName?: string // Tên user (firstName + lastName)
+  userAvatar?: string // Avatar user
   lastMessage?: VendorChatMessage
   unreadCount: number
   createdAt: Date

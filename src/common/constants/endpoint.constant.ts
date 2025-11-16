@@ -169,12 +169,11 @@ export const API_ENDPOINTS = {
     DETAILS: (id: string) => `/addresses/${id}`,
   },
 
-  // Chat endpoints
   CHAT: {
-    CONVERSATIONS: '/api/chat/conversations', // GET all conversations
-    CONVERSATION: (id: string) => `/api/chat/conversations/${id}`, // GET specific conversation
-    MESSAGES: (conversationId: string) => `/api/chat/conversations/${conversationId}/messages`, // GET messages
-    SEND_MESSAGE: '/api/chat/messages', // POST send message
+    CONVERSATIONS: '/chat/conversations',
+    CONVERSATION: (id: string) => `/chat/conversations/${id}`,
+    MESSAGES: (conversationId: string) => `/chat/conversations/${conversationId}/messages`,
+    SEND_MESSAGE: '/chat/messages',
   },
 
   // Vendor endpoints

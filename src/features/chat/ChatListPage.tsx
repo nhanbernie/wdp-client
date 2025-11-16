@@ -1,23 +1,24 @@
 'use client'
 
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect, useCallback, useMemo } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { useTheme } from '@/contexts/ThemeContext'
 import { useAuth } from '@/contexts/AuthContext'
+import { useGetConversationsQuery, type ConversationResponseDto } from '@/services/chat/chat.service'
 import type { VendorChatConversation, VendorChatMessage } from './types'
 import { ChatConversationList } from './components/ChatConversationList'
 import { ChatDetail } from './components/ChatDetail'
 import { useVendorChat } from './hooks/useVendorChat'
+import { useChatSocket } from './hooks/useChatSocket'
 
 export const ChatListPage: React.FC = () => {
   const { colors } = useTheme()
   const { user } = useAuth()
   const searchParams = useSearchParams()
   const vendorIdParam = searchParams.get('vendorId')
-  const [conversations, setConversations] = useState<VendorChatConversation[]>([])
+  const conversationIdParam = searchParams.get('conversationId')
   const [selectedConversationId, setSelectedConversationId] = useState<string | undefined>()
   const [searchQuery, setSearchQuery] = useState('')
-  const [isLoadingConversations, setIsLoadingConversations] = useState(true)
   const [showDetail, setShowDetail] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
 
@@ -30,110 +31,160 @@ export const ChatListPage: React.FC = () => {
     return () => window.removeEventListener('resize', checkMobile)
   }, [])
 
-  const selectedConversation = conversations.find((c) => c.id === selectedConversationId)
+  // Fetch conversations from API
+  const {
+    data: conversationsResponse,
+    isLoading: isLoadingConversationsFromApi,
+    error: conversationsError,
+    refetch: refetchConversations,
+  } = useGetConversationsQuery(undefined as void, {
+    skip: !user, // Skip if user is not authenticated
+  })
 
-  // Mock conversations data - Replace with actual API call
-  useEffect(() => {
-    const loadConversations = async () => {
-      setIsLoadingConversations(true)
-      try {
-        // TODO: Replace with actual API call
-        // const response = await chatApi.getConversations()
-        // setConversations(response.data)
+  // Map API response to VendorChatConversation format
+  const conversations = useMemo<VendorChatConversation[]>(() => {
+    if (!conversationsResponse?.data || !user) return []
 
-        // Mock data
-        await new Promise((resolve) => setTimeout(resolve, 500))
-        const mockConversations: VendorChatConversation[] = [
-          {
-            id: '1',
-            vendorId: 'vendor-1',
-            vendorName: 'Công ty TNHH Dụng cụ Việt',
-            vendorAvatar: undefined,
-            userId: user?.id || 'user-1',
-            unreadCount: 2,
-            lastMessage: {
-              id: 'msg-1',
-              content: 'Xin chào! Tôi muốn hỏi về sản phẩm...',
-              senderId: 'vendor-1',
-              senderName: 'Công ty TNHH Dụng cụ Việt',
-              receiverId: user?.id || 'user-1',
-              timestamp: new Date(Date.now() - 1000 * 60 * 30), // 30 minutes ago
-              isRead: false,
-              type: 'text',
-            },
-            createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24), // 1 day ago
-            updatedAt: new Date(Date.now() - 1000 * 60 * 30),
-          },
-          {
-            id: '2',
-            vendorId: 'vendor-2',
-            vendorName: 'Vật liệu xây dựng ABC',
-            vendorAvatar: undefined,
-            userId: user?.id || 'user-1',
-            unreadCount: 0,
-            lastMessage: {
-              id: 'msg-2',
-              content: 'Cảm ơn bạn đã liên hệ!',
-              senderId: user?.id || 'user-1',
-              senderName: user?.name || 'Bạn',
-              receiverId: 'vendor-2',
-              timestamp: new Date(Date.now() - 1000 * 60 * 60 * 2), // 2 hours ago
-              isRead: true,
-              type: 'text',
-            },
-            createdAt: new Date(Date.now() - 1000 * 60 * 60 * 48), // 2 days ago
-            updatedAt: new Date(Date.now() - 1000 * 60 * 60 * 2),
-          },
-        ]
-        setConversations(mockConversations)
+    return conversationsResponse.data.map((conv: ConversationResponseDto): VendorChatConversation => {
+      // Determine unread count based on user role
+      const isVendor = user.roles?.includes('vendor') || user.role === 'vendor'
+      const unreadCount = isVendor ? conv.unreadCountVendor : conv.unreadCountUser
 
-        // Auto-select conversation if vendorId is in URL
-        if (vendorIdParam) {
-          const conversationWithVendor = mockConversations.find(
-            (c) => c.vendorId === vendorIdParam
-          )
-          if (conversationWithVendor) {
-            setSelectedConversationId(conversationWithVendor.id)
-            if (isMobile) {
-              setShowDetail(true)
-            }
-          } else {
-            // Create new conversation if not exists
-            // TODO: Create conversation via API
-            const newConversation: VendorChatConversation = {
-              id: `new-${vendorIdParam}`,
-              vendorId: vendorIdParam,
-              vendorName: 'Vendor',
-              userId: user?.id || '',
-              unreadCount: 0,
-              createdAt: new Date(),
-              updatedAt: new Date(),
-            }
-            setConversations((prev) => [newConversation, ...prev])
-            setSelectedConversationId(newConversation.id)
-            if (isMobile) {
-              setShowDetail(true)
-            }
-          }
+      // Map last message if exists
+      let lastMessage: VendorChatMessage | undefined
+      if (conv.lastMessage) {
+        // Determine sender info
+        // Note: lastMessage chỉ là string, không có thông tin sender
+        // Tạm thời không thể xác định sender từ lastMessage string
+        // Có thể cần API trả về senderId hoặc senderType trong lastMessage
+        const senderId = conv.lastMessageAt ? conv.vendorId : conv.userId // Tạm thời đoán dựa trên timestamp
+        const senderName = senderId === conv.vendorId
+          ? (conv.vendor?.businessName || 'Vendor')
+          : (conv.user?.firstName && conv.user?.lastName
+            ? `${conv.user.firstName} ${conv.user.lastName}`
+            : conv.user?.email?.split('@')[0] || 'User')
+        const senderAvatar = senderId === conv.vendorId ? conv.vendor?.logo : conv.user?.avatar
+
+        lastMessage = {
+          id: `last-${conv.id}`,
+          content: conv.lastMessage,
+          senderId,
+          senderName,
+          senderAvatar,
+          receiverId: senderId === conv.vendorId ? conv.userId : conv.vendorId,
+          timestamp: conv.lastMessageAt ? new Date(conv.lastMessageAt) : new Date(conv.createdAt),
+          isRead: unreadCount === 0,
+          type: 'text',
         }
-      } catch (error) {
-        console.error('Failed to load conversations:', error)
-      } finally {
-        setIsLoadingConversations(false)
+      }
+
+      // Get user name from user object
+      const userName = conv.user?.firstName && conv.user?.lastName
+        ? `${conv.user.firstName} ${conv.user.lastName}`
+        : conv.user?.email?.split('@')[0] || 'User'
+
+      // Get vendor name from vendor object
+      const vendorName = conv.vendor?.businessName || 'Vendor'
+
+      return {
+        id: conv.id,
+        vendorId: conv.vendorId,
+        vendorName,
+        vendorAvatar: conv.vendor?.logo, // Vendor có thể có logo thay vì avatar
+        userId: conv.userId,
+        userName,
+        userAvatar: conv.user?.avatar, // User có thể có avatar
+        lastMessage,
+        unreadCount,
+        createdAt: new Date(conv.createdAt),
+        updatedAt: conv.lastMessageAt ? new Date(conv.lastMessageAt) : new Date(conv.createdAt),
+      }
+    })
+  }, [conversationsResponse, user])
+
+  // Auto-select conversation if conversationId or vendorId is in URL
+  useEffect(() => {
+    if (isLoadingConversationsFromApi) return
+
+    // Priority 1: Nếu có conversationId trong URL, dùng nó
+    if (conversationIdParam) {
+      const conversationById = conversations.find((c) => c.id === conversationIdParam)
+      if (conversationById) {
+        setSelectedConversationId(conversationById.id)
+        if (isMobile) {
+          setShowDetail(true)
+        }
+        return
+      }
+      // Nếu conversationId không tồn tại trong list, vẫn set để load sau
+      setSelectedConversationId(conversationIdParam)
+      if (isMobile) {
+        setShowDetail(true)
+      }
+      return
+    }
+
+    // Priority 2: Nếu có vendorId, tìm conversation với vendor đó
+    if (vendorIdParam && conversations.length > 0) {
+      const conversationWithVendor = conversations.find((c) => c.vendorId === vendorIdParam)
+      if (conversationWithVendor) {
+        setSelectedConversationId(conversationWithVendor.id)
+        if (isMobile) {
+          setShowDetail(true)
+        }
       }
     }
+  }, [conversationIdParam, vendorIdParam, conversations, isLoadingConversationsFromApi, isMobile])
 
-    if (user) {
-      loadConversations()
-    }
-  }, [user, vendorIdParam, isMobile])
+  const selectedConversation = conversations.find((c) => c.id === selectedConversationId)
 
   // Load messages for selected conversation
   const [messages, setMessages] = useState<VendorChatMessage[]>([])
   const [isLoadingMessages, setIsLoadingMessages] = useState(false)
+  const [joinedConversationId, setJoinedConversationId] = useState<string | null>(null)
 
+  // Use chat socket hook để join conversation và nhận messages
+  // Hook sẽ tự động join khi có vendorId và socket connected
+  const { isConnected: isSocketConnected } = useChatSocket({
+    vendorId: selectedConversation?.vendorId,
+    enabled: !!selectedConversation?.vendorId,
+    onConversationHistory: (historyMessages) => {
+      console.log('Received conversation history:', historyMessages)
+      setMessages(historyMessages)
+      setIsLoadingMessages(false)
+    },
+    onNewMessage: (newMessage) => {
+      console.log('New message received:', newMessage)
+      setMessages((prev) => {
+        // Tránh duplicate messages
+        if (prev.some((msg) => msg.id === newMessage.id)) {
+          return prev
+        }
+        return [...prev, newMessage]
+      })
+    },
+  })
+
+  // Clear messages và reset state khi chuyển conversation
   useEffect(() => {
-    if (!selectedConversation || !user) return
+    if (!selectedConversation) {
+      setMessages([])
+      setJoinedConversationId(null)
+      setIsLoadingMessages(false)
+      return
+    }
+
+    // Reset state khi chuyển sang conversation mới
+    if (joinedConversationId && joinedConversationId !== selectedConversation.id) {
+      setMessages([])
+      setJoinedConversationId(null)
+      setIsLoadingMessages(true)
+    }
+  }, [selectedConversation?.id, joinedConversationId])
+
+  // Fallback: Load messages via API nếu socket không hoạt động
+  useEffect(() => {
+    if (!selectedConversation || !user || isSocketConnected) return
 
     const loadMessages = async () => {
       setIsLoadingMessages(true)
@@ -142,7 +193,7 @@ export const ChatListPage: React.FC = () => {
         // const response = await chatApi.getConversation(selectedConversation.id)
         // setMessages(response.data)
 
-        // Mock messages
+        // Mock messages (fallback)
         await new Promise((resolve) => setTimeout(resolve, 300))
         const mockMessages: VendorChatMessage[] = [
           {
@@ -177,7 +228,7 @@ export const ChatListPage: React.FC = () => {
     }
 
     loadMessages()
-  }, [selectedConversation, user])
+  }, [selectedConversation, user, isSocketConnected])
 
   // Use vendor chat hook for sending messages
   const {
@@ -231,6 +282,8 @@ export const ChatListPage: React.FC = () => {
           onSelectConversation={handleSelectConversation}
           searchQuery={searchQuery}
           onSearchChange={setSearchQuery}
+          isLoading={isLoadingConversationsFromApi}
+          error={conversationsError}
         />
       </div>
 
