@@ -6,6 +6,8 @@ import { Message } from './types'
 import { ChatbotButton } from './components/chat/ChatbotButton'
 import { ChatWindow, ChatWindowRef } from './components/chat/ChatWindow'
 import { useAssistantMutation } from '@/services/ai/ai.service'
+import { API_CONFIG, API_ENDPOINTS } from '@/common/constants/endpoint.constant'
+import { StorageService } from '@/services/storage/secureStorage.service'
 
 interface ChatbotProps {
   onSendMessage?: (message: string) => Promise<string>
@@ -26,12 +28,14 @@ export const Chatbot: React.FC<ChatbotProps> = ({ onSendMessage }) => {
   const [isDragOver, setIsDragOver] = useState(false)
   const chatWindowRef = useRef<ChatWindowRef>(null)
   const [assistant, { isLoading: isAssistantLoading }] = useAssistantMutation()
+  const [selectedProductId, setSelectedProductId] = useState<string | null>(null)
 
   // Local storage keys
   const STORAGE_KEYS = {
     open: 'chatbot:isOpen',
     messages: 'chatbot:messages',
     input: 'chatbot:input',
+    productId: 'chatbot:selectedProductId',
   }
 
   // Load persisted state on mount
@@ -58,6 +62,9 @@ export const Chatbot: React.FC<ChatbotProps> = ({ onSendMessage }) => {
 
       const savedInput = window.localStorage.getItem(STORAGE_KEYS.input)
       if (savedInput) setInputValue(savedInput)
+
+      const savedProductId = window.localStorage.getItem(STORAGE_KEYS.productId)
+      if (savedProductId) setSelectedProductId(savedProductId)
     } catch {
       // ignore storage errors
     }
@@ -85,6 +92,18 @@ export const Chatbot: React.FC<ChatbotProps> = ({ onSendMessage }) => {
       // ignore storage errors
     }
   }, [inputValue])
+
+  // Persist selected product id
+  useEffect(() => {
+    try {
+      if (typeof window === 'undefined') return
+      if (selectedProductId) {
+        window.localStorage.setItem(STORAGE_KEYS.productId, selectedProductId)
+      }
+    } catch {
+      // ignore storage errors
+    }
+  }, [selectedProductId])
 
   const scrollToBottom = () => {
     chatWindowRef.current?.scrollToBottom()
@@ -114,6 +133,8 @@ export const Chatbot: React.FC<ChatbotProps> = ({ onSendMessage }) => {
       let responseText = ''
       let responseAction: string | undefined
       let responsePayload: any | undefined
+
+
       if (onSendMessage) {
         responseText = await onSendMessage(userMessage.content)
       } else {
@@ -122,13 +143,28 @@ export const Chatbot: React.FC<ChatbotProps> = ({ onSendMessage }) => {
           role: m.role,
           content: m.content,
         }))
+
+        // If has selected product, add a hint turn for LLM/BE to consume
+        if (selectedProductId) {
+          history.push({
+            role: 'user',
+            content: `__PRODUCT_ID__=${selectedProductId}`,
+          })
+        }
+
+        const messageWithToken = selectedProductId
+          ? `${userMessage.content}\n__PRODUCT_ID__=${selectedProductId}`
+          : userMessage.content
+
         const res = await assistant({
-          message: userMessage.content,
+          message: messageWithToken,
           conversationHistory: history,
         }).unwrap()
         responseText = res.data?.message || res.message || 'Xin lỗi, tôi chưa có câu trả lời.'
-        responseAction = res.data?.action || res.action
-        responsePayload = res.data?.data || res.data
+        responseAction = (res.data as any)?.action
+        responsePayload = (res.data as any)?.data
+
+        // Không auto đặt hàng ở FE. Việc đặt hàng/confirm do BE orchestration xử lý.
       }
 
       const assistantMessage: Message = {
@@ -192,6 +228,7 @@ export const Chatbot: React.FC<ChatbotProps> = ({ onSendMessage }) => {
         }
 
         setMessages((prev) => [...prev, productMessage])
+        setSelectedProductId(product.id)
         scrollToBottom()
 
         // Auto send message with product info
@@ -225,6 +262,48 @@ export const Chatbot: React.FC<ChatbotProps> = ({ onSendMessage }) => {
       }
     } catch (error) {
       console.error('Failed to handle drop:', error)
+    }
+  }
+
+  // Helpers: fetch default address and create order via REST
+  const placeOrderWithDefaultAddress = async (productId: string, quantity: number) => {
+    try {
+      const token = await StorageService.getAccessToken()
+      if (!token) return false
+
+      // Get addresses and find default
+      const resAddr = await fetch(`${API_CONFIG.BASE_URL}${API_ENDPOINTS.ADDRESSES.LIST}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: 'application/json',
+        },
+      })
+      if (!resAddr.ok) return false
+      const addrJson = await resAddr.json()
+      const addresses = Array.isArray(addrJson?.data) ? addrJson.data : []
+      const defaultAddress =
+        addresses.find((a: any) => a.isDefault) || addresses[0] || null
+      if (!defaultAddress) return false
+
+      // Create order (ship/COD), BE chấp nhận addressId hoặc shipping fields
+      const body = {
+        items: [{ productId, quantity }],
+        paymentMethod: 'cod',
+        addressId: defaultAddress.id,
+      }
+
+      const resOrder = await fetch(`${API_CONFIG.BASE_URL}${API_ENDPOINTS.ORDERS.CREATE}`, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+        body: JSON.stringify(body),
+      })
+      return resOrder.ok
+    } catch {
+      return false
     }
   }
 

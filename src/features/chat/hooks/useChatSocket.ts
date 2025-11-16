@@ -87,7 +87,7 @@ export function useChatSocket({
   useEffect(() => {
     if (!socket || !isConnected || !enabled) return
 
-    const handleNewMessage = (data: any) => {
+    const mapIncoming = (data: any): VendorChatMessage => {
       console.log('new_message event received:', data)
       // Map message từ backend format sang VendorChatMessage
       const message: VendorChatMessage = {
@@ -118,16 +118,28 @@ export function useChatSocket({
         productId: data.message?.productId || data.productId,
         imageUrl: data.message?.imageUrl || data.imageUrl,
       }
-      
-      console.log('mapped new message:', message)
+      console.log('mapped message:', message)
+      return message
+    }
+
+    const handleNewMessage = (data: any) => {
+      const message = mapIncoming(data)
+      callbacksRef.current.onNewMessage?.(message)
+    }
+
+    const handleMessageSaved = (data: any) => {
+      const message = mapIncoming(data)
       callbacksRef.current.onNewMessage?.(message)
     }
 
     // Backend emit: server.to(`conversation_${conversationId}`).emit('new_message', { message })
     socket.on('new_message', handleNewMessage)
+    // Backend echo to sender only
+    socket.on('message_saved', handleMessageSaved)
 
     return () => {
       socket.off('new_message', handleNewMessage)
+      socket.off('message_saved', handleMessageSaved)
     }
   }, [socket, isConnected, enabled])
 
