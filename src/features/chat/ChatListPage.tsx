@@ -182,6 +182,23 @@ export const ChatListPage: React.FC = () => {
   const refetchDebounceRef = React.useRef<NodeJS.Timeout | null>(null)
   const optimisticIdRef = React.useRef<string | null>(null)
 
+  // Normalize sender/receiver so UI side (me vs them) is stable across roles
+  const normalizeMessage = useCallback(
+    (msg: VendorChatMessage, conversation: VendorChatConversation | undefined): VendorChatMessage => {
+      if (!conversation || !user) return msg
+      // Party IDs in conversation (domain IDs)
+      const myPartyId = isVendorUser ? conversation.vendorId : conversation.userId
+      const otherPartyId = isVendorUser ? conversation.userId : conversation.vendorId
+      const senderIsMe = msg.senderId === myPartyId
+      return {
+        ...msg,
+        senderId: senderIsMe ? user.id : msg.senderId,
+        receiverId: senderIsMe ? otherPartyId : msg.receiverId ?? otherPartyId,
+      }
+    },
+    [isVendorUser, user],
+  )
+
   // Use chat socket hook để join conversation, nhận messages và gửi messages
   const { isConnected: isSocketConnected, sendMessage: sendSocketMessage } = useChatSocket({
     // Với user thường: vendorId = vendorId của conversation.
@@ -195,9 +212,10 @@ export const ChatListPage: React.FC = () => {
     enabled: !!selectedConversation,
     onConversationHistory: (historyMessages) => {
       // Normalize order: oldest -> newest
-      const ordered = [...historyMessages].sort(
+      const orderedRaw = [...historyMessages].sort(
         (a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime(),
       )
+      const ordered = orderedRaw.map((m) => normalizeMessage(m, selectedConversation || undefined))
       // Keep optimistic message (if any) when server history returns
       setMessages((prev) => {
         const optimistic = optimisticIdRef.current
@@ -208,9 +226,10 @@ export const ChatListPage: React.FC = () => {
       setIsLoadingMessages(false)
     },
     onNewMessage: (newMessage) => {
+      const normalized = normalizeMessage(newMessage, selectedConversation || undefined)
       setMessages((prev) => {
         // Tránh duplicate messages
-        if (prev.some((msg) => msg.id === newMessage.id)) {
+        if (prev.some((msg) => msg.id === normalized.id)) {
           return prev
         }
         // Remove optimistic when real message arrives
@@ -218,7 +237,7 @@ export const ChatListPage: React.FC = () => {
           prev = prev.filter((m) => m.id !== optimisticIdRef.current)
           optimisticIdRef.current = null
         }
-        const next = [...prev, newMessage]
+        const next = [...prev, normalized]
         // Ensure order oldest -> newest
         next.sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime())
         return next
@@ -269,7 +288,7 @@ export const ChatListPage: React.FC = () => {
       const senderAvatar = isVendorSender ? selectedConversation.vendorAvatar : (user as any).avatar
       const receiverId = isVendorSender ? selectedConversation.userId : selectedConversation.vendorId
 
-      return {
+      return normalizeMessage({
         id: msg.id,
         content: msg.message,
         senderId,
@@ -279,7 +298,7 @@ export const ChatListPage: React.FC = () => {
         timestamp: new Date(msg.createdAt),
         isRead: msg.isRead,
         type: 'text',
-      }
+      }, selectedConversation)
     })
 
     // Backend trả DESC, cần đảo thành ASC để UI mới nhất ở dưới
@@ -295,6 +314,7 @@ export const ChatListPage: React.FC = () => {
     isSocketConnected,
     selectedConversation,
     user,
+    normalizeMessage,
   ])
 
   const handleSelectConversation = useCallback((conversationId: string) => {
@@ -313,26 +333,28 @@ export const ChatListPage: React.FC = () => {
     // Optimistic UI append
     const optimisticId = `optimistic-${Date.now()}`
     optimisticIdRef.current = optimisticId
+    const myPartyId = isVendorUser ? selectedConversation.vendorId : selectedConversation.userId
+    const otherPartyId = isVendorUser ? selectedConversation.userId : selectedConversation.vendorId
     setMessages((prev) => [
       ...prev,
-      {
+      normalizeMessage({
         id: optimisticId,
         content,
-        senderId: user?.id || 'me',
+        senderId: myPartyId, // will be normalized to account id
         senderName: user?.name || 'Me',
         senderAvatar: (user as any)?.avatar,
-        receiverId: selectedConversation.vendorId,
+        receiverId: otherPartyId,
         timestamp: new Date(),
         isRead: false,
         type: 'text',
-      },
+      }, selectedConversation),
     ])
     const ok = sendSocketMessage(content)
     if (ok) {
       setInputValue('')
     }
     setIsSending(false)
-  }, [selectedConversation, inputValue, isSocketConnected, isSending, sendSocketMessage])
+  }, [selectedConversation, inputValue, isSocketConnected, isSending, sendSocketMessage, isVendorUser, normalizeMessage, user])
 
   const handleKeyPress = useCallback(
     (e: React.KeyboardEvent<HTMLInputElement>) => {
